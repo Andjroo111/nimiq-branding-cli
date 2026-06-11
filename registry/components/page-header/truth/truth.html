@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PageHeader — truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: 'Mulish', sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--nimiq-gray);
+    }
+
+    /* SmallPage.vue scoped CSS (verbatim) */
+    .small-page {
+        width: 100%;
+        max-width: 52.5rem; /* 420px */
+        height: 70.5rem; /* 564px */
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        margin: 0 1.25rem;
+    }
+
+    /* PageHeader.vue scoped CSS (verbatim) */
+    .page-header {
+        position: relative;
+    }
+
+    .page-header-back-button {
+        font-size: 3rem;
+        position: absolute;
+        left: 4rem;
+        padding-top: .25rem;
+        opacity: 0.4;
+        transition: opacity .3s var(--nimiq-ease), transform .3s var(--nimiq-ease);
+        color: inherit;
+    }
+
+    .page-header-back-button svg {
+        display: block;
+    }
+
+    .page-header-back-button:hover,
+    .page-header-back-button:focus {
+        opacity: 1;
+        transform: translate3D(-0.375rem, 0, 0);
+        outline: none;
+    }
+
+    @media (max-width: 450px) {
+        .page-header-back-button,
+        /* Don't move button left on mobile */
+        .page-header-back-button:hover,
+        .page-header-back-button:focus {
+            left: 3rem;
+            transform: none;
+        }
+    }
+
+    .page-header-back-button::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: -1.5rem;
+        top: -1.5rem;
+        right: -1.5rem;
+        bottom: -1.5rem;
+    }
+
+    .progress-indicator {
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        padding: 0.5rem;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    .progress-indicator .indicator {
+        flex-grow: 1;
+        height: 0.5rem;
+        border-radius: 0.25rem;
+        background: #e5e5e5;
+        margin: 0.5rem;
+    }
+
+    .progress-indicator .indicator.active {
+        background: #24bdb6;
+    }
+
+    .page-header.has-progress-indicator h1,
+    .page-header.has-progress-indicator .page-header-back-button {
+        margin-top: 1rem;
+    }
+</style>
+</head>
+<body>
+    <!-- SmallPage template: <div class="small-page nq-card"><slot></slot></div> -->
+    <div class="small-page nq-card">
+        <!-- PageHeader template, expanded for:
+             backArrow=true, progressIndicator=true, numberSteps=6, step=3,
+             slot = "Send Transaction", $t stubbed to identity -->
+        <div class="page-header nq-card-header has-progress-indicator">
+            <div class="progress-indicator">
+                <div class="indicator active"></div>
+                <div class="indicator active"></div>
+                <div class="indicator active"></div>
+                <div class="indicator"></div>
+                <div class="indicator"></div>
+                <div class="indicator"></div>
+            </div>
+            <a href="#" class="page-header-back-button" title="Go back">
+                <!-- ArrowLeftIcon = @nimiq/style/src/icons/arrow-left.svg with class nq-icon -->
+                <svg class="nq-icon" width="23" height="18" viewBox="0 0 23 18" xmlns="http://www.w3.org/2000/svg"><path d="M22 9L3 9" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 16L2 9L9 2" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <h1 class="nq-h1">Send Transaction</h1>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,147 @@
+{
+ "existing": [
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-wallet-app/Screenshot 2026-03-13 at 9.41.06 PM.png",
+   "usableForPixelRef": true,
+   "whatItShows": "BEST overall wallet reference. Logged-in desktop Nimiq Wallet main dashboard (2784x1560 retina, no overlay). Left dark-navy sidebar: NIMIQ hex logo, 24h NIM price sparkline ($0.000584 +0.0%), BTC sparkline ($70,776.98 -0.7%), pill 'Buy' button, disabled circular Swap widget (NIM 0% / BTC 0%), bottom items 'Pink Account' (red identicon thumbnail), Network, Settings with gear/globe icons. Middle column: orange warning banner \"There is no 'forgot password'\" with orange 'Backup ->' pill, TOTAL BALANCE label + huge '$0.00', white NIM accounts card containing 'Pink Address' row with hexagonal identicon + '0 NIM / $0.00' and a '+' add-address button, grey Bitcoin card (0.00000 BTC) and USDC/USDT card with blue 'Choose' pill button. Right panel: large red hexagonal identicon, 'Pink Address' title, full chunked NQ address (NQ46 4VT0 7A3E 51C8 AGNJ SR6U 1NN5 QS00 N5JJ), right-aligned '0 NIM / $0.00' balance, rounded 'Search transactions' input, green 'Stake' pill with leaf icon, grey 'Send' (disabled) and 'Receive' pills, empty state 'Your transactions will appear here', blue-gradient 'BUY NIM' pill, dark 'Help' pill bottom-right. Crisp retina capture."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-wallet-app/Screenshot 2026-03-13 at 9.40.54 PM.png",
+   "usableForPixelRef": true,
+   "whatItShows": "Same logged-in desktop wallet but with the 'Check out Nimiq Multisig Wallets' promo modal overlaying center: white rounded modal, gold rounded-square multi-key icon, body copy, blue-gradient 'VISIT MULTISIG.NIMIQ.COM' pill, 'Skip >' text link, and an embedded browser-mockup screenshot of the Multisig app showing a 'Shared Business Account' card (blue 2-of-3 identicon badge, signer chips 'Soeren Owner' / 'Julian (you)' / 'Tammo', PENDING (2) list with 1/3-committed and 2/3-approved multisig transactions with progress ring icons, PAST TRANSACTIONS). Dimmed but readable wallet dashboard behind. Useful for modal styling + multisig UI reference. Crisp retina (2778x1556)."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-wallet-app/Screenshot 2026-03-13 at 9.42.22 PM.png",
+   "usableForPixelRef": true,
+   "whatItShows": "IRREPLACEABLE: mobile wallet address view with REAL FUNDED DATA (684x1174, ~2x). Top: back arrow, rounded 'Search transactions' input, kebab menu. Account header row: red hexagonal identicon, 'Pink Address', truncated NQ83 address, right-aligned '396 NIM / $0.23'. Green gradient staking banner: leaf-in-circle icon, '389 NIM staked', '$0.23 - 98%'. Grey pool row: 'NimiqHub Staking' with gold hex icon, '4.87 star - 10.1% p.a.'. Transaction list grouped under 'FEBRUARY' header with 'Fetching' spinner: 3 rows each with date column (28 FEB etc), hexagonal identicon with small badge overlay, truncated counterparty NQ address, time + label ('Cashlink Funding'), right-aligned amounts '-1200 NIM/$0.87', '-6865 NIM/$5.00', and incoming '+8461 NIM' in green highlight pill with '$5.98'. Dark 'Help' pill. Bottom action bar: white 'Receive' pill with down arrow, blue-gradient 'Send' pill with up arrow, QR-scan icon. The only transaction-list-with-data reference we have."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-wallet-app/Screenshot 2026-03-13 at 9.42.34 PM.png",
+   "usableForPixelRef": true,
+   "whatItShows": "Mobile 'Receive NIM' modal (682x1180, crisp): white bottom-sheet over dimmed funded address view, title 'Receive NIM', X close button, subtitle 'Share your address with the sender.', extra-large red hexagonal identicon (bowtie/dollar-eyes face character), grey rounded box with the address in monospace 3x3 chunked grid (NQ83 JLJG SM4F / M1LQ X8G5 QBAA / K617 15BQ J086), grey 'Create request link' pill button, QR-code icon bottom-right. Canonical reference for identicon-at-large-size and chunked address display."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-wallet-app/Screenshot 2026-03-13 at 9.42.44 PM.png",
+   "usableForPixelRef": true,
+   "whatItShows": "Mobile 'Send Transaction' modal, step 1 address entry (684x1170): white sheet over dimmed wallet, X close, 'Contacts' icon button with label, vertical divider, three grey hexagon skeleton placeholders for recent contacts (empty state). 'ENTER ADDRESS' section label in spaced caps, 3x3 segmented address input grid pre-filled with 'NQ' prefix and underlined empty cells, 'Address unavailable?' helper text, grey 'Create a Cashlink' pill button, QR-scan icon bottom-right. Only reference for the send flow (address step only \u2014 no amount/fee step captured)."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-wallet-app/Screenshot 2026-03-13 at 9.42.56 PM.png",
+   "usableForPixelRef": true,
+   "whatItShows": "Mobile transaction-detail modal for an outgoing cashlink (672x1172, crisp): title 'Cashlink to NQ80 CYEH', subtitle 'Sent at 2/28/2026 - 15:32', info (i) icon top-left, X close. Sender->recipient layout: red 'Pink Address' hexagonal identicon -> grey arrow -> purple recipient identicon with cashlink (section-sign) badge, labels 'Pink Address' and 'Add contact' link, both full addresses in 3x3 monospace chunks. Huge amount display '-1200 NIM' with '$0.87' fiat below, message label 'Cashlink Funding'. Canonical reference for amount-display typography and tx-detail layout."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-wallet/wallet.nimiq.com-desktop.png",
+   "usableForPixelRef": true,
+   "whatItShows": "wallet.nimiq.com logged-OUT welcome screen, desktop 1440x900: light grey #f4f4f4 background, top-left NIMIQ gold-hex logo wordmark, centered dark-blue H1 'Welcome to the Nimiq Wallet' + subtitle 'A 100% free and self-custodial web wallet for NIM, BTC and USDC.', single white rounded shadow card with three options: teal/green gradient 'Create Account' panel (white circle + icon), 'Login' (grey circle arrow icon), vertical divider, 'Connect Ledger' (ledger device illustration). Crisp; duplicated byte-identical in reference-sites/."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-wallet/wallet.nimiq.com-mobile.png",
+   "usableForPixelRef": true,
+   "whatItShows": "Same wallet welcome screen at 375x812 mobile: stacked layout \u2014 full-width teal gradient 'Create Account' card with right-aligned white + circle, then 'Login' and 'Connect Ledger' rows (Ledger row partially cut at viewport bottom). Crisp. Duplicate in reference-sites/."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-website/nimiq-com-home-desktop.png",
+   "usableForPixelRef": true,
+   "whatItShows": "Full-page nimiq.com homepage, desktop 1440x6475 (1x, crisp at native res): dark indigo->purple gradient hero with world-map texture, 'Universal Money for Independent Individuals' headline, blue 'Create Wallet' CTA, radio-player top bar; white cookie-consent card (would need cropping out for pixel work); 'THE APPS' section with gold-hex-icon app cards each paired with product screenshot mockups \u2014 Pay App (150.00 EUR payment-successful card), Cryptopayment.link ('Create a payment request' teal card), Nimiq wallet (mini dashboard mock '2 494.09 EUR'), Multisig Wallet ('New Release' pill, Shared Business Account mock); 'View all apps' banner with small hex app icons; dark 'THE TECH' section 'An instant, zero-fee and green alternative to FIAT money: The Nimiq Blockchain' with 3 icon feature rows (paper plane, payment card, PayPal comparison); dark-to-green gradient staking band 'Stake NIM at ~13.04% p.a.' with leaf roundel and 'Learn more' CTA; 'Join our live community' section with blue Community CTA; multi-column dark footer (Product/Tech/Apps/Get Started/Community links, social icon row, newsletter signup)."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-website/nimiq-com-home-mobile.png",
+   "usableForPixelRef": true,
+   "whatItShows": "Same nimiq.com homepage full-page at 375x7991 mobile: identical sections stacked single-column \u2014 gradient hero + Create Wallet button, cookie consent card with Reject/Accept pills, THE APPS cards (Pay App, Cryptopayment.link, Nimiq wallet, Multisig Wallet each with screenshot mock), View-all-apps, dark THE TECH feature stack, green Stake-NIM band, community section, full footer with newsletter input and social icons. Crisp 1x; good for responsive layout reference. Duplicate in reference-sites/."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-website/nimiq.com-oasis-desktop.png",
+   "usableForPixelRef": true,
+   "whatItShows": "Full-page nimiq.com OASIS product page, desktop 2880x14808 (2x retina, very tall): dark hero 'Nimiq OASIS' with 'See how it works'/'Integrate it' CTAs, cookie consent card, teal 'Available in Europe!' card with EUR->crypto icons + 'Try it now' button, white 'Fiat-to-crypto atomic swap yourself!' section with two cards (Nimiq Wallet, SuperSimpleSwap with 'super simple swap' logo), 'How does it work?' video embed with yellow play button, dark 'OASIS is an open technology and accessible to everyone!' integration section with 4 outlined cards (OASIS Integration / Fastspot integration / OASIS Sandbox / OASIS client libraries, each with small CTA pills), 'Collaborate with NIMIQ and integrate OASIS' section, full footer. Crisp at native res."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-website/nimiq.com-oasis-mobile.png",
+   "usableForPixelRef": true,
+   "whatItShows": "Same OASIS page mobile full-page 1170x23244 (3x retina): all sections stacked \u2014 hero with 'Integrate it' dropdown, cookie card, horizontally-peeking teal/white availability cards carousel, swap-yourself cards, How-does-it-work + video, four integration cards with 'Learn more'/'See API docs'/'Try it out'/'Javascript' buttons, collaborate section, footer with newsletter. Crisp."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/staking-calculator/nimiq.com-staking-calculator-desktop.png",
+   "usableForPixelRef": false,
+   "whatItShows": "nimiq.com staking calculator, desktop 1440x900, but the actual calculator UI is OBSCURED: white intro modal 'Stake NIM. Earn NIM.' (piggy-bank + gold coins illustration, blue-gradient 'START CALCULATOR' pill) plus a cookie 'Notice' banner (Learn more and customize / Reject / Accept buttons) cover most of the page. Behind the dim you can partially see: header 'NIMIQ Staking Calculator' with 'Buy NIM ->' pill, kNIM y-axis chart (100-146 kNIM) with gold projection line, right-side 'REWARD 20.70% / +20'696 NIM / +$16.27' readout, '2Y' time scrubber. Usable only for the intro modal + header; the calculator controls (amount input, time slider) are hidden. Needs recapture with modal/cookies dismissed. Duplicate in reference-sites/."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/staking-calculator/nimiq.com-staking-calculator-mobile.png",
+   "usableForPixelRef": false,
+   "whatItShows": "Staking calculator mobile 630x1365, same problem: intro sheet 'Stake NIM. Earn NIM.' + piggy illustration covers the page and the cookie Notice banner covers the bottom; behind the dim only the kNIM axis labels, a sliver of gold chart and a clipped 'Staking 10000...' input card are visible. Not a pixel reference for the calculator itself. Duplicate in reference-sites/."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-ui/onmax.github.io-nimiq-ui-nimiq-css-palette.html-desktop.png",
+   "usableForPixelRef": true,
+   "whatItShows": "Nimiq UI docs (onmax.github.io) 'Nimiq Colors' palette page, desktop 1440x1585, DARK MODE only: left sidebar (NIMIQ UI BETA logo, Cmd-K search, 'Nimiq CSS \u2014 The CSS framework' module switcher, nav: Introduction/Installation/Philosophy/Migrate from Nimiq Style/Palette(active, blue)/Utilities/Typography/CSS Layers/Native CSS/UnoCSS/TailwindCSS, dark-mode toggle bottom), main content: Palette swatch matrix \u2014 rows Neutral/Blue/Green/Red/Orange/Gold/Purple x columns 50-1100 + DEFAULT (rounded square swatches; on dark bg most light steps read as dark chips, vivid chips at 1100/DEFAULT), Gradients section with DEFAULT vs HOVERABLE swatch rectangles per color (only Blue renders bright #1F9CF0-ish; others render near-invisible on dark), 'On this page' right TOC, prev/next cards (Migrate From Nimiq Style / Utilities), 'Copy page' + 'Edit nimiq-css/palette.md' footer. Crisp; caveat: dark mode hides several gradient swatches, light-mode capture missing. Duplicate in reference-sites/."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-ui/onmax.github.io-nimiq-ui-nimiq-css-palette.html-mobile.png",
+   "usableForPixelRef": true,
+   "whatItShows": "Same palette page at 375x1644 mobile, dark mode: sticky header with hamburger + search icons, collapsible 'On this page' bar, full Palette matrix with rotated column labels (50-1100, DEFAULT), Gradients DEFAULT/HOVERABLE columns (Blue bright, others dim), prev/next cards, edit footer. Crisp. Duplicate in reference-sites/."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-ui/onmax.github.io-nimiq-ui-nimiq-icons-explorer.html-desktop.png",
+   "usableForPixelRef": true,
+   "whatItShows": "Nimiq UI docs 'Nimiq Icons explorer' page, desktop 1440x2232, dark mode: sidebar with Nimiq Icons module selected, main area = full icon grid in three groups \u2014 hundreds of small line/glyph icons (arrows, wallets, locks, chat, devices...), a duotone/filled set, and a logos section (BTC, B-chain logos, CRYPTOPAYMENT.LINK, CRYPTO MAP, CRYPTOPAY, NIMIQ Developer Center, NIMIQ wordmarks, exchange/social logos: GitHub, Instagram, Discord, Telegram, X, YouTube, Pay/Play badges, NIMIQ WALLET lockups), 'Select an icon' panel top-right with color-dot pickers (white/red/green/blue/purple swatch dots), prev/next cards (Getting Started / Figma). Icons are small but sharp at 1x \u2014 fine for inventory, marginal for tracing individual glyph geometry. Duplicate in reference-sites/."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-ui/onmax.github.io-nimiq-ui-nimiq-icons-explorer.html-mobile.png",
+   "usableForPixelRef": true,
+   "whatItShows": "Icons explorer mobile 375x3147, dark mode: same three icon groups stacked single-column plus the 'Select an icon' color-dot panel inline; logo lockups list (CRYPTOPAYMENT.LINK, CRYPTO MAP, NIMIQ variants, NIMIQ WALLET) clearly legible. Crisp. Duplicate in reference-sites/."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-ui/onmax.github.io-nimiq-ui-nimiq-css-getting-started-desktop.png",
+   "usableForPixelRef": false,
+   "whatItShows": "BROKEN CAPTURE: Nimiq CSS 'getting started' docs page desktop 1440x3528 \u2014 sidebar, 'On this page' TOC (What is Nimiq CSS? / Quick Start / Installation / Basic Usage / Your First Component / Next Steps) and the 'Installation' next-card rendered, but the entire main content column is EMPTY dark background (page JS/content failed to load before screenshot), and bottom ~70% of the image is solid blank. Only useful as a VitePress sidebar/TOC chrome reference. Duplicate in reference-sites/."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-ui/onmax.github.io-nimiq-ui-nimiq-css-getting-started-mobile.png",
+   "usableForPixelRef": false,
+   "whatItShows": "BROKEN CAPTURE (mobile 375x868): same getting-started page with header bar and 'Installation' next-card but no body content rendered. Not a usable reference. Duplicate in reference-sites/."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-ui/onmax.github.io-nimiq-ui-vitepress-theme-desktop.png",
+   "usableForPixelRef": false,
+   "whatItShows": "MISLABELED: this is a 404 'Page Not Found' page on the Nimiq UI docs (desktop 1440x900, dark mode) \u2014 top nav bar (NIMIQ UI BETA logo, search, Modules dropdown, GitHub icon, theme toggle), building emoji, 404 heading, body copy, 'Go Back ->' text link + blue 'Go Home ->' pill, 'Built with the Nimiq VitePress Theme' footer link. Incidentally a decent reference for the dark-mode top-nav and the blue pill button, but NOT the intended vitepress-theme docs page. Duplicate in reference-sites/."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/nimiq-ui/onmax.github.io-nimiq-ui-vitepress-theme-mobile.png",
+   "usableForPixelRef": false,
+   "whatItShows": "Same 404 'Page Not Found' at 375x812 mobile (magnifying-glass emoji variant, Go Back / Go Home buttons). Not the intended page. Duplicate in reference-sites/."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/reference-sites/ (12 files)",
+   "usableForPixelRef": true,
+   "whatItShows": "ENTIRE FOLDER IS REDUNDANT: all 12 files are byte-identical (md5-verified) duplicates of files in nimiq-website/, nimiq-wallet/, nimiq-ui/, and staking-calculator/ \u2014 except nimiq.com-staking-calculator-mobile.png which only exists here and in staking-calculator/ (same hash). Safe to treat the topic folders as canonical and ignore this folder."
+  },
+  {
+   "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-skill/screenshots/reference-for-dashboard/",
+   "usableForPixelRef": false,
+   "whatItShows": "EMPTY directory (0 files) created 2026-03-16. The criptociudad folder mentioned in the task no longer exists at all."
+  }
+ ],
+ "gaps": [
+  "Send flow step 2+: amount entry screen (big amount input, fee selector, fiat conversion) and send-confirmation/success state \u2014 we only have the address-entry modal",
+  "Staking flow UI inside the wallet: stake amount slider, validator/pool selection list, staking confirmation, unstake \u2014 only the post-stake green banner is captured",
+  "Swap UI (NIM<->BTC<->USDC swap modal with rate/limits) \u2014 sidebar swap widget is visible only in disabled empty state",
+  "Buy NIM flow (OASIS bank-transfer / Moonpay / Simplex provider selection and purchase screens)",
+  "Wallet Settings screen (currency, language, theme, contacts management)",
+  "Network screen (network map, consensus/peers status)",
+  "Nimiq Hub / Keyguard screens: account creation, password entry, Login File download/backup-words flow, transaction signing popup, checkout/ checkout-with-identicon confirmation \u2014 nothing from hub.nimiq.com or keyguard captured",
+  "Nimiq Pay / merchant checkout UI (only tiny mockups inside nimiq.com homepage cards)",
+  "Desktop transaction list WITH data (funded tx list exists only as a mobile screenshot; desktop dashboard shows empty state)",
+  "BTC account detail view and USDC/USDT account detail view (only collapsed cards on dashboard)",
+  "Contacts list / add-contact UI",
+  "Cashlink CREATION flow (we only have a funded-cashlink detail modal)",
+  "Address/account switcher and multi-account states (single 'Pink Address' account only)",
+  "Dark mode of the wallet / any Nimiq app surface (only the docs site is dark; wallet refs are all light)",
+  "Light-mode captures of the Nimiq UI docs (palette/gradients swatches are partly invisible on the dark captures)",
+  "Staking calculator actual controls (amount input, duration slider, reward chart interaction) \u2014 both captures are blocked by the intro modal and cookie banner; recapture with dismissals",
+  "Nimiq CSS docs content pages: getting-started, typography, utilities, CSS layers (existing captures rendered blank), and the real vitepress-theme page (existing captures are 404s)",
+  "Component-state references: button hover/active/disabled, input focus/error, tooltips, toasts/notifications, dropdowns, tabs, progress/loading spinners at readable size",
+  "Dedicated identicon reference sheet (multiple identicons at large scale; currently only incidental examples inside wallet screenshots)",
+  "Mobile navigation drawer / sidebar of the wallet app",
+  "criptociudad reference screenshots (folder deleted \u2014 whatever it showed is gone)"
+ ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "label-input",
+  "purpose": "A self-sizing text input for naming things (addresses, accounts), styled as an nq-input whose width grows and shrinks with its content.",
+  "category": "form",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "value", "type": "string", "default": "", "description": "The label text, bindable via v-model (emits 'input' on typing, 'changed' on blur/submit)." },
+    { "name": "maxBytes", "type": "number", "default": null, "description": "Maximum value length in UTF-8 bytes; input exceeding it is rejected (previous value is kept)." },
+    { "name": "placeholder", "type": "string", "default": "Name your address", "description": "Placeholder text shown when empty (also defines the empty-state width)." },
+    { "name": "vanishing", "type": "boolean", "default": false, "description": "Removes the input's inset border (nq-input 'vanishing' style)." },
+    { "name": "disabled", "type": "boolean", "default": false, "description": "Disables the input and its hover effects." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 600, "height": 200 },
+    "selector": ".label-input",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Sample state: value 'Savings Account', unfocused, default props. The input width is set by script (replicating updateWidth(): measured value width + fontSize / 3), since upstream computes it in JS from hidden width-finder spans. Upstream's i18n default placeholder $t('Name your address') is hardcoded to its English string. Utf8Tools (stringToUtf8ByteArray, truncateToUtf8ByteLength) from @nimiq/utils are inlined in the Vue port via TextEncoder/TextDecoder."
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SelectBar — demo</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="select-bar.css">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; }
+</style>
+</head>
+<body>
+    <!-- Fee selector: free / standard / express, "standard" selected.
+         Options at or below the selected one carry the selected option's
+         color class (nq-green-bg); options above it use nq-highlight-bg. -->
+    <div class="select-bar">
+        <div>
+            <input type="radio" name="fee" id="fee-free">
+            <label for="fee-free" class="nq-label nq-green-bg">free</label>
+        </div>
+        <div>
+            <input type="radio" name="fee" id="fee-standard" checked>
+            <label for="fee-standard" class="nq-label nq-green-bg">standard</label>
+        </div>
+        <div>
+            <input type="radio" name="fee" id="fee-express">
+            <label for="fee-express" class="nq-label nq-highlight-bg">express</label>
+        </div>
+    </div>
+</body>
+</html>

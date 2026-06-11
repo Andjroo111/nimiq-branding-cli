@@ -1,0 +1,20 @@
+<!-- Nimiq QR code. Requires qr-creator (pinned 1.0.0):
+     <script src="https://cdn.jsdelivr.net/npm/qr-creator@1.0.0/dist/qr-creator.min.js"></script>
+     Render with the Nimiq default fill:
+
+     QrCreator.render({
+         text: canvas.dataset.qr,
+         radius: 0.5,
+         ecLevel: 'M',
+         fill: {
+             type: 'radial-gradient',
+             position: [1, 1, 0, 1, 1, Math.sqrt(2)],
+             colorStops: [[0, '#265DD7'], [1, '#0582CA']],
+         },
+         background: null,
+         size: Number(canvas.dataset.size || 240),
+     }, canvas);
+-->
+<canvas class="qr-code"
+        data-qr="nimiq:NQ07000000000000000000000000000000000000"
+        data-size="240"></canvas>

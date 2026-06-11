@@ -1,0 +1,24 @@
+{
+  "name": "address-input",
+  "purpose": "A 3x3 block grid textarea for typing Nimiq addresses (optionally Ethereum addresses and domains), with live formatting into 4-char blocks, validation, and per-block focus coloring.",
+  "category": "form",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "value", "type": "string", "default": "", "description": "The address value, bindable via v-model." },
+    { "name": "autofocus", "type": "boolean", "default": false, "description": "Focus the input on mount." },
+    { "name": "allowNimAddresses", "type": "boolean", "default": true, "description": "Accept Nimiq NQ... addresses." },
+    { "name": "allowEthAddresses", "type": "boolean", "default": false, "description": "Accept Ethereum 0x... addresses (checksummed via js-sha3 keccak_256)." },
+    { "name": "allowDomains", "type": "boolean", "default": false, "description": "Accept domain names (collapses to a single-row input)." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": ["input-format", "js-sha3"],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 600, "height": 400 },
+    "selector": ".address-input",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Sample state: empty value, unfocused, default props (NIM only) -> placeholder 'NQ', grid + vertical block separators visible, color overlays present but hidden. Fira Mono loaded from Google Fonts (upstream assumes host app provides it). html variant is static visual only (no input-format behavior). Vue port keeps full behavior: input-format and lazy js-sha3 are real npm deps; Clipboard.copy and ValidationUtils.isValidAddress from @nimiq/utils are inlined."
+}

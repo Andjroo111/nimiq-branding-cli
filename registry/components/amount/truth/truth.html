@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Amount — truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; }
+
+    /* Amount.vue scoped styles — verbatim */
+    .amount {
+        white-space: nowrap;
+    }
+
+    .amount.approx::before {
+        content: '~ ';
+        opacity: 0.5;
+    }
+</style>
+</head>
+<body>
+    <!-- Amount: amount=1234567890 (luna), minDecimals=2, maxDecimals=5, currency="nim", showApprox=false
+         FormattableNumber(1234567890).moveDecimalSeparator(-5).toString({minDecimals:2, maxDecimals:5, useGrouping:true})
+         = "12&#8239;345.6789" (groupSeparator = U+202F narrow no-break space) -->
+    <span class="amount">
+        12&#8239;345.6789
+        <span class="currency nim">NIM</span>
+    </span>
+</body>
+</html>

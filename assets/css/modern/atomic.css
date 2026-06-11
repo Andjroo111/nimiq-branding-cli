@@ -1,0 +1,148 @@
+/*
+This file contains atomic CSS classes for styling elements. These classes are very powerful for applying styles, but are only available when using CSS directly. If you're using a library with plugin integration, such as TailwindCSS or UnoCSS, you'll need to use the classes provided by those libraries.
+*/
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.flex-grow-half {
+  flex-grow: 0.5;
+}
+
+.flex-grow-double {
+  flex-grow: 2;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.display-none {
+  display: none;
+}
+
+.margin-top-5 {
+  margin-top: 2.5rem;
+}
+
+.margin-top-4 {
+  margin-top: 2rem;
+}
+
+.margin-top-3 {
+  margin-top: 1.5rem;
+}
+
+.margin-top-2 {
+  margin-top: 1rem;
+}
+
+.margin-top-1 {
+  margin-top: 0.5rem;
+}
+
+.text-green {
+  color: var(--colors-green);
+}
+
+.text-orange {
+  color: var(--colors-orange);
+}
+
+.text-red {
+  color: var(--colors-red);
+}
+
+.text-blue {
+  color: var(--colors-blue);
+}
+
+.text-gold {
+  color: var(--colors-gold);
+}
+
+.text-neutral {
+  color: var(--colors-neutral);
+}
+
+.bg-neutral-gradient {
+  background: var(--colors-neutral);
+  background-image: var(--colors-gradient-neutral);
+}
+
+.bg-neutral-50 {
+  background: var(--colors-neutral-50);
+}
+
+.bg-neutral-100 {
+  background: var(--colors-neutral-100);
+}
+
+.bg-neutral-200 {
+  background: var(--colors-neutral-200);
+}
+
+.bg-neutral-300 {
+  background: var(--colors-neutral-300);
+}
+
+.bg-neutral-400 {
+  background: var(--colors-neutral-400);
+}
+
+.bg-neutral-500 {
+  background: var(--colors-neutral-500);
+}
+
+.bg-neutral-600 {
+  background: var(--colors-neutral-600);
+}
+
+.bg-neutral-700 {
+  background: var(--colors-neutral-700);
+}
+
+.bg-neutral-800 {
+  background: var(--colors-neutral-800);
+}
+
+.bg-neutral-900 {
+  background: var(--colors-neutral-900);
+}
+
+.bg-neutral-1100 {
+  background: var(--colors-neutral-1100);
+}
+
+.bg-green {
+  background: var(--colors-green);
+}
+
+.bg-gold {
+  background: var(--colors-gold);
+}
+
+.bg-blue {
+  background: var(--colors-blue);
+}
+
+.bg-red {
+  background: var(--colors-red);
+}
+
+.bg-purple {
+  background: var(--colors-purple);
+}
+
+.bg-orange {
+  background: var(--colors-orange);
+}
+
+.nq-shadow {
+  box-shadow: var(--colors-shadow);
+}
+
+.nq-shadow-lg {
+  box-shadow: var(--colors-shadow-lg);
+}

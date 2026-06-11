@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SliderToggle — truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; display: flex; align-items: flex-start; }
+
+    /* SliderToggle.vue scoped styles — verbatim */
+    .slider-toggle {
+        --borderRadius: 9999px;
+        --transitionDuration: 200ms;
+        --padding: .5rem;
+
+        contain: layout style; /* not paint to not cutoff active-box box-shadow */
+        position: relative;
+        display: flex;
+
+        background-color: var(--nimiq-highlight-bg);
+        border-radius: var(--borderRadius);
+        padding: var(--padding);
+    }
+
+    /* Currency type styles */
+    .slider-toggle,
+    .slider-toggle.type-currency {
+        --inactiveOpacity: .5;
+        --horizontalPadding: 16px;
+        --verticalPadding: 14px;
+
+        font-size: 1.75rem;
+        letter-spacing: 0.1em;
+        font-weight: bold;
+    }
+
+    /* Purpose type styles */
+    .slider-toggle.type-default {
+        --inactiveOpacity: .625;
+        --horizontalPadding: 2.5rem;
+        --verticalPadding: 1.125rem;
+
+        font-size: 2.5rem;
+        letter-spacing: 0;
+        font-weight: 600;
+        color: rgba(31, 35, 72, 0.8); /* --nimiq-blue */
+    }
+
+    /* Loading state styles */
+    .slider-toggle.loading {
+        letter-spacing: initial;
+        font-size: 2rem;
+        font-weight: 600;
+        line-height: 2.5rem;
+    }
+
+    .slider-toggle.loading svg {
+        height: 2.5rem;
+        width: auto;
+        margin-right: 1.5rem;
+    }
+
+    .slider-toggle.loading label {
+        opacity: 1;
+    }
+
+    .slider-toggle.loading.no-transition { --transitionDuration: 0ms }
+
+
+    input { display: none }
+
+    label {
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        isolation: isolate; /* create a separate stacking context to avoid being hidden behind active-box */
+
+        line-height: 150%;
+
+        padding: var(--verticalPadding) var(--horizontalPadding);
+        cursor: pointer;
+
+        transition: opacity var(--transitionDuration) var(--nimiq-ease);
+    }
+
+    label:not(.active) {
+        opacity: var(--inactiveOpacity);
+    }
+
+    label:not(.active):hover {
+        opacity: calc(var(--inactiveOpacity) + .12);
+    }
+
+    label * { pointer-events: none }
+
+    .active-box {
+        /* variables dynamically updated in updateActiveBoxPosition() */
+        --center: 0px;
+        --width: 0px;
+
+        contain: size layout paint style;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translate(calc(-50% + var(--center)), -50%);
+
+        background-color: white;
+        height: calc(100% - (var(--padding) * 2));
+        border-radius: var(--borderRadius);
+        width: var(--width);
+
+        box-shadow: 0px 13px 27px rgba(31, 35, 72, .07), /* --nimiq-blue */
+            0px 5px 6px rgba(31, 35, 72, .04), /* --nimiq-blue */
+            0px 1px 2px rgba(31, 35, 72, .02); /* --nimiq-blue */
+
+        transition: transform var(--transitionDuration) var(--nimiq-ease),
+                    width var(--transitionDuration) var(--nimiq-ease);
+    }
+</style>
+</head>
+<body>
+    <!-- SliderToggle: name="currency" value="nim" type="currency", slots nim/btc -> "NIM" / "BTC", first active -->
+    <div class="slider-toggle type-currency">
+        <div class="active-box"></div>
+        <label class="active">
+            <input type="radio" name="currency" value="nim" checked>
+            <span>NIM</span>
+        </label>
+        <label>
+            <input type="radio" name="currency" value="btc">
+            <span>BTC</span>
+        </label>
+    </div>
+
+    <script>
+        // Static replica of upstream updateActiveBoxPosition() for the rendered sample state.
+        function updateActiveBoxPosition() {
+            var container = document.querySelector('.slider-toggle');
+            var activeBox = container.querySelector('.active-box');
+            var label = container.querySelector('label.active') || container.querySelector('label');
+            var labelRect = label.getBoundingClientRect();
+            var containerRect = container.getBoundingClientRect();
+            var labelCenter = (labelRect.left - containerRect.left) + (labelRect.width / 2);
+            activeBox.style.setProperty('--center', labelCenter + 'px');
+            activeBox.style.setProperty('--width', labelRect.width + 'px');
+        }
+        updateActiveBoxPosition();
+        document.fonts.ready.then(updateActiveBoxPosition);
+        window.addEventListener('resize', updateActiveBoxPosition);
+    </script>
+</body>
+</html>

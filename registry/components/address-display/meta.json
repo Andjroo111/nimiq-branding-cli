@@ -1,0 +1,22 @@
+{
+  "name": "address-display",
+  "purpose": "Displays a Nimiq (or Ethereum) address as a grid of monospace chunks — 9 four-char blocks in 3 columns for Nimiq format — optionally copyable.",
+  "category": "identity",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "address", "type": "string", "required": true, "description": "The address to display." },
+    { "name": "format", "type": "string", "default": "nimiq", "description": "'nimiq' (9 chunks of 4, uppercase) or 'ethereum' (3 rows of 14 chars)." },
+    { "name": "copyable", "type": "boolean", "default": false, "description": "Wraps the display in a Copyable so clicking copies the address." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 600, "height": 400 },
+    "selector": ".address-display",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Sample state: NQ07 0000... burn address, nimiq format, copyable=false. Fira Mono loaded from Google Fonts (upstream assumes the host app provides it). copyable=true depends on the Copyable component (not ported here); the html/vue variants render the plain div form. ValidationUtils.normalizeAddress from @nimiq/utils is inlined in the Vue port."
+}

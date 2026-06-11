@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AmountWithFee — truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; }
+
+    /* AmountInput.vue scoped styles — verbatim, scoping emulated via [data-v-ai]
+       (Vue compiles scoped selectors by appending the scope attribute to the last selector). */
+    .label-input[data-v-ai] {
+        position: relative;
+        overflow: hidden; /* limit width-finder width to parent available width */
+        max-width: 100%;
+        height: 100%;
+    }
+
+    .width-finder[data-v-ai] {
+        position: absolute;
+        color: transparent;
+        pointer-events: none;
+        user-select: none;
+        white-space: pre;
+        padding: 1.25rem;
+    }
+
+    input[data-v-ai] {
+        padding: 0 0.25rem;
+        max-width: 100%;
+        text-align: center;
+        transition: width 50ms ease-out, color .2s var(--nimiq-ease);
+    }
+
+    .full-width[data-v-ai] {
+        width: 1000px;
+    }
+
+    .amount-input[data-v-ai] {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        width: 100%;
+        font-size: 8rem;
+        color: rgba(31, 35, 72, 0.5); /* Based on Nimiq Blue */
+        transition: color .2s var(--nimiq-ease);
+    }
+
+    .amount-input.has-value[data-v-ai] {
+        color: var(--nimiq-blue);
+    }
+
+    .amount-input.focussed[data-v-ai] {
+        color: var(--nimiq-light-blue);
+    }
+
+    .amount-input form[data-v-ai] {
+        display: flex;
+    }
+
+    .amount-input .nim[data-v-ai] {
+        margin-left: 1rem;
+        font-size: 4rem;
+        font-weight: 700;
+        line-height: 4.5rem;
+    }
+
+    /* AmountWithFee.vue scoped styles — verbatim, scoping emulated via [data-v-awf];
+       '>>>' deep selectors compile to `.amount-input[data-v-awf] input` etc. */
+    .amount-with-fee[data-v-awf] {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .value[data-v-awf] {
+        display: flex;
+        align-items: baseline;
+    }
+
+    .amount-input[data-v-awf] input {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .amount-input.invalid[data-v-awf] input,
+    .amount-input.invalid[data-v-awf] .nim {
+        border-color: rgb(216, 65, 51, 0.2); /* Based on Nimiq Red */
+        color: var(--nimiq-red) !important;
+    }
+
+    .fee-section[data-v-awf] {
+        color: rgba(31, 35, 72, 0.5);
+        min-height: 2rem;
+    }
+
+    .fiat[data-v-awf] {
+        display: inline-flex;
+    }
+</style>
+</head>
+<body>
+    <!-- AmountWithFee: value={amount: 10000000, fee: 0, isValid: true}, availableBalance=50000000,
+         fiatAmount=null, fiatCurrency=null, currency="nim", currencyDecimals=5.
+         liveAmount=10000000 luna -> AmountInput formattedValue "100" (10000000 / 10^5).
+         isValid (100 + 0 <= 500) -> no .invalid, fee-section renders the v-else branch with
+         both .fiat (no fiat) and .fee (fee === 0) spans absent -> empty 2rem-tall line. -->
+    <div class="amount-with-fee" data-v-awf>
+        <div class="amount-input value has-value" data-v-ai data-v-awf>
+            <form class="label-input" data-v-ai>
+                <span class="width-finder width-placeholder" data-v-ai>0</span>
+                <div class="full-width width-finder" data-v-ai>Width</div>
+                <span class="width-finder width-value" data-v-ai>100</span>
+                <input type="text" inputmode="decimal" class="nq-input" data-v-ai
+                    placeholder="0"
+                    style="width: 50px; font-size: 8rem;"
+                    value="100">
+            </form>
+            <span class="nim nim" data-v-ai>NIM</span>
+        </div>
+        <div class="fee-section nq-text-s" data-v-awf>
+            <div data-v-awf></div>
+        </div>
+    </div>
+    <script>
+        // Replicates AmountInput.updateWidth(): the input's inline width is set to the
+        // rendered width of the hidden .width-value measuring span (text + 1.25rem padding).
+        // fontSizeFactor is 1 here ("100" is far narrower than the available width).
+        function sizeInput() {
+            var input = document.querySelector('.amount-input input');
+            var widthValue = document.querySelector('.width-value');
+            input.style.width = widthValue.offsetWidth + 'px';
+        }
+        sizeInput();
+        document.fonts.ready.then(sizeInput);
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+/* Nimiq status alert block — info / success / warning / error.
+   Note: @nimiq/style sets html { font-size: 62.5% }, so this uses px throughout.
+   Pair with the markup in status-alert.html. */
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.alert .icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.alert .icon svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Info (Blue) */
+.alert.info {
+  background: rgba(5, 130, 202, 0.08);
+  border: 1px solid rgba(5, 130, 202, 0.2);
+  color: #1F2348;
+}
+.alert.info .icon {
+  background: rgba(5, 130, 202, 0.15);
+}
+.alert.info .icon svg { fill: #0582CA; }
+
+/* Success (Green) */
+.alert.success {
+  background: rgba(33, 188, 165, 0.08);
+  border: 1px solid rgba(33, 188, 165, 0.2);
+  color: #1F2348;
+}
+.alert.success .icon {
+  background: rgba(33, 188, 165, 0.15);
+}
+.alert.success .icon svg { fill: #21BCA5; }
+
+/* Warning (Orange) */
+.alert.warning {
+  background: rgba(236, 153, 28, 0.08);
+  border: 1px solid rgba(236, 153, 28, 0.2);
+  color: #1F2348;
+}
+.alert.warning .icon {
+  background: rgba(236, 153, 28, 0.15);
+}
+.alert.warning .icon svg { fill: #EC991C; }
+
+/* Error (Red) */
+.alert.error {
+  background: rgba(217, 68, 50, 0.08);
+  border: 1px solid rgba(217, 68, 50, 0.2);
+  color: #1F2348;
+}
+.alert.error .icon {
+  background: rgba(217, 68, 50, 0.15);
+}
+.alert.error .icon svg { fill: #D94432; }

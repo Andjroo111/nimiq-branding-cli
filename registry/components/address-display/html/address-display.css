@@ -1,0 +1,49 @@
+/* AddressDisplay (from @nimiq/vue-components AddressDisplay.vue)
+   Assumes the Nimiq style root font-size of 8px (html { font-size: 8px })
+   and Fira Mono loaded, e.g.:
+   https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500&display=swap */
+
+.address-display {
+    width: 100%;
+    box-sizing: content-box;
+    color: rgba(31, 35, 72, .5); /* nimiq-blue with .5 opacity */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    font-size: 3rem;
+}
+
+.format-nimiq {
+    max-width: 28.25rem;
+}
+
+.format-ethereum {
+    max-width: 27rem;
+}
+
+.address-display.copyable:hover,
+.address-display.copyable:focus,
+.address-display.copyable.copied {
+    font-weight: 500;
+}
+
+.chunk {
+    font-family: 'Fira Mono', monospace;
+    margin: 0.875rem 0;
+    line-height: 1.11;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.format-nimiq .chunk {
+    width: 33%;
+    text-transform: uppercase;
+}
+
+.format-ethereum .chunk {
+    width: 100%;
+}
+
+.space {
+    font-size: 0;
+}
