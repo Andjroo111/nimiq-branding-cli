@@ -26,6 +26,7 @@ npm link && nimiq-brand help
 | `contrast <fg> <bg>` | WCAG 2.x contrast ratio with AA/AAA verdicts for normal and large text |
 | `tokens [css\|scss\|json\|tailwind]` | Export the complete token set for your stack |
 | `logo [--color=<name>]` | The Nimiq hexagon, rendered in a brand gradient |
+| `identicon <address-or-text>` | Nimiq identicon for any address or name — exact port of the official `@nimiq/identicons` algorithm (chaos hash, color tables, collision rules, 1–21 asset indices). Terminal render by default; `--format=svg` for a simplified SVG avatar, `--format=json` for the raw parameters (compatible with official assets) |
 
 ### Examples
 
@@ -35,6 +36,8 @@ nimiq-brand check "#1F2349"          # ✗ suggests nimiq-blue (Δ 1.0), exits 1
 nimiq-brand contrast "#FFF" "#1F2348"  # 14.85:1 — AAA
 nimiq-brand tokens css > nimiq.css   # drop-in CSS custom properties
 nimiq-brand colors --format=json | jq .
+nimiq-brand identicon "NQ07 0000 0000 0000 0000 0000 0000 0000 0000"
+nimiq-brand identicon alice --format=svg > alice.svg
 ```
 
 ## The design principles (the foundation)
