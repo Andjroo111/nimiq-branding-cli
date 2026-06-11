@@ -9,6 +9,7 @@ const COMMANDS = {
   contrast: { mod: () => import('./commands/contrast.js'), help: 'WCAG contrast of two colors: nimiq-brand contrast "#FFF" "#1F2348"' },
   tokens: { mod: () => import('./commands/tokens.js'), help: 'Export all tokens: nimiq-brand tokens css|scss|json|tailwind' },
   logo: { mod: () => import('./commands/logo.js'), help: 'Render the Nimiq hexagon in the terminal (--color green, etc.)' },
+  identicon: { mod: () => import('./commands/identicon.js'), help: 'Nimiq identicon for an address/name: nimiq-brand identicon "NQ07 ..." (--format=svg|json)' },
 };
 
 function parseArgs(argv) {
