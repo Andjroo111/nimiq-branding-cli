@@ -1,0 +1,27 @@
+{
+  "name": "nimiq-brand",
+  "version": "1.0.0",
+  "description": "Nimiq blockchain branding toolkit for the terminal — colors, gradients, typography, design principles, WCAG checks and token export, built on the official Nimiq Style framework.",
+  "type": "module",
+  "bin": {
+    "nimiq-brand": "bin/nimiq-brand.js"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "scripts": {
+    "test": "node --test 'test/*.test.js'"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "nimiq",
+    "branding",
+    "design-tokens",
+    "cli",
+    "wcag"
+  ],
+  "license": "MIT"
+}
