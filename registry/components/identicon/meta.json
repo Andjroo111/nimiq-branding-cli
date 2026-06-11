@@ -1,0 +1,25 @@
+{
+  "name": "identicon",
+  "purpose": "Nimiq identicon avatar — a deterministic hexagonal avatar generated from a Nimiq address via @nimiq/iqons; shows a hexagon placeholder for missing/invalid addresses.",
+  "category": "identity",
+  "variants": ["vue", "html"],
+  "props": [
+    {
+      "name": "address",
+      "type": "String",
+      "required": false,
+      "description": "User-friendly Nimiq address (e.g. 'NQ07 0000 ...'). Invalid or missing addresses render the dark hexagon placeholder."
+    }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": ["@nimiq/iqons"],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 400, "height": 300 },
+    "selector": ".identicon",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Renders via @nimiq/iqons@1.6.0 pinned on jsdelivr in both truth and demo; Iqons.svgPath must point at iqons.min.svg (the component normally resolves it via webpack file-loader). The generated data URL embeds a random clip-path id but is pixel-identical across runs. Upstream fixes width:10rem; sample state overrides to 128px at page level. ValidationUtils.normalizeAddress/isValidAddress from @nimiq/utils@0.11.1 are inlined in the Vue port."
+}

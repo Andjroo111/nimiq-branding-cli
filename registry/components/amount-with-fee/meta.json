@@ -1,0 +1,25 @@
+{
+  "name": "amount-with-fee",
+  "purpose": "Large centered amount entry field (auto-sizing AmountInput with currency ticker) plus a secondary line that shows either an 'Insufficient balance' error, an approximate fiat value and/or the network fee. Used in send-transaction flows.",
+  "category": "payment",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "value", "type": "{ amount: number, fee: number, isValid: boolean }", "default": "{ amount: 0, fee: 0, isValid: false }", "description": "v-model object: amount and fee in the currency's smallest unit (luna); isValid is computed and emitted back (amount > 0 && amount + fee <= availableBalance)." },
+    { "name": "availableBalance", "type": "number", "default": 0, "description": "Spendable balance in the smallest unit; entering more shows the insufficient-balance error and red styling." },
+    { "name": "fiatAmount", "type": "number | null", "description": "Optional fiat value of the entered amount; shown as '~<FiatAmount>' when set together with fiatCurrency." },
+    { "name": "fiatCurrency", "type": "string | null", "description": "Fiat currency code for fiatAmount (e.g. 'eur')." },
+    { "name": "currency", "type": "string", "default": "nim", "description": "Crypto currency code; rendered uppercase as the ticker (special-cased: tnim→tNIM, mbtc→mBTC, tbtc→tBTC, usdc.e→USDC.e)." },
+    { "name": "currencyDecimals", "type": "number", "default": 5, "description": "Decimals of the currency's smallest unit (5 for NIM/luna, 8 for BTC/sat)." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": ["amount", "fiat-amount"],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 600, "height": 400 },
+    "selector": ".amount-with-fee",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Sample state: amount 10000000 luna (input shows '100'), fee 0, availableBalance 50000000, no fiat — valid, so the fee-section renders empty (min-height 2rem placeholder). Both truth and demo replicate AmountInput's JS width behavior: the input's inline width is set to the rendered width of a hidden measuring span (text + 1.25rem padding) after fonts load; the upstream font-shrink logic (maxFontSize) only kicks in for values wider than the container and is not exercised by the sample. The slot/error/fiat/fee branches are documented in the snippet. Vue port ships AmountWithFee.vue + AmountInput.vue (AmountInput is not a standalone registry component); Amount.vue and FiatAmount.vue are imported from sibling registry components 'amount' and 'fiat-amount' (copy them next to AmountWithFee.vue, see dependsOn). $t is stubbed as identity."
+}

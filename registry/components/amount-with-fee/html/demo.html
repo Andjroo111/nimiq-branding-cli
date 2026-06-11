@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Amount with fee</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; }
+
+    .amount-with-fee {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .amount-with-fee .amount-input {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        width: 100%;
+        font-size: 8rem;
+        color: rgba(31, 35, 72, 0.5); /* placeholder state, based on Nimiq Blue */
+        transition: color .2s var(--nimiq-ease);
+    }
+
+    .amount-with-fee .amount-input.has-value { color: var(--nimiq-blue); }
+    .amount-with-fee .amount-input.focussed { color: var(--nimiq-light-blue); }
+
+    .amount-with-fee .amount-field {
+        display: flex;
+        position: relative;
+        overflow: hidden;
+        max-width: 100%;
+        height: 100%;
+    }
+
+    /* Hidden measuring span: the input is sized to this span's width via JS. */
+    .amount-with-fee .width-finder {
+        position: absolute;
+        color: transparent;
+        pointer-events: none;
+        user-select: none;
+        white-space: pre;
+        padding: 1.25rem;
+    }
+
+    .amount-with-fee .amount-input input {
+        padding: 0 0.25rem;
+        max-width: 100%;
+        text-align: center;
+        font-size: 8rem;
+        transition: width 50ms ease-out, color .2s var(--nimiq-ease);
+    }
+
+    .amount-with-fee .ticker {
+        margin-left: 1rem;
+        font-size: 4rem;
+        font-weight: 700;
+        line-height: 4.5rem;
+    }
+
+    /* Insufficient balance state */
+    .amount-with-fee .amount-input.invalid input,
+    .amount-with-fee .amount-input.invalid .ticker {
+        color: var(--nimiq-red) !important;
+    }
+
+    /* Secondary line: error, '~ fiat' and/or '+ fee' (empty here: no fiat, fee = 0) */
+    .amount-with-fee .fee-section {
+        color: rgba(31, 35, 72, 0.5);
+        min-height: 2rem;
+    }
+</style>
+</head>
+<body>
+    <!-- Sample: 100 NIM (10000000 luna) entered, fee 0, balance 500 NIM, no fiat -->
+    <div class="amount-with-fee">
+        <div class="amount-input has-value">
+            <div class="amount-field">
+                <span class="width-finder">100</span>
+                <input type="text" inputmode="decimal" class="nq-input"
+                    placeholder="0" value="100" style="width: 50px;">
+            </div>
+            <span class="ticker">NIM</span>
+        </div>
+        <div class="fee-section nq-text-s"></div>
+    </div>
+    <script>
+        // Auto-size the input to its content (text width + 1.25rem padding each side).
+        function sizeInput() {
+            var input = document.querySelector('.amount-with-fee input');
+            var finder = document.querySelector('.amount-with-fee .width-finder');
+            finder.textContent = input.value || input.placeholder;
+            input.style.width = finder.offsetWidth + 'px';
+        }
+        sizeInput();
+        document.fonts.ready.then(sizeInput);
+    </script>
+</body>
+</html>

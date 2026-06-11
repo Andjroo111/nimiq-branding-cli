@@ -1,0 +1,19 @@
+<!-- SelectBar snippet — fee selector with "standard" selected.
+     Pair with select-bar.css + nimiq-style. Selection coloring rule:
+     every label at or below the checked option gets the checked option's
+     color class (here nq-green-bg); labels above it get nq-highlight-bg.
+     Other option colors used upstream: nq-light-blue-bg, nq-gold-bg. -->
+<div class="select-bar">
+    <div>
+        <input type="radio" name="fee" id="fee-free">
+        <label for="fee-free" class="nq-label nq-green-bg">free</label>
+    </div>
+    <div>
+        <input type="radio" name="fee" id="fee-standard" checked>
+        <label for="fee-standard" class="nq-label nq-green-bg">standard</label>
+    </div>
+    <div>
+        <input type="radio" name="fee" id="fee-express">
+        <label for="fee-express" class="nq-label nq-highlight-bg">express</label>
+    </div>
+</div>

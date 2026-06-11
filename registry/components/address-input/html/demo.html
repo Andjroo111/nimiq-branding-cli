@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AddressInput — demo</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="address-input.css">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; }
+</style>
+</head>
+<body>
+    <!-- AddressInput (static): empty, NIM-only -> placeholder "NQ", 3x3 block grid -->
+    <div class="address-input display-as-nim-address">
+        <textarea spellcheck="false" autocomplete="off" placeholder="NQ"></textarea>
+        <svg width="210" height="99" viewBox="0 0 210 99" stroke-width="1.5"
+            stroke-linecap="round" fill="none" xmlns="http://www.w3.org/2000/svg" class="grid">
+            <line x1="0.75" y1="30.25" x2="209.25" y2="30.25"/>
+            <line x1="0.75" y1="68.25" x2="209.25" y2="68.25"/>
+            <g>
+                <line x1="67.75" y1="0.75" x2="67.75" y2="22.25"/>
+                <line x1="143.75" y1="0.75" x2="143.75" y2="22.25"/>
+                <line x1="67.75" y1="37.75" x2="67.75" y2="60.25"/>
+                <line x1="143.75" y1="37.75" x2="143.75" y2="60.25"/>
+                <line x1="67.75" y1="75.75" x2="67.75" y2="98.25"/>
+                <line x1="143.75" y1="75.75" x2="143.75" y2="98.25"/>
+            </g>
+        </svg>
+    </div>
+</body>
+</html>

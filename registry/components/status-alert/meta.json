@@ -1,0 +1,21 @@
+{
+  "name": "status-alert",
+  "purpose": "Inline status alert block (info/success/warning/error) in Nimiq style: tinted background + border, circular icon chip, and message text. Used for transaction status, network notices and error feedback.",
+  "category": "feedback",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "type", "type": "'info' | 'success' | 'warning' | 'error'", "default": "'info'", "description": "Alert severity; selects the Nimiq tint color (blue/green/orange/red) and icon." },
+    { "name": "message", "type": "string", "default": "''", "description": "Alert text. The default slot overrides it when provided." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 600, "height": 320 },
+    "selector": "body",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "No upstream Vue component exists (vue-components has no Alert); source of truth is the nimiq-ui skill example 04-status-alerts.html section 1 (ALERT BLOCKS), copied verbatim. Sample state: three stacked alerts — success, warning, error. Colors are Nimiq palette tints: blue #0582CA, green #21BCA5, orange #EC991C, red #D94432 at 0.08 bg / 0.2 border / 0.15 icon-chip alpha; text always navy #1F2348. Upstream quirk preserved: the icon SVGs draw with stroke=currentColor while the CSS only sets fill, so the glyph strokes render in the inherited navy text color, not the tint color. Vue port is a faithful wrapper written for this registry (script setup, type prop picks variant + built-in icon, message prop/slot)."
+}

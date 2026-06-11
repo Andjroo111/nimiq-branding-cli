@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AddressDisplay — truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; }
+
+    /* AddressDisplay.vue scoped styles — verbatim */
+    .address-display {
+        width: 100%;
+        box-sizing: content-box;
+        color: rgba(31, 35, 72, .5); /* nimiq-blue with .5 opacity */
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        font-size: 3rem;
+    }
+
+    .format-nimiq {
+        max-width: 28.25rem;
+    }
+
+    .format-ethereum {
+        max-width: 27rem;
+    }
+
+    .address-display.copyable:hover,
+    .address-display.copyable:focus,
+    .address-display.copyable.copied {
+        font-weight: 500;
+    }
+
+    .chunk {
+        font-family: 'Fira Mono', monospace;
+        margin: 0.875rem 0;
+        line-height: 1.11;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .format-nimiq .chunk {
+        width: 33%;
+        text-transform: uppercase;
+    }
+
+    .format-ethereum .chunk {
+        width: 100%;
+    }
+
+    .space {
+        font-size: 0;
+    }
+</style>
+</head>
+<body>
+    <!-- AddressDisplay: address="NQ07 0000 0000 0000 0000 0000 0000 0000 0000", format="nimiq", copyable=false -->
+    <div class="address-display format-nimiq">
+        <span class="chunk">NQ07<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span>
+    </div>
+</body>
+</html>

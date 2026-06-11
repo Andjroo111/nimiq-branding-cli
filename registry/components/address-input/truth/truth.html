@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AddressInput — truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; }
+
+    /* AddressInput.vue scoped styles — verbatim */
+    .address-input {
+        --font-size: 3rem;
+        --block-height: 4.125rem;
+        --block-width: 8.5rem;
+        --block-gap-v: 0.75rem;
+        --block-gap-h: 1rem;
+
+        contain: size layout paint style;
+        width: calc(3 * var(--block-width) + 3 * var(--block-gap-h));
+        height: calc(3 * var(--block-height) + 3.5 * var(--block-gap-v));
+        position: relative;
+        background: white; /* Note: our text coloring with mix-blend-mode only works on white background */
+
+        border-radius: 0.5rem;
+        --border-color: rgba(31, 35, 72, 0.1); /* Based on Nimiq Blue */
+        box-shadow: inset 0 0 0 1.5px var(--border-color);
+        transition: box-shadow .2s ease, height 0.3s var(--nimiq-ease);
+        overflow: hidden;
+    }
+
+    .address-input.display-as-domain {
+        height: calc(var(--block-height) + 2 * var(--block-gap-v));
+    }
+
+    .address-input:hover {
+        --border-color: rgba(31, 35, 72, 0.14); /* Based on Nimiq Blue */
+    }
+
+    .address-input:focus-within {
+        --border-color: rgba(5, 130, 202, 0.4); /* Based on Nimiq Light Blue */
+    }
+
+    .address-input.invalid {
+        animation: shake .4s;
+    }
+
+    /* Copied from Keyguard */
+    @keyframes shake {
+        from { transform: none; }
+        10%  { transform: translate3d(-0.25rem, 0, 0) rotate(-0.15deg); }
+        20%  { transform: translate3d(0.5rem, 0, 0) rotate(0.15deg); }
+        30%  { transform: translate3d(-0.5rem, 0, 0) rotate(-0.15deg); }
+        40%  { transform: translate3d(0.5rem, 0, 0) rotate(0.15deg); }
+        50%  { transform: translate3d(-0.25rem, 0, 0) rotate(-0.15deg); }
+        to   { transform: none; }
+    }
+
+    textarea {
+        --line-height: calc(var(--block-height) + var(--block-gap-v));
+
+        contain: size layout paint style;
+        position: absolute;
+        width: 100%;
+        height: calc(3 * var(--line-height));
+        line-height: var(--line-height);
+        top: calc(var(--font-size) / 24 + var(--block-gap-v) / 2); /* -3px at default font size */
+        left: calc(var(--font-size) / 24 * 5 + var(--block-gap-h) / 2); /* 5px at default font size */
+        padding: 0;
+        margin: 0;
+        border: none;
+        outline: unset !important;
+        resize: none;
+        overflow: hidden;
+        z-index: 1;
+        /* Note: if loading only a subset of Fira Mono, the whitespace character must be included for rendering of
+        spaces at correct width in some browsers */
+        font-family: Fira Mono, 'monospace';
+        font-size: var(--font-size);
+        /* the width of rendered letters may slightly differ across different browsers on different OSs. To compensate
+        for that we apply a letter-spacing based on the deviation from a reference value */
+        letter-spacing: calc(1.8rem - 0.6em); /* 1ch changed to 0.6em, 'ch' in 'calc' making Safari 14.5 crash */
+        word-spacing: calc(var(--block-gap-h) / 2);
+        color: var(--nimiq-blue);
+        background: transparent;
+        transition: color 0.2s ease;
+    }
+
+    textarea:focus {
+        color: var(--nimiq-light-blue);
+    }
+
+    .display-as-domain textarea {
+        height: var(--line-height);
+        white-space: nowrap;
+        width: calc(100% - 2 * var(--block-gap-h))
+    }
+
+    .display-as-nim-address textarea {
+        text-transform: uppercase;
+        /* Mask image to make selections visible only within blocks. Using mask image instead clip path to be able to
+        click onto the textarea on the invisible areas too */
+        mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 123"><rect x="-1" y="6" width="62" height="28"/><rect x="79" y="6" width="62" height="28"/><rect x="159" y="6" width="62" height="28"/><rect x="-1" y="47" width="62" height="28"/><rect x="79" y="47" width="62" height="28"/><rect x="159" y="47" width="62" height="28"/><rect x="-1" y="88" width="62" height="28"/><rect x="79" y="88" width="62" height="28"/><rect x="159" y="88" width="62" height="28"/></svg>');
+    }
+
+    @supports (mix-blend-mode: screen) {
+        .display-as-nim-address textarea {
+            color: black; /* the actual color will be set via mix-blend-mode */
+        }
+
+        .display-as-nim-address textarea::selection {
+            color: white;
+            background: #561a51; /* a color that in combination with mix-blend-mode yields a color close to the default */
+        }
+
+        .display-as-nim-address textarea::-moz-selection {
+            background: #411d68; /* a color that in combination with mix-blend-mode yields a color close to the default */
+        }
+
+        .color-overlay {
+            contain: size layout paint style;
+            position: absolute;
+            width: calc(var(--block-width) - .5rem);
+            height: calc(var(--block-height) - .5rem);
+            mix-blend-mode: screen;
+            z-index: 1;
+            pointer-events: none;
+        }
+    }
+
+    ::-webkit-input-placeholder {
+        opacity: .6;
+        transition: color .2s var(--nimiq-ease);
+    }
+    ::-ms-input-placeholder {
+        opacity: .6;
+        transition: color .2s var(--nimiq-ease);
+    }
+    ::-moz-placeholder {
+        opacity: .6;
+        transition: color .2s var(--nimiq-ease);
+    }
+    ::placeholder {
+        opacity: .6;
+        transition: color .2s var(--nimiq-ease);
+    }
+
+    textarea:focus::-webkit-input-placeholder {
+        color: var(--nimiq-light-blue);
+    }
+    textarea:focus::-ms-input-placeholder {
+        color: var(--nimiq-light-blue);
+    }
+    textarea:focus::-moz-placeholder {
+        color: var(--nimiq-light-blue);
+    }
+    textarea:focus::placeholder {
+        color: var(--nimiq-light-blue);
+    }
+
+    .grid {
+        contain: size layout paint style;
+        position: absolute;
+        top: calc(var(--font-size) / 24 * 8 + var(--block-gap-v) / 2);
+        left: calc(var(--font-size) / 24 * 5 + var(--block-gap-h) / 2);
+        stroke: var(--border-color);
+        transition: stroke .2s ease, opacity 0.2s ease;
+    }
+
+    textarea:focus ~ .grid {
+        opacity: 0.5;
+    }
+
+    .grid g {
+        transition: opacity .2s ease;
+    }
+
+    .grid.transition-fade-enter,
+    .grid.transition-fade-leave-to,
+    .grid g.transition-fade-enter,
+    .grid g.transition-fade-leave-to {
+        opacity: 0 !important;
+    }
+</style>
+</head>
+<body>
+    <!-- AddressInput: value="", allowNimAddresses=true (default), allowEthAddresses=false, allowDomains=false, unfocused.
+         displayAsNimAddress=true, displayAsDomain=false, placeholder="NQ", supportsMixBlendMode=true,
+         color overlays hidden (no currentValue), no block focused -> background var(--nimiq-blue). -->
+    <div class="address-input display-as-nim-address">
+        <textarea spellcheck="false" autocomplete="off" placeholder="NQ"></textarea>
+
+        <div class="color-overlay" style="visibility: hidden; left: calc(0 * (var(--block-width) + var(--block-gap-h)) + var(--block-gap-h) - 0.25rem); top: calc(0 * (var(--block-height) + var(--block-gap-v)) + var(--block-gap-v) + 0.25rem); background: var(--nimiq-blue);"></div>
+        <div class="color-overlay" style="visibility: hidden; left: calc(1 * (var(--block-width) + var(--block-gap-h)) + var(--block-gap-h) - 0.25rem); top: calc(0 * (var(--block-height) + var(--block-gap-v)) + var(--block-gap-v) + 0.25rem); background: var(--nimiq-blue);"></div>
+        <div class="color-overlay" style="visibility: hidden; left: calc(2 * (var(--block-width) + var(--block-gap-h)) + var(--block-gap-h) - 0.25rem); top: calc(0 * (var(--block-height) + var(--block-gap-v)) + var(--block-gap-v) + 0.25rem); background: var(--nimiq-blue);"></div>
+        <div class="color-overlay" style="visibility: hidden; left: calc(0 * (var(--block-width) + var(--block-gap-h)) + var(--block-gap-h) - 0.25rem); top: calc(1 * (var(--block-height) + var(--block-gap-v)) + var(--block-gap-v) + 0.25rem); background: var(--nimiq-blue);"></div>
+        <div class="color-overlay" style="visibility: hidden; left: calc(1 * (var(--block-width) + var(--block-gap-h)) + var(--block-gap-h) - 0.25rem); top: calc(1 * (var(--block-height) + var(--block-gap-v)) + var(--block-gap-v) + 0.25rem); background: var(--nimiq-blue);"></div>
+        <div class="color-overlay" style="visibility: hidden; left: calc(2 * (var(--block-width) + var(--block-gap-h)) + var(--block-gap-h) - 0.25rem); top: calc(1 * (var(--block-height) + var(--block-gap-v)) + var(--block-gap-v) + 0.25rem); background: var(--nimiq-blue);"></div>
+        <div class="color-overlay" style="visibility: hidden; left: calc(0 * (var(--block-width) + var(--block-gap-h)) + var(--block-gap-h) - 0.25rem); top: calc(2 * (var(--block-height) + var(--block-gap-v)) + var(--block-gap-v) + 0.25rem); background: var(--nimiq-blue);"></div>
+        <div class="color-overlay" style="visibility: hidden; left: calc(1 * (var(--block-width) + var(--block-gap-h)) + var(--block-gap-h) - 0.25rem); top: calc(2 * (var(--block-height) + var(--block-gap-v)) + var(--block-gap-v) + 0.25rem); background: var(--nimiq-blue);"></div>
+        <div class="color-overlay" style="visibility: hidden; left: calc(2 * (var(--block-width) + var(--block-gap-h)) + var(--block-gap-h) - 0.25rem); top: calc(2 * (var(--block-height) + var(--block-gap-v)) + var(--block-gap-v) + 0.25rem); background: var(--nimiq-blue);"></div>
+
+        <svg width="210" height="99" viewBox="0 0 210 99" stroke-width="1.5"
+            stroke-linecap="round" fill="none" xmlns="http://www.w3.org/2000/svg" class="grid">
+            <line x1="0.75" y1="30.25" x2="209.25" y2="30.25"/> <!-- 1st horizontal line -->
+            <line x1="0.75" y1="68.25" x2="209.25" y2="68.25"/> <!-- 2nd horizontal line -->
+            <g>
+                <line x1="67.75" y1="0.75" x2="67.75" y2="22.25"/> <!-- left vertical line in 1st row -->
+                <line x1="143.75" y1="0.75" x2="143.75" y2="22.25"/> <!-- right vertical line in 1st row -->
+                <line x1="67.75" y1="37.75" x2="67.75" y2="60.25"/> <!-- left vertical line in 2nd row -->
+                <line x1="143.75" y1="37.75" x2="143.75" y2="60.25"/> <!-- right vertical line in 2nd row -->
+                <line x1="67.75" y1="75.75" x2="67.75" y2="98.25"/> <!-- left vertical line in 3rd row -->
+                <line x1="143.75" y1="75.75" x2="143.75" y2="98.25"/> <!-- right vertical line in 3rd row -->
+            </g>
+        </svg>
+    </div>
+</body>
+</html>

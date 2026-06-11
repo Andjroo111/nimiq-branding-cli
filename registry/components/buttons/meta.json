@@ -1,0 +1,22 @@
+{
+  "name": "buttons",
+  "purpose": "Primary Nimiq buttons (.nq-button) from the nimiq-style CSS framework: pill-shaped gradient buttons in blue (default), light-blue, green, orange, red, gold, plus disabled and inverse states.",
+  "category": "form",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "color", "type": "'' | 'light-blue' | 'green' | 'orange' | 'red' | 'gold'", "default": "''", "description": "Color variant class added to .nq-button; empty = default Nimiq blue." },
+    { "name": "inverse", "type": "boolean", "default": "false", "description": "White button with colored text, for use on colored backgrounds." },
+    { "name": "disabled", "type": "boolean", "default": "false", "description": "Disabled state (gray, no shadow, not-allowed cursor)." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 600, "height": 600 },
+    "selector": "body",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Pure CSS-framework component — all styling comes from .nq-button rules in legacy nimiq-style.min.css (gradient backgrounds via --nimiq-*-bg vars, 500px border-radius, uppercase bold text). No scoped CSS exists upstream. html/buttons.css is the upstream src/buttons.css extracted verbatim for standalone use (still requires the --nimiq-* CSS vars). Vue variant is a thin wrapper adding color/inverse/disabled classes."
+}

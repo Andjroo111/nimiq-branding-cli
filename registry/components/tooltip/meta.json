@@ -1,0 +1,28 @@
+{
+  "name": "tooltip",
+  "purpose": "Hover/focus/click tooltip with a positioned arrow box. Wraps a trigger element (icon by default) and shows a dark Nimiq-blue gradient box with an arrow, positioned via a preferred '[primary] [secondary]' position (e.g. 'top right'), optionally constrained to a container.",
+  "category": "data-display",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "container", "type": "object ({ $el: HTMLElement })", "description": "Container within which the tooltip should be positioned if possible. Constrains max-width and clamps placement." },
+    { "name": "disabled", "type": "boolean", "default": false, "description": "Disables showing the tooltip." },
+    { "name": "noFocus", "type": "boolean", "default": false, "description": "Removes the trigger from the tab order (tabindex -1)." },
+    { "name": "preferredPosition", "type": "string", "default": "top right", "description": "Preferred position as '[primary] [secondary]' or '[primary]'. Primary is vertical (top/bottom) or horizontal (left/right); the optional secondary is of the opposite axis. Single primary centers on the other axis." },
+    { "name": "margin", "type": "Partial<Record<'top'|'right'|'bottom'|'left', number>>", "description": "Margin to maintain to the container. Falls back to the container's padding per side. No effect without container." },
+    { "name": "autoWidth", "type": "boolean", "default": false, "description": "Sets the tooltip's width to the container's width minus margin. No effect without container." },
+    { "name": "theme", "type": "'normal' | 'inverse'", "default": "normal", "description": "'inverse' renders a white box with nimiq-blue text." },
+    { "name": "background", "type": "string", "description": "Background of the tooltip as a CSS value; overrides the theme (sets the --background CSS var, also used by the arrow)." },
+    { "name": "styles", "type": "Partial<CSSStyleDeclaration>", "description": "Styles applied to the tooltip box (commonly width / minWidth) without deep CSS selectors." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 500, "height": 400 },
+    "selector": "body",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Sample state: tooltip forced visible ('shown' class) with positionCssClass 'position-top-right' (the default preferredPosition 'top right' with no container), trigger = InfoCircleIcon from @nimiq/style, box text 'Transactions are free on Nimiq.', styles={ width: '25rem' } (real upstream usages always pass a width — without one the absolutely-positioned box shrink-wraps to near min-content). JS-computed inline position expanded by hand and measurement-verified: left = triggerWidth/2 - 25 = -16px, top = -boxHeight = -66px. Arrow = .trigger::after with an SVG mask-image; its background color for top-right is #211e45 (sampled from the nimiq-blue-bg radial gradient where the arrow touches the box). CSS vars --nimiq-blue/--nimiq-blue-bg/--nimiq-ease come from the legacy nimiq-style.min.css (defined on html{}). Vue 3 port keeps the full dynamic positioning/clamping logic, hover/focus/click behavior, show/hide events and container scroll listener; '>>>' deep selectors became :deep()."
+}

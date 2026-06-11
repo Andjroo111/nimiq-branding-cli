@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nimiq Slider Toggle</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; display: flex; align-items: flex-start; }
+
+    /* Nimiq slider toggle — pill radio group, the checked option gets a white pill.
+       Pure CSS: selection works via the hidden radio inputs and :has(). */
+    .slider-toggle {
+        --borderRadius: 9999px;
+        --padding: .5rem;
+
+        position: relative;
+        display: flex;
+
+        background-color: var(--nimiq-highlight-bg);
+        border-radius: var(--borderRadius);
+        padding: var(--padding);
+    }
+
+    /* Currency type (compact) */
+    .slider-toggle.type-currency {
+        --inactiveOpacity: .5;
+        --horizontalPadding: 16px;
+        --verticalPadding: 14px;
+
+        font-size: 1.75rem;
+        letter-spacing: 0.1em;
+        font-weight: bold;
+    }
+
+    /* Default type (large) */
+    .slider-toggle.type-default {
+        --inactiveOpacity: .625;
+        --horizontalPadding: 2.5rem;
+        --verticalPadding: 1.125rem;
+
+        font-size: 2.5rem;
+        letter-spacing: 0;
+        font-weight: 600;
+        color: rgba(31, 35, 72, 0.8); /* --nimiq-blue */
+    }
+
+    .slider-toggle input { display: none }
+
+    .slider-toggle label {
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        line-height: 150%;
+
+        padding: var(--verticalPadding) var(--horizontalPadding);
+        cursor: pointer;
+    }
+
+    .slider-toggle label:not(:has(input:checked)) {
+        opacity: var(--inactiveOpacity);
+    }
+
+    .slider-toggle label:not(:has(input:checked)):hover {
+        opacity: calc(var(--inactiveOpacity) + .12);
+    }
+
+    /* The white pill under the selected option */
+    .slider-toggle label:has(input:checked) {
+        background-color: white;
+        border-radius: var(--borderRadius);
+        box-shadow: 0px 13px 27px rgba(31, 35, 72, .07), /* --nimiq-blue */
+            0px 5px 6px rgba(31, 35, 72, .04), /* --nimiq-blue */
+            0px 1px 2px rgba(31, 35, 72, .02); /* --nimiq-blue */
+    }
+</style>
+</head>
+<body>
+    <div class="slider-toggle type-currency">
+        <label>
+            <input type="radio" name="currency" value="nim" checked>
+            <span>NIM</span>
+        </label>
+        <label>
+            <input type="radio" name="currency" value="btc">
+            <span>BTC</span>
+        </label>
+    </div>
+</body>
+</html>

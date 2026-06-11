@@ -1,0 +1,904 @@
+[
+ {
+  "captured": [
+   {
+    "label": "Home \u2014 desktop full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/home-desktop-full.png",
+    "url": "https://www.nimiq.com/",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "Full home page: purple gradient hero 'Universal Money for Independent Individuals', app cards grid, dark blockchain section, teal staking gradient band, community section, footer"
+   },
+   {
+    "label": "Home \u2014 mobile full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/home-mobile-full.png",
+    "url": "https://www.nimiq.com/",
+    "viewport": "390x844 @2x",
+    "whatItShows": "Full mobile home page with stacked app cards, mini-apps competition top banner, dark tech section, staking CTA band"
+   },
+   {
+    "label": "Home \u2014 nav header (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/home-nav-header.png",
+    "url": "https://www.nimiq.com/",
+    "viewport": "element @ 1440x900",
+    "whatItShows": "Top nav bar on dark purple gradient: hexagon NIMIQ logo, Apps/Tech/Community/Project dropdowns, white pill 'Get started' button"
+   },
+   {
+    "label": "Home \u2014 footer (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/home-footer.png",
+    "url": "https://www.nimiq.com/",
+    "viewport": "element @ 1440x900",
+    "whatItShows": "Site footer with link columns, newsletter signup, social icons"
+   },
+   {
+    "label": "Home \u2014 hero section (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/home-hero-section.png",
+    "url": "https://www.nimiq.com/",
+    "viewport": "element @ 1440x900",
+    "whatItShows": "Hero section: headline, subhead, CTA buttons, globe artwork, partner logos (CryptoPayment Link, NAKA)"
+   },
+   {
+    "label": "Home \u2014 hero CTA button (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/home-hero-cta-button.png",
+    "url": "https://www.nimiq.com/",
+    "viewport": "element @ 1440x900",
+    "whatItShows": "Primary hero CTA: blue gradient pill button 'Create Wallet' with arrow glyph"
+   },
+   {
+    "label": "Home \u2014 app card component (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/home-card-component.png",
+    "url": "https://www.nimiq.com/",
+    "viewport": "element @ 1440x900",
+    "whatItShows": "'Pay App' card from the apps grid: rounded light-grey card, gold app icon, title, subhead, embedded phone mockup"
+   },
+   {
+    "label": "Staking calculator \u2014 desktop full (clean)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/staking-calculator-desktop-full.png",
+    "url": "https://www.nimiq.com/staking-calculator/",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "Calculator with intro modal and cookie banner dismissed: gold reward-projection chart, 19.66% reward readout, controls bar (100000 NIM, 2Y, Restake toggle)"
+   },
+   {
+    "label": "Staking calculator \u2014 desktop after interaction",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/staking-calculator-desktop-after-interaction.png",
+    "url": "https://www.nimiq.com/staking-calculator/",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "Calculator after interaction \u2014 amount changed to 500,000 NIM and period chip set to 5Y; chart curve and reward recalculated to 39.24% / +196,209 NIM"
+   },
+   {
+    "label": "Staking calculator \u2014 widget close-up (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/staking-calculator-widget-closeup.png",
+    "url": "https://www.nimiq.com/staking-calculator/",
+    "viewport": "element @ 1440x900",
+    "whatItShows": "Close-up of the calculator controls widget: Staking amount field with ~$ value, 6M/1Y/2Y/5Y/10Y period chips, Auto-restaking toggle, NIM price / supply staked / pool fees row"
+   },
+   {
+    "label": "Staking calculator \u2014 mobile full (clean)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/staking-calculator-mobile-full.png",
+    "url": "https://www.nimiq.com/staking-calculator/",
+    "viewport": "390x844 @2x",
+    "whatItShows": "Mobile calculator layout, modal and cookie banner dismissed: chart on top, compact controls card below"
+   },
+   {
+    "label": "OASIS \u2014 desktop full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/oasis-desktop-full.png",
+    "url": "https://www.nimiq.com/oasis/",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "OASIS page still exists (HTTP 200): dark navy hero, teal swap widget card, 'Fiat-to-crypto atomic swap yourself' section, how-it-works video, integration cards"
+   },
+   {
+    "label": "OASIS \u2014 mobile full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/oasis-mobile-full.png",
+    "url": "https://www.nimiq.com/oasis/",
+    "viewport": "390x844 @2x",
+    "whatItShows": "Mobile OASIS page, stacked layout"
+   },
+   {
+    "label": "Wallet \u2014 desktop full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/wallet-desktop-full.png",
+    "url": "https://www.nimiq.com/wallet",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "Wallet feature page: hero, wallet UI showcases, feature sections"
+   },
+   {
+    "label": "Wallet \u2014 mobile full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/wallet-mobile-full.png",
+    "url": "https://www.nimiq.com/wallet",
+    "viewport": "390x844 @2x",
+    "whatItShows": "Mobile wallet feature page"
+   },
+   {
+    "label": "Wallet \u2014 CTA button (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/wallet-cta-button.png",
+    "url": "https://www.nimiq.com/wallet",
+    "viewport": "element @ 1440x900",
+    "whatItShows": "Wallet page CTA: white pill button with light-blue 'Create a wallet' text and arrow (inverse variant of home CTA)"
+   },
+   {
+    "label": "Buy & Sell \u2014 desktop full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/buy-and-sell-desktop-full.png",
+    "url": "https://www.nimiq.com/buy-and-sell",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "Buy/sell NIM page: exchange options, on-ramp cards"
+   },
+   {
+    "label": "Buy & Sell \u2014 mobile full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/buy-and-sell-mobile-full.png",
+    "url": "https://www.nimiq.com/buy-and-sell",
+    "viewport": "390x844 @2x",
+    "whatItShows": "Mobile buy/sell page"
+   },
+   {
+    "label": "Apps \u2014 desktop full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/apps-desktop-full.png",
+    "url": "https://www.nimiq.com/apps",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "Apps directory page \u2014 large grid of ecosystem app cards (good card-component reference)"
+   },
+   {
+    "label": "Apps \u2014 mobile full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/apps-mobile-full.png",
+    "url": "https://www.nimiq.com/apps",
+    "viewport": "390x844 @2x",
+    "whatItShows": "Mobile apps directory, stacked cards"
+   },
+   {
+    "label": "Staking \u2014 desktop full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/staking-desktop-full.png",
+    "url": "https://www.nimiq.com/staking",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "Staking marketing page (distinct from the calculator): explainer sections, CTA bands"
+   },
+   {
+    "label": "Staking \u2014 mobile full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/staking-mobile-full.png",
+    "url": "https://www.nimiq.com/staking",
+    "viewport": "390x844 @2x",
+    "whatItShows": "Mobile staking marketing page"
+   },
+   {
+    "label": "Nimiq Pay \u2014 desktop full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/nimiq-pay-desktop-full.png",
+    "url": "https://www.nimiq.com/nimiq-pay",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "Nimiq Pay app page: phone mockups, gold Pay branding, feature sections"
+   },
+   {
+    "label": "Nimiq Pay \u2014 mobile full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/nimiq-pay-mobile-full.png",
+    "url": "https://www.nimiq.com/nimiq-pay",
+    "viewport": "390x844 @2x",
+    "whatItShows": "Mobile Nimiq Pay page"
+   },
+   {
+    "label": "Albatross \u2014 desktop full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/albatross-desktop-full.png",
+    "url": "https://www.nimiq.com/albatross",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "Albatross consensus tech page (linked from home Tech nav)"
+   },
+   {
+    "label": "Albatross \u2014 mobile full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-com/albatross-mobile-full.png",
+    "url": "https://www.nimiq.com/albatross",
+    "viewport": "390x844 @2x",
+    "whatItShows": "Mobile Albatross tech page"
+   }
+  ],
+  "failed": []
+ },
+ {
+  "captured": [
+   {
+    "label": "Wallet welcome / onboarding (desktop)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/welcome-desktop-1440x900.png",
+    "url": "https://wallet.nimiq.com (redirects to https://hub.nimiq.com/onboard)",
+    "viewport": "1440x900",
+    "whatItShows": "Welcome to the Nimiq Wallet headline, subhead '100% free and self-custodial web wallet for NIM, BTC and USDC', white choice card with green Create Account tile, Login, Connect Ledger. Note: wallet.nimiq.com top-level redirects to hub.nimiq.com/onboard when no account exists \u2014 no popup involved."
+   },
+   {
+    "label": "Wallet welcome / onboarding (mobile)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/welcome-mobile-390x844.png",
+    "url": "https://wallet.nimiq.com",
+    "viewport": "390x844 @2x",
+    "whatItShows": "Mobile layout: choice card becomes a stacked bottom sheet; Create Account tile full-width green gradient with circular plus icon on the right."
+   },
+   {
+    "label": "Element: onboarding choice card",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/element-onboarding-choice-card.png",
+    "viewport": "element @2x",
+    "whatItShows": "The full white rounded card containing all three onboarding choices with divider before Ledger option."
+   },
+   {
+    "label": "Element: Create Account button",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/element-create-account-button.png",
+    "viewport": "element @2x",
+    "whatItShows": "Green gradient signup tile (button.choice.signup) with white circle plus icon, 'Create Account' title, 'Set a password. Get the Login file. Done.' subtitle."
+   },
+   {
+    "label": "Element: Login button",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/element-login-button.png",
+    "viewport": "element @2x",
+    "whatItShows": "Login choice tile with gray circular arrow icon."
+   },
+   {
+    "label": "Element: Connect Ledger button",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/element-connect-ledger-button.png",
+    "viewport": "element @2x",
+    "whatItShows": "Connect Ledger choice tile with line-art Ledger device illustration."
+   },
+   {
+    "label": "Element: header Nimiq logo",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/element-header-nimiq-logo.png",
+    "viewport": "element @2x",
+    "whatItShows": "Top-left header lockup: gold hexagon + NIMIQ wordmark in dark navy."
+   },
+   {
+    "label": "Signup step 1: Login File intro",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/signup-step1-login-file-intro.png",
+    "url": "https://keyguard.nimiq.com/request/create/#intro",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "Keyguard create-account intro card: 'Your key to logging in', blue 'Set password' pill button, 'What is a Login File?' link, 'Back to Wallet' global close. Create Account hands off from hub to keyguard.nimiq.com (full-page redirect, not a popup)."
+   },
+   {
+    "label": "Signup overlay: What is a Login File?",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/signup-whats-a-login-file-overlay.png",
+    "url": "https://keyguard.nimiq.com/request/create/#login-file-explainer",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "Explainer page: image-file-plus-password concept, 'Nimiq does not store your data', 'Got it' button."
+   },
+   {
+    "label": "Signup step 2: Create a password",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/signup-step2-set-password.png",
+    "url": "https://keyguard.nimiq.com/request/create/#set-password",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "'Create a password' card with Login File line illustration, warning about no Forgot-password, large blue-gradient password input panel with eye toggle and 8 dot placeholders."
+   },
+   {
+    "label": "Element: password input panel",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/element-password-input.png",
+    "viewport": "element @2x",
+    "whatItShows": "The distinctive blue-gradient nq-input password field with 'Enter 8 characters or more' placeholder."
+   },
+   {
+    "label": "Signup step 2b: password filled state",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/signup-step2b-password-filled.png",
+    "url": "https://keyguard.nimiq.com/request/create/#set-password",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "Password entered (masked dots) with inverse 'Repeat password' submit button active inside the blue panel."
+   },
+   {
+    "label": "Signup step 3: Repeat your password",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/signup-step3-repeat-password.png",
+    "url": "https://keyguard.nimiq.com/request/create/#set-password (repeat state)",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "'Repeat your password' confirmation state with 'Create account' submit button."
+   },
+   {
+    "label": "Signup step 4: Download your Login File",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/signup-step4-download-login-file.png",
+    "url": "https://keyguard.nimiq.com/request/create/#login-file-download",
+    "viewport": "1440x900 @2x",
+    "whatItShows": "Final reachable step before the download gate: generated orange Login File card ('Orange Account', key icon, QR code, date sidebar, 'Keep safe and confidential') with blue DOWNLOAD pill and disabled continue chevron. Flow stopped here per no-download rule."
+   },
+   {
+    "label": "Element: Login File card graphic",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/element-login-file-graphic.png",
+    "viewport": "element @2x",
+    "whatItShows": "Close crop of the orange-gradient Login File card \u2014 strongest single branding asset captured (hexagon logo, topo-line texture, QR, account color name)."
+   },
+   {
+    "label": "Element: Download button",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/element-download-button.png",
+    "viewport": "element @2x",
+    "whatItShows": "Light-blue nq-button pill with download icon and uppercase letter-spaced label."
+   },
+   {
+    "label": "Login flow step 1: Import your Login File",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/login-step1.png",
+    "url": "https://keyguard.nimiq.com/request/import/#import-file",
+    "viewport": "1440x900",
+    "whatItShows": "Login path: dashed blue drag-and-drop zone with ghost QR, 'Login with backup' chip, 'Create new account' link, QR-scan icon button."
+   },
+   {
+    "label": "hub.nimiq.com root",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/hub-root-loading-spinner.png",
+    "url": "https://hub.nimiq.com",
+    "viewport": "1440x900",
+    "whatItShows": "Hub root is an RPC-driven app with no standalone UI: renders only the Nimiq header and the animated hexagon loading spinner, then waits for a request (URL self-rewrites with returnURL/command params). Useful as a reference for the hexagon loader."
+   },
+   {
+    "label": "hub.nimiq.com/demos.html",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/wallet-app/hub-demos.png",
+    "url": "https://hub.nimiq.com/demos.html",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Renders fine (HTTP 200): unstyled developer test harness for Hub API \u2014 sections for Stored accounts, Onboarding, Create, Login (Import), Choose Address, Transactions/Checkout, Cashlink, Bitcoin, USDC on Polygon, Sign Message, Multisig, Migrate. Most buttons disabled until accounts exist. Not a branding reference, but documents the full Hub API surface."
+   }
+  ],
+  "failed": [
+   {
+    "target": "Main wallet UI (balances, address list, identicon displays)",
+    "reason": "Requires a created account \u2014 wallet.nimiq.com immediately redirects to hub.nimiq.com/onboard when no account exists, and completing account creation requires downloading the Login File (stopped at the download gate per instructions). No identicon-picker step exists in the current keyguard create flow; identicons only appear after account creation, so no identicon element screenshot was capturable."
+   },
+   {
+    "target": "hub.nimiq.com root content",
+    "reason": "Not unreachable, but renders no real page \u2014 only the hexagon loading spinner while waiting for an RPC request (captured as hub-root-loading-spinner.png)."
+   },
+   {
+    "target": "hub.nimiq.com/demos.html interactive demos",
+    "reason": "Page renders, but the Onboarding/Create/Login demo buttons are disabled until Keyguard keys exist in the browser, so no additional flows could be triggered from it."
+   }
+  ]
+ },
+ {
+  "captured": [
+   {
+    "label": "Home (Nimiq UI landing)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/home.png",
+    "url": "https://onmax.github.io/nimiq-ui/",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Nimiq UI docs landing with the four product cards (Nimiq CSS, Frankenstein, Vitepress Theme, Nimiq Icons) rendered in the modern card style"
+   },
+   {
+    "label": "Nimiq CSS \u2014 Palette (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/nimiq-css--palette.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-css/palette",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Full color palette page: 7 color families (neutral/blue/green/red/orange/gold/purple) x 12 steps + gradients section. NOTE: live site itself only renders the Blue gradient swatch in the Gradients table"
+   },
+   {
+    "label": "Palette swatch grid (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/nimiq-css--palette__palette.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-css/palette",
+    "viewport": "element",
+    "whatItShows": "GOLD STANDARD for color tokens: the rendered palette grid alone \u2014 7 hues x steps 50-1100 + DEFAULT column, pixel-clean"
+   },
+   {
+    "label": "Palette gradients section (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/nimiq-css--palette__gradients.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-css/palette",
+    "viewport": "element",
+    "whatItShows": "Gradients table element \u2014 only the Blue gradient pill renders on the live site (upstream docs bug), captured as-is"
+   },
+   {
+    "label": "Nimiq CSS \u2014 Typography (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/nimiq-css--typography.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-css/typography",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "nq-prose / nq-prose-compact typography utility docs with a rendered prose demo block"
+   },
+   {
+    "label": "Typography prose demo (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/nimiq-css--typography__demo-01.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-css/typography",
+    "viewport": "element",
+    "whatItShows": "Rendered nq-prose demo block \u2014 headline + body text styled by the typography layer"
+   },
+   {
+    "label": "Nimiq CSS \u2014 Typography demo article (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/nimiq-css--typography-demo-article.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-css/typography/demo-article",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "GOLD STANDARD for typography: a full long-form article rendered entirely with Nimiq typography styles (headings, lists, quotes, code, tables)"
+   },
+   {
+    "label": "Nimiq CSS \u2014 Layers index (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/nimiq-css--layers-index.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-css/layers/index",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Overview of the CSS layer architecture (preflights/colors/fonts/typography/utilities/static-content)"
+   },
+   {
+    "label": "Nimiq CSS \u2014 Colors layer (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/nimiq-css--layers-colors.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-css/layers/colors",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Colors CSS-layer docs \u2014 color variable definitions and usage"
+   },
+   {
+    "label": "Nimiq CSS \u2014 Fonts layer (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/nimiq-css--layers-fonts.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-css/layers/fonts",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Fonts layer docs \u2014 Mulish/Fira Code font-face setup, rendered in the brand font"
+   },
+   {
+    "label": "Nimiq CSS \u2014 Typography layer (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/nimiq-css--layers-typography.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-css/layers/typography",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Typography layer reference \u2014 heading/body scale rules"
+   },
+   {
+    "label": "Nimiq CSS \u2014 Utilities layer (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/nimiq-css--layers-utilities.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-css/layers/utilities",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Utility classes layer (nq-card, nq-pill, nq-input et al.) \u2014 class list and descriptions"
+   },
+   {
+    "label": "Nimiq CSS \u2014 Static-content layer (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/nimiq-css--layers-static-content.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-css/layers/static-content",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Static-content layer docs"
+   },
+   {
+    "label": "Nimiq CSS \u2014 Preflights layer (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/nimiq-css--layers-preflights.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-css/layers/preflights",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Preflights/reset layer docs"
+   },
+   {
+    "label": "Nimiq Icons \u2014 overview (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/nimiq-icons--overview.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-icons",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Nimiq Icons (Iconify set) landing page"
+   },
+   {
+    "label": "Nimiq Icons \u2014 explorer (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/nimiq-icons--explorer.png",
+    "url": "https://onmax.github.io/nimiq-ui/nimiq-icons/explorer",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "GOLD STANDARD for icons: full icon explorer grid \u2014 every nimiq icon (regular, large, logos incl. crypto/brand logos) rendered, plus color picker dots"
+   },
+   {
+    "label": "VP Theme \u2014 Callouts & blockquotes (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/vp-theme--callouts-and-blockquotes.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/callouts-and-blockquotes",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Callout/blockquote component docs with rendered demos"
+   },
+   {
+    "label": "Callouts demo 1 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--callouts-and-blockquotes__demo-01.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/callouts-and-blockquotes",
+    "viewport": "element",
+    "whatItShows": "Rendered blockquote demo block"
+   },
+   {
+    "label": "Callouts demo 2 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--callouts-and-blockquotes__demo-02.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/callouts-and-blockquotes",
+    "viewport": "element",
+    "whatItShows": "Rendered callout variants (tip/info/warning/danger styles)"
+   },
+   {
+    "label": "Callouts demo 3 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--callouts-and-blockquotes__demo-03.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/callouts-and-blockquotes",
+    "viewport": "element",
+    "whatItShows": "Rendered GitHub-alert style callouts"
+   },
+   {
+    "label": "VP Theme \u2014 Card (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/vp-theme--card.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/card",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "nq-card component docs \u2014 all card variants with code+preview toggles"
+   },
+   {
+    "label": "Card demo 1 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--card__demo-01.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/card",
+    "viewport": "element",
+    "whatItShows": "GOLD STANDARD card demo: basic nq-card rendered"
+   },
+   {
+    "label": "Card demo 2 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--card__demo-02.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/card",
+    "viewport": "element",
+    "whatItShows": "nq-card variant rendered (documentation card)"
+   },
+   {
+    "label": "Card demo 3 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--card__demo-03.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/card",
+    "viewport": "element",
+    "whatItShows": "nq-card with icon (i-nimiq:cubes) and hover treatment"
+   },
+   {
+    "label": "Card demo 4 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--card__demo-04.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/card",
+    "viewport": "element",
+    "whatItShows": "nq-card variant with constrained children width"
+   },
+   {
+    "label": "Card demo 5 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--card__demo-05.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/card",
+    "viewport": "element",
+    "whatItShows": "nq-card with background mesh icon variant"
+   },
+   {
+    "label": "Card demo 6 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--card__demo-06.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/card",
+    "viewport": "element",
+    "whatItShows": "Horizontal nq-card layout with leading icon"
+   },
+   {
+    "label": "VP Theme \u2014 Code block (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/vp-theme--code-block.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/code-block",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Code-block component docs \u2014 themed syntax highlighting variants"
+   },
+   {
+    "label": "Code block demo 1 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--code-block__demo-01.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/code-block",
+    "viewport": "element",
+    "whatItShows": "Rendered code block style"
+   },
+   {
+    "label": "Code block demo 2 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--code-block__demo-02.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/code-block",
+    "viewport": "element",
+    "whatItShows": "Code block with title/filename header"
+   },
+   {
+    "label": "Code block demo 3 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--code-block__demo-03.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/code-block",
+    "viewport": "element",
+    "whatItShows": "Code block with line highlighting"
+   },
+   {
+    "label": "Code block demo 4 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--code-block__demo-04.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/code-block",
+    "viewport": "element",
+    "whatItShows": "Code group / tabbed code block"
+   },
+   {
+    "label": "Code block demo 5 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--code-block__demo-05.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/code-block",
+    "viewport": "element",
+    "whatItShows": "Inline/short code block variant"
+   },
+   {
+    "label": "Code block demo 6 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--code-block__demo-06.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/code-block",
+    "viewport": "element",
+    "whatItShows": "Code block variant with diff/annotations"
+   },
+   {
+    "label": "VP Theme \u2014 Grid (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/vp-theme--grid.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/grid",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "nq-grid component docs \u2014 responsive card grid layouts"
+   },
+   {
+    "label": "Grid demo 1 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--grid__demo-01.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/grid",
+    "viewport": "element",
+    "whatItShows": "Rendered basic grid of cards"
+   },
+   {
+    "label": "Grid demo 2 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--grid__demo-02.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/grid",
+    "viewport": "element",
+    "whatItShows": "Grid with icon cards"
+   },
+   {
+    "label": "Grid demo 3 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--grid__demo-03.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/grid",
+    "viewport": "element",
+    "whatItShows": "Grid column-variant layout"
+   },
+   {
+    "label": "Grid demo 4 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--grid__demo-04.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/grid",
+    "viewport": "element",
+    "whatItShows": "Largest grid composition demo (mixed card sizes)"
+   },
+   {
+    "label": "VP Theme \u2014 Headline (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/vp-theme--headline.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/headline",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Headline component docs \u2014 hero/section headline patterns"
+   },
+   {
+    "label": "Headline demo 1 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--headline__demo-01.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/headline",
+    "viewport": "element",
+    "whatItShows": "Rendered headline variant (label + title + subline)"
+   },
+   {
+    "label": "Headline demo 2 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--headline__demo-02.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/headline",
+    "viewport": "element",
+    "whatItShows": "Headline variant 2"
+   },
+   {
+    "label": "Headline demo 3 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--headline__demo-03.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/headline",
+    "viewport": "element",
+    "whatItShows": "Headline variant 3"
+   },
+   {
+    "label": "Headline demo 4 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--headline__demo-04.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/headline",
+    "viewport": "element",
+    "whatItShows": "Headline variant 4"
+   },
+   {
+    "label": "Headline demo 5 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--headline__demo-05.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/headline",
+    "viewport": "element",
+    "whatItShows": "Headline variant 5"
+   },
+   {
+    "label": "VP Theme \u2014 Large card (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/vp-theme--large-card.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/large-card",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Large-card component docs"
+   },
+   {
+    "label": "Large card demo 1 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--large-card__demo-01.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/large-card",
+    "viewport": "element",
+    "whatItShows": "Rendered large card variant 1"
+   },
+   {
+    "label": "Large card demo 2 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--large-card__demo-02.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/large-card",
+    "viewport": "element",
+    "whatItShows": "Rendered large card variant 2"
+   },
+   {
+    "label": "VP Theme \u2014 Links (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/vp-theme--links.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/links",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Link styles docs \u2014 nq-arrow links, external links, pill links"
+   },
+   {
+    "label": "Links demo 1 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--links__demo-01.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/links",
+    "viewport": "element",
+    "whatItShows": "Rendered link variant 1 (arrow link)"
+   },
+   {
+    "label": "Links demo 2 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--links__demo-02.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/links",
+    "viewport": "element",
+    "whatItShows": "Rendered link variant 2"
+   },
+   {
+    "label": "Links demo 3 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--links__demo-03.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/links",
+    "viewport": "element",
+    "whatItShows": "Rendered link variant 3"
+   },
+   {
+    "label": "Links demo 4 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--links__demo-04.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/links",
+    "viewport": "element",
+    "whatItShows": "Rendered link variant 4"
+   },
+   {
+    "label": "Links demo 5 (element)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/elements/vp-theme--links__demo-05.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/links",
+    "viewport": "element",
+    "whatItShows": "Rendered link variant 5 (pill/button-style link)"
+   },
+   {
+    "label": "VP Theme \u2014 Vitepress components (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/vp-theme--vitepress-components.png",
+    "url": "https://onmax.github.io/nimiq-ui/vitepress-theme/components/vitepress-components",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Stock VitePress components restyled by the Nimiq theme"
+   },
+   {
+    "label": "Frankenstein \u2014 getting started (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/frankenstein--getting-started.png",
+    "url": "https://onmax.github.io/nimiq-ui/frankenstein/getting-started",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Frankenstein Vue 3 component library intro page"
+   },
+   {
+    "label": "Frankenstein \u2014 basic modal (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/frankenstein--basic-modal.png",
+    "url": "https://onmax.github.io/nimiq-ui/frankenstein/components/basic-modal",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Basic Modal docs page (code + API; the live preview pane renders empty on the deployed site)"
+   },
+   {
+    "label": "Frankenstein \u2014 nested modal (full page)",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/nimiq-ui-docs/pages/frankenstein--nested-modal.png",
+    "url": "https://onmax.github.io/nimiq-ui/frankenstein/components/nested-modal",
+    "viewport": "1440x900 full-page",
+    "whatItShows": "Nested Modal docs page (code + API; the live preview pane renders empty on the deployed site)"
+   }
+  ],
+  "failed": [
+   {
+    "target": "https://onmax.github.io/nimiq-ui/frankenstein/components/basic-modal (demo element)",
+    "reason": "Demo preview pane is genuinely empty on the deployed site \u2014 the BasicModal component never hydrates any visible content (only the Code/Preview tab chrome renders). Verified via DOM inspection; no trigger button exists to open the modal. Full-page screenshot kept; empty element shot deleted."
+   },
+   {
+    "target": "https://onmax.github.io/nimiq-ui/frankenstein/components/nested-modal (demo element)",
+    "reason": "Same as basic-modal: preview pane renders empty on the live site, nothing to capture or interact with."
+   },
+   {
+    "target": "https://onmax.github.io/nimiq-ui/nimiq-css/palette (gradients table, non-blue rows)",
+    "reason": "Upstream docs rendering gap: only the Blue gradient pill renders in the Gradients table on the live site even after long waits and scrolling; Neutral/Green/Red/Orange/Gold rows are empty. Captured as-is in both the full-page and element shots."
+   }
+  ]
+ },
+ {
+  "captured": [
+   {
+    "label": "Identicons demo \u2014 desktop full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/identicons-demo_desktop-1440x900_fullpage.png",
+    "url": "https://nimiq.github.io/identicons/",
+    "viewport": "1440x900 @2x, full page",
+    "whatItShows": "Official Nimiq identicons playground: large featured identicon with generated name ('Metallic Baking Levitator'), text input, and rows of hexagonal identicons at multiple sizes on a light gray background"
+   },
+   {
+    "label": "Identicons demo \u2014 mobile full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/identicons-demo_mobile-390x844_fullpage.png",
+    "url": "https://nimiq.github.io/identicons/",
+    "viewport": "390x844 @2x, full page",
+    "whatItShows": "Mobile layout of the identicons playground, identicon grids reflowed into narrow columns"
+   },
+   {
+    "label": "Identicons demo \u2014 featured identicon element",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/identicons-demo_element-identicon-grid.png",
+    "url": "https://nimiq.github.io/identicons/",
+    "viewport": "element (#identicons), 576x576",
+    "whatItShows": "Single large hexagonal identicon in isolation (golden hex, blue face character with chef hat and dumbbells) \u2014 the canonical identicon construction: hex background + face + accessories"
+   },
+   {
+    "label": "Identicons demo \u2014 single identicon SVG",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/identicons-demo_element-identicon-single.png",
+    "url": "https://nimiq.github.io/identicons/",
+    "viewport": "element (svg), 320x320",
+    "whatItShows": "One identicon SVG cropped tight, useful as a 1:1 reference for identicon proportions and flat-color palette"
+   },
+   {
+    "label": "CriptoCiudad \u2014 desktop full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/criptociudad_desktop-1440x900_fullpage.png",
+    "url": "https://criptociudad.cr",
+    "viewport": "1440x900 @2x, full page",
+    "whatItShows": "Full CriptoCiudad merchant-city site (Costa Rica), Nimiq-adjacent branding applied to a real-world merchant adoption marketing page"
+   },
+   {
+    "label": "CriptoCiudad \u2014 mobile full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/criptociudad_mobile-390x844_fullpage.png",
+    "url": "https://criptociudad.cr",
+    "viewport": "390x844 @2x, full page",
+    "whatItShows": "Mobile layout of the CriptoCiudad site"
+   },
+   {
+    "label": "CriptoCiudad \u2014 header/nav element",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/criptociudad_element-hero.png",
+    "url": "https://criptociudad.cr",
+    "viewport": "element (header), 2880x128",
+    "whatItShows": "Top navigation bar: multicolor hexagon-ring CRIPTOCIUDAD logo, Nimiq-style typography, link set (For Merchants / For Beginners / The Network / News / About Us), blue pill Contact button, language flag switcher"
+   },
+   {
+    "label": "Nimiq developer center \u2014 desktop full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/nimiq-dev_desktop-1440x900_fullpage.png",
+    "url": "https://nimiq.dev (redirect target of nimiq.com/developers)",
+    "viewport": "1440x900 @2x, full page",
+    "whatItShows": "Full nimiq.dev developer-center landing page with styled docs UI"
+   },
+   {
+    "label": "Nimiq developer center \u2014 mobile full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/nimiq-dev_mobile-390x844_fullpage.png",
+    "url": "https://nimiq.dev",
+    "viewport": "390x844 @2x, full page",
+    "whatItShows": "Mobile layout of the developer center"
+   },
+   {
+    "label": "Nimiq developer center \u2014 'Choose your path' card grid",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/nimiq-dev_element-hero.png",
+    "url": "https://nimiq.dev",
+    "viewport": "element (main section), 2880x1234",
+    "whatItShows": "Distinctive docs card grid: 6 rounded light-gray cards (Web Client, Hub API, Mini Apps, RPC, Nodes & Validators, Protocol) with thin blue line icons, dark-navy bold headings, muted gray body text \u2014 core Nimiq docs component styling"
+   },
+   {
+    "label": "Nimiq developer center \u2014 header nav element",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/nimiq-dev_element-nav.png",
+    "url": "https://nimiq.dev",
+    "viewport": "element (header), 2880x130",
+    "whatItShows": "Developer-center top navigation bar"
+   },
+   {
+    "label": "Nimiq staking page \u2014 desktop full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/nimiq-staking_desktop-1440x900_fullpage.png",
+    "url": "https://www.nimiq.com/staking/ (substitute for dead staking.nimiq.com)",
+    "viewport": "1440x900 @2x, full page (very tall page, 17054px)",
+    "whatItShows": "Full official Nimiq staking marketing page in current nimiq.com brand style"
+   },
+   {
+    "label": "Nimiq staking page \u2014 mobile full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/nimiq-staking_mobile-390x844_fullpage.png",
+    "url": "https://www.nimiq.com/staking/",
+    "viewport": "390x844 @2x, full page",
+    "whatItShows": "Mobile layout of the staking page"
+   },
+   {
+    "label": "Nimiq staking page \u2014 hero element",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/nimiq-staking_element-hero.png",
+    "url": "https://www.nimiq.com/staking/",
+    "viewport": "element (main section), 2880x1432",
+    "whatItShows": "Staking page hero section"
+   },
+   {
+    "label": "Nimiq staking page \u2014 header nav element",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/nimiq-staking_element-nav.png",
+    "url": "https://www.nimiq.com/staking/",
+    "viewport": "element (header), 2816x134",
+    "whatItShows": "nimiq.com top navigation bar"
+   },
+   {
+    "label": "Nimiq staking calculator \u2014 desktop full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/nimiq-staking-calculator_desktop-1440x900_fullpage.png",
+    "url": "https://www.nimiq.com/staking-calculator/",
+    "viewport": "1440x900 @2x, full page",
+    "whatItShows": "Staking calculator app page: dark navy background with reward projection chart, intro modal card, blue gradient CTA"
+   },
+   {
+    "label": "Nimiq staking calculator \u2014 mobile full page",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/nimiq-staking-calculator_mobile-390x844_fullpage.png",
+    "url": "https://www.nimiq.com/staking-calculator/",
+    "viewport": "390x844 @2x, full page",
+    "whatItShows": "Mobile layout of the staking calculator"
+   },
+   {
+    "label": "Nimiq staking calculator \u2014 calculator widget element",
+    "path": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/screenshots/misc/nimiq-staking-calculator_element-calculator-widget.png",
+    "url": "https://www.nimiq.com/staking-calculator/",
+    "viewport": "element ([class*=calculator]), 2816x1648",
+    "whatItShows": "Distinctive widget: 'Stake NIM. Earn NIM.' white modal card over dark-navy chart background with 19.66% reward readout, piggy-bank illustration, blue-gradient pill 'START CALCULATOR' button, and amount/period/restake input row \u2014 strong example of Nimiq card-on-dark UI"
+   }
+  ],
+  "failed": [
+   {
+    "target": "https://playground.nimiq.com",
+    "reason": "DNS does not resolve (curl 000); also tried playground.nimiq.dev \u2014 same. No Nimiq developer playground subdomain exists today; nimiq.dev developer center captured instead."
+   },
+   {
+    "target": "https://staking.nimiq.com",
+    "reason": "DNS does not resolve. Captured the live equivalents instead: www.nimiq.com/staking/ and www.nimiq.com/staking-calculator/."
+   },
+   {
+    "target": "https://validators.nimiq.com",
+    "reason": "DNS does not resolve; validators-api.nimiq.dev also dead. No public validators-list page found within the 2-attempt budget."
+   },
+   {
+    "target": "criptociudad.cr nav element shot",
+    "reason": "No <nav> element on the page (nav links live inside <header>, which was captured as criptociudad_element-hero.png). Not a dead URL \u2014 just a selector miss."
+   }
+  ]
+ }
+]

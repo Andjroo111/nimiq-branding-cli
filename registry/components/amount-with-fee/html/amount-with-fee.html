@@ -1,0 +1,33 @@
+<!-- amount-with-fee: large amount entry + fee/fiat/error line.
+     States:
+       .amount-input.has-value  — a value is entered (full Nimiq blue)
+       .amount-input.focussed   — input focussed (light blue)
+       .amount-input.invalid    — amount + fee exceeds balance (red); then put
+                                  <div class="nq-red">Insufficient balance</div> in .fee-section
+     Fee/fiat line examples (inside .fee-section):
+       <span class="fiat">~€1.23</span> <span class="fee">+ 0.001 NIM fee</span> -->
+<div class="amount-with-fee">
+    <div class="amount-input has-value">
+        <div class="amount-field">
+            <span class="width-finder">100</span>
+            <input type="text" inputmode="decimal" class="nq-input"
+                placeholder="0" value="100" style="width: 50px;">
+        </div>
+        <span class="ticker">NIM</span>
+    </div>
+    <div class="fee-section nq-text-s"></div>
+</div>
+<script>
+    // Auto-size the input to its content (text width + 1.25rem padding each side).
+    (function () {
+        var input = document.querySelector('.amount-with-fee input');
+        var finder = document.querySelector('.amount-with-fee .width-finder');
+        function sizeInput() {
+            finder.textContent = input.value || input.placeholder;
+            input.style.width = finder.offsetWidth + 'px';
+        }
+        input.addEventListener('input', sizeInput);
+        sizeInput();
+        document.fonts.ready.then(sizeInput);
+    })();
+</script>

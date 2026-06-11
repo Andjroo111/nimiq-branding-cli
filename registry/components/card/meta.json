@@ -1,0 +1,18 @@
+{
+  "name": "card",
+  "purpose": "Standard Nimiq card container (.nq-card) with header, body and footer sections; the base layout block of @nimiq/style used for grouping content.",
+  "category": "layout",
+  "variants": ["vue", "html"],
+  "props": [],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 600, "height": 420 },
+    "selector": ".nq-card",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Pure CSS-framework component: all styling comes from .nq-card, .nq-card-header, .nq-card-body, .nq-card-footer in legacy nimiq-style.min.css (white bg via --nimiq-card-bg, 1.25rem radius, shadow, --nimiq-blue text, max-width 75rem). Adjacent-sibling rules matter: .nq-card-header + .nq-card-body gets padding-top 1rem; .nq-card-body + .nq-card-footer gets padding-top 0. Sample state: nq-h1 header 'Card Title', nq-text body, footer with an nq-button. Vue variant is a slot-based convenience wrapper (header/default/footer slots), not an upstream vue-components port — upstream has no Card.vue; the card is markup-only in @nimiq/style demo.html."
+}
