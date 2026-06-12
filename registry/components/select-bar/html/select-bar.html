@@ -1,19 +1,40 @@
 <!-- SelectBar snippet — fee selector with "standard" selected.
-     Pair with select-bar.css + nimiq-style. Selection coloring rule:
-     every label at or below the checked option gets the checked option's
-     color class (here nq-green-bg); labels above it get nq-highlight-bg.
-     Other option colors used upstream: nq-light-blue-bg, nq-gold-bg. -->
+     Pair with select-bar.css + nimiq-style. Interactive: the script below
+     replicates upstream getColor() — every label at or below the checked
+     option gets the CHECKED option's color class (data-color); labels above
+     it get nq-highlight-bg. Option colors here: free=nq-light-blue-bg,
+     standard=nq-green-bg, express=nq-gold-bg. The native bubbling 'change'
+     event on .select-bar is the plain-HTML stand-in for the Vue 'changed' emit. -->
 <div class="select-bar">
     <div>
-        <input type="radio" name="fee" id="fee-free">
-        <label for="fee-free" class="nq-label nq-green-bg">free</label>
+        <input type="radio" name="fee" id="fee-free" value="0">
+        <label for="fee-free" class="nq-label nq-green-bg" data-color="nq-light-blue-bg">free</label>
     </div>
     <div>
-        <input type="radio" name="fee" id="fee-standard" checked>
-        <label for="fee-standard" class="nq-label nq-green-bg">standard</label>
+        <input type="radio" name="fee" id="fee-standard" value="1" checked>
+        <label for="fee-standard" class="nq-label nq-green-bg" data-color="nq-green-bg">standard</label>
     </div>
     <div>
-        <input type="radio" name="fee" id="fee-express">
-        <label for="fee-express" class="nq-label nq-highlight-bg">express</label>
+        <input type="radio" name="fee" id="fee-express" value="2">
+        <label for="fee-express" class="nq-label nq-highlight-bg" data-color="nq-gold-bg">express</label>
     </div>
 </div>
+<script>
+(() => {
+    // Scoped to THIS instance only: the snippet ships with the script directly
+    // after its root element, so currentScript.previousElementSibling is safe
+    // even when embedded among many other components on one page.
+    const bar = document.currentScript.previousElementSibling;
+    const rows = Array.from(bar.children);
+    bar.addEventListener('change', () => {
+        // Upstream getColor(): option.index <= selected.index → selected color,
+        // else nq-highlight-bg. DOM order equals the sorted index order.
+        const selected = rows.findIndex((row) => row.querySelector('input').checked);
+        const color = rows[selected].querySelector('label').dataset.color;
+        rows.forEach((row, i) => {
+            row.querySelector('label').className =
+                'nq-label ' + (i <= selected ? color : 'nq-highlight-bg');
+        });
+    });
+})();
+</script>

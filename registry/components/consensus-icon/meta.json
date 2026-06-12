@@ -1,0 +1,20 @@
+{
+  "name": "consensus-icon",
+  "purpose": "Network consensus indicator shown by every Nimiq light-client app: a globe icon that reflects the consensus state — animated globe sprite while syncing, globe with checkmark when consensus is established (green when its parent is :hover/:focus/.active), globe with alert triangle in orange when connecting or stalled.",
+  "category": "feedback",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "consensus", "type": "'syncing' | 'established' | 'connecting' | 'stalled'", "default": "'syncing'", "description": "Consensus state. Upstream reads this live from the Network store; the port exposes it as a prop." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 120, "height": 100 },
+    "selector": ".consensus-icon",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Sample state: ESTABLISHED (WorldCheckIcon, static) wrapped in an .active parent so the upstream rule `.active > .established` colors it nimiq-green at full opacity — exactly how it appears on the wallet sidebar network button while the network page is open. At rest the icon inherits color from context (sidebar: white at 0.3 opacity). Container is 2.75rem (22px) with -0.125rem margin; the check SVG is 24x22 so it slightly overflows the box, as upstream. The SYNCING state animates a 10x3-frame sprite (consensus-sprite.svg, white strokes — needs a colored/dark background or the AccountOverview brightness/sepia filter); snippet + Vue port inline the sprite as a data URI so no asset file is needed. Selectors are namespaced under .consensus-icon and keyframes prefixed consensus-icon-* for showcase embedding."
+}

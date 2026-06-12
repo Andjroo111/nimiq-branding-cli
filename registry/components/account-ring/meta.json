@@ -1,0 +1,33 @@
+{
+  "name": "account-ring",
+  "purpose": "Ring of up to 6 identicons representing a logged-in multi-address account set — hexagonally arranged identicons for filled slots, faint hexagon placeholders for empty ones.",
+  "category": "identity",
+  "variants": ["vue", "html"],
+  "props": [
+    {
+      "name": "addresses",
+      "type": "String[]",
+      "required": false,
+      "default": "[]",
+      "description": "Up to 6 user-friendly Nimiq addresses. The ring always renders 6 slots; slots beyond addresses.length show the identicon hexagon placeholder."
+    },
+    {
+      "name": "animate",
+      "type": "Boolean",
+      "required": false,
+      "default": "false",
+      "description": "Staggered pop-in animation (500–750ms delays) for each filled identicon slot."
+    }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": ["identicon"],
+  "npmDeps": ["@nimiq/iqons"],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 400, "height": 300 },
+    "selector": ".account-ring",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Wraps the identicon component (same @nimiq/iqons@1.6.0 jsdelivr pin in truth and demo). Sample state: 3 fixed valid addresses (NQ07 0000…, NQ21 1111…, NQ35 2222…) → 3 iqons + 3 faint placeholder hexagons. Default size 11.25rem = 90px under nimiq-style's 8px root. Bottom slot (nth-child 3) intentionally overflows the square container by ~0.45rem upstream; element screenshots crop to the .account-ring box identically in truth and demo."
+}

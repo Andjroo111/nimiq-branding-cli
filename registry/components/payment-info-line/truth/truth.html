@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PaymentInfoLine — truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; background: white; }
+
+    /* Page/demo state: the info line sits on top of a SmallPage (52.5rem = 420px wide). */
+    .payment-info-line { width: 420px; }
+</style>
+
+<!-- Scoped styles of the composed components, verbatim, in webpack injection order
+     (depth-first import order from PaymentInfoLine: Identicon, Amount, Account, Tooltip,
+     Timer, PaymentInfoLine). Vue scoping emulated via data-v attributes; vue-loader
+     appends the attribute to the last compound selector, and '>>>' deep selectors
+     compile to `.parent[data-v] .child`. -->
+
+<!-- Identicon.vue scoped styles — verbatim [data-v-idc] -->
+<style>
+    .identicon[data-v-idc] {
+        width: 10rem;
+    }
+
+    .identicon img[data-v-idc] {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<!-- Amount.vue scoped styles — verbatim [data-v-amt] -->
+<style>
+    .amount[data-v-amt] {
+        white-space: nowrap;
+    }
+
+    .amount.approx[data-v-amt]::before {
+        content: '~ ';
+        opacity: 0.5;
+    }
+</style>
+
+<!-- Account.vue scoped styles — verbatim [data-v-acc] -->
+<style>
+    .account[data-v-acc] {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.75rem 2rem;
+        box-sizing: border-box;
+        flex-shrink: 0;
+        font-size: 2rem;
+        line-height: 1.2;
+        overflow: hidden; /* hide chevron right on hover*/
+    }
+
+    .account.row[data-v-acc] {
+        width: 100%;
+        flex-direction: row;
+    }
+
+    .account.column[data-v-acc] {
+        flex-direction: column;
+    }
+
+    .identicon-and-label[data-v-acc] {
+        display: flex;
+        align-items: center;
+    }
+
+    .row .identicon-and-label[data-v-acc] {
+        flex-direction: row;
+        overflow: hidden;
+        min-width: 5.625rem;
+        flex-grow: 1;
+    }
+
+    .column .identicon-and-label[data-v-acc] {
+        flex-direction: column;
+    }
+
+    .identicon[data-v-acc] {
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    .row .identicon[data-v-acc] {
+        width: 5.625rem;
+        height: 5.625rem;
+        margin-right: 1.5rem;
+    }
+
+    .column .identicon[data-v-acc] {
+        width: 10rem;
+        height: 10rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .cashlink .identicon[data-v-acc] {
+        padding: .5rem;
+    }
+
+    .cashlink .identicon div[data-v-acc] {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+    .cashlink .identicon[data-v-acc]:before {
+        display: block;
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: .25rem solid rgba(31, 35, 72, .2); /* based on nimiq-blue */
+    }
+
+    .account-image[data-v-acc] {
+        border-radius: 1rem;
+    }
+
+    .wallet-label[data-v-acc] {
+        margin-bottom: 0;
+    }
+
+    .label[data-v-acc],
+    .wallet-label[data-v-acc] {
+        overflow: hidden;
+    }
+
+    .row .label:not(.editable)[data-v-acc] {
+        opacity: 0.7;
+        padding-left: 1rem;
+    }
+
+    .row .label[data-v-acc],
+    .row .wallet-label[data-v-acc] {
+        white-space: nowrap;
+        font-weight: 600;
+        mask-image: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+    }
+
+    .row .label[data-v-acc] {
+        flex-grow: 1;
+    }
+
+    .column .label[data-v-acc],
+    .column .wallet-label[data-v-acc] {
+        max-width: 18.5rem; /* 148px, the width the automatic labels are designed for */
+        text-align: center;
+        line-height: 1.5;
+        max-height: calc(2 * 1em * 1.5); /* #lines * font-size * line-height */
+    }
+
+    .label.address-font[data-v-acc] {
+        font-family: "Fira Mono", "Andale Mono", monospace;
+        font-weight: normal;
+        text-transform: uppercase;
+    }
+
+    .balance[data-v-acc] {
+        flex-shrink: 0;
+    }
+
+    .row .balance[data-v-acc] {
+        margin-left: 1rem;
+        font-weight: bold;
+        opacity: 0.7;
+    }
+
+    .column .balance[data-v-acc] {
+        margin-top: 1.5rem;
+    }
+</style>
+
+<!-- Tooltip.vue scoped styles — subset relevant to a CLOSED tooltip (trigger only),
+     verbatim [data-v-tt]. The tooltip-box / arrow / position rules for the open state
+     are omitted; both tooltips in this sample are closed (box not in the DOM,
+     .trigger::after at opacity 0 / visibility hidden). -->
+<style>
+    .tooltip[data-v-tt] {
+        display: inline-block;
+        position: relative;
+        line-height: 1;
+    }
+
+    .trigger[data-v-tt] {
+        position: relative;
+        display: inline-block;
+        vertical-align: bottom;
+        text-decoration: none;
+        outline: none;
+        cursor: default;
+        color: inherit;
+    }
+
+    .trigger[data-v-tt] svg:first-child:last-child,
+    .trigger[data-v-tt] img:first-child:last-child {
+        display: block;
+    }
+
+    .trigger[data-v-tt]::after {
+        opacity: 0;
+        content: '';
+        display: block;
+        position: absolute;
+        width: 2.25rem;
+        height: 2rem;
+        left: calc(50% - 1.125rem);
+        mask-image: url('data:image/svg+xml,<svg viewBox="0 0 18 16" xmlns="http://www.w3.org/2000/svg"><path d="M9 7.12c-.47 0-.93.2-1.23.64L3.2 14.29A4 4 0 0 1 0 16h18a4 4 0 0 1-3.2-1.7l-4.57-6.54c-.3-.43-.76-.64-1.23-.64z" fill="white"/></svg>');
+        transition: opacity .3s var(--nimiq-ease), .3s visibility;
+        transition-delay: 16ms;
+        visibility: hidden;
+        z-index: 1000;
+    }
+</style>
+
+<!-- Timer.vue scoped styles — verbatim [data-v-tmr] -->
+<style>
+    .timer[data-v-tmr] {
+        width: 3.25rem;
+        position: relative;
+    }
+
+    /* for setting height automatically depending on width */
+    .timer[data-v-tmr]::before {
+        content: '';
+        padding-top: 100%;
+        display: block;
+    }
+
+    .tooltip[data-v-tmr] .trigger,
+    svg[data-v-tmr] {
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    svg[data-v-tmr] {
+        fill: none;
+        stroke-linecap: round;
+    }
+
+    circle[data-v-tmr] {
+        stroke: var(--nimiq-blue);
+        transition: stroke .3s var(--nimiq-ease), opacity .3s var(--nimiq-ease);
+    }
+
+    .inverse-theme circle[data-v-tmr],
+    .white-theme circle[data-v-tmr] {
+        stroke: white;
+    }
+
+    .filler-circle[data-v-tmr] {
+        opacity: .2;
+    }
+
+    .time-circle[data-v-tmr] {
+        opacity: .3;
+    }
+
+    .time-shown .time-circle[data-v-tmr] {
+        stroke: var(--nimiq-light-blue);
+        opacity: 1;
+    }
+
+    .inverse-theme.time-shown:not(.little-time-left) .time-circle[data-v-tmr] {
+        stroke: var(--nimiq-light-blue-on-dark, var(--nimiq-light-blue));
+    }
+
+    .white-theme.time-shown:not(.little-time-left) .time-circle[data-v-tmr] {
+        stroke: rgba(255, 255, 255, 0.4);
+    }
+
+    .little-time-left .time-circle[data-v-tmr] {
+        stroke: var(--nimiq-orange);
+        opacity: 1;
+    }
+
+    .info-exclamation-icon[data-v-tmr] {
+        fill: var(--nimiq-blue);
+        opacity: .4;
+        transform-origin: center;
+        transition: fill .3s var(--nimiq-ease), opacity .3s var(--nimiq-ease), transform .3s var(--nimiq-ease);
+    }
+
+    .inverse-theme .info-exclamation-icon[data-v-tmr],
+    .white-theme .info-exclamation-icon[data-v-tmr] {
+        fill: white;
+    }
+
+    .little-time-left .info-exclamation-icon[data-v-tmr] {
+        fill: var(--nimiq-orange);
+        opacity: 1;
+        transform: rotate(180deg); /* turn info icon into an exclamation mark */
+    }
+
+    .countdown[data-v-tmr] {
+        font-size: 12px; /* relative to svg viewBox */
+        font-weight: bold;
+        text-anchor: middle;
+        dominant-baseline: central;
+        fill: var(--nimiq-light-blue);
+        transition: fill .3s var(--nimiq-ease);
+    }
+
+    .inverse-theme .countdown[data-v-tmr] {
+        fill: var(--nimiq-light-blue-on-dark, var(--nimiq-light-blue));
+    }
+
+    .white-theme .countdown[data-v-tmr] {
+        fill: rgba(255, 255, 255, 0.6);
+    }
+
+    .little-time-left .countdown[data-v-tmr] {
+        fill: var(--nimiq-orange);
+    }
+
+    .transition-fade-enter-active[data-v-tmr],
+    .transition-fade-leave-active[data-v-tmr] {
+        transition: opacity .3s var(--nimiq-ease);
+    }
+
+    .transition-fade-enter[data-v-tmr],
+    .transition-fade-leave-to[data-v-tmr] {
+        opacity: 0 !important;
+    }
+</style>
+
+<!-- PaymentInfoLine.vue scoped styles — verbatim [data-v-pil] -->
+<style>
+    .info-line[data-v-pil] {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        box-sizing: border-box;
+        margin: 1.75rem 2.5rem 1rem 2.375rem;
+        flex-shrink: 0;
+        font-size: 2rem;
+        line-height: 1.5;
+        font-weight: normal;
+    }
+
+    .amounts[data-v-pil] {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: .125rem;
+        cursor: default;
+    }
+
+    .amounts > .amount[data-v-pil] {
+        color: var(--nimiq-light-blue);
+        font-weight: bold;
+    }
+
+    .inverse-theme .amounts > .amount[data-v-pil] {
+        color: var(--nimiq-light-blue-on-dark, var(--nimiq-light-blue));
+    }
+
+    .amounts .trigger .nq-icon[data-v-pil] {
+        font-size: 1.625rem;
+        color: var(--nimiq-orange);
+        vertical-align: middle;
+    }
+
+    .amounts .trigger .fiat-amount[data-v-pil] {
+        margin-top: .25rem;
+        color: var(--nimiq-blue);
+        font-size: 1.625rem;
+        line-height: 1;
+        font-weight: 600;
+        opacity: .6;
+    }
+
+    .price-tooltip label[data-v-pil] {
+        font-weight: normal;
+    }
+
+    .price-tooltip .price-breakdown[data-v-pil] {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        column-gap: 2rem;
+        row-gap: 1.5rem;
+        white-space: nowrap;
+    }
+
+    .price-tooltip .price-breakdown label + [data-v-pil] {
+        justify-self: end;
+    }
+
+    .price-tooltip .info[data-v-pil] {
+        font-size: 1.625rem;
+        opacity: .5;
+    }
+
+    .price-tooltip .rate-info[data-v-pil] {
+        margin-top: .5rem;
+    }
+
+    .price-tooltip .rate-info.nq-orange[data-v-pil] {
+        opacity: 1;
+    }
+
+    .price-tooltip .free-service-info[data-v-pil] {
+        margin-top: 1.5rem;
+        color: var(--nimiq-green);
+        opacity: 1;
+    }
+
+    .price-tooltip hr[data-v-pil] {
+        margin: 2rem -1rem 1.5rem;
+        border: unset;
+        border-top: 1px solid currentColor;
+        opacity: .2;
+    }
+
+    .price-tooltip .total[data-v-pil] {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .price-tooltip .total .amount[data-v-pil] {
+        font-weight: bold;
+    }
+
+    .price-tooltip .network-fee-info[data-v-pil] {
+        margin-top: .5rem;
+        margin-bottom: -.25rem;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .arrow-runway[data-v-pil] {
+        flex-grow: 1;
+        min-width: 3rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .arrow-runway .nq-icon[data-v-pil] {
+        opacity: 0;
+        font-size: 2rem;
+        animation: arrow-shooting 2.7s cubic-bezier(.2,.5,.75,.5) infinite;
+    }
+
+    @keyframes arrow-shooting {
+        0%   { transform: translate3D(-3.5rem, 0, 0); }
+        15%  { transform: translate3D(-3.5rem, 0, 0); opacity: 0; }
+        30%  { opacity: .2; }
+        70%  { opacity: .2; }
+        85%  { transform: translate3D(3rem, 0, 0); opacity: 0; }
+        100% { transform: translate3D(3rem, 0, 0); }
+    }
+
+    .account[data-v-pil] {
+        padding: 0;
+        width: auto !important;
+        flex-shrink: 1;
+    }
+
+    .account[data-v-pil] .identicon {
+        min-width: unset;
+        width: 3.375rem;
+        height: 3.375rem;
+        margin-right: 0;
+    }
+
+    .account[data-v-pil] .account-image {
+        border-radius: .5rem;
+        width: 3rem;
+        height: 3rem;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .account[data-v-pil] .label {
+        padding-left: .75rem;
+        margin-bottom: .25rem;
+        font-weight: unset;
+        opacity: 1 !important;
+        /* Remove gradient-fade-out and use text-overflow instead */
+        mask-image: unset;
+        white-space: nowrap;
+        text-overflow: fade;
+    }
+
+    .timer[data-v-pil] {
+        margin: auto -.5rem auto 1rem;
+        flex-shrink: 0;
+    }
+
+    .inverse-theme .amounts .trigger .fiat-amount[data-v-pil],
+    .inverse-theme .arrow-runway .nq-icon[data-v-pil],
+    .inverse-theme .account[data-v-pil] .label {
+        color: white;
+    }
+</style>
+</head>
+<body>
+
+<!-- PaymentInfoLine, hand-expanded for the sample checkout state:
+       cryptoAmount = { amount: 19960000, currency: 'nim', decimals: 5 }  -> Amount "199.6 NIM"
+                      (minDecimals 0, maxDecimals min(4, 5) = 4)
+       fiatAmount   = { amount: 2.99, currency: 'eur' }                   -> FiatAmount "2.99 €"
+       origin       = 'https://shop.nimiq.com'                            -> originDomain "shop.nimiq.com"
+       address      = 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000', no shopLogoUrl -> Identicon
+       theme        = 'normal'; rate is fine (no AlertTriangleIcon, tooltips closed)
+       timer frozen at 10 of 15 minutes left:
+         progress = 1/3, alwaysShowTime (default) -> 'time-shown', radius 12 (grown 1.5x),
+         fullCircleLength = 2π·12 = 75.39822368615503
+         time-circle:   length 50.26548245743669, gap 25.132741228718345, offset -6.283185307179586
+         filler-circle: length 17.132741228718345, gap 58.26548245743669, offset 14.849555921538759
+         countdown text = floor(600000ms -> minutes) = "10"
+     Component root class is .info-line; the .payment-info-line wrapper is page state
+     (the 420px SmallPage width). Closed Tooltips render no positionCssClass and no
+     .tooltip-box. Child component roots carry both their own and the parent's scope
+     attribute, slot content carries the defining parent's scope attribute. -->
+<div class="payment-info-line">
+    <div class="info-line" data-v-pil>
+        <div class="amounts" data-v-pil>
+            <span class="amount" data-v-amt data-v-pil>
+                199.6
+                <span class="currency nim" data-v-amt>NIM</span>
+            </span>
+            <span class="tooltip price-tooltip" data-v-tt data-v-pil>
+                <a href="javascript:void(0);" tabindex="0" class="trigger" data-v-tt><!--
+                    --><span class="fiat-amount" data-v-pil>2.99&nbsp;€</span><!--
+                --></a>
+                <!-- tooltip-box only rendered while the tooltip is shown -->
+            </span>
+        </div>
+        <div class="arrow-runway" data-v-pil>
+            <!-- ArrowRightSmallIcon (@nimiq/style arrow-right-small.svg), animation
+                 arrow-shooting: opacity 0 at rest -->
+            <svg width="16" height="12" viewBox="0 0 16 12" xmlns="http://www.w3.org/2000/svg" class="nq-icon" data-v-pil><path d="M10,1l5,5l-5,5" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="14" y1="6" x2="1" y2="6" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="account row" data-v-acc data-v-pil>
+            <div class="identicon-and-label" data-v-acc>
+                <div class="identicon" data-v-idc data-v-acc>
+                    <img data-v-idc src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>'>
+                </div>
+                <div class="label" data-v-acc>shop.nimiq.com</div>
+            </div>
+        </div>
+        <span class="tooltip timer time-shown" data-v-tt data-v-tmr data-v-pil>
+            <a href="javascript:void(0);" tabindex="0" class="trigger" data-v-tt>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" data-v-tmr>
+                    <circle class="time-circle" cx="50%" cy="50%" r="12" data-v-tmr
+                        stroke-dasharray="50.26548245743669 25.132741228718345"
+                        stroke-dashoffset="-6.283185307179586"
+                        stroke-width="2"></circle>
+                    <circle class="filler-circle" cx="50%" cy="50%" r="12" data-v-tmr
+                        stroke-dasharray="17.132741228718345 58.26548245743669"
+                        stroke-dashoffset="14.849555921538759"
+                        stroke-width="2"></circle>
+                    <text class="countdown" x="50%" y="50%" data-v-tmr>10</text>
+                </svg>
+            </a>
+        </span>
+    </div>
+</div>
+
+<script type="module">
+    // Identicon: same pinned CDN + burn address as the identicon registry component.
+    import Iqons from 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.js';
+    Iqons.svgPath = 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.svg';
+    const address = 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000';
+    document.querySelector('.payment-info-line .identicon img').src = await Iqons.toDataUrl(address);
+</script>
+</body>
+</html>

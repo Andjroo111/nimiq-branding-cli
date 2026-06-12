@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Toast Notification — truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; }
+
+    /* ── Page chrome (not component CSS) ── */
+    body {
+      font-family: 'Mulish', 'Muli', system-ui, sans-serif !important;
+      background: #F8F8F8;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    /* ── Upstream wallet globals, copied verbatim from
+       upstream/wallet/src/scss/themes.scss (font-size vars are NOT in
+       nimiq-style.min.css, so they are defined here) ── */
+
+    :root {
+        --body-size: 2rem;
+        --small-label-size: 1.5rem;
+    }
+
+    .flex-column {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    button.reset {
+        background: none;
+        border: none;
+        outline: none;
+        padding: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-weight: inherit;
+        color: inherit;
+        text-align: inherit;
+        cursor: pointer;
+    }
+
+    button.reset:disabled {
+        cursor: auto;
+    }
+
+    /* ── Upstream component CSS, copied verbatim (SCSS hand-compiled) from
+       upstream/wallet/src/components/swap/SwapNotification.vue <style> block.
+       $mobileBreakpoint = 768px (upstream/wallet/src/scss/variables.scss). ── */
+
+    .swap-notification[data-v-29a59b08] {
+        width: 34rem;
+        height: 8rem;
+        border-radius: 0.75rem;
+        align-items: center;
+        color: white;
+        background-color: var(--nimiq-blue);
+        background-image: var(--nimiq-blue-bg);
+
+        position: fixed;
+        right: 3rem;
+        bottom: 3rem;
+    }
+
+    .swap-notification.complete[data-v-29a59b08] {
+        background-color: var(--nimiq-green);
+        background-image: var(--nimiq-green-bg);
+    }
+
+    .swap-notification.errored[data-v-29a59b08] {
+        background-color: var(--nimiq-orange);
+        background-image: var(--nimiq-orange-bg);
+    }
+
+    .swap-notification.expired[data-v-29a59b08] {
+        background-color: var(--nimiq-gold);
+        background-image: var(--nimiq-gold-bg);
+    }
+
+    .icon[data-v-29a59b08] {
+        width: 8rem;
+        flex-shrink: 0;
+    }
+
+    .icon svg[data-v-29a59b08] {
+        display: block;
+        margin: auto;
+    }
+
+    .icon svg.nq-icon[data-v-29a59b08] {
+        width: 4rem;
+        height: 4rem;
+    }
+
+    .complete .icon .nq-icon[data-v-29a59b08] {
+        padding: 0.5rem;
+    }
+
+    .loading-spinner[data-v-29a59b08] {
+        width: 4.5rem;
+    }
+
+    .status[data-v-29a59b08] {
+        font-size: var(--body-size);
+        font-weight: 600;
+        margin-bottom: 0.125rem;
+    }
+
+    .closing-notice[data-v-29a59b08] {
+        font-size: var(--small-label-size);
+        font-weight: bold;
+        opacity: 0.7;
+    }
+
+    .closing-notice.nq-orange[data-v-29a59b08] {
+        opacity: 1;
+    }
+
+    .swap-notification > svg[data-v-29a59b08] {
+        color: white;
+        position: absolute;
+        right: 1.25rem;
+        top: 1.25rem;
+    }
+
+    .minimize-enter-active, .minimize-leave-active,
+    .slide-enter-active, .slide-leave-active {
+        transition:
+            transform 0.4s cubic-bezier(0.5, 0, 0.15, 1),
+            opacity 0.3s cubic-bezier(0.5, 0, 0.15, 1);
+    }
+
+    .minimize-enter,
+    .minimize-leave-to {
+        transform: translate(-10rem, -15rem) scale(1.2);
+        opacity: 0;
+    }
+
+    .slide-enter,
+    .slide-leave-to {
+        transform: translateX(45rem);
+    }
+
+    @media (max-width: 768px) {
+        .swap-notification[data-v-29a59b08] {
+            right: 1.5rem;
+            bottom: 10.5rem;
+        }
+    }
+
+    /* ── Upstream LoadingSpinner scoped CSS, copied verbatim from
+       upstream/vue-components/src/components/LoadingSpinner.vue ── */
+
+    #big-hex[data-v-64d447ec] {
+        stroke-dashoffset: -40.5;
+        animation: big-hex 4s cubic-bezier(0.76, 0.29, 0.29, 0.76) infinite;
+    }
+
+    #small-hex[data-v-64d447ec] {
+        stroke-dashoffset: 13;
+        animation: small-hex 4s cubic-bezier(0.76, 0.29, 0.29, 0.76) infinite;
+    }
+
+    @keyframes small-hex {
+        0%   { stroke-dashoffset: 13 }
+        17%  { stroke-dashoffset: 38.42 }
+        33%  { stroke-dashoffset: 63.84 }
+        50%  { stroke-dashoffset: 89.25 }
+        67%  { stroke-dashoffset: 114.66 }
+        83%  { stroke-dashoffset: 140.08 }
+        100% { stroke-dashoffset: 165.5 }
+    }
+
+    @keyframes big-hex {
+        0%   { stroke-dashoffset: -40.5 }
+        17%  { stroke-dashoffset: -15.08 }
+        33%  { stroke-dashoffset: 10.33 }
+        50%  { stroke-dashoffset: 35.75 }
+        67%  { stroke-dashoffset: 61.17 }
+        83%  { stroke-dashoffset: 86.58 }
+        100% { stroke-dashoffset: 112 }
+    }
+
+    /* ── Sample-state layout only (page chrome, defined AFTER component CSS):
+       the component is position:fixed bottom-right; stack the three sample
+       states so all are visible in one frame. Bottom toast keeps the
+       untouched upstream resting position (bottom: 3rem). ── */
+
+    .swap-notification.sample-stack-2[data-v-29a59b08] { bottom: 12.5rem; }
+    .swap-notification.sample-stack-3[data-v-29a59b08] { bottom: 22rem; }
+</style>
+</head>
+<body>
+
+  <!-- Sample state: the wallet's bottom toast (SwapNotification) hand-expanded
+       for three states — info/in-progress (blue, LoadingSpinner), error (orange,
+       AlertTriangleIcon) and success/complete (green, CheckmarkIcon, resting at
+       the upstream bottom-right position). Markup mirrors the rendered output of
+       upstream/wallet/src/components/swap/SwapNotification.vue. -->
+
+  <!-- info / in-progress -->
+  <button data-v-29a59b08 class="reset swap-notification flex-row sample-stack-3">
+    <div data-v-29a59b08 class="icon">
+      <!-- LoadingSpinner (upstream/vue-components/src/components/LoadingSpinner.vue) -->
+      <svg data-v-64d447ec data-v-29a59b08 height="48" width="54" viewBox="0 0 54 48" color="inherit" class="loading-spinner">
+        <path data-v-64d447ec id="big-hex" d="M51.9,21.9L41.3,3.6c-0.8-1.3-2.2-2.1-3.7-2.1H16.4c-1.5,0-2.9,0.8-3.7,2.1L2.1,21.9c-0.8,1.3-0.8,2.9,0,4.2 l10.6,18.3c0.8,1.3,2.2,2.1,3.7,2.1h21.3c1.5,0,2.9-0.8,3.7-2.1l10.6-18.3C52.7,24.8,52.7,23.2,51.9,21.9z" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.4" stroke-dasharray="92.5 60" />
+        <path data-v-64d447ec id="small-hex" d="M51.9,21.9L41.3,3.6c-0.8-1.3-2.2-2.1-3.7-2.1H16.4c-1.5,0-2.9,0.8-3.7,2.1L2.1,21.9c-0.8,1.3-0.8,2.9,0,4.2 l10.6,18.3c0.8,1.3,2.2,2.1,3.7,2.1h21.3c1.5,0,2.9-0.8,3.7-2.1l10.6-18.3C52.7,24.8,52.7,23.2,51.9,21.9z" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="47.5 105" />
+      </svg>
+    </div>
+    <div data-v-29a59b08 class="content flex-column">
+      <div data-v-29a59b08 class="status">Performing swap 2/5</div>
+      <span data-v-29a59b08 class="closing-notice nq-orange">Don't close your wallet!</span>
+    </div>
+    <!-- MaximizeIcon (upstream/wallet/src/components/icons/MaximizeIcon.vue) -->
+    <svg data-v-29a59b08 width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="10.5" width="8" height="1.5" rx=".75" fill="currentColor"/>
+      <path d="M1.23 5.96l.07-5 5 .07M2.1 1.72l4.87 5.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <!-- error / errored -->
+  <button data-v-29a59b08 class="reset swap-notification flex-row errored sample-stack-2">
+    <div data-v-29a59b08 class="icon">
+      <!-- AlertTriangleIcon (@nimiq/style icons/alert-triangle.svg via IconBase → class="nq-icon") -->
+      <svg data-v-29a59b08 class="nq-icon" width="17" height="16" viewBox="0 0 17 16" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.913 13.333L9.68 1.433a1.333 1.333 0 0 0-2.362 0l-6.232 11.9a1.333 1.333 0 0 0 1.182 1.952H14.73a1.333 1.333 0 0 0 1.182-1.952zm-8.08-7.718a.667.667 0 0 1 1.334 0v4a.667.667 0 1 1-1.334 0v-4zm.682 7.674h.018a.983.983 0 0 0 .967-1.022 1.018 1.018 0 0 0-1.016-.978h-.019a.984.984 0 0 0-.965 1.02c.02.546.468.978 1.015.98z" fill="currentColor"/></svg>
+    </div>
+    <div data-v-29a59b08 class="content flex-column">
+      <div data-v-29a59b08 class="status">There's a problem</div>
+      <span data-v-29a59b08 class="closing-notice">Click for more information</span>
+    </div>
+    <svg data-v-29a59b08 width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="10.5" width="8" height="1.5" rx=".75" fill="currentColor"/>
+      <path d="M1.23 5.96l.07-5 5 .07M2.1 1.72l4.87 5.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <!-- success / complete — resting visible state at the upstream bottom position -->
+  <button data-v-29a59b08 class="reset swap-notification flex-row complete">
+    <div data-v-29a59b08 class="icon">
+      <!-- CheckmarkIcon (@nimiq/style icons/checkmark.svg via IconBase → class="nq-icon") -->
+      <svg data-v-29a59b08 class="nq-icon" width="74" height="74" viewBox="0 0 74 74" xmlns="http://www.w3.org/2000/svg"><path d="M71.12 1.84a4.5 4.5 0 0 0-6.28 1.04l-42.1 58.74L8.68 47.54a4.5 4.5 0 1 0-6.36 6.37l17.8 17.81a4.57 4.57 0 0 0 6.84-.56l45.2-63.03a4.5 4.5 0 0 0-1.04-6.29z" fill="currentColor" stroke="currentColor" stroke-width=".8"/></svg>
+    </div>
+    <div data-v-29a59b08 class="content flex-column">
+      <div data-v-29a59b08 class="status">Swap successful!</div>
+      <span data-v-29a59b08 class="closing-notice">It's safe to close your wallet now</span>
+    </div>
+  </button>
+
+</body>
+</html>
