@@ -1,6 +1,6 @@
 {
   "name": "nimiq-branding-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "nq \u2014 pixel-verified Nimiq UI component registry + CLI. 39 components (Vue 3 + plain HTML) diffed against the real Nimiq apps, plus the team's real asset library. Unofficial community tool.",
   "type": "module",
   "bin": {
@@ -36,16 +36,5 @@
     "scaffolding",
     "crypto",
     "ui"
-  ],
-  "files": [
-    "bin/",
-    "assets/",
-    "scripts/verify.mjs",
-    "scripts/snap.mjs",
-    "NOTICE.md",
-    "registry/index.json",
-    "registry/components/*/meta.json",
-    "registry/components/*/html/",
-    "registry/components/*/vue/"
   ]
 }
