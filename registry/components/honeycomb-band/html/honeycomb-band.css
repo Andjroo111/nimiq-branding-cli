@@ -53,8 +53,8 @@
     width: 2795px;
     height: 544px;
     margin-left: -1397.5px;
-    /* the live site renders the asset large; 2.2x matches the visible cell size */
-    transform: scale(2.2);
+    /* the live site renders the asset enlarged; 1.6x matches the visible cell size */
+    transform: scale(1.6);
     transform-origin: 50% 60%;
 }
 
@@ -95,9 +95,9 @@
 .nq-honeycomb-band__hex:focus { transform: scale(1.12); }
 
 /* Lattice positions (asset coordinates: cell center - 62 / - 55) */
-.nq-honeycomb-band__hex--youtube  { left: 1120.5px; top: 248px; background-color: #e60012; } /* cell (1182.5, 303) */
-.nq-honeycomb-band__hex--x        { left: 1443px;   top: 248px; background-color: #1a1a1a; } /* cell (1505, 303) */
-.nq-honeycomb-band__hex--facebook { left: 1496.75px; top: 186px; background-color: #1877F2; } /* cell (1558.75, 241) */
+.nq-honeycomb-band__hex--youtube  { left: 1120.5px; top: 248px; background-color: #e60012; } /* real cell (1182.5, 303) */
+.nq-honeycomb-band__hex--x        { left: 1550.5px; top: 248px; background-color: #1a1a1a; } /* real cell (1612.5, 303) */
+.nq-honeycomb-band__hex--facebook { left: 1658px;   top: 186px; background-color: #1877F2; } /* real cell (1720, 241) — true upper-right neighbor of X */
 
 /* REAL logo glyphs (nimiq-icons mono set, inlined SVG) rendered white via currentColor */
 .nq-honeycomb-band__glyph {
