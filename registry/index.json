@@ -1,6 +1,16 @@
 {
   "components": [
     {
+      "name": "account-header",
+      "purpose": "The wallet address-overview header: large identicon, account name + chunked Fira Mono address, NIM balance + fiat value, and the actions row — search pill, green Stake pill with the green 'Earn NIM every month by staking your NIM' CTA tooltip, divider, light-blue Send and neutral Receive pills.",
+      "category": "wallet",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
       "name": "account-list",
       "purpose": "Selectable list of accounts — identicon + label + balance rows with hover caret — used as the account chooser in Hub flows (inside AccountSelector).",
       "category": "identity",
@@ -71,6 +81,36 @@
       "verified": true
     },
     {
+      "name": "app-showcase-card",
+      "purpose": "nimiq.com 'THE APPS' marketing card: light-gray rounded card with gold hexagon app-icon chip, title, 2-line gray subtitle and a CSS-built device mock ('Payment successful' toast + amount) clipped at the card edge. .wide modifier puts icon+copy left and a dashboard window mock right.",
+      "category": "marketing",
+      "variants": [
+        "default",
+        "wide"
+      ],
+      "verified": true
+    },
+    {
+      "name": "backup-banner",
+      "purpose": "The wallet's persistent orange warning banner — \"There is no 'forgot password'\" with a Backup→ pill — shown until the account's recovery words are exported.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "balance-distribution",
+      "purpose": "Sidebar balance-distribution donut from the Nimiq wallet: a ring made of one rounded SVG arc per currency (gold NIM, orange BTC, blue USDC, teal USDT), sized by each currency's share of the account's total fiat value, next to a bold white CURRENCY / percentage legend. Empty currencies get no arc and a dimmed legend row; hovering a row or arc highlights that currency. Lives on the navy wallet sidebar.",
+      "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
       "name": "buttons",
       "purpose": "Primary Nimiq buttons (.nq-button) from the nimiq-style CSS framework: pill-shaped gradient buttons in blue (default), light-blue, green, orange, red, gold, plus disabled and inverse states.",
       "category": "form",
@@ -124,6 +164,26 @@
       "name": "fiat-amount",
       "purpose": "Displays a fiat amount with an optimized currency symbol (e.g. $1234.56 instead of USD 1234.56) and adaptive decimal precision: decimals are extended until the rounded display deviates from the true amount by at most maxRelativeDeviation.",
       "category": "payment",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "hero-section",
+      "purpose": "nimiq.com home hero: deep purple radial-gradient sky with floating translucent hexagons, white 800-weight 'Universal Money for Independent Individuals' headline, lavender subtitle, light-blue 'Create Wallet ↗' pill, WORKS WITH partner row, and a dotted-globe white arc cresting at the bottom.",
+      "category": "marketing",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "honeycomb-band",
+      "purpose": "nimiq.com community honeycomb band: blue 'Community →' pill centered above a clipped flat-top hexagon mosaic in very light grays, with three brand-colored social hexagons mixed in (YouTube red play, X black, Facebook blue f).",
+      "category": "marketing",
       "variants": [
         "vue",
         "html"
@@ -201,9 +261,29 @@
       "verified": true
     },
     {
+      "name": "price-chart",
+      "purpose": "The wallet sidebar's crypto price sparkline — '24H' badge over a smoothed white line chart, with the currency ticker, fiat price and 24h percentage change below, on the navy sidebar background.",
+      "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
       "name": "qr-code",
       "purpose": "Nimiq QR code — renders arbitrary data (typically a nimiq: payment URI) as a rounded-module QR code on a canvas, filled by default with the Nimiq light-blue radial gradient (#265DD7 → #0582CA) on a transparent background.",
       "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "search-bar",
+      "purpose": "The wallet's pill-shaped transaction search input: magnifier icon + borderless input inside a 500px-radius inset border, light-blue on focus, with a clear (cross) button while active.",
+      "category": "form",
       "variants": [
         "vue",
         "html"
@@ -261,6 +341,16 @@
       "verified": true
     },
     {
+      "name": "swap-balance-bar",
+      "purpose": "Swap Currencies distribution bar — draggable handle splits total fiat value between two assets: solid address-colored NIM segment left, orange diagonal-hatched BTC change segment right, white round arrow handle on a light-blue hairline, 10-tick percent scale and curved connector lines up to the account labels.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
       "name": "timer",
       "purpose": "Circular countdown timer (Hub checkout 'offer expires' indicator): a light-blue arc shrinking clockwise as time runs out, a faint filler arc in the gap, and the remaining time (simplified to the largest fitting unit) in the center. Turns orange when >= 75% of the time has elapsed.",
       "category": "feedback",
@@ -284,6 +374,16 @@
       "name": "tooltip",
       "purpose": "Hover/focus/click tooltip with a positioned arrow box. Wraps a trigger element (icon by default) and shows a dark Nimiq-blue gradient box with an arrow, positioned via a preferred '[primary] [secondary]' position (e.g. 'top right'), optionally constrained to a container.",
       "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "transaction-list",
+      "purpose": "Wallet transaction history list — month header + per-transaction rows: stacked day/month date, peer identicon, Fira Mono address with time underneath, and right-aligned amount (outgoing plain at 60%, incoming in the green tinted pill) over a loading fiat placeholder bar.",
+      "category": "payment",
       "variants": [
         "vue",
         "html"

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>honeycomb-band</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="honeycomb-band.css">
+<style>
+    html, body { margin: 0; padding: 0; background: #fff; }
+    body { font-family: 'Mulish', sans-serif; }
+</style>
+</head>
+<body>
+<!-- honeycomb-band: nimiq.com community honeycomb band (marketing, screenshot-referenced).
+     Blue "Community →" pill centered above a clipped flat-top hexagon mosaic in very
+     light grays with three brand-colored social hexagons (YouTube red play, X black,
+     Facebook blue f — inline SVG glyphs). Deterministic hardcoded 16-column grid,
+     hand-expanded to static markup. Requires honeycomb-band.css + Mulish (Google
+     Fonts). No JS. The grid is 1650px wide and clips at the container edges. -->
+<section class="nq-honeycomb-band">
+    <a class="nq-honeycomb-band__cta" href="#">Community
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2.5 8h10.4M8.6 3.6 13 8l-4.4 4.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+
+    <div class="nq-honeycomb-band__mosaic">
+        <div class="nq-honeycomb-band__grid">
+            <!-- col 1 (offset) — clipped left edge -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 2 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--spacer"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 3 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--vlight"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 4 — YouTube -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <a class="nq-honeycomb-band__hex nq-honeycomb-band__hex--youtube" href="#" aria-label="YouTube">
+                    <svg width="44" height="31" viewBox="0 0 44 31" aria-hidden="true">
+                        <rect width="44" height="31" rx="7" fill="#fff"/>
+                        <path d="M18.5 9.4 29.5 15.5 18.5 21.6Z" fill="#e60012"/>
+                    </svg>
+                </a>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 5 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--vlight"></span>
+            </div>
+            <!-- col 6 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 7 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 8 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 9 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--vlight"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 10 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 11 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 12 — X -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <a class="nq-honeycomb-band__hex nq-honeycomb-band__hex--x" href="#" aria-label="X (Twitter)">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                </a>
+            </div>
+            <!-- col 13 (offset) — Facebook -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <a class="nq-honeycomb-band__hex nq-honeycomb-band__hex--facebook" href="#" aria-label="Facebook">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                </a>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 14 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 15 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 16 — clipped right edge -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--vlight"></span>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

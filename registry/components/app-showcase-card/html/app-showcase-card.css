@@ -1,0 +1,322 @@
+/* app-showcase-card — nimiq.com "THE APPS" marketing card (screenshot-referenced).
+   Self-contained: marketing pages don't use the legacy 8px-root framework, so all
+   units are plain px. Every selector is namespaced under .nq-app-showcase-card. */
+
+.nq-app-showcase-card {
+    --asc-navy: #1F2348;
+    --asc-text-60: rgba(31, 35, 72, 0.6);
+    --asc-text-50: rgba(31, 35, 72, 0.5);
+    --asc-green: #21BCA5;
+    --asc-light-blue: #0582CA;
+    --asc-gold-bg: radial-gradient(at 100% 100%, #EC991C, #E9B213);
+    --asc-frame: #D9D9D9;
+    --asc-screen: #F8F8F8;
+    --asc-bar: #E2E2E7;
+
+    position: relative;
+    box-sizing: border-box;
+    width: 420px;
+    height: 520px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #EFEEF0;
+    padding: 44px 32px 0;
+    text-align: center;
+    font-family: 'Mulish', sans-serif;
+    color: var(--asc-navy);
+}
+
+.nq-app-showcase-card *,
+.nq-app-showcase-card *::before,
+.nq-app-showcase-card *::after { box-sizing: border-box; }
+
+/* ---- gold app-icon chip ---- */
+.nq-app-showcase-card .asc-icon {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 15px;
+    background: var(--asc-gold-bg);
+}
+.nq-app-showcase-card .asc-icon-hex {
+    width: 22px;
+    height: 19px;
+    background: #fff;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+.nq-app-showcase-card .asc-icon-label {
+    margin-top: 3px;
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* ---- copy ---- */
+.nq-app-showcase-card .asc-title {
+    margin: 22px 0 0;
+    font-size: 27px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: var(--asc-navy);
+}
+.nq-app-showcase-card .asc-subtitle {
+    margin: 12px auto 0;
+    max-width: 300px;
+    font-size: 19px;
+    line-height: 1.5;
+    font-weight: 400;
+    color: var(--asc-text-60);
+}
+
+/* ---- phone device mock (CSS-built, neutral) ---- */
+.nq-app-showcase-card .asc-mock {
+    position: relative;
+    margin: 40px auto 0;
+    width: 246px;
+}
+.nq-app-showcase-card .asc-phone {
+    position: relative;
+    width: 246px;
+    height: 280px; /* clipped by the card's bottom edge */
+    border: 6px solid var(--asc-frame);
+    border-bottom: none;
+    border-radius: 28px 28px 0 0;
+    background: var(--asc-screen);
+    padding: 18px 16px 0;
+}
+.nq-app-showcase-card .asc-phone-btn {
+    position: absolute;
+    top: 78px;
+    right: -10px;
+    width: 4px;
+    height: 38px;
+    border-radius: 2px;
+    background: var(--asc-frame);
+}
+
+/* status row: hamburger left, counter pill right */
+.nq-app-showcase-card .asc-phone-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.nq-app-showcase-card .asc-burger {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 17px;
+}
+.nq-app-showcase-card .asc-burger i {
+    display: block;
+    height: 2px;
+    border-radius: 1px;
+    background: #B0B2BD;
+}
+.nq-app-showcase-card .asc-burger i:nth-child(2) { width: 13px; }
+.nq-app-showcase-card .asc-burger i:nth-child(3) { width: 15px; }
+.nq-app-showcase-card .asc-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 999px;
+    background: #EAEAEC;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--asc-navy);
+}
+.nq-app-showcase-card .asc-counter::before {
+    content: '';
+    width: 7px;
+    height: 9px;
+    background: #FC8702;
+    clip-path: polygon(50% 0%, 100% 55%, 80% 100%, 20% 100%, 0% 55%);
+}
+
+/* "Payment successful" toast pill, overlapping the status row */
+.nq-app-showcase-card .asc-toast {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    white-space: nowrap;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 5px 14px rgba(31, 35, 72, 0.10);
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--asc-navy);
+}
+.nq-app-showcase-card .asc-toast svg {
+    width: 14px;
+    height: 12px;
+    stroke: var(--asc-green);
+    stroke-width: 2.5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* balance block */
+.nq-app-showcase-card .asc-amount {
+    margin-top: 56px;
+    font-size: 33px;
+    line-height: 1.2;
+    font-weight: 400;
+    color: var(--asc-navy);
+}
+.nq-app-showcase-card .asc-amount-sub {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--asc-text-50);
+}
+.nq-app-showcase-card .asc-amount-sub svg {
+    width: 14px;
+    height: 9px;
+    stroke: #9A9CAB;
+    stroke-width: 1.5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.nq-app-showcase-card .asc-topup {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--asc-light-blue);
+    text-decoration: none;
+}
+.nq-app-showcase-card .asc-topup::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid var(--asc-light-blue);
+    border-top: 2px solid var(--asc-light-blue);
+    transform: rotate(45deg);
+    margin-left: 2px;
+}
+
+/* faint transaction row, cut off by the card edge */
+.nq-app-showcase-card .asc-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 34px;
+}
+.nq-app-showcase-card .asc-row-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--asc-bar);
+    flex-shrink: 0;
+}
+.nq-app-showcase-card .asc-row-bar {
+    height: 9px;
+    border-radius: 4.5px;
+    background: var(--asc-bar);
+    width: 92px;
+}
+.nq-app-showcase-card .asc-row-bar.amount {
+    width: 52px;
+    margin-left: auto;
+}
+
+/* =========================================================
+   .wide modifier — icon + copy left, dashboard mock right
+   ========================================================= */
+.nq-app-showcase-card.wide {
+    width: 760px;
+    height: 320px;
+    padding: 0;
+    text-align: left;
+}
+.nq-app-showcase-card.wide .asc-copy {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 48px;
+    width: 230px;
+}
+/* wide cards show a bare hexagon glyph in the chip (no app label) */
+.nq-app-showcase-card.wide .asc-icon-label { display: none; }
+.nq-app-showcase-card.wide .asc-icon-hex { width: 26px; height: 23px; }
+.nq-app-showcase-card.wide .asc-title {
+    margin-top: 20px;
+    font-size: 24px;
+}
+.nq-app-showcase-card.wide .asc-subtitle {
+    margin: 10px 0 0;
+    max-width: none;
+    font-size: 17px;
+}
+
+/* dashboard window mock */
+.nq-app-showcase-card.wide .asc-mock {
+    position: absolute;
+    top: 44px;
+    left: 330px;
+    margin: 0;
+    width: 500px; /* bleeds off the right + bottom edges */
+}
+.nq-app-showcase-card .asc-window {
+    position: relative;
+    display: flex;
+    width: 500px;
+    height: 300px;
+    border-radius: 8px 0 0 0;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(31, 35, 72, 0.08);
+    overflow: hidden;
+}
+.nq-app-showcase-card .asc-window-side {
+    width: 64px;
+    flex-shrink: 0;
+    background: var(--asc-navy);
+    padding: 16px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+.nq-app-showcase-card .asc-window-side i {
+    display: block;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.16);
+}
+.nq-app-showcase-card .asc-window-side i:first-child {
+    background: var(--asc-gold-bg);
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    border-radius: 0;
+    height: 19px;
+}
+.nq-app-showcase-card .asc-window-main {
+    position: relative;
+    flex-grow: 1;
+    background: var(--asc-screen);
+    padding: 20px 24px 0;
+    text-align: center;
+}
+.nq-app-showcase-card .asc-window-main .asc-toast { top: 14px; }
+.nq-app-showcase-card .asc-window-main .asc-amount { margin-top: 64px; }
+.nq-app-showcase-card .asc-window-main .asc-row { margin-top: 40px; }
+.nq-app-showcase-card .asc-window-main .asc-row-bar { width: 120px; }
+.nq-app-showcase-card .asc-window-main .asc-row-bar.amount { width: 64px; }

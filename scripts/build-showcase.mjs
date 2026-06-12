@@ -38,6 +38,17 @@ const TILES = [
   ['status-screen', 'The Hub’s full-card status overlay — every checkout and signing flow ends on this green success (or red error) screen inside the standard card.', { wrapSmallPage: true }],
   ['buttons', 'The @nimiq/style button system: uppercase pills with radial-gradient fills. Navy/light-blue for CTAs, green only to confirm success, red only for destructive actions.'],
   ['card', 'The base nq-card container — header, body, footer — used across the hub and marketing sites for any grouped content.'],
+  // Supporting elements (wallet + nimiq.com marketing) — 2026-06-11 batch.
+  ['backup-banner', 'Pinned to the top of the wallet&rsquo;s account overview until the recovery words are exported — the orange &ldquo;there is no forgot password&rdquo; warning with the Backup&rarr; pill.', { wide: true }],
+  ['search-bar', 'Filters the wallet&rsquo;s transaction history — the pill expands and turns light-blue on focus and reveals a clear cross while a query is typed.'],
+  ['account-header', 'The top of every wallet address view: big identicon, label + chunked address, NIM balance, and the search / Stake / Send / Receive action row with the green staking CTA tooltip.', { wide: true }],
+  ['transaction-list', 'The wallet&rsquo;s transaction history — month headers, stacked day/month dates, peer identicons, and incoming amounts in the green tinted pill over the loading fiat placeholder.', { wide: true }],
+  ['swap-balance-bar', 'The Swap Currencies modal&rsquo;s distribution bar — drag the handle to split your total value between assets; the orange hatched segment is the incoming BTC change.', { wide: true }],
+  ['price-chart', 'The wallet sidebar&rsquo;s price sparklines — NIM with the 24H badge, BTC below it — ticker, fiat price and green 24h change on the navy sidebar.'],
+  ['balance-distribution', 'The wallet sidebar&rsquo;s donut: one rounded arc per currency sized by its share of the account&rsquo;s total fiat value, with the Swap pill rendered below it.'],
+  ['hero-section', 'The nimiq.com home hero — purple radial sky, floating hexagons, the &ldquo;Create Wallet&rdquo; pill, WORKS WITH partner row and the dotted globe cresting at the bottom.', { wide: true }],
+  ['app-showcase-card', 'nimiq.com&rsquo;s THE APPS section — every app gets this card: gold hexagon icon chip, copy, and a device mock clipped at the card edge (wide variant for the wallet).', { wide: true }],
+  ['honeycomb-band', 'nimiq.com&rsquo;s community section — flat-top hexagon mosaic in light grays with the YouTube, X and Facebook hexes and the blue Community pill.', { wide: true }],
 ];
 
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -156,6 +167,20 @@ body { font-family: 'Mulish', 'Muli', system-ui, sans-serif !important; backgrou
 /* status-screen sits inside a SmallPage; shrink it a touch to fit the tile */
 #status-screen .small-page { transform: scale(0.82); transform-origin: top center; margin-bottom: -100px !important; }
 
+/* supporting-element tiles (2026-06-11 batch) — sizing chrome only */
+#backup-banner .backup-banner { width: 100%; max-width: 560px; }
+#account-header .account-header { width: 100%; }
+#transaction-list .transaction-list { width: 100%; }
+#swap-balance-bar .swap-balance-bar { width: 444px; max-width: 100%; margin-bottom: 1.5rem; }
+#balance-distribution .tile-stage { background: radial-gradient(100% 100% at bottom right, #260133, #1F2348); }
+/* zoomed children resolve % widths in their own zoomed space — width:100% already fills the stage */
+#hero-section .tile-stage { padding: 0; align-items: stretch; }
+#hero-section .nq-hero-section { zoom: 0.55; }
+#honeycomb-band .tile-stage { padding: 0; align-items: stretch; }
+#honeycomb-band .nq-honeycomb-band { zoom: 0.6; }
+#app-showcase-card .tile-stage { gap: 28px; }
+#app-showcase-card .nq-app-showcase-card { max-width: 100%; }
+
 /* component snippet styles (verbatim from the registry) */
 ${styles}
 </style>
@@ -171,8 +196,9 @@ ${styles}
     </g>
   </svg>
   <h1>Component Registry Showcase</h1>
-  <p>Every piece below is scaffolded by the <code>nq</code> CLI and pixel-diffed against the real
-  Nimiq component source before it ships — 20 components, 19 matching upstream at 0.000%.</p>
+  <p>Every piece below is scaffolded by the <code>nq</code> CLI. Wallet and hub snippets are
+  pixel-diffed against the real Nimiq component source before they ship; the marketing elements
+  are screenshot-referenced recreations of nimiq.com.</p>
   <div class="pill">nq add &lt;component&gt; — Vue 3 or plain HTML</div>
 </div>
 

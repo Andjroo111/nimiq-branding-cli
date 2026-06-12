@@ -1,0 +1,120 @@
+/* hero-section — nimiq.com marketing hero (screenshot-referenced recreation).
+   All selectors namespaced under .nq-hero-section. Deterministic, no JS. */
+
+.nq-hero-section {
+    position: relative;
+    width: 100%;
+    height: 800px;
+    overflow: hidden;
+    font-family: 'Mulish', sans-serif;
+    background:
+        radial-gradient(1050px 640px at 50% 26%, rgba(110, 82, 192, 0.6), rgba(110, 82, 192, 0) 68%),
+        radial-gradient(1500px 900px at 50% 108%, rgba(72, 92, 196, 0.38), rgba(72, 92, 196, 0) 62%),
+        linear-gradient(180deg, #211c4a 0%, #2c2562 42%, #232456 72%, #1f2348 100%);
+}
+
+/* ---- floating hexagons (flat left/right points, Nimiq orientation) ---- */
+.nq-hero-section__hex {
+    position: absolute;
+    clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
+    background: linear-gradient(135deg, rgba(148, 134, 255, 0.85) 0%, rgba(64, 105, 224, 0.45) 100%);
+    filter: blur(1px);
+    z-index: 1;
+}
+.nq-hero-section__hex--a { left: 86px;   top: 126px; width: 22px; height: 19px; opacity: 0.55; }
+.nq-hero-section__hex--b { left: 1102px; top: 102px; width: 26px; height: 22px; opacity: 0.6; }
+.nq-hero-section__hex--c { left: 1144px; top: 448px; width: 28px; height: 24px; opacity: 0.5; }
+.nq-hero-section__hex--d { left: 168px;  top: 352px; width: 58px; height: 50px; opacity: 0.28; filter: blur(2px); }
+
+/* ---- copy block ---- */
+.nq-hero-section__inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 112px;
+}
+
+.nq-hero-section__title {
+    margin: 0;
+    font-size: 52px;
+    line-height: 1.25;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: #ffffff;
+}
+
+.nq-hero-section__subtitle {
+    margin: 20px auto 0;
+    max-width: 430px;
+    font-size: 16px;
+    line-height: 1.65;
+    font-weight: 600;
+    color: #9d9ac4;
+}
+
+.nq-hero-section__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+    padding: 12px 28px 13px;
+    border: none;
+    border-radius: 999px;
+    background: radial-gradient(120% 180% at 100% 100%, #46a8f4 0%, #2a69e2 78%);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(31, 35, 72, 0.35);
+}
+.nq-hero-section__cta-arrow {
+    font-size: 14px;
+    line-height: 1;
+    transform: translateY(-1px);
+}
+
+/* ---- partner row ---- */
+.nq-hero-section__partners {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+    margin-top: 64px;
+}
+.nq-hero-section__partners-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+}
+.nq-hero-section__partner {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: rgba(255, 255, 255, 0.92);
+}
+.nq-hero-section__partner svg { display: block; }
+.nq-hero-section__partner-name {
+    font-size: 15px;
+    font-weight: 700;
+}
+.nq-hero-section__partner-name--mark {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+
+/* ---- dotted globe arc ---- */
+.nq-hero-section__globe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}

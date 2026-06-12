@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SwapBalanceBar — truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Page scaffolding + wallet globals the component relies on */
+    body {
+        font-family: 'Mulish', sans-serif;
+        margin: 0;
+        padding: 32px;
+        background: white;
+    }
+
+    /* wallet src/scss/themes.scss — global utilities */
+    .flex-column { display: flex; flex-direction: column; }
+    .flex-row { display: flex; flex-direction: row; }
+    button.reset {
+        background: none;
+        border: none;
+        outline: none;
+        padding: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-weight: inherit;
+        color: inherit;
+        text-align: inherit;
+        cursor: pointer;
+    }
+    button.reset:disabled { cursor: auto; }
+
+    /* wallet theme vars (themes.scss) used by the component */
+    :root {
+        --body-size: 2rem;
+        --small-size: 1.75rem;
+        --text-50: rgba(31, 35, 72, 0.5);
+        --text-40: rgba(31, 35, 72, 0.4);
+        --text-20: rgba(31, 35, 72, 0.2);
+        --bitcoin-orange: #F7931A;
+        --usdc-blue: #2775CA;
+        --usdt-green: #009393;
+    }
+
+    /* @nimiq/vue-components Identicon base style */
+    .identicon { width: 10rem; }
+    .identicon img { width: 100%; height: 100%; }
+
+    /* SwapModal context: .small-page width 63.5rem, font-size var(--body-size),
+       page-body side padding 4rem -> 44.5rem content column */
+    .container {
+        width: 55.5rem;
+        font-size: var(--body-size);
+        color: var(--nimiq-blue);
+        /* room for the percent labels that overflow the component's last row
+           (upstream the modal's bottom margin provides this space) */
+        padding-bottom: 1.5rem;
+        background: white;
+    }
+
+    /* ============================================================
+       SwapBalanceBar.vue scoped styles — verbatim, scoping emulated
+       via [data-v-sbb]. nimiq-blue(a) = rgba(31, 35, 72, a).
+       ============================================================ */
+    .swap-balance-bar[data-v-sbb] {
+        position: relative;
+    }
+
+    .disabled[data-v-sbb] {
+        pointer-events: none !important;
+    }
+    .disabled .currency[data-v-sbb] {
+        color: rgba(31, 35, 72, 0.4) !important;
+    }
+    .disabled .currency[data-v-sbb] svg { /* ::v-deep */
+        color: rgba(31, 35, 72, 0.4) !important;
+    }
+    .disabled .currency .identicon-stack .disabled[data-v-sbb] {
+        position: absolute;
+        inset: 0;
+        background: #424242;
+        z-index: 1;
+        left: -2rem;
+        right: -1rem;
+        mix-blend-mode: color;
+    }
+    .disabled .bar[data-v-sbb] {
+        background-color: rgba(31, 35, 72, 0.1) !important;
+        border: 0 !important;
+    }
+    .disabled .separator[data-v-sbb] {
+        background: rgba(31, 35, 72, 0.2) !important;
+        background-image: none !important;
+    }
+    .disabled .handle[data-v-sbb] {
+        position: relative;
+    }
+    .disabled .handle .disabled[data-v-sbb] {
+        /* As the handle is a image, we create a mask to make it look disabled */
+        position: absolute;
+        inset: 0;
+        background: white;
+        opacity: 0.3;
+        z-index: 5;
+        border-radius: 999px;
+    }
+    .disabled .left-total-percent[data-v-sbb],
+    .disabled .right-total-percent[data-v-sbb] {
+        color: rgba(31, 35, 72, 0.4) !important;
+    }
+
+    .balance-bar-header[data-v-sbb] {
+        --header-height: 5.25rem;
+        height: var(--header-height);
+        justify-content: space-between;
+        column-gap: 1rem;
+    }
+    .balance-bar-header > * label[data-v-sbb] {
+        font-weight: 600;
+        line-height: 2.625rem;
+    }
+    .balance-bar-header svg[data-v-sbb] {
+        width: 5.25rem;
+        height: 5.25rem;
+    }
+
+    .balance-bar-header .currency[data-v-sbb] {
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: var(--currency-columns);
+        grid-auto-flow: column;
+        column-gap: var(--column-gap);
+    }
+    .balance-bar-header .currency .identicon-stack[data-v-sbb],
+    .balance-bar-header .currency[data-v-sbb] svg { /* ::v-deep */
+        grid-row: 1 / span 2;
+    }
+    .balance-bar-header .currency[data-v-sbb] .amount { /* ::v-deep */
+        color: var(--text-50);
+        font-size: var(--small-size);
+        font-weight: 600;
+    }
+    .balance-bar-header .currency.left[data-v-sbb] {
+        --currency-columns: 1fr auto;
+    }
+    .balance-bar-header .currency.right[data-v-sbb] {
+        --currency-columns: auto 1fr;
+    }
+    .balance-bar-header .currency.right > label[data-v-sbb],
+    .balance-bar-header .currency.right > span[data-v-sbb] {
+        text-align: right;
+    }
+    .balance-bar-header .currency.right.identicon-stack[data-v-sbb],
+    .balance-bar-header .currency.right[data-v-sbb] svg { /* ::v-deep */
+        grid-column: 2;
+    }
+    .balance-bar-header .currency.nimiq[data-v-sbb] {
+        --column-gap: 1.5rem;
+        max-width: 65%;
+        position: relative;
+    }
+    .balance-bar-header .currency.nimiq.right[data-v-sbb] {
+        margin-right: 1rem;
+    }
+    .balance-bar-header .currency.nimiq.left[data-v-sbb] {
+        margin-left: 1rem;
+    }
+    .balance-bar-header .currency.nimiq > label[data-v-sbb] {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        cursor: inherit;
+    }
+    .balance-bar-header .currency.bitcoin[data-v-sbb],
+    .balance-bar-header .currency.usdc[data-v-sbb],
+    .balance-bar-header .currency.usdt[data-v-sbb] {
+        --column-gap: 2rem;
+    }
+
+    /* Button style for the nimiq address selector */
+    .balance-bar-header .nimiq:not(.single)[data-v-sbb]:before {
+        content: "";
+        border-radius: 0.75rem;
+        position: absolute;
+        top: -.5rem;
+        bottom: -.5rem;
+        left: -1.5rem;
+        right: -1.5rem;
+        background: transparent;
+        transition: background 400ms;
+    }
+    .balance-bar-header .nimiq:not(.single)[data-v-sbb]:hover:before {
+        background: var(--nimiq-highlight-bg);
+    }
+    .balance-bar-header .nimiq.single[data-v-sbb] {
+        cursor: default;
+    }
+
+    .balance-bar-header .bitcoin svg[data-v-sbb] {
+        color: var(--bitcoin-orange);
+    }
+    .balance-bar-header .usdc svg[data-v-sbb] {
+        color: var(--usdc-blue);
+    }
+    .balance-bar-header .usdt svg[data-v-sbb] {
+        color: var(--usdt-green);
+    }
+
+    .identicon-stack[data-v-sbb] {
+        align-items: stretch;
+        position: relative;
+        overflow: visible;
+    }
+    .identicon-stack .identicon[data-v-sbb] {
+        height: auto;
+    }
+    .identicon-stack .primary[data-v-sbb] {
+        position: relative;
+        width: var(--header-height);
+    }
+    .identicon-stack .secondary[data-v-sbb] {
+        width: 4.75rem;
+        position: absolute;
+        top: 50%;
+        opacity: 0.4;
+        transform: translateY(-50%) translateX(0);
+        transition:
+            transform 300ms var(--nimiq-ease),
+            opacity 300ms var(--nimiq-ease);
+    }
+    .identicon-stack .secondary:first-child[data-v-sbb] {
+        left: 1.5rem;
+    }
+    .identicon-stack .secondary:nth-child(2)[data-v-sbb] {
+        right: 1.5rem;
+    }
+    .nimiq:hover .identicon-stack .secondary:first-child[data-v-sbb],
+    .nimiq:focus .identicon-stack .secondary:first-child[data-v-sbb] {
+        transform: translateY(-50%) translateX(-0.375rem) scale(1.05);
+        opacity: 0.5;
+    }
+    .nimiq:hover .identicon-stack .secondary:nth-child(2)[data-v-sbb],
+    .nimiq:focus .identicon-stack .secondary:nth-child(2)[data-v-sbb] {
+        transform: translateY(-50%) translateX(0.375rem) scale(1.05);
+        opacity: 0.5;
+    }
+
+    .connecting-lines[data-v-sbb] {
+        margin-top: .5rem;
+        margin-bottom: -3rem;
+        padding-left: 3.5rem;
+    }
+    .connecting-lines svg:last-child[data-v-sbb] {
+        position: absolute;
+        right: 2.5rem;
+    }
+
+    .balance-bar[data-v-sbb] {
+        align-items: center;
+    }
+
+    .bar[data-v-sbb] {
+        height: 4.5rem;
+        border-radius: 0.5rem;
+        background-color: currentColor;
+        border: .25rem solid currentColor;
+        opacity: 0.25;
+        align-items: center;
+        justify-content: flex-end;
+        overflow: hidden;
+        cursor: pointer;
+        transform: translate3d(0, 0, 0);
+        transition: opacity 300ms;
+    }
+    .animating .bar[data-v-sbb] {
+        transition: opacity 300ms, width 300ms;
+    }
+    .bar:not(:last-child)[data-v-sbb] {
+        margin-right: 0.375rem;
+    }
+    .bar:first-child[data-v-sbb],
+    .bar:last-child[data-v-sbb] {
+        border-radius: 1.2rem; /* css bug? increasing left border radius decrease the right one... Should be 0.5rem */
+        --end-border-radius: 5rem;
+    }
+    .bar:first-child[data-v-sbb] {
+        border-top-left-radius: var(--end-border-radius);
+        border-bottom-left-radius: var(--end-border-radius);
+    }
+    .bar:last-child[data-v-sbb] {
+        border-top-right-radius: var(--end-border-radius);
+        border-bottom-right-radius: var(--end-border-radius);
+    }
+    .bar.active[data-v-sbb] {
+        opacity: 1;
+        cursor: default;
+    }
+    .bar.bitcoin[data-v-sbb] {
+        background-color: var(--bitcoin-orange);
+        border: .25rem solid var(--bitcoin-orange);
+    }
+    .bar.usdc[data-v-sbb] {
+        background-color: var(--usdc-blue);
+        border: .25rem solid var(--usdc-blue);
+    }
+    .bar.usdt[data-v-sbb] {
+        background-color: var(--usdt-green);
+        border: .25rem solid var(--usdt-green);
+    }
+    .bar .change[data-v-sbb] {
+        /* assets/swap-change-background.svg, inlined */
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 36" width="9" height="36" fill="none" stroke="%23000" stroke-width="1.5" stroke-linecap="square"><path d="M.87 0L.65.38 0 1.5v4.8L3.63 0H.87zm4.5 0l-.22.38L0 9.3v4.79L8.13 0H5.37zM9 1.5L0 17.1v4.79l9-15.6V1.5zm0 7.8L0 24.89v4.8l9-15.6v-4.8zm0 7.8L0 32.67V36h.85l.22-.38L9 21.9v-4.8zm0 7.79L2.59 36h2.76l.22-.38L9 29.68v-4.8zm0 7.8L7.09 36H9v-3.32z" fill="%23fff" stroke="none"/></svg>') repeat-x top left;
+        background-size: auto 100%;
+        height: 100%;
+        border-radius: 0.25rem;
+        transform: translate3d(0, 0, 0);
+    }
+    .animating .bar .change[data-v-sbb] {
+        transition: width 300ms;
+    }
+    .bar.left[data-v-sbb] {
+        justify-content: flex-end;
+    }
+    .bar.left .change[data-v-sbb] {
+        background-position: top left;
+    }
+    .bar.right[data-v-sbb] {
+        justify-content: flex-start;
+    }
+    .bar.right .change[data-v-sbb] {
+        background-position: top right;
+    }
+
+    .separator[data-v-sbb] {
+        width: .25rem;
+        margin-right: 0.375rem;
+        height: 10.5rem;
+        position: relative;
+        flex-shrink: 0;
+        touch-action: none;
+        z-index: 2;
+    }
+    .separator .handle[data-v-sbb] {
+        --height: 4rem;
+        --width: 4rem;
+        height: var(--height);
+        width: var(--width);
+        /* assets/horizontal-double-arrow.svg, inlined */
+        background: white url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="8" fill="none" viewBox="0 0 16 8"><path fill="%231F2348" d="M15.1 3.42a.7.7 0 010 1.18l-4.02 2.6A.7.7 0 0110 6.62V1.4a.7.7 0 011.08-.59l4.02 2.61zM.9 4.6a.7.7 0 010-1.18L4.92.82A.7.7 0 016 1.4v5.22a.7.7 0 01-1.08.58L.9 4.6z"/></svg>') no-repeat center;
+        border-radius: 100%;
+        box-shadow:
+            0px .5rem 2rem rgba(0, 0, 0, 0.07),
+            0px .1875rem .375rem rgba(0, 0, 0, 0.05),
+            0px .0421rem .25rem rgba(0, 0, 0, 0.025);
+        position: absolute;
+        top: calc(50% - (var(--height) / 2));
+        left: calc(50% - (var(--width) / 2));
+        cursor: grab;
+    }
+    .separator .handle:active[data-v-sbb] {
+        cursor: grabbing;
+    }
+
+    .equilibrium-point[data-v-sbb] {
+        height: .5rem;
+        width: .5rem;
+        border-radius: 50%;
+        cursor: pointer;
+        position: absolute;
+        bottom: .25rem;
+        opacity: 1;
+        transition: opacity 0.3s var(--nimiq-ease);
+    }
+    .equilibrium-point.hidden[data-v-sbb] {
+        opacity: 0;
+    }
+
+    .scale[data-v-sbb] {
+        margin-top: -1rem;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .scale .tenth[data-v-sbb] {
+        height: 1rem;
+        line-height: 1rem;
+        width: 20%;
+        font-weight: bold;
+        font-size: 1.625rem;
+        letter-spacing: 0.0625rem;
+        color: var(--text-50);
+    }
+    .scale .tenth:not(:last-child)[data-v-sbb] {
+        border-right: 0.1875rem solid var(--text-20);
+    }
+    .scale .tenth:last-child[data-v-sbb] {
+        text-align: right;
+    }
+    .scale .tenth > div[data-v-sbb] {
+        transition-property: visibility, opacity;
+        transition-duration: 300ms;
+    }
+    .scale .tenth > div.hidden[data-v-sbb] {
+        opacity: 0;
+    }
+
+    /* ============================================================
+       icons/SwapBalanceBar/CurvedLine.vue scoped styles — verbatim,
+       scoping emulated via [data-v-cl]
+       ============================================================ */
+    svg[data-v-cl],
+    svg path[data-v-cl] {
+        overflow: visible;
+    }
+    svg.left[data-v-cl] {
+        transform: rotateY(180deg);
+    }
+    svg path[data-v-cl] {
+        transform: translate3d(0);
+        transition-duration: 100ms;
+        transition-property: d, viewBox;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Sample state: leftAsset NIM ("Indigo Address", single address, 519 NIM after a -476 NIM
+         drag), rightAsset BTC (0.00 BTC balance, +0.00000476 BTC incoming = 100% change hatch).
+         Fiat: NIM $0.000501, BTC $63 417 -> distribution 46% / 54%.
+         Root width 55.5rem = 444px (63.5rem modal - 2*4rem page-body padding). -->
+    <div class="swap-balance-bar flex-column" data-v-sbb>
+        <div class="balance-bar-header flex-row" data-v-sbb>
+            <button class="reset left nimiq currency single" data-v-sbb>
+                <div class="identicon-stack" data-v-sbb>
+                    <div class="identicon primary" data-v-sbb data-address="NQ87 JY9X JUEE HA17 JNBB HPGM 5ETQ VT1G CVN2"><img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>' alt="Nimiq identicon"></div>
+                </div>
+                <label data-v-sbb>Indigo Address</label>
+                <span class="amount" data-v-sbb>519 <span class="currency nim">NIM</span></span>
+            </button>
+            <div class="currency right bitcoin" data-v-sbb>
+                <label data-v-sbb>Bitcoin</label>
+                <span class="amount" data-v-sbb>0.00 <span class="currency btc">BTC</span></span>
+                <svg width="42" height="42" viewBox="0 0 42 42" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="bitcoin" data-v-sbb>
+                    <circle fill="#fff" cx="21" cy="21" r="18" />
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.918 41.371c11.253 2.805 22.649-4.04 25.454-15.291C44.176 14.83 37.33 3.433 26.077.628 14.828-2.176 3.433 4.67.629 15.922c-2.806 11.25 4.041 22.645 15.289 25.45zm10.31-29.01c3.041.997 5.265 2.49 4.828 5.27-.316 2.033-1.501 3.018-3.075 3.364 2.161 1.07 3.26 2.712 2.213 5.557-1.3 3.533-4.388 3.831-8.495 3.092l-.998 3.8-2.407-.571.983-3.75a96.07 96.07 0 01-1.919-.474l-.986 3.768-2.406-.571.997-3.807-.652-.161c-.351-.087-.706-.175-1.065-.26l-3.135-.744 1.196-2.623s1.775.448 1.75.415c.682.16.985-.262 1.104-.544l1.575-6.007.255.06a2.197 2.197 0 00-.25-.076l1.123-4.288c.03-.487-.147-1.101-1.122-1.333.038-.024-1.75-.413-1.75-.413l.641-2.448 3.322.79-.003.011c.5.118 1.014.23 1.538.344L20.477 7l2.407.571-.967 3.69c.644.137 1.288.281 1.93.431l.96-3.664 2.408.57-.986 3.764zm-7.622 13.646c1.964.494 6.264 1.575 6.947-1.037.7-2.667-3.463-3.556-5.496-3.991-.229-.049-.43-.092-.594-.13l-1.323 5.043c.134.031.291.07.466.115zm1.857-7.369c1.638.416 5.212 1.324 5.835-1.048.636-2.428-2.838-3.159-4.535-3.516-.19-.04-.359-.076-.496-.108l-1.2 4.574c.114.027.247.06.396.098z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="connecting-lines" data-v-sbb>
+            <!-- CurvedLine direction="right" :width="leftBar.offsetWidth / 2 + offsetLeft - 2.5rem" -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" style="width: 82px; height: 35px;" viewBox="0 0 82 35" class="right" data-v-cl data-v-sbb>
+                <path stroke="#1F2348" stroke-width="1.5" opacity=".24" data-v-cl
+                    d="M 1 1 v 1 s 0 6.055 8.055 9.055 S 64.889 19.945 72.945 22.945 s 8.055 9.055 8.055 9.055 v 1" />
+            </svg>
+            <!-- CurvedLine direction="left" :width="rightBar.offsetWidth / 2 - 2.5rem" -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" style="width: 98px; height: 35px;" viewBox="0 0 98 35" class="left" data-v-cl data-v-sbb>
+                <path stroke="#1F2348" stroke-width="1.5" opacity=".24" data-v-cl
+                    d="M 1 1 v 1 s 0 6.899 9.899 9.899 S 77.201 19.101 87.101 22.101 s 9.899 9.899 9.899 9.899 v 1" />
+            </svg>
+        </div>
+        <div class="balance-bar flex-row" data-v-sbb>
+            <div class="bar left flex-row active nq-blue" style="width: 45.8181%;" data-v-sbb>
+                <div class="change" style="width: 0%;" data-v-sbb></div>
+            </div>
+            <div class="separator nq-light-blue-bg" data-v-sbb>
+                <div class="handle" data-v-sbb></div>
+            </div>
+            <div class="bar right flex-row active bitcoin" style="width: 53.1918%;" data-v-sbb>
+                <div class="change" style="width: 100%;" data-v-sbb></div>
+            </div>
+        </div>
+        <div class="scale flex-row" data-v-sbb>
+            <div class="tenth" data-v-sbb><div class="left-total-percent" data-v-sbb>46%</div></div>
+            <div class="tenth" data-v-sbb></div>
+            <div class="tenth" data-v-sbb></div>
+            <div class="tenth" data-v-sbb></div>
+            <div class="tenth" data-v-sbb></div>
+            <div class="tenth" data-v-sbb></div>
+            <div class="tenth" data-v-sbb></div>
+            <div class="tenth" data-v-sbb></div>
+            <div class="tenth" data-v-sbb></div>
+            <div class="tenth" data-v-sbb><div class="right-total-percent" data-v-sbb>54%</div></div>
+        </div>
+        <div class="equilibrium-point nq-light-blue-bg hidden" style="left: 0%;" data-v-sbb></div>
+    </div>
+</div>
+
+<script type="module">
+    import Iqons from 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.js';
+    Iqons.svgPath = 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.svg';
+
+    for (const el of document.querySelectorAll('.swap-balance-bar .identicon[data-address]')) {
+        el.querySelector('img').src = await Iqons.toDataUrl(el.dataset.address);
+    }
+</script>
+</body>
+</html>

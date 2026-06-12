@@ -1,0 +1,28 @@
+<!-- price-chart: wallet sidebar crypto price sparkline (sample: NIM, 24h, +0.1%).
+     Navy widget root stands in for the sidebar. The path is the upstream LineChart
+     smoothing algorithm (cubic, factor 0.2) precomputed for a fixed deterministic
+     18-point series in the 144x52 chart box; stroke is currentColor (white) at
+     0.5 opacity, as upstream. For the BTC pairing of the wallet sidebar, add a
+     second .price-chart without the .timespan button inside the same wrapper.
+     The timespan button is interactive upstream (toggles 24h/7d). -->
+<div class="price-chart-widget">
+    <div class="price-chart-wrapper">
+        <div class="price-chart">
+            <div class="line-chart">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1.25 -5 146.5 62" preserveAspectRatio="none">
+                    <path d="M 0 12 C 1.69 12.8, 5.08 13.6, 8.47 16 C 11.86 18.4, 13.55 20, 16.94 24 C 20.33 28, 22.02 34.4, 25.41 36 C 28.8 37.6, 30.49 30.4, 33.88 32 C 37.27 33.6, 38.96 40, 42.35 44 C 45.74 48, 47.44 51.2, 50.82 52 C 54.21 52.8, 55.91 51.2, 59.29 48 C 62.68 44.8, 64.38 37.6, 67.76 36 C 71.15 34.4, 72.85 41.6, 76.24 40 C 79.62 38.4, 81.32 32.8, 84.71 28 C 88.09 23.2, 89.79 17.6, 93.18 16 C 96.56 14.4, 98.26 21.6, 101.65 20 C 105.04 18.4, 106.73 12, 110.12 8 C 113.51 4, 115.2 0.8, 118.59 0 C 121.98 -0.8, 123.67 1.6, 127.06 4 C 130.45 6.4, 132.14 10.8, 135.53 12 C 138.92 13.2, 142.31 10.4, 144 10"
+                        fill="none" stroke="currentColor" opacity="0.5" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <button class="timespan" type="button">24h</button>
+                <div class="meta">
+                    <strong>NIM</strong>
+                    <div class="price">
+                        <span class="fiat-amount">$0.000501</span>
+                        <div class="change positive">0.1%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

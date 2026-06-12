@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SearchBar — demo</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="search-bar.css">
+<style>
+body { font-family: 'Mulish', 'Muli', system-ui, sans-serif; background: #fff; margin: 0; padding: 24px; }
+.host { width: 400px; }
+</style>
+</head>
+<body>
+<div class="host">
+    <!-- Sample state: resting — empty, unfocused, placeholder "Search transactions" -->
+    <div class="search-bar">
+        <svg fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2" />
+            <path d="M13.31 14.73a1 1 0 001.42-1.42l-1.42 1.42zM8.3 9.7l5.02 5.02 1.42-1.42L9.7 8.3 8.29 9.71z"
+                fill="currentColor" />
+        </svg>
+        <input type="text" value="" placeholder="Search transactions">
+        <button class="cross-close-button" type="button" aria-label="Clear search">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+                <path d="M1 1l10 10M11 1L1 11" fill="none" stroke="currentColor"
+                    stroke-linecap="round" stroke-miterlimit="10" stroke-width="2"/>
+            </svg>
+        </button>
+    </div>
+    <script>
+    (() => {
+        const root = document.currentScript.previousElementSibling;
+        const input = root.querySelector('input');
+        const cross = root.querySelector('.cross-close-button');
+        const update = () => root.classList.toggle('active', document.activeElement === input || input.value !== '');
+        root.addEventListener('pointerdown', (e) => { if (e.target !== input) e.preventDefault(); });
+        root.addEventListener('click', (e) => { if (!cross.contains(e.target)) input.focus(); });
+        input.addEventListener('input', update);
+        input.addEventListener('focus', update);
+        input.addEventListener('blur', update);
+        cross.addEventListener('click', (e) => {
+            e.stopPropagation();
+            input.value = '';
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            update();
+        });
+    })();
+    </script>
+</div>
+</body>
+</html>

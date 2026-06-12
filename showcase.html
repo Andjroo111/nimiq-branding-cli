@@ -60,6 +60,20 @@ body { font-family: 'Mulish', 'Muli', system-ui, sans-serif !important; backgrou
 /* status-screen sits inside a SmallPage; shrink it a touch to fit the tile */
 #status-screen .small-page { transform: scale(0.82); transform-origin: top center; margin-bottom: -100px !important; }
 
+/* supporting-element tiles (2026-06-11 batch) — sizing chrome only */
+#backup-banner .backup-banner { width: 100%; max-width: 560px; }
+#account-header .account-header { width: 100%; }
+#transaction-list .transaction-list { width: 100%; }
+#swap-balance-bar .swap-balance-bar { width: 444px; max-width: 100%; margin-bottom: 1.5rem; }
+#balance-distribution .tile-stage { background: radial-gradient(100% 100% at bottom right, #260133, #1F2348); }
+/* zoomed children resolve % widths in their own zoomed space — width:100% already fills the stage */
+#hero-section .tile-stage { padding: 0; align-items: stretch; }
+#hero-section .nq-hero-section { zoom: 0.55; }
+#honeycomb-band .tile-stage { padding: 0; align-items: stretch; }
+#honeycomb-band .nq-honeycomb-band { zoom: 0.6; }
+#app-showcase-card .tile-stage { gap: 28px; }
+#app-showcase-card .nq-app-showcase-card { max-width: 100%; }
+
 /* component snippet styles (verbatim from the registry) */
 
 /* === identicon === */
@@ -2680,6 +2694,1938 @@ a.nq-button {
  * .nq-card-body + .nq-card-footer { padding-top: 0; }
  */
 
+/* === backup-banner === */
+/* Nimiq backup warning banner — port of the wallet's .backup-warning.words
+   (upstream: wallet AccountOverview.vue). Requires nimiq-style.min.css
+   (nq-button-pill, nq-orange, --nimiq-ease, 8px root font-size). */
+
+.backup-banner {
+    /* wallet themes.scss vars the component relies on */
+    --body-size: 2rem;
+    --text-10: rgba(31, 35, 72, 0.1);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    padding: 0.625rem 1rem;
+    border-radius: 0.75rem;
+    font-size: var(--body-size);
+}
+.backup-banner .alert-text {
+    margin: 0.625rem 0 0.625rem 1rem;
+    font-weight: bold;
+    line-height: 3.375rem; /* same height as .nq-button-s */
+}
+.backup-banner .alert-text .alert-icon {
+    width: calc(1.0625 * var(--body-size));
+    margin-bottom: -0.125em;
+    flex-shrink: 0;
+    display: inline;
+}
+.backup-banner button { margin: 0.625rem 0.25rem 0.625rem 1rem; }
+.backup-banner button .nq-icon {
+    display: inline-block;
+    font-size: 1.25rem;
+    vertical-align: middle;
+    margin-bottom: 0.25rem;
+    margin-left: 0.625rem;
+    transition: transform 0.25s var(--nimiq-ease);
+}
+.backup-banner button:hover .nq-icon,
+.backup-banner button:focus .nq-icon { transform: translateX(0.25rem); }
+
+/* words variant: orange text on white, tonal inset border (add .nq-orange to the root) */
+.backup-banner.words { box-shadow: inset 0 0 0 1.5px var(--text-10); }
+/* file variant: solid orange gradient (add .nq-orange-bg instead; white text comes from nimiq-style) */
+
+/* === search-bar === */
+/* search-bar — wallet SearchBar.vue pill search input (+ inlined CrossCloseButton).
+   All selectors namespaced under .search-bar. Requires the legacy framework CSS
+   (html{font-size:8px}, --nimiq-light-blue, --attr-duration, --nimiq-ease). */
+
+.search-bar {
+    /* wallet themes.scss vars (light theme), overridable by an embedding theme */
+    --body-size: 2rem;
+    --text-16: rgba(31, 35, 72, 0.16);
+    --text-22: rgba(31, 35, 72, 0.22);
+    --light-blue-40: rgba(5, 130, 202, 0.4);
+
+    --default-sb-width: clamp(5.5rem, 100%, 30rem);
+
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    cursor: text;
+    padding: 0.75rem 0;
+    min-width: var(--default-sb-width);
+    max-width: var(--default-sb-width); /* upstream: inline-bound maxWidth, resting state */
+
+    transition-property: color, max-width;
+    transition-duration: var(--attr-duration);
+    transition-timing-function: var(--nimiq-ease);
+}
+
+/* upstream maxWidth flips to 100% while focused or holding text (.active set by script) */
+.search-bar.active {
+    max-width: 100%;
+}
+
+.search-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: inset 0 0 0 0.1875rem var(--text-16); /* 1.5px */
+    border-radius: 500px;
+
+    transition: box-shadow var(--attr-duration) var(--nimiq-ease);
+}
+
+.search-bar:hover::after {
+    box-shadow: inset 0 0 0 0.1875rem var(--text-22);
+}
+
+.search-bar:focus-within {
+    color: var(--nimiq-light-blue);
+}
+
+.search-bar:focus-within > svg {
+    opacity: 1;
+}
+
+.search-bar:focus-within::after {
+    box-shadow: inset 0 0 0 0.1875rem var(--light-blue-40);
+}
+
+.search-bar > svg {
+    justify-self: left;
+    flex-grow: 0;
+    margin-left: 1.75rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+    opacity: 0.4;
+    width: 1.75rem;
+    height: 1.75rem;
+
+    transition: opacity var(--attr-duration) var(--nimiq-ease);
+}
+
+.search-bar input {
+    font-family: inherit;
+    font-weight: 600;
+    color: inherit;
+    justify-self: right;
+    flex-grow: 1;
+    border: 0;
+    line-height: 2.75rem;
+    font-size: var(--body-size);
+    margin: 0;
+    padding: 0;
+    padding-right: 4rem;
+    background: none;
+    min-width: 0;
+}
+
+.search-bar input:focus {
+    outline: none;
+}
+
+.search-bar input::placeholder {
+    font-weight: normal;
+    color: inherit;
+    opacity: 0.4;
+}
+
+@media (max-width: 768px) { /* $mobileBreakpoint */
+    .search-bar input::placeholder {
+        font-weight: 600;
+    }
+}
+
+/* CrossCloseButton (clear), shown while focused or holding text */
+.search-bar .cross-close-button {
+    /* wallet global button.reset */
+    background: none;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    line-height: inherit;
+    font-weight: inherit;
+    color: inherit;
+
+    position: absolute;
+    z-index: 1;
+    right: 1rem;
+    cursor: pointer;
+
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+
+    display: none;
+}
+
+.search-bar.active .cross-close-button {
+    display: block;
+}
+
+.search-bar .cross-close-button svg {
+    height: 1em;
+    width: 1em;
+    display: block;
+    opacity: 0.7;
+    transition: opacity 0.2s var(--nimiq-ease);
+}
+
+.search-bar .cross-close-button:hover svg,
+.search-bar .cross-close-button:active svg,
+.search-bar .cross-close-button:focus svg {
+    opacity: 1 !important;
+}
+
+/* === account-header === */
+/* Nimiq Account Header (wallet AddressOverview header)
+   Requires the legacy nimiq-style CSS (html{font-size:8px}, --nimiq-* vars,
+   .nq-button-pill / .nq-button-s / .nq-icon) + Mulish & Fira Mono fonts.
+   Composition of: AddressOverview.vue (.active-address + .actions),
+   SearchBar.vue, StakingButton.vue (+ green CTA tooltip), StakingIcon.vue,
+   vue-components Tooltip.vue (bottom subset).
+   All selectors namespaced under .account-header. */
+
+.account-header {
+    /* wallet themes.scss defaults */
+    --bg-primary: var(--nimiq-white);
+    --text-16: rgba(31, 35, 72, 0.16);
+    --text-22: rgba(31, 35, 72, 0.22);
+    --light-blue-40: rgba(5, 130, 202, 0.4);
+    --body-size: 2rem;
+    --h1-size: 3rem;
+    --large-button-size: 2rem;
+    --attr-duration: 300ms;
+    /* AddressOverview.vue layout vars (default: 1440px) */
+    --padding: 4rem;
+    --padding-bottom: 6rem;
+
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: var(--bg-primary);
+    color: var(--nimiq-blue);
+    font-family: 'Mulish', sans-serif;
+    /* composition chrome: room for the staking CTA tooltip (overlays the
+       transaction list in the wallet) */
+    padding-bottom: 9rem;
+}
+
+/* wallet global utilities */
+.account-header .flex-row { display: flex; flex-direction: row; }
+.account-header .ml-auto { margin-left: auto; }
+
+/* ---- active address row ---- */
+.account-header .active-address {
+    flex-shrink: 0;
+    align-items: center;
+    padding: calc(var(--padding) + 2rem);
+    padding-right: calc(var(--padding) + 4rem);
+    padding-bottom: var(--padding-bottom);
+}
+
+.account-header .active-address .identicon-wrapper {
+    position: relative;
+    margin-right: 4rem;
+}
+
+.account-header .active-address .identicon {
+    height: 11.25rem;
+    width: 11.25rem;
+    margin: -0.625rem 0; /* size identicon to be 90x80 px */
+    flex-shrink: 0;
+}
+.account-header .identicon img { width: 100%; height: 100%; }
+
+.account-header .active-address .meta {
+    flex-grow: 1;
+    min-width: 0;
+}
+.account-header .active-address .meta .flex-row { align-items: center; }
+
+.account-header .active-address .address,
+.account-header .active-address .label {
+    flex-grow: 1;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.account-header .active-address .label,
+.account-header .active-address .amount {
+    --size: var(--h1-size);
+    font-size: var(--size);
+    margin-top: 0.25rem;
+}
+
+.account-header .active-address .address,
+.account-header .active-address .fiat-amount {
+    --size: var(--body-size);
+    font-size: var(--size);
+    opacity: 0.5;
+}
+
+.account-header .active-address .label {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    margin-right: 3rem;
+    mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255,255,255, 0));
+}
+
+.account-header .active-address .address {
+    word-spacing: -0.2em;
+    font-family: 'Fira Mono', monospace;
+    transition: opacity .3s var(--nimiq-ease);
+}
+
+.account-header .active-address .copyable {
+    padding: 0.5rem 1rem;
+    margin-left: -1rem;
+    min-width: 0;
+    margin-right: 3rem;
+}
+
+.account-header .active-address .fiat-amount { margin-left: auto; }
+
+.account-header .active-address .amount,
+.account-header .active-address .fiat-amount { flex-shrink: 0; }
+
+.account-header .active-address .amount {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+}
+
+.account-header .active-address .fiat-amount {
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* ---- actions row ---- */
+.account-header .actions {
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin: 0 var(--padding) 2rem;
+    padding: 0 3rem 0 2rem;
+}
+.account-header .actions button { flex-shrink: 0; }
+.account-header .actions .nq-button-pill { white-space: nowrap; }
+
+.account-header .actions .vertical-separator {
+    background: rgba(31, 35, 72, 0.15);
+    border-radius: 2rem;
+    width: 1.5px;
+    height: 3rem;
+    margin: 0.625rem .5rem 0.625rem 2rem;
+}
+
+.account-header .send,
+.account-header .receive {
+    margin: 0 0.5rem;
+    align-items: center;
+    padding: 1.125rem 2rem;
+    height: unset;
+    line-height: 1;
+    border-radius: 500px;
+    font-size: var(--large-button-size);
+}
+.account-header .send .nq-icon,
+.account-header .receive .nq-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 1rem;
+}
+.account-header .send { margin-left: 1.5rem; }
+.account-header .send .nq-icon { transform: rotateZ(-90deg); }
+.account-header .receive { margin-right: 0; }
+.account-header .receive .nq-icon { transform: rotateZ(90deg); }
+
+/* ---- search bar ---- */
+.account-header .actions .container {
+    width: 100%;
+    min-width: 5.5rem;
+}
+.account-header .search-bar {
+    --default-sb-width: clamp(5.5rem, 100%, 30rem);
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    cursor: text;
+    padding: 0.75rem 0;
+    min-width: var(--default-sb-width);
+    max-width: var(--default-sb-width);
+}
+.account-header .search-bar::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    box-shadow: inset 0 0 0 0.1875rem var(--text-16);
+    border-radius: 500px;
+    transition: box-shadow var(--attr-duration) var(--nimiq-ease);
+}
+.account-header .search-bar:hover::after {
+    box-shadow: inset 0 0 0 0.1875rem var(--text-22);
+}
+.account-header .search-bar:focus-within { color: var(--nimiq-light-blue); }
+.account-header .search-bar:focus-within > svg { opacity: 1; }
+.account-header .search-bar:focus-within::after {
+    box-shadow: inset 0 0 0 0.1875rem var(--light-blue-40);
+}
+.account-header .search-bar > svg {
+    flex-grow: 0;
+    margin-left: 1.75rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+    opacity: 0.4;
+    width: 1.75rem;
+    height: 1.75rem;
+    transition: opacity var(--attr-duration) var(--nimiq-ease);
+}
+.account-header .search-bar input {
+    font-family: inherit;
+    font-weight: 600;
+    color: inherit;
+    flex-grow: 1;
+    border: 0;
+    line-height: 2.75rem;
+    font-size: var(--body-size);
+    margin: 0;
+    padding: 0;
+    padding-right: 4rem;
+    background: none;
+    min-width: 0;
+}
+.account-header .search-bar input:focus { outline: none; }
+.account-header .search-bar input::placeholder {
+    font-weight: normal;
+    color: inherit;
+    opacity: 0.4;
+}
+
+/* ---- staking button + green CTA tooltip ---- */
+.account-header .staking-button {
+    position: relative;
+    height: 6.75rem;
+    margin: -1.25rem 0;
+}
+.account-header .staking-button svg { font-size: 6.75rem; }
+.account-header .staking-button.show-text {
+    display: flex;
+    align-items: center;
+}
+.account-header .stake {
+    display: block;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+}
+.account-header .show-text .stake {
+    display: flex;
+    align-items: center;
+    height: 4.25rem;
+    border-radius: 20rem;
+    padding-right: 1.875rem;
+    justify-content: center;
+}
+.account-header .show-text .stake .staking-icon {
+    margin-right: -1rem;
+    margin-left: -.5rem;
+}
+
+.account-header .staking-icon { font-size: 0; }
+.account-header .staking-icon path:nth-child(1),
+.account-header .staking-icon path:nth-child(2),
+.account-header .staking-icon path:nth-child(4) { opacity: 0; }
+
+/* tooltip base (bottom-position subset of vue-components Tooltip) */
+.account-header .tooltip {
+    display: inline-block;
+    position: relative;
+    line-height: 1;
+}
+.account-header .tooltip .trigger {
+    position: relative;
+    display: inline-block;
+    vertical-align: bottom;
+    text-decoration: none;
+    outline: none;
+    cursor: default;
+    color: inherit;
+}
+.account-header .tooltip .trigger::after {
+    opacity: 0;
+    content: '';
+    display: block;
+    position: absolute;
+    width: 2.25rem;
+    height: 2rem;
+    left: calc(50% - 1.125rem);
+    mask-image: url('data:image/svg+xml,<svg viewBox="0 0 18 16" xmlns="http://www.w3.org/2000/svg"><path d="M9 7.12c-.47 0-.93.2-1.23.64L3.2 14.29A4 4 0 0 1 0 16h18a4 4 0 0 1-3.2-1.7l-4.57-6.54c-.3-.43-.76-.64-1.23-.64z" fill="white"/></svg>');
+    transition: opacity .3s var(--nimiq-ease), .3s visibility;
+    transition-delay: 16ms;
+    visibility: hidden;
+    z-index: 1000;
+}
+.account-header .tooltip[class*='position-bottom'] .trigger::after {
+    top: 100%;
+    background: var(--background, var(--nimiq-blue));
+}
+.account-header .tooltip.shown .trigger::after {
+    opacity: 1;
+    visibility: visible;
+}
+.account-header .tooltip .tooltip-box {
+    contain: layout paint style;
+    position: absolute;
+    color: white;
+    background: var(--background, var(--nimiq-blue-bg));
+    padding: 1.5rem;
+    border-radius: .5rem;
+    font-size: 1.75rem;
+    line-height: 1.5;
+    font-weight: 600;
+    box-shadow: 0 1.125rem 2.275rem rgba(0, 0, 0, 0.11);
+    z-index: 999;
+}
+.account-header .tooltip[class*='position-bottom'] .tooltip-box {
+    transform: translateY(2rem);
+}
+
+/* green staking CTA tooltip (StakingButton.vue .staking-feature-tip) */
+.account-header .tooltip.staking-feature-tip,
+.account-header .tooltip.staking-feature-tip .trigger {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 100%;
+    width: 100%;
+    z-index: 3;
+}
+.account-header .tooltip.staking-feature-tip .trigger::after {
+    background-color: var(--nimiq-green);
+    transform: translateY(calc(-1rem + 1px));
+}
+.account-header .tooltip.staking-feature-tip .tooltip-box {
+    background: var(--nimiq-green-bg);
+    color: white;
+    font-size: 1.75rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 140%;
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
+    transform: translateY(1rem);
+}
+
+/* === transaction-list === */
+/* Nimiq TransactionList — wallet transaction-history rows with month headers.
+   Port of wallet TransactionListItem.vue scoped styles (+ TransactionList.vue
+   .month-label and the wallet button.reset global), all namespaced under
+   .transaction-list. Requires the Nimiq legacy stylesheet
+   (nimiq-style.min.css: html{font-size:8px}, --nimiq-* vars) and Fira Mono
+   for the address font. Set the list width on .transaction-list. */
+
+.transaction-list {
+    /* Wallet theme vars used by the component (wallet themes.scss) */
+    --bg-primary: var(--nimiq-white);
+    --body-size: 2rem;
+    --small-size: 1.75rem;
+    --label-size: 1.75rem;
+    --small-label-size: 1.5rem;
+    --text-50: rgba(31, 35, 72, 0.5);
+    --text-12: rgba(31, 35, 72, 0.12);
+
+    color: var(--nimiq-blue);
+}
+
+/* --- Month header (TransactionList.vue .month-label) --- */
+
+.transaction-list .month-label {
+    display: flex;
+    flex-direction: row;
+    padding: 5rem 2rem 2rem;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transaction-list .month-label label {
+    letter-spacing: 1.5px;
+    font-size: var(--label-size);
+    line-height: 2rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    opacity: 0.4;
+}
+
+/* --- Row (TransactionListItem.vue) --- */
+
+.transaction-list .transaction svg {
+    display: block;
+}
+
+.transaction-list .transaction {
+    /* wallet button.reset global, merged in (same specificity as the layout
+       rule below would otherwise fight it) */
+    outline: none;
+    font-family: inherit;
+    line-height: inherit;
+    font-weight: inherit;
+    color: inherit;
+    text-align: inherit;
+
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    padding: 1.5rem 1rem;
+    border: 0;
+    background: transparent;
+    border-radius: .75rem;
+    cursor: pointer;
+    transition: background 400ms var(--nimiq-ease);
+    font-size: var(--body-size);
+}
+
+.transaction-list .transaction:hover,
+.transaction-list .transaction:focus {
+    background: var(--nimiq-highlight-bg);
+}
+
+.transaction-list .transaction:hover .identicon .cashlink-or-swap,
+.transaction-list .transaction:focus .identicon .cashlink-or-swap {
+    border-color: #F2F2F4;
+}
+
+.transaction-list .transaction > * {
+    margin: 0rem 1rem;
+}
+
+.transaction-list .transaction .date {
+    font-weight: bold;
+    text-transform: uppercase;
+    opacity: 0.4;
+    flex-grow: 0;
+    letter-spacing: 0.0125em;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.transaction-list .transaction .date > .month {
+    font-size: var(--small-label-size);
+    letter-spacing: 0.0667em;
+    text-transform: uppercase;
+}
+
+.transaction-list .transaction .date,
+.transaction-list .transaction .pending,
+.transaction-list .transaction .new,
+.transaction-list .transaction .invalid {
+    width: 3.75rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.transaction-list .transaction .identicon {
+    position: relative;
+    width: 6rem;
+    height: 6rem;
+    flex-shrink: 0;
+}
+
+.transaction-list .transaction .identicon img {
+    width: 100%;
+    height: 100%;
+}
+
+.transaction-list .transaction .identicon .cashlink-or-swap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: -0.5rem;
+    right: -0.125rem;
+    color: white;
+    background: var(--nimiq-blue-bg);
+    border: 0.375rem solid var(--bg-primary);
+    transition: border-color 400ms var(--nimiq-ease);
+    border-radius: 2rem;
+    height: 2.75rem;
+    width: 2.75rem;
+}
+
+.transaction-list .transaction .data {
+    flex-grow: 1;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+.transaction-list .transaction .data .label,
+.transaction-list .transaction .data .address {
+    white-space: nowrap;
+    -webkit-mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255,255,255, 0));
+    mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255,255,255, 0));
+}
+
+.transaction-list .transaction .data .label {
+    font-weight: 600;
+}
+
+.transaction-list .transaction .data .address {
+    font-family: 'Fira Mono', monospace;
+    word-spacing: -0.2em;
+}
+
+.transaction-list .transaction .data .time-and-message {
+    font-size: var(--small-size);
+    font-weight: 600;
+    color: var(--text-50);
+    white-space: nowrap;
+    -webkit-mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255,255,255, 0));
+    mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255,255,255, 0));
+}
+
+.transaction-list .transaction .data .time-and-message .dot {
+    margin: 0 0.875rem;
+    opacity: 0.6;
+}
+
+/* --- Amounts column --- */
+
+.transaction-list .transaction .amounts {
+    --fiat-amount-height: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.4;
+}
+
+.transaction-list .transaction .amounts .amount {
+    --size: var(--body-size);
+    white-space: nowrap;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
+}
+
+.transaction-list .transaction .amounts > .fiat-amount {
+    --size: var(--small-size);
+    font-size: var(--size);
+    font-weight: 600;
+    opacity: 0.4;
+    align-items: center;
+    line-height: 1;
+}
+
+/* Fiat value still loading: breathing placeholder bar */
+.transaction-list .transaction .amounts > .fiat-amount.fiat-loading {
+    min-width: 4rem;
+    height: 1.6rem;
+    background-color: var(--text-12);
+    border-radius: 0.5rem;
+    animation: nq-tx-amount-loading-breathe 1s infinite;
+}
+
+@keyframes nq-tx-amount-loading-breathe {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.2; }
+}
+
+.transaction-list .transaction .amounts > .fiat-amount.fiat-unavailable {
+    opacity: 0.3;
+}
+
+.transaction-list .transaction .amounts > * {
+    white-space: nowrap;
+    text-align: right;
+}
+
+/* Outgoing: dimmed plain amount with '-' prefix */
+.transaction-list .transaction .amounts:not(.isIncoming):not(.signalling) .amount {
+    opacity: 0.6;
+}
+
+.transaction-list .transaction .amounts:not(.isIncoming):not(.signalling) .amount::before {
+    content: '-';
+    margin-right: -0.1em;
+}
+
+/* Incoming: green tinted pill with '+' prefix */
+.transaction-list .transaction .amounts.isIncoming .amount {
+    color: var(--nimiq-green);
+    background: rgba(33, 188, 165, 0.1);
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    margin-right: -0.75rem;
+}
+
+.transaction-list .transaction .amounts.isIncoming .amount::before {
+    content: '+';
+    margin-right: -0.1em;
+}
+
+/* === swap-balance-bar === */
+/* Nimiq SwapBalanceBar — from wallet swap/SwapBalanceBar.vue (+ CurvedLine.vue).
+   All selectors namespaced under .swap-balance-bar. Requires the legacy
+   nimiq-style stylesheet (html { font-size: 8px }, --nimiq-* vars, .nq-blue,
+   .nq-light-blue-bg, .hidden). Size via a container; upstream renders at
+   55.5rem = 444px (Swap modal 63.5rem minus 2 * 4rem page padding). */
+
+.swap-balance-bar {
+    /* wallet theme vars (themes.scss) used by the component */
+    --body-size: 2rem;
+    --small-size: 1.75rem;
+    --text-50: rgba(31, 35, 72, 0.5);
+    --text-40: rgba(31, 35, 72, 0.4);
+    --text-20: rgba(31, 35, 72, 0.2);
+    --bitcoin-orange: #F7931A;
+    --usdc-blue: #2775CA;
+    --usdt-green: #009393;
+
+    font-size: var(--body-size);
+    color: var(--nimiq-blue);
+    position: relative;
+}
+
+/* wallet global utilities the markup relies on */
+.swap-balance-bar.flex-column,
+.swap-balance-bar .flex-column { display: flex; flex-direction: column; }
+.swap-balance-bar .flex-row { display: flex; flex-direction: row; }
+.swap-balance-bar button.reset {
+    background: none;
+    border: none;
+    outline: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-weight: inherit;
+    color: inherit;
+    text-align: inherit;
+    cursor: pointer;
+}
+.swap-balance-bar button.reset:disabled { cursor: auto; }
+
+/* @nimiq/vue-components Identicon base style */
+.swap-balance-bar .identicon { width: 10rem; }
+.swap-balance-bar .identicon img { width: 100%; height: 100%; }
+
+/* disabled state (set .disabled on the root) */
+.swap-balance-bar.disabled,
+.swap-balance-bar .disabled {
+    pointer-events: none !important;
+}
+.swap-balance-bar.disabled .balance-bar-header > .currency {
+    color: rgba(31, 35, 72, 0.4) !important;
+}
+.swap-balance-bar.disabled .balance-bar-header > .currency svg {
+    color: rgba(31, 35, 72, 0.4) !important;
+}
+.swap-balance-bar.disabled .balance-bar-header > .currency .identicon-stack .disabled {
+    position: absolute;
+    inset: 0;
+    background: #424242;
+    z-index: 1;
+    left: -2rem;
+    right: -1rem;
+    mix-blend-mode: color;
+}
+.swap-balance-bar.disabled .bar {
+    background-color: rgba(31, 35, 72, 0.1) !important;
+    border: 0 !important;
+}
+.swap-balance-bar.disabled .separator {
+    background: rgba(31, 35, 72, 0.2) !important;
+    background-image: none !important;
+}
+.swap-balance-bar.disabled .handle {
+    position: relative;
+}
+.swap-balance-bar.disabled .handle .disabled {
+    /* As the handle is a image, we create a mask to make it look disabled */
+    position: absolute;
+    inset: 0;
+    background: white;
+    opacity: 0.3;
+    z-index: 5;
+    border-radius: 999px;
+}
+.swap-balance-bar.disabled .left-total-percent,
+.swap-balance-bar.disabled .right-total-percent {
+    color: rgba(31, 35, 72, 0.4) !important;
+}
+
+.swap-balance-bar .balance-bar-header {
+    --header-height: 5.25rem;
+    height: var(--header-height);
+    justify-content: space-between;
+    column-gap: 1rem;
+}
+.swap-balance-bar .balance-bar-header > * label {
+    font-weight: 600;
+    line-height: 2.625rem;
+}
+.swap-balance-bar .balance-bar-header svg {
+    width: 5.25rem;
+    height: 5.25rem;
+}
+
+/* `>` keeps these off the .currency ticker span inside .amount */
+.swap-balance-bar .balance-bar-header > .currency {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: var(--currency-columns);
+    grid-auto-flow: column;
+    column-gap: var(--column-gap);
+}
+.swap-balance-bar .balance-bar-header > .currency .identicon-stack,
+.swap-balance-bar .balance-bar-header > .currency svg {
+    grid-row: 1 / span 2;
+}
+.swap-balance-bar .balance-bar-header > .currency .amount {
+    color: var(--text-50);
+    font-size: var(--small-size);
+    font-weight: 600;
+}
+.swap-balance-bar .balance-bar-header > .currency.left {
+    --currency-columns: 1fr auto;
+}
+.swap-balance-bar .balance-bar-header > .currency.right {
+    --currency-columns: auto 1fr;
+}
+.swap-balance-bar .balance-bar-header > .currency.right > label,
+.swap-balance-bar .balance-bar-header > .currency.right > span {
+    text-align: right;
+}
+.swap-balance-bar .balance-bar-header > .currency.right svg {
+    grid-column: 2;
+}
+.swap-balance-bar .balance-bar-header > .currency.nimiq {
+    --column-gap: 1.5rem;
+    max-width: 65%;
+    position: relative;
+}
+.swap-balance-bar .balance-bar-header > .currency.nimiq.right {
+    margin-right: 1rem;
+}
+.swap-balance-bar .balance-bar-header > .currency.nimiq.left {
+    margin-left: 1rem;
+}
+.swap-balance-bar .balance-bar-header > .currency.nimiq > label {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: inherit;
+}
+.swap-balance-bar .balance-bar-header > .currency.bitcoin,
+.swap-balance-bar .balance-bar-header > .currency.usdc,
+.swap-balance-bar .balance-bar-header > .currency.usdt {
+    --column-gap: 2rem;
+}
+
+/* Button style for the nimiq address selector (multi-address accounts) */
+.swap-balance-bar .balance-bar-header > .nimiq:not(.single):before {
+    content: "";
+    border-radius: 0.75rem;
+    position: absolute;
+    top: -.5rem;
+    bottom: -.5rem;
+    left: -1.5rem;
+    right: -1.5rem;
+    background: transparent;
+    transition: background 400ms;
+}
+.swap-balance-bar .balance-bar-header > .nimiq:not(.single):hover:before {
+    background: var(--nimiq-highlight-bg);
+}
+.swap-balance-bar .balance-bar-header > .nimiq.single {
+    cursor: default;
+}
+
+.swap-balance-bar .balance-bar-header > .bitcoin svg {
+    color: var(--bitcoin-orange);
+}
+.swap-balance-bar .balance-bar-header > .usdc svg {
+    color: var(--usdc-blue);
+}
+.swap-balance-bar .balance-bar-header > .usdt svg {
+    color: var(--usdt-green);
+}
+
+.swap-balance-bar .identicon-stack {
+    align-items: stretch;
+    position: relative;
+    overflow: visible;
+}
+.swap-balance-bar .identicon-stack .identicon {
+    height: auto;
+}
+.swap-balance-bar .identicon-stack .primary {
+    position: relative;
+    width: var(--header-height);
+}
+.swap-balance-bar .identicon-stack .secondary {
+    width: 4.75rem;
+    position: absolute;
+    top: 50%;
+    opacity: 0.4;
+    transform: translateY(-50%) translateX(0);
+    transition:
+        transform 300ms var(--nimiq-ease),
+        opacity 300ms var(--nimiq-ease);
+}
+.swap-balance-bar .identicon-stack .secondary:first-child {
+    left: 1.5rem;
+}
+.swap-balance-bar .identicon-stack .secondary:nth-child(2) {
+    right: 1.5rem;
+}
+.swap-balance-bar .nimiq:hover .identicon-stack .secondary:first-child,
+.swap-balance-bar .nimiq:focus .identicon-stack .secondary:first-child {
+    transform: translateY(-50%) translateX(-0.375rem) scale(1.05);
+    opacity: 0.5;
+}
+.swap-balance-bar .nimiq:hover .identicon-stack .secondary:nth-child(2),
+.swap-balance-bar .nimiq:focus .identicon-stack .secondary:nth-child(2) {
+    transform: translateY(-50%) translateX(0.375rem) scale(1.05);
+    opacity: 0.5;
+}
+
+.swap-balance-bar .connecting-lines {
+    margin-top: .5rem;
+    margin-bottom: -3rem;
+    padding-left: 3.5rem;
+}
+.swap-balance-bar .connecting-lines svg:last-child {
+    position: absolute;
+    right: 2.5rem;
+}
+/* CurvedLine.vue scoped styles */
+.swap-balance-bar .connecting-lines svg,
+.swap-balance-bar .connecting-lines svg path {
+    overflow: visible;
+}
+.swap-balance-bar .connecting-lines svg.left {
+    transform: rotateY(180deg);
+}
+.swap-balance-bar .connecting-lines svg path {
+    transform: translate3d(0);
+    transition-duration: 100ms;
+    transition-property: d, viewBox;
+}
+
+.swap-balance-bar .balance-bar {
+    align-items: center;
+}
+
+.swap-balance-bar .bar {
+    height: 4.5rem;
+    border-radius: 0.5rem;
+    background-color: currentColor;
+    border: .25rem solid currentColor;
+    opacity: 0.25;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: hidden;
+    cursor: pointer;
+    transform: translate3d(0, 0, 0);
+    transition: opacity 300ms;
+}
+.swap-balance-bar.animating .bar {
+    transition: opacity 300ms, width 300ms;
+}
+.swap-balance-bar .bar:not(:last-child) {
+    margin-right: 0.375rem;
+}
+.swap-balance-bar .bar:first-child,
+.swap-balance-bar .bar:last-child {
+    border-radius: 1.2rem; /* upstream comment: should be 0.5rem, kept verbatim */
+    --end-border-radius: 5rem;
+}
+.swap-balance-bar .bar:first-child {
+    border-top-left-radius: var(--end-border-radius);
+    border-bottom-left-radius: var(--end-border-radius);
+}
+.swap-balance-bar .bar:last-child {
+    border-top-right-radius: var(--end-border-radius);
+    border-bottom-right-radius: var(--end-border-radius);
+}
+.swap-balance-bar .bar.active {
+    opacity: 1;
+    cursor: default;
+}
+.swap-balance-bar .bar.bitcoin {
+    background-color: var(--bitcoin-orange);
+    border: .25rem solid var(--bitcoin-orange);
+}
+.swap-balance-bar .bar.usdc {
+    background-color: var(--usdc-blue);
+    border: .25rem solid var(--usdc-blue);
+}
+.swap-balance-bar .bar.usdt {
+    background-color: var(--usdt-green);
+    border: .25rem solid var(--usdt-green);
+}
+.swap-balance-bar .bar .change {
+    /* wallet assets/swap-change-background.svg, inlined */
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 36" width="9" height="36" fill="none" stroke="%23000" stroke-width="1.5" stroke-linecap="square"><path d="M.87 0L.65.38 0 1.5v4.8L3.63 0H.87zm4.5 0l-.22.38L0 9.3v4.79L8.13 0H5.37zM9 1.5L0 17.1v4.79l9-15.6V1.5zm0 7.8L0 24.89v4.8l9-15.6v-4.8zm0 7.8L0 32.67V36h.85l.22-.38L9 21.9v-4.8zm0 7.79L2.59 36h2.76l.22-.38L9 29.68v-4.8zm0 7.8L7.09 36H9v-3.32z" fill="%23fff" stroke="none"/></svg>') repeat-x top left;
+    background-size: auto 100%;
+    height: 100%;
+    border-radius: 0.25rem;
+    transform: translate3d(0, 0, 0);
+}
+.swap-balance-bar.animating .bar .change {
+    transition: width 300ms;
+}
+.swap-balance-bar .bar.left {
+    justify-content: flex-end;
+}
+.swap-balance-bar .bar.left .change {
+    background-position: top left;
+}
+.swap-balance-bar .bar.right {
+    justify-content: flex-start;
+}
+.swap-balance-bar .bar.right .change {
+    background-position: top right;
+}
+
+.swap-balance-bar .separator {
+    width: .25rem;
+    margin-right: 0.375rem;
+    height: 10.5rem;
+    position: relative;
+    flex-shrink: 0;
+    touch-action: none;
+    z-index: 2;
+}
+.swap-balance-bar .separator .handle {
+    --height: 4rem;
+    --width: 4rem;
+    height: var(--height);
+    width: var(--width);
+    /* wallet assets/horizontal-double-arrow.svg, inlined */
+    background: white url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="8" fill="none" viewBox="0 0 16 8"><path fill="%231F2348" d="M15.1 3.42a.7.7 0 010 1.18l-4.02 2.6A.7.7 0 0110 6.62V1.4a.7.7 0 011.08-.59l4.02 2.61zM.9 4.6a.7.7 0 010-1.18L4.92.82A.7.7 0 016 1.4v5.22a.7.7 0 01-1.08.58L.9 4.6z"/></svg>') no-repeat center;
+    border-radius: 100%;
+    box-shadow:
+        0px .5rem 2rem rgba(0, 0, 0, 0.07),
+        0px .1875rem .375rem rgba(0, 0, 0, 0.05),
+        0px .0421rem .25rem rgba(0, 0, 0, 0.025);
+    position: absolute;
+    top: calc(50% - (var(--height) / 2));
+    left: calc(50% - (var(--width) / 2));
+    cursor: grab;
+}
+.swap-balance-bar .separator .handle:active {
+    cursor: grabbing;
+}
+
+.swap-balance-bar .equilibrium-point {
+    height: .5rem;
+    width: .5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute;
+    bottom: .25rem;
+    opacity: 1;
+    transition: opacity 0.3s var(--nimiq-ease);
+}
+.swap-balance-bar .equilibrium-point.hidden {
+    opacity: 0;
+}
+
+.swap-balance-bar .scale {
+    margin-top: -1rem;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+.swap-balance-bar .scale .tenth {
+    height: 1rem;
+    line-height: 1rem;
+    width: 20%;
+    font-weight: bold;
+    font-size: 1.625rem;
+    letter-spacing: 0.0625rem;
+    color: var(--text-50);
+}
+.swap-balance-bar .scale .tenth:not(:last-child) {
+    border-right: 0.1875rem solid var(--text-20);
+}
+.swap-balance-bar .scale .tenth:last-child {
+    text-align: right;
+}
+.swap-balance-bar .scale .tenth > div {
+    transition-property: visibility, opacity;
+    transition-duration: 300ms;
+}
+.swap-balance-bar .scale .tenth > div.hidden {
+    opacity: 0;
+}
+
+/* === price-chart === */
+/* price-chart — wallet sidebar price sparkline (PriceChart.vue + LineChart.vue
+   in Sidebar.vue context). All selectors namespaced under .price-chart-widget.
+   Requires the legacy framework (html { font-size: 8px }, --nimiq-* vars) +
+   Mulish. The widget root stands in for the navy sidebar (24rem wide,
+   --padding-sides 1.5rem). */
+
+.price-chart-widget {
+    /* wallet theme vars (themes.scss) scoped to the component root */
+    --body-size: 2rem;
+    --small-size: 1.75rem;
+    --tiny-label-size: 1.375rem;
+    --bg-secondary: var(--nimiq-blue, #1F2348); /* Sidebar */
+
+    width: 24rem; /* --sidebar-width (App.vue) */
+    padding: 0 1.5rem; /* --padding-sides (Sidebar.vue) */
+    background: var(--bg-secondary);
+    color: white;
+    font-family: 'Mulish', 'Muli', system-ui, sans-serif;
+    font-size: var(--body-size);
+}
+.price-chart-widget,
+.price-chart-widget * {
+    box-sizing: border-box;
+}
+
+/* Sidebar.vue .price-chart-wrapper (3rem scroll-fade mask of the full-height
+   sidebar omitted — it would fade the meta row in this exact-height excerpt) */
+.price-chart-widget .price-chart-wrapper {
+    overflow-y: auto;
+    width: 100%;
+    scrollbar-width: none;
+}
+.price-chart-widget .price-chart-wrapper::-webkit-scrollbar {
+    width: 0;
+}
+
+/* PriceChart.vue root + Sidebar.vue sizing */
+.price-chart-widget .price-chart {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 15rem;
+    width: 100%;
+    padding: 1.5rem;
+}
+.price-chart-widget .price-chart:first-child { margin-top: 1.25rem; }
+.price-chart-widget .price-chart:last-child { margin-bottom: .75rem; }
+
+/* LineChart.vue */
+.price-chart-widget .line-chart {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+.price-chart-widget .line-chart svg {
+    flex-grow: 1;
+    transition: opacity .3s var(--nimiq-ease, cubic-bezier(0.25, 0, 0, 1));
+}
+
+/* PriceChart.vue .timespan (button.reset from wallet themes.scss baked in;
+   left/top 1.5rem = Sidebar's ::v-deep override) */
+.price-chart-widget .timespan {
+    position: absolute;
+    left: 1.5rem;
+    top: 1.5rem;
+    text-transform: uppercase;
+    background: rgb(109, 112, 135); /* rgba(255, 255, 255, 0.35) on Nimiq Blue */
+    border: 0.25rem solid var(--bg-secondary);
+    outline: none;
+    margin: -0.25rem;
+    border-radius: calc(0.25rem + 0.25rem);
+    padding: 0.375rem; /* 3px */
+    font-family: inherit;
+    font-size: var(--tiny-label-size); /* 11px */
+    line-height: 1;
+    font-weight: bold;
+    color: var(--bg-secondary);
+    letter-spacing: 0.055em;
+    text-align: inherit;
+    cursor: pointer;
+}
+
+/* PriceChart.vue .meta row */
+.price-chart-widget .meta {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    min-height: 4.5rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--small-size);
+    margin-top: 1rem;
+}
+.price-chart-widget .price {
+    text-align: right;
+}
+.price-chart-widget .change {
+    font-weight: bold;
+}
+.price-chart-widget .change.positive {
+    color: var(--nimiq-green, #21BCA5);
+}
+.price-chart-widget .change.positive::before {
+    content: '+';
+}
+/* upstream styles only .positive — negative change stays 60% white, bold */
+
+/* === balance-distribution === */
+/* BalanceDistribution — namespaced under .balance-distribution for showcase embedding.
+   Upstream: wallet/src/components/BalanceDistribution.vue (scoped styles verbatim,
+   minus the Vue transition-group enter/leave classes which need JS to drive them).
+
+   Sits on the navy wallet sidebar (background: var(--nimiq-blue)); the legend text
+   is white, so give it a dark background.
+
+   Ring geometry (computed by the upstream component):
+   SVG_SIZE = 51px, STROKE_WIDTH = 4, RADIUS = 23.5, ARC_GAP = 4,
+   fullCircleLength = 2 * PI * 23.5 = 147.655, circleStart = 147.655/4 - 4 = 32.914.
+   - Single non-empty currency: full circle -> dasharray "147.655 0", offset 32.914.
+   - Multiple currencies: per-arc length = share * (147.655 - n * 8), each arc offset
+     advances clockwise by length + 8 (line caps + gap); dasharray "<length> <147.655 - length>". */
+
+.balance-distribution {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    /* wallet theme currency colors (wallet/src/scss/themes.scss);
+       --nimiq-gold comes from the legacy framework */
+    --bitcoin-orange: #F7931A;
+    --usdc-blue: #2775CA;
+    --usdt-green: #009393;
+}
+
+.balance-distribution svg .arc {
+    --transition-time: 1.5s;
+    cx: 50%;
+    cy: 50%;
+    fill: none;
+    stroke-linecap: round;
+    /* regular transition while arc is shown and resizes or changes color due to distribution changes. */
+    transition: stroke-dashoffset var(--transition-time) var(--nimiq-ease),
+        stroke-dasharray var(--transition-time) var(--nimiq-ease),
+        stroke calc(.75 * var(--transition-time)) var(--nimiq-ease);
+}
+
+.balance-distribution svg .arc.nim {
+    stroke: var(--nimiq-gold);
+}
+.balance-distribution svg .arc.btc {
+    stroke: var(--bitcoin-orange);
+}
+.balance-distribution svg .arc.usdc {
+    stroke: var(--usdc-blue);
+}
+.balance-distribution svg .arc.usdt {
+    stroke: var(--usdt-green);
+}
+.balance-distribution svg .arc.inactive {
+    stroke: rgba(255, 255, 255, .2);
+    cursor: default;
+}
+
+.balance-distribution .breakdown {
+    padding: 0;
+    margin: 0;
+    min-width: 10.75rem;
+}
+
+.balance-distribution .breakdown li {
+    display: flex;
+    padding-left: .5rem;
+    justify-content: space-between;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+    color: white;
+    list-style: none;
+    cursor: default;
+}
+.balance-distribution .breakdown li:not(:first-child) {
+    padding-top: .5rem;
+}
+.balance-distribution .breakdown li:not(:last-child) {
+    padding-bottom: .5rem;
+}
+
+.balance-distribution .breakdown li * {
+    transition: opacity .5s var(--nimiq-ease);
+}
+.balance-distribution .breakdown li .currency {
+    text-transform: uppercase;
+}
+.balance-distribution .breakdown li .percentage {
+    margin-left: 1.5rem; /* for maintaining a minimum distance to the currency label */
+    opacity: .5;
+}
+
+.balance-distribution .breakdown li.inactive {
+    cursor: default;
+}
+.balance-distribution .breakdown li.inactive * {
+    opacity: .3;
+}
+
+/* === hero-section === */
+/* hero-section — nimiq.com marketing hero (screenshot-referenced recreation).
+   All selectors namespaced under .nq-hero-section. Deterministic, no JS. */
+
+.nq-hero-section {
+    position: relative;
+    width: 100%;
+    height: 800px;
+    overflow: hidden;
+    font-family: 'Mulish', sans-serif;
+    background:
+        radial-gradient(1050px 640px at 50% 26%, rgba(110, 82, 192, 0.6), rgba(110, 82, 192, 0) 68%),
+        radial-gradient(1500px 900px at 50% 108%, rgba(72, 92, 196, 0.38), rgba(72, 92, 196, 0) 62%),
+        linear-gradient(180deg, #211c4a 0%, #2c2562 42%, #232456 72%, #1f2348 100%);
+}
+
+/* ---- floating hexagons (flat left/right points, Nimiq orientation) ---- */
+.nq-hero-section__hex {
+    position: absolute;
+    clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
+    background: linear-gradient(135deg, rgba(148, 134, 255, 0.85) 0%, rgba(64, 105, 224, 0.45) 100%);
+    filter: blur(1px);
+    z-index: 1;
+}
+.nq-hero-section__hex--a { left: 86px;   top: 126px; width: 22px; height: 19px; opacity: 0.55; }
+.nq-hero-section__hex--b { left: 1102px; top: 102px; width: 26px; height: 22px; opacity: 0.6; }
+.nq-hero-section__hex--c { left: 1144px; top: 448px; width: 28px; height: 24px; opacity: 0.5; }
+.nq-hero-section__hex--d { left: 168px;  top: 352px; width: 58px; height: 50px; opacity: 0.28; filter: blur(2px); }
+
+/* ---- copy block ---- */
+.nq-hero-section__inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 112px;
+}
+
+.nq-hero-section__title {
+    margin: 0;
+    font-size: 52px;
+    line-height: 1.25;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: #ffffff;
+}
+
+.nq-hero-section__subtitle {
+    margin: 20px auto 0;
+    max-width: 430px;
+    font-size: 16px;
+    line-height: 1.65;
+    font-weight: 600;
+    color: #9d9ac4;
+}
+
+.nq-hero-section__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+    padding: 12px 28px 13px;
+    border: none;
+    border-radius: 999px;
+    background: radial-gradient(120% 180% at 100% 100%, #46a8f4 0%, #2a69e2 78%);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(31, 35, 72, 0.35);
+}
+.nq-hero-section__cta-arrow {
+    font-size: 14px;
+    line-height: 1;
+    transform: translateY(-1px);
+}
+
+/* ---- partner row ---- */
+.nq-hero-section__partners {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+    margin-top: 64px;
+}
+.nq-hero-section__partners-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+}
+.nq-hero-section__partner {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: rgba(255, 255, 255, 0.92);
+}
+.nq-hero-section__partner svg { display: block; }
+.nq-hero-section__partner-name {
+    font-size: 15px;
+    font-weight: 700;
+}
+.nq-hero-section__partner-name--mark {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+
+/* ---- dotted globe arc ---- */
+.nq-hero-section__globe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/* === app-showcase-card === */
+/* app-showcase-card — nimiq.com "THE APPS" marketing card (screenshot-referenced).
+   Self-contained: marketing pages don't use the legacy 8px-root framework, so all
+   units are plain px. Every selector is namespaced under .nq-app-showcase-card. */
+
+.nq-app-showcase-card {
+    --asc-navy: #1F2348;
+    --asc-text-60: rgba(31, 35, 72, 0.6);
+    --asc-text-50: rgba(31, 35, 72, 0.5);
+    --asc-green: #21BCA5;
+    --asc-light-blue: #0582CA;
+    --asc-gold-bg: radial-gradient(at 100% 100%, #EC991C, #E9B213);
+    --asc-frame: #D9D9D9;
+    --asc-screen: #F8F8F8;
+    --asc-bar: #E2E2E7;
+
+    position: relative;
+    box-sizing: border-box;
+    width: 420px;
+    height: 520px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #EFEEF0;
+    padding: 44px 32px 0;
+    text-align: center;
+    font-family: 'Mulish', sans-serif;
+    color: var(--asc-navy);
+}
+
+.nq-app-showcase-card *,
+.nq-app-showcase-card *::before,
+.nq-app-showcase-card *::after { box-sizing: border-box; }
+
+/* ---- gold app-icon chip ---- */
+.nq-app-showcase-card .asc-icon {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 15px;
+    background: var(--asc-gold-bg);
+}
+.nq-app-showcase-card .asc-icon-hex {
+    width: 22px;
+    height: 19px;
+    background: #fff;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+.nq-app-showcase-card .asc-icon-label {
+    margin-top: 3px;
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* ---- copy ---- */
+.nq-app-showcase-card .asc-title {
+    margin: 22px 0 0;
+    font-size: 27px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: var(--asc-navy);
+}
+.nq-app-showcase-card .asc-subtitle {
+    margin: 12px auto 0;
+    max-width: 300px;
+    font-size: 19px;
+    line-height: 1.5;
+    font-weight: 400;
+    color: var(--asc-text-60);
+}
+
+/* ---- phone device mock (CSS-built, neutral) ---- */
+.nq-app-showcase-card .asc-mock {
+    position: relative;
+    margin: 40px auto 0;
+    width: 246px;
+}
+.nq-app-showcase-card .asc-phone {
+    position: relative;
+    width: 246px;
+    height: 280px; /* clipped by the card's bottom edge */
+    border: 6px solid var(--asc-frame);
+    border-bottom: none;
+    border-radius: 28px 28px 0 0;
+    background: var(--asc-screen);
+    padding: 18px 16px 0;
+}
+.nq-app-showcase-card .asc-phone-btn {
+    position: absolute;
+    top: 78px;
+    right: -10px;
+    width: 4px;
+    height: 38px;
+    border-radius: 2px;
+    background: var(--asc-frame);
+}
+
+/* status row: hamburger left, counter pill right */
+.nq-app-showcase-card .asc-phone-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.nq-app-showcase-card .asc-burger {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 17px;
+}
+.nq-app-showcase-card .asc-burger i {
+    display: block;
+    height: 2px;
+    border-radius: 1px;
+    background: #B0B2BD;
+}
+.nq-app-showcase-card .asc-burger i:nth-child(2) { width: 13px; }
+.nq-app-showcase-card .asc-burger i:nth-child(3) { width: 15px; }
+.nq-app-showcase-card .asc-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 999px;
+    background: #EAEAEC;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--asc-navy);
+}
+.nq-app-showcase-card .asc-counter::before {
+    content: '';
+    width: 7px;
+    height: 9px;
+    background: #FC8702;
+    clip-path: polygon(50% 0%, 100% 55%, 80% 100%, 20% 100%, 0% 55%);
+}
+
+/* "Payment successful" toast pill, overlapping the status row */
+.nq-app-showcase-card .asc-toast {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    white-space: nowrap;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 5px 14px rgba(31, 35, 72, 0.10);
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--asc-navy);
+}
+.nq-app-showcase-card .asc-toast svg {
+    width: 14px;
+    height: 12px;
+    stroke: var(--asc-green);
+    stroke-width: 2.5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* balance block */
+.nq-app-showcase-card .asc-amount {
+    margin-top: 56px;
+    font-size: 33px;
+    line-height: 1.2;
+    font-weight: 400;
+    color: var(--asc-navy);
+}
+.nq-app-showcase-card .asc-amount-sub {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--asc-text-50);
+}
+.nq-app-showcase-card .asc-amount-sub svg {
+    width: 14px;
+    height: 9px;
+    stroke: #9A9CAB;
+    stroke-width: 1.5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.nq-app-showcase-card .asc-topup {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--asc-light-blue);
+    text-decoration: none;
+}
+.nq-app-showcase-card .asc-topup::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid var(--asc-light-blue);
+    border-top: 2px solid var(--asc-light-blue);
+    transform: rotate(45deg);
+    margin-left: 2px;
+}
+
+/* faint transaction row, cut off by the card edge */
+.nq-app-showcase-card .asc-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 34px;
+}
+.nq-app-showcase-card .asc-row-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--asc-bar);
+    flex-shrink: 0;
+}
+.nq-app-showcase-card .asc-row-bar {
+    height: 9px;
+    border-radius: 4.5px;
+    background: var(--asc-bar);
+    width: 92px;
+}
+.nq-app-showcase-card .asc-row-bar.amount {
+    width: 52px;
+    margin-left: auto;
+}
+
+/* =========================================================
+   .wide modifier — icon + copy left, dashboard mock right
+   ========================================================= */
+.nq-app-showcase-card.wide {
+    width: 760px;
+    height: 320px;
+    padding: 0;
+    text-align: left;
+}
+.nq-app-showcase-card.wide .asc-copy {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 48px;
+    width: 230px;
+}
+/* wide cards show a bare hexagon glyph in the chip (no app label) */
+.nq-app-showcase-card.wide .asc-icon-label { display: none; }
+.nq-app-showcase-card.wide .asc-icon-hex { width: 26px; height: 23px; }
+.nq-app-showcase-card.wide .asc-title {
+    margin-top: 20px;
+    font-size: 24px;
+}
+.nq-app-showcase-card.wide .asc-subtitle {
+    margin: 10px 0 0;
+    max-width: none;
+    font-size: 17px;
+}
+
+/* dashboard window mock */
+.nq-app-showcase-card.wide .asc-mock {
+    position: absolute;
+    top: 44px;
+    left: 330px;
+    margin: 0;
+    width: 500px; /* bleeds off the right + bottom edges */
+}
+.nq-app-showcase-card .asc-window {
+    position: relative;
+    display: flex;
+    width: 500px;
+    height: 300px;
+    border-radius: 8px 0 0 0;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(31, 35, 72, 0.08);
+    overflow: hidden;
+}
+.nq-app-showcase-card .asc-window-side {
+    width: 64px;
+    flex-shrink: 0;
+    background: var(--asc-navy);
+    padding: 16px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+.nq-app-showcase-card .asc-window-side i {
+    display: block;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.16);
+}
+.nq-app-showcase-card .asc-window-side i:first-child {
+    background: var(--asc-gold-bg);
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    border-radius: 0;
+    height: 19px;
+}
+.nq-app-showcase-card .asc-window-main {
+    position: relative;
+    flex-grow: 1;
+    background: var(--asc-screen);
+    padding: 20px 24px 0;
+    text-align: center;
+}
+.nq-app-showcase-card .asc-window-main .asc-toast { top: 14px; }
+.nq-app-showcase-card .asc-window-main .asc-amount { margin-top: 64px; }
+.nq-app-showcase-card .asc-window-main .asc-row { margin-top: 40px; }
+.nq-app-showcase-card .asc-window-main .asc-row-bar { width: 120px; }
+.nq-app-showcase-card .asc-window-main .asc-row-bar.amount { width: 64px; }
+
+/* === honeycomb-band === */
+/* honeycomb-band: nimiq.com community honeycomb band (marketing, screenshot-referenced).
+   Blue "Community →" pill centered above a clipped flat-top hexagon mosaic in very
+   light grays with three brand-colored social hexagons (YouTube red, X black,
+   Facebook blue). Hexagon technique (rounded flat-top SVG mask, tone palette,
+   column layout) reused from nimiq-branding-skill/banner.html.
+   All selectors namespaced under .nq-honeycomb-band. Requires Mulish. No JS. */
+
+.nq-honeycomb-band {
+    font-family: 'Mulish', sans-serif;
+    background: #fff;
+    text-align: center;
+    overflow: hidden;
+}
+
+/* Blue "Community →" pill (nimiq light-blue gradient from nimiq-style) */
+.nq-honeycomb-band__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    height: 38px;
+    padding: 0 21px;
+    border-radius: 999px;
+    background: radial-gradient(100% 100% at bottom right, #265DD7, #0582CA);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.1px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+.nq-honeycomb-band__cta:hover,
+.nq-honeycomb-band__cta:focus {
+    background: radial-gradient(100% 100% at bottom right, #2355C4, #0071C3);
+}
+.nq-honeycomb-band__cta svg { display: block; }
+
+/* Mosaic: wider than the container, clipped at both edges */
+.nq-honeycomb-band__mosaic {
+    margin-top: 56px;
+    display: flex;
+    justify-content: center;
+}
+.nq-honeycomb-band__grid {
+    display: flex;
+    align-items: flex-start;
+    flex: 0 0 auto;
+}
+.nq-honeycomb-band__col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 0 -9px;
+    flex-shrink: 0;
+}
+.nq-honeycomb-band__col--offset { margin-top: 60px; }
+
+/* Rounded flat-top hexagon via SVG mask (smooth corners) */
+.nq-honeycomb-band__hex {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 110px;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 110'%3E%3Cpath d='M35,3 L85,3 Q90,3 93,8 L118,47 Q121,52 118,57 L93,97 Q90,102 85,102 L35,102 Q30,102 27,97 L2,57 Q-1,52 2,47 L27,8 Q30,3 35,3 Z' fill='black'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 110'%3E%3Cpath d='M35,3 L85,3 Q90,3 93,8 L118,47 Q121,52 118,57 L93,97 Q90,102 85,102 L35,102 Q30,102 27,97 L2,57 Q-1,52 2,47 L27,8 Q30,3 35,3 Z' fill='black'/%3E%3C/svg%3E");
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    transition: background-color 0.3s ease, transform 0.35s ease;
+}
+
+/* Gray tones (one shade darker on hover) */
+.nq-honeycomb-band__hex--vlight { background-color: rgba(225, 225, 230, 0.08); }
+.nq-honeycomb-band__hex--light  { background-color: rgba(210, 212, 220, 0.22); }
+.nq-honeycomb-band__hex--gray   { background-color: rgba(195, 197, 208, 0.42); }
+.nq-honeycomb-band__hex--vlight:hover { background-color: rgba(210, 212, 220, 0.22); }
+.nq-honeycomb-band__hex--light:hover  { background-color: rgba(195, 197, 208, 0.42); }
+.nq-honeycomb-band__hex--gray:hover   { background-color: rgba(180, 182, 195, 0.55); }
+.nq-honeycomb-band__hex--spacer { visibility: hidden; }
+
+/* Brand-colored social hexagons */
+.nq-honeycomb-band__hex--youtube  { background-color: #e60012; cursor: pointer; }
+.nq-honeycomb-band__hex--x        { background-color: #1a1a1a; cursor: pointer; }
+.nq-honeycomb-band__hex--facebook { background-color: #1877F2; cursor: pointer; }
+.nq-honeycomb-band__hex--youtube:hover,
+.nq-honeycomb-band__hex--x:hover,
+.nq-honeycomb-band__hex--facebook:hover { transform: scale(1.12); }
+.nq-honeycomb-band__hex svg { display: block; }
+
 /* === small-page === */
 /* SmallPage — requires nimiq-style (legacy) for .nq-card, .nq-card-header, .nq-card-body */
 .small-page {
@@ -2804,8 +4750,9 @@ a.nq-button {
     </g>
   </svg>
   <h1>Component Registry Showcase</h1>
-  <p>Every piece below is scaffolded by the <code>nq</code> CLI and pixel-diffed against the real
-  Nimiq component source before it ships — 20 components, 19 matching upstream at 0.000%.</p>
+  <p>Every piece below is scaffolded by the <code>nq</code> CLI. Wallet and hub snippets are
+  pixel-diffed against the real Nimiq component source before they ship; the marketing elements
+  are screenshot-referenced recreations of nimiq.com.</p>
   <div class="pill">nq add &lt;component&gt; — Vue 3 or plain HTML</div>
 </div>
 
@@ -3753,6 +5700,673 @@ J5XX 74DB 5XJ8</textarea>
         <h3>card <span class="verified-badge">pixel-verified</span></h3>
         <p class="purpose">Standard Nimiq card container (.nq-card) with header, body and footer sections; the base layout block of @nimiq/style used for grouping content.</p>
         <p class="usage"><strong>How Nimiq uses it:</strong> The base nq-card container — header, body, footer — used across the hub and marketing sites for any grouped content.</p>
+      </div>
+    </div>
+    <div class="tile wide" id="backup-banner">
+      <div class="tile-stage  "><!-- Backup Banner — requires backup-banner.css + the legacy framework
+     (nimiq-style.min.css: html{font-size:8px}, .nq-orange, .nq-orange-bg,
+     .nq-button-pill, .nq-button-s, --nimiq-ease).
+     Variants:
+       .words  -> add classes "words nq-orange"   + button.nq-button-pill.orange
+                  (orange text on white, subtle inset border — recovery words not backed up)
+       .file   -> add classes "file nq-orange-bg" + button.nq-button-s.inverse
+                  (solid orange gradient, white text — login file not saved) -->
+
+<div class="backup-banner words nq-orange">
+  <span class="alert-text"><svg class="alert-icon" width="17" height="16" viewBox="0 0 17 16" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.913 13.333L9.68 1.433a1.333 1.333 0 0 0-2.362 0l-6.232 11.9a1.333 1.333 0 0 0 1.182 1.952H14.73a1.333 1.333 0 0 0 1.182-1.952zm-8.08-7.718a.667.667 0 0 1 1.334 0v4a.667.667 0 1 1-1.334 0v-4zm.682 7.674h.018a.983.983 0 0 0 .967-1.022 1.018 1.018 0 0 0-1.016-.978h-.019a.984.984 0 0 0-.965 1.02c.02.546.468.978 1.015.98z" fill="currentColor"/></svg> There is no &lsquo;forgot password&rsquo;</span>
+  <button class="nq-button-pill orange">Backup<svg class="nq-icon" width="16" height="12" viewBox="0 0 16 12" xmlns="http://www.w3.org/2000/svg"><path d="M10,1l5,5l-5,5" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="14" y1="6" x2="1" y2="6" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+</div>
+      <div class="tile-info">
+        <h3>backup-banner <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">The wallet's persistent orange warning banner — "There is no 'forgot password'" with a Backup→ pill — shown until the account's recovery words are exported.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> Pinned to the top of the wallet&rsquo;s account overview until the recovery words are exported — the orange &ldquo;there is no forgot password&rdquo; warning with the Backup&rarr; pill.</p>
+      </div>
+    </div>
+    <div class="tile " id="search-bar">
+      <div class="tile-stage  "><!-- search-bar: wallet pill search input (SearchBar.vue). Resting state shows the
+     magnifier + placeholder; focusing or typing expands it and reveals the clear button. -->
+<div class="search-bar">
+    <svg fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2" />
+        <path d="M13.31 14.73a1 1 0 001.42-1.42l-1.42 1.42zM8.3 9.7l5.02 5.02 1.42-1.42L9.7 8.3 8.29 9.71z"
+            fill="currentColor" />
+    </svg>
+    <input type="text" value="" placeholder="Search transactions">
+    <button class="cross-close-button" type="button" aria-label="Clear search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+            <path d="M1 1l10 10M11 1L1 11" fill="none" stroke="currentColor"
+                stroke-linecap="round" stroke-miterlimit="10" stroke-width="2"/>
+        </svg>
+    </button>
+</div>
+<script>
+(() => {
+    const root = document.currentScript.previousElementSibling;
+    const input = root.querySelector('input');
+    const cross = root.querySelector('.cross-close-button');
+    const update = () => root.classList.toggle('active', document.activeElement === input || input.value !== '');
+    // upstream: click on the pill focuses the input; pointerdown.prevent keeps focus stable
+    root.addEventListener('pointerdown', (e) => { if (e.target !== input) e.preventDefault(); });
+    root.addEventListener('click', (e) => { if (!cross.contains(e.target)) input.focus(); });
+    input.addEventListener('input', update);
+    input.addEventListener('focus', update);
+    input.addEventListener('blur', update);
+    cross.addEventListener('click', (e) => {
+        e.stopPropagation();
+        input.value = '';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        update();
+    });
+})();
+</script>
+</div>
+      <div class="tile-info">
+        <h3>search-bar <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">The wallet's pill-shaped transaction search input: magnifier icon + borderless input inside a 500px-radius inset border, light-blue on focus, with a clear (cross) button while active.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> Filters the wallet&rsquo;s transaction history — the pill expands and turns light-blue on focus and reveals a clear cross while a query is typed.</p>
+      </div>
+    </div>
+    <div class="tile wide" id="account-header">
+      <div class="tile-stage  "><!-- Nimiq Account Header (wallet AddressOverview header).
+     Include account-header.css + legacy nimiq-style CSS + Mulish & Fira Mono fonts.
+     The identicon img starts on the hexagon placeholder and is swapped to the
+     generated iqon by the pinned @nimiq/iqons recipe below (deterministic per address).
+     Remove the .staking-feature-tip <span> to hide the green CTA tooltip.
+     The root reserves 9rem bottom padding for the tooltip (in the wallet it
+     overlays the transaction list below). -->
+<div class="account-header">
+
+    <div class="active-address flex-row">
+        <div class="identicon-wrapper">
+            <div class="identicon" data-address="NQ87 JY9X JUEE HA17 JNBB HPGM 5ETQ VT1G CVN2">
+                <img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>' alt="Nimiq identicon">
+            </div>
+        </div>
+        <div class="meta">
+            <div class="flex-row">
+                <div class="label">Indigo Address</div>
+                <span class="amount">995 <span class="currency nim">NIM</span></span>
+            </div>
+            <div class="flex-row">
+                <div class="copyable">
+                    <div class="address">NQ87 JY9X JUEE HA17 JNBB HPGM 5ETQ VT1G CVN2</div>
+                </div>
+                <span class="fiat-amount">$0.50</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions flex-row">
+        <div class="container">
+            <div class="search-bar">
+                <svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2" />
+                    <path d="M13.31 14.73a1 1 0 001.42-1.42l-1.42 1.42zM8.3 9.7l5.02 5.02 1.42-1.42L9.7 8.3 8.29 9.71z" fill="currentColor" />
+                </svg>
+                <input type="text" placeholder="Search transactions">
+            </div>
+        </div>
+
+        <div class="flex-row ml-auto">
+            <div class="staking-button show-text">
+                <span class="tooltip staking-feature-tip position-bottom-center shown">
+                    <a href="javascript:void(0);" tabindex="0" class="trigger"></a>
+                    <div class="tooltip-box" style="top: 100%; left: 50%; transform: translate(-50%, 1rem);">
+                        Earn NIM every month by staking your NIM
+                    </div>
+                </span>
+                <button class="stake nq-button-pill green">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140" class="nq-icon staking-icon">
+                        <path opacity=".6" fill="none" stroke="#21bca5" stroke-width="3.02" d="M70 22h0a48 48 0 0148 48v0a48 48 0 01-48 48h0a48 48 0 01-48-48v0a48 48 0 0148-48z"/>
+                        <path opacity=".4" fill="none" stroke="#21bca5" stroke-width="3.02" d="M70 12h0a58 58 0 0158 58h0a58 58 0 01-58 58h0a58 58 0 01-58-58h0a58 58 0 0158-58z" />
+                        <path opacity=".2" fill="none" stroke="none" stroke-width="3.02" d="M70 2.25h0A67.75 67.75 0 01137.75 70v0A67.75 67.75 0 0170 137.75h0A67.75 67.75 0 012.25 70v0A67.75 67.75 0 0170 2.25z" />
+                        <path d="M70 28.23a41.76 41.76 0 110 83.52 41.76 41.76 0 110-83.52z" fill="none"/>
+                        <path d="M70.71 69.1v21.56m18.71-26.11c0 12.4-6.31 18.89-18.71 18.89 0-17.56 5.28-18.89 18.71-18.89zM54.18 53.98c0 13.33 4.13 20.07 16.53 20.07 0-13.43-1.03-20.07-16.53-20.07z" fill="none" stroke="#fff" stroke-width="4.0316" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="stake-text">Stake</span>
+                </button>
+            </div>
+
+            <div class="vertical-separator"></div>
+
+            <button class="send nq-button-pill light-blue flex-row">
+                <svg class="nq-icon" viewBox="0 0 16 12" xmlns="http://www.w3.org/2000/svg"><path d="M10,1l5,5l-5,5" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="14" y1="6" x2="1" y2="6" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Send
+            </button>
+            <button class="receive nq-button-s flex-row">
+                <svg class="nq-icon" viewBox="0 0 16 12" xmlns="http://www.w3.org/2000/svg"><path d="M10,1l5,5l-5,5" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="14" y1="6" x2="1" y2="6" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Receive
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script type="module">
+    /* pinned identicon recipe — see registry/components/identicon */
+    import Iqons from 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.js';
+    Iqons.svgPath = 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.svg';
+
+    for (const el of document.querySelectorAll('.identicon[data-address]')) {
+        el.querySelector('img').src = await Iqons.toDataUrl(el.dataset.address);
+    }
+</script>
+</div>
+      <div class="tile-info">
+        <h3>account-header <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">The wallet address-overview header: large identicon, account name + chunked Fira Mono address, NIM balance + fiat value, and the actions row — search pill, green Stake pill with the green 'Earn NIM every month by staking your NIM' CTA tooltip, divider, light-blue Send and neutral Receive pills.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The top of every wallet address view: big identicon, label + chunked address, NIM balance, and the search / Stake / Send / Receive action row with the green staking CTA tooltip.</p>
+      </div>
+    </div>
+    <div class="tile wide" id="transaction-list">
+      <div class="tile-stage  "><!-- Nimiq TransactionList snippet.
+     Month header + one button.transaction per row: stacked day/month date,
+     peer identicon, Fira Mono address with time underneath, right-aligned
+     amount (add .isIncoming to .amounts for the green '+' pill; without it
+     the amount renders dimmed with a '-' prefix) over a fiat placeholder bar
+     (.fiat-loading) — replace it with a real <span class="fiat-amount">$0.01</span>
+     once the fiat value is known. Each identicon img starts on the hexagon
+     placeholder and is swapped to the generated iqon by the script below
+     (scoped via document.currentScript, so multiple embeds are fine).
+     Set the list width on .transaction-list. -->
+<div class="transaction-list">
+    <div class="month-label"><label>May</label></div>
+
+    <button class="transaction confirmed">
+        <div class="date">
+            <span class="day">14</span><br>
+            <span class="month">May</span>
+        </div>
+        <div class="identicon" data-address="NQ49 Q4GS PG77 NTQT VRC9 6FF0 VXJX FKXF 829U">
+            <img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>' alt="Nimiq identicon">
+        </div>
+        <div class="data">
+            <div class="address">NQ49 Q4GS PG77 NTQT VRC9 6FF0 VXJX FKXF 829U</div>
+            <div class="time-and-message">
+                <span>22:58</span>
+            </div>
+        </div>
+        <div class="amounts">
+            <span class="amount">5.0 <span class="currency nim">NIM</span></span>
+            <div class="fiat-amount fiat-loading">&nbsp;</div>
+        </div>
+    </button>
+
+    <button class="transaction confirmed">
+        <div class="date">
+            <span class="day">14</span><br>
+            <span class="month">May</span>
+        </div>
+        <div class="identicon" data-address="NQ11 Q47D E086 MDXU TEE9 2A9A ALFT LHN1 7NPG">
+            <img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>' alt="Nimiq identicon">
+        </div>
+        <div class="data">
+            <div class="address">NQ11 Q47D E086 MDXU TEE9 2A9A ALFT LHN1 7NPG</div>
+            <div class="time-and-message">
+                <span>22:34</span>
+            </div>
+        </div>
+        <div class="amounts isIncoming">
+            <span class="amount">1000 <span class="currency nim">NIM</span></span>
+            <div class="fiat-amount fiat-loading">&nbsp;</div>
+        </div>
+    </button>
+</div>
+
+<script>
+(() => {
+    // Scoped to this embed via document.currentScript (works with multiple
+    // copies of this snippet on one page).
+    const root = document.currentScript.previousElementSibling;
+    import('https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.js').then(async ({ default: Iqons }) => {
+        Iqons.svgPath = 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.svg';
+        for (const el of root.querySelectorAll('.identicon[data-address]')) {
+            el.querySelector('img').src = await Iqons.toDataUrl(el.dataset.address);
+        }
+    });
+})();
+</script>
+</div>
+      <div class="tile-info">
+        <h3>transaction-list <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Wallet transaction history list — month header + per-transaction rows: stacked day/month date, peer identicon, Fira Mono address with time underneath, and right-aligned amount (outgoing plain at 60%, incoming in the green tinted pill) over a loading fiat placeholder bar.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The wallet&rsquo;s transaction history — month headers, stacked day/month dates, peer identicons, and incoming amounts in the green tinted pill over the loading fiat placeholder.</p>
+      </div>
+    </div>
+    <div class="tile wide" id="swap-balance-bar">
+      <div class="tile-stage  "><!-- Nimiq SwapBalanceBar snippet (static frozen state — dragging lives in the Vue port).
+     Sample: NIM "Indigo Address" 519 NIM solid navy at 46% | BTC 0.00 -> +0.00000476 BTC
+     at 54%, fully hatched (.change width 100% = whole BTC side is incoming).
+     To adapt: set the two .bar inline widths (they should sum to ~99%), the .change
+     widths, the 46%/54% scale labels, the labels/amounts in the header, and the two
+     connector svg widths/viewBox/paths (hand-computed from the upstream CurvedLine
+     formulas; regenerate via the Vue port for other distributions).
+     Size via a container: upstream renders at 55.5rem = 444px. -->
+<div class="swap-balance-bar flex-column">
+    <div class="balance-bar-header flex-row">
+        <button class="reset left nimiq currency single">
+            <div class="identicon-stack">
+                <div class="identicon primary" data-address="NQ87 JY9X JUEE HA17 JNBB HPGM 5ETQ VT1G CVN2"><img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>' alt="Nimiq identicon"></div>
+            </div>
+            <label>Indigo Address</label>
+            <span class="amount">519 <span class="currency nim">NIM</span></span>
+        </button>
+        <div class="currency right bitcoin">
+            <label>Bitcoin</label>
+            <span class="amount">0.00 <span class="currency btc">BTC</span></span>
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="bitcoin">
+                <circle fill="#fff" cx="21" cy="21" r="18" />
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.918 41.371c11.253 2.805 22.649-4.04 25.454-15.291C44.176 14.83 37.33 3.433 26.077.628 14.828-2.176 3.433 4.67.629 15.922c-2.806 11.25 4.041 22.645 15.289 25.45zm10.31-29.01c3.041.997 5.265 2.49 4.828 5.27-.316 2.033-1.501 3.018-3.075 3.364 2.161 1.07 3.26 2.712 2.213 5.557-1.3 3.533-4.388 3.831-8.495 3.092l-.998 3.8-2.407-.571.983-3.75a96.07 96.07 0 01-1.919-.474l-.986 3.768-2.406-.571.997-3.807-.652-.161c-.351-.087-.706-.175-1.065-.26l-3.135-.744 1.196-2.623s1.775.448 1.75.415c.682.16.985-.262 1.104-.544l1.575-6.007.255.06a2.197 2.197 0 00-.25-.076l1.123-4.288c.03-.487-.147-1.101-1.122-1.333.038-.024-1.75-.413-1.75-.413l.641-2.448 3.322.79-.003.011c.5.118 1.014.23 1.538.344L20.477 7l2.407.571-.967 3.69c.644.137 1.288.281 1.93.431l.96-3.664 2.408.57-.986 3.764zm-7.622 13.646c1.964.494 6.264 1.575 6.947-1.037.7-2.667-3.463-3.556-5.496-3.991-.229-.049-.43-.092-.594-.13l-1.323 5.043c.134.031.291.07.466.115zm1.857-7.369c1.638.416 5.212 1.324 5.835-1.048.636-2.428-2.838-3.159-4.535-3.516-.19-.04-.359-.076-.496-.108l-1.2 4.574c.114.027.247.06.396.098z"/>
+            </svg>
+        </div>
+    </div>
+    <div class="connecting-lines">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" style="width: 82px; height: 35px;" viewBox="0 0 82 35" class="right">
+            <path stroke="#1F2348" stroke-width="1.5" opacity=".24"
+                d="M 1 1 v 1 s 0 6.055 8.055 9.055 S 64.889 19.945 72.945 22.945 s 8.055 9.055 8.055 9.055 v 1" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" style="width: 98px; height: 35px;" viewBox="0 0 98 35" class="left">
+            <path stroke="#1F2348" stroke-width="1.5" opacity=".24"
+                d="M 1 1 v 1 s 0 6.899 9.899 9.899 S 77.201 19.101 87.101 22.101 s 9.899 9.899 9.899 9.899 v 1" />
+        </svg>
+    </div>
+    <div class="balance-bar flex-row">
+        <div class="bar left flex-row active nq-blue" style="width: 45.8181%;">
+            <div class="change" style="width: 0%;"></div>
+        </div>
+        <div class="separator nq-light-blue-bg">
+            <div class="handle"></div>
+        </div>
+        <div class="bar right flex-row active bitcoin" style="width: 53.1918%;">
+            <div class="change" style="width: 100%;"></div>
+        </div>
+    </div>
+    <div class="scale flex-row">
+        <div class="tenth"><div class="left-total-percent">46%</div></div>
+        <div class="tenth"></div>
+        <div class="tenth"></div>
+        <div class="tenth"></div>
+        <div class="tenth"></div>
+        <div class="tenth"></div>
+        <div class="tenth"></div>
+        <div class="tenth"></div>
+        <div class="tenth"></div>
+        <div class="tenth"><div class="right-total-percent">54%</div></div>
+    </div>
+    <div class="equilibrium-point nq-light-blue-bg hidden" style="left: 0%;"></div>
+</div>
+
+<script type="module">
+    import Iqons from 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.js';
+    Iqons.svgPath = 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.svg';
+
+    // Scoped to swap-balance-bar roots; safe with multiple snippets on one page.
+    for (const el of document.querySelectorAll('.swap-balance-bar .identicon[data-address]')) {
+        el.querySelector('img').src = await Iqons.toDataUrl(el.dataset.address);
+    }
+</script>
+</div>
+      <div class="tile-info">
+        <h3>swap-balance-bar <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Swap Currencies distribution bar — draggable handle splits total fiat value between two assets: solid address-colored NIM segment left, orange diagonal-hatched BTC change segment right, white round arrow handle on a light-blue hairline, 10-tick percent scale and curved connector lines up to the account labels.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The Swap Currencies modal&rsquo;s distribution bar — drag the handle to split your total value between assets; the orange hatched segment is the incoming BTC change.</p>
+      </div>
+    </div>
+    <div class="tile " id="price-chart">
+      <div class="tile-stage  "><!-- price-chart: wallet sidebar crypto price sparkline (sample: NIM, 24h, +0.1%).
+     Navy widget root stands in for the sidebar. The path is the upstream LineChart
+     smoothing algorithm (cubic, factor 0.2) precomputed for a fixed deterministic
+     18-point series in the 144x52 chart box; stroke is currentColor (white) at
+     0.5 opacity, as upstream. For the BTC pairing of the wallet sidebar, add a
+     second .price-chart without the .timespan button inside the same wrapper.
+     The timespan button is interactive upstream (toggles 24h/7d). -->
+<div class="price-chart-widget">
+    <div class="price-chart-wrapper">
+        <div class="price-chart">
+            <div class="line-chart">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1.25 -5 146.5 62" preserveAspectRatio="none">
+                    <path d="M 0 12 C 1.69 12.8, 5.08 13.6, 8.47 16 C 11.86 18.4, 13.55 20, 16.94 24 C 20.33 28, 22.02 34.4, 25.41 36 C 28.8 37.6, 30.49 30.4, 33.88 32 C 37.27 33.6, 38.96 40, 42.35 44 C 45.74 48, 47.44 51.2, 50.82 52 C 54.21 52.8, 55.91 51.2, 59.29 48 C 62.68 44.8, 64.38 37.6, 67.76 36 C 71.15 34.4, 72.85 41.6, 76.24 40 C 79.62 38.4, 81.32 32.8, 84.71 28 C 88.09 23.2, 89.79 17.6, 93.18 16 C 96.56 14.4, 98.26 21.6, 101.65 20 C 105.04 18.4, 106.73 12, 110.12 8 C 113.51 4, 115.2 0.8, 118.59 0 C 121.98 -0.8, 123.67 1.6, 127.06 4 C 130.45 6.4, 132.14 10.8, 135.53 12 C 138.92 13.2, 142.31 10.4, 144 10"
+                        fill="none" stroke="currentColor" opacity="0.5" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <button class="timespan" type="button">24h</button>
+                <div class="meta">
+                    <strong>NIM</strong>
+                    <div class="price">
+                        <span class="fiat-amount">$0.000501</span>
+                        <div class="change positive">0.1%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+      <div class="tile-info">
+        <h3>price-chart <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">The wallet sidebar's crypto price sparkline — '24H' badge over a smoothed white line chart, with the currency ticker, fiat price and 24h percentage change below, on the navy sidebar background.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The wallet sidebar&rsquo;s price sparklines — NIM with the 24H badge, BTC below it — ticker, fiat price and green 24h change on the navy sidebar.</p>
+      </div>
+    </div>
+    <div class="tile " id="balance-distribution">
+      <div class="tile-stage  "><!-- BalanceDistribution: wallet sidebar donut showing each currency's share of the
+     account's total fiat value, with a CURRENCY / percentage legend.
+     Sample state: NIM 100% / BTC 0% — BTC is empty, so only the gold NIM arc renders
+     (a full circle: dasharray "147.655 0", no gap/line caps) and the BTC legend row
+     is .inactive (dimmed to opacity .3).
+     Needs a dark background (wallet sidebar is var(--nimiq-blue)) — legend text is white.
+     More currencies: add <circle class="arc btc|usdc|usdt"> with per-share dasharray
+     (see balance-distribution.css header for the arc math) + a matching legend <li>.
+     In the wallet a "Swap" pill button sits below this component (sidebar sibling, not
+     part of the component). -->
+<div class="balance-distribution">
+    <svg xmlns="http://www.w3.org/2000/svg" width="51" height="51" viewBox="0 0 51 51">
+        <circle r="23.5" stroke-width="4" stroke-dasharray="147.655 0" stroke-dashoffset="32.914"
+            class="arc nim" data-currency="nim"/>
+    </svg>
+    <ul class="breakdown">
+        <li>
+            <div class="currency">nim</div>
+            <div class="percentage">100%</div>
+        </li>
+        <li class="inactive">
+            <div class="currency">btc</div>
+            <div class="percentage">0%</div>
+        </li>
+    </ul>
+</div>
+</div>
+      <div class="tile-info">
+        <h3>balance-distribution <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Sidebar balance-distribution donut from the Nimiq wallet: a ring made of one rounded SVG arc per currency (gold NIM, orange BTC, blue USDC, teal USDT), sized by each currency's share of the account's total fiat value, next to a bold white CURRENCY / percentage legend. Empty currencies get no arc and a dimmed legend row; hovering a row or arc highlights that currency. Lives on the navy wallet sidebar.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The wallet sidebar&rsquo;s donut: one rounded arc per currency sized by its share of the account&rsquo;s total fiat value, with the Swap pill rendered below it.</p>
+      </div>
+    </div>
+    <div class="tile wide" id="hero-section">
+      <div class="tile-stage  "><!-- hero-section: nimiq.com home hero (marketing, screenshot-referenced).
+     Deep purple radial-gradient sky, floating translucent hexagons, white 800-weight
+     headline, lavender subtitle, light-blue "Create Wallet ↗" pill, WORKS WITH partner
+     row, and a dotted-globe white arc cresting at the bottom.
+     Requires hero-section.css + Mulish (Google Fonts). No JS. SVG ids prefixed nq-hs-. -->
+<section class="nq-hero-section">
+    <svg class="nq-hero-section__globe" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <defs>
+            <radialGradient id="nq-hs-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#8a93ff" stop-opacity="0.7"/>
+                <stop offset="55%" stop-color="#5868e8" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#5868e8" stop-opacity="0"/>
+            </radialGradient>
+            <pattern id="nq-hs-dots" width="7" height="7" patternUnits="userSpaceOnUse">
+                <circle cx="1.6" cy="1.6" r="1.15" fill="#c3c8d8"/>
+            </pattern>
+            <clipPath id="nq-hs-clip"><circle cx="600" cy="1906" r="1370"/></clipPath>
+        </defs>
+        <ellipse cx="600" cy="548" rx="980" ry="150" fill="url(#nq-hs-glow)"/>
+        <circle cx="600" cy="1906" r="1370" fill="#ffffff"/>
+        <g clip-path="url(#nq-hs-clip)" fill="url(#nq-hs-dots)">
+            <!-- rough continent blobs; exact dot positions are not meaningful -->
+            <path d="M96 668 Q120 612 188 596 Q252 580 312 600 Q376 620 356 660 Q332 700 296 712 Q330 740 312 776 Q290 800 240 800 L150 800 Q120 760 128 716 Q96 704 96 668 Z"/>
+            <path d="M356 590 Q392 572 436 582 Q462 592 444 606 Q416 618 376 612 Q348 604 356 590 Z"/>
+            <path d="M470 596 Q506 566 556 572 Q596 578 588 602 Q628 606 656 636 Q680 668 660 716 Q636 772 580 794 Q540 800 516 770 Q488 728 480 676 Q458 634 470 596 Z"/>
+            <path d="M664 600 Q716 556 800 552 Q908 548 992 576 Q1062 600 1052 648 Q1040 690 968 692 Q996 716 972 736 Q940 756 904 736 Q884 716 856 706 Q800 712 760 686 Q700 660 680 632 Q660 614 664 600 Z"/>
+            <path d="M948 752 Q988 728 1040 740 Q1086 754 1076 786 Q1062 800 1016 800 L960 800 Q936 772 948 752 Z"/>
+            <path d="M1096 644 Q1128 630 1160 642 Q1180 654 1160 668 Q1130 678 1104 666 Q1088 654 1096 644 Z"/>
+            <ellipse cx="912" cy="586" rx="14" ry="7"/>
+            <ellipse cx="1078" cy="710" rx="12" ry="6"/>
+            <ellipse cx="418" cy="640" rx="10" ry="5"/>
+        </g>
+    </svg>
+
+    <span class="nq-hero-section__hex nq-hero-section__hex--a"></span>
+    <span class="nq-hero-section__hex nq-hero-section__hex--b"></span>
+    <span class="nq-hero-section__hex nq-hero-section__hex--c"></span>
+    <span class="nq-hero-section__hex nq-hero-section__hex--d"></span>
+
+    <div class="nq-hero-section__inner">
+        <h1 class="nq-hero-section__title">Universal Money for<br>Independent Individuals</h1>
+        <p class="nq-hero-section__subtitle">In a centralized world, Nimiq gives independence back to&nbsp;you.</p>
+        <a class="nq-hero-section__cta" href="#">Create Wallet <span class="nq-hero-section__cta-arrow">&#8599;</span></a>
+
+        <div class="nq-hero-section__partners">
+            <span class="nq-hero-section__partners-label">Works with</span>
+            <span class="nq-hero-section__partner">
+                <svg width="20" height="18" viewBox="0 0 20 18" fill="none" aria-hidden="true">
+                    <path d="M19.4 8 15.5 1.2A2 2 0 0 0 13.8.2H6.2a2 2 0 0 0-1.7 1L.6 8a2 2 0 0 0 0 2l3.9 6.8a2 2 0 0 0 1.7 1h7.6a2 2 0 0 0 1.7-1l3.9-6.8a2 2 0 0 0 0-2Z" stroke="#fff" stroke-width="1.6"/>
+                </svg>
+                <span class="nq-hero-section__partner-name">CryptoPayment Link</span>
+            </span>
+            <span class="nq-hero-section__partner">
+                <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="11" fill="#fff"/>
+                    <text x="12" y="16.6" text-anchor="middle" font-family="Mulish, sans-serif" font-size="13" font-weight="800" fill="#1f2348">&#8383;</text>
+                </svg>
+            </span>
+            <span class="nq-hero-section__partner">
+                <span class="nq-hero-section__partner-name nq-hero-section__partner-name--mark">NAKA</span>
+            </span>
+            <span class="nq-hero-section__partner">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10.2" stroke="#fff" stroke-width="1.6"/>
+                    <circle cx="12" cy="12" r="4.4" stroke="#fff" stroke-width="1.6"/>
+                </svg>
+            </span>
+        </div>
+    </div>
+</section>
+</div>
+      <div class="tile-info">
+        <h3>hero-section <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">nimiq.com home hero: deep purple radial-gradient sky with floating translucent hexagons, white 800-weight 'Universal Money for Independent Individuals' headline, lavender subtitle, light-blue 'Create Wallet ↗' pill, WORKS WITH partner row, and a dotted-globe white arc cresting at the bottom.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The nimiq.com home hero — purple radial sky, floating hexagons, the &ldquo;Create Wallet&rdquo; pill, WORKS WITH partner row and the dotted globe cresting at the bottom.</p>
+      </div>
+    </div>
+    <div class="tile wide" id="app-showcase-card">
+      <div class="tile-stage  "><!-- app-showcase-card: nimiq.com "THE APPS" marketing card (screenshot-referenced).
+     Requires app-showcase-card.css + Mulish. Static markup, no script.
+     Standard: centered icon chip + title + 2-line subtitle + CSS phone mock
+     (clipped at the card's bottom edge). Add .wide for the horizontal variant
+     (icon + copy left, dashboard window mock bleeding off bottom-right). -->
+
+<!-- Standard card -->
+<div class="nq-app-showcase-card">
+    <div class="asc-icon">
+        <span class="asc-icon-hex"></span>
+        <span class="asc-icon-label">Pay</span>
+    </div>
+    <h3 class="asc-title">Pay App</h3>
+    <p class="asc-subtitle">Pay with NIM at more acceptance points every day</p>
+    <div class="asc-mock">
+        <div class="asc-phone">
+            <span class="asc-phone-btn"></span>
+            <div class="asc-phone-top">
+                <span class="asc-burger"><i></i><i></i><i></i></span>
+                <span class="asc-counter">230</span>
+            </div>
+            <div class="asc-toast">
+                <svg viewBox="0 0 14 12"><path d="M1.5 6.5 5 10 12.5 1.5"/></svg>
+                Payment successful
+            </div>
+            <div class="asc-amount">150,00&nbsp;&euro;</div>
+            <div class="asc-amount-sub">
+                151,000 NIM
+                <svg viewBox="0 0 14 9"><path d="M1 7.5 5 4l3 2.5L13 1.5M13 1.5h-3M13 1.5v3"/></svg>
+                +4.1%
+            </div>
+            <div><span class="asc-topup">Top up</span></div>
+            <div class="asc-row">
+                <span class="asc-row-avatar"></span>
+                <span class="asc-row-bar"></span>
+                <span class="asc-row-bar amount"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Wide card -->
+<div class="nq-app-showcase-card wide">
+    <div class="asc-copy">
+        <div class="asc-icon">
+            <span class="asc-icon-hex"></span>
+            <span class="asc-icon-label">Pay</span>
+        </div>
+        <h3 class="asc-title">Nimiq Wallet</h3>
+        <p class="asc-subtitle">Buying, staking, swapping, the wallet does it all</p>
+    </div>
+    <div class="asc-mock">
+        <div class="asc-window">
+            <div class="asc-window-side"><i></i><i></i><i></i><i></i></div>
+            <div class="asc-window-main">
+                <div class="asc-toast">
+                    <svg viewBox="0 0 14 12"><path d="M1.5 6.5 5 10 12.5 1.5"/></svg>
+                    Payment successful
+                </div>
+                <div class="asc-amount">2&thinsp;494,09&nbsp;&euro;</div>
+                <div class="asc-amount-sub">
+                    2,522,624.58 NIM
+                    <svg viewBox="0 0 14 9"><path d="M1 7.5 5 4l3 2.5L13 1.5M13 1.5h-3M13 1.5v3"/></svg>
+                    +4.1%
+                </div>
+                <div class="asc-row">
+                    <span class="asc-row-avatar"></span>
+                    <span class="asc-row-bar"></span>
+                    <span class="asc-row-bar amount"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+      <div class="tile-info">
+        <h3>app-showcase-card <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">nimiq.com 'THE APPS' marketing card: light-gray rounded card with gold hexagon app-icon chip, title, 2-line gray subtitle and a CSS-built device mock ('Payment successful' toast + amount) clipped at the card edge. .wide modifier puts icon+copy left and a dashboard window mock right.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> nimiq.com&rsquo;s THE APPS section — every app gets this card: gold hexagon icon chip, copy, and a device mock clipped at the card edge (wide variant for the wallet).</p>
+      </div>
+    </div>
+    <div class="tile wide" id="honeycomb-band">
+      <div class="tile-stage  "><!-- honeycomb-band: nimiq.com community honeycomb band (marketing, screenshot-referenced).
+     Blue "Community →" pill centered above a clipped flat-top hexagon mosaic in very
+     light grays with three brand-colored social hexagons (YouTube red play, X black,
+     Facebook blue f — inline SVG glyphs). Deterministic hardcoded 16-column grid,
+     hand-expanded to static markup. Requires honeycomb-band.css + Mulish (Google
+     Fonts). No JS. The grid is 1650px wide and clips at the container edges. -->
+<section class="nq-honeycomb-band">
+    <a class="nq-honeycomb-band__cta" href="#">Community
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2.5 8h10.4M8.6 3.6 13 8l-4.4 4.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+
+    <div class="nq-honeycomb-band__mosaic">
+        <div class="nq-honeycomb-band__grid">
+            <!-- col 1 (offset) — clipped left edge -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 2 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--spacer"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 3 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--vlight"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 4 — YouTube -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <a class="nq-honeycomb-band__hex nq-honeycomb-band__hex--youtube" href="#" aria-label="YouTube">
+                    <svg width="44" height="31" viewBox="0 0 44 31" aria-hidden="true">
+                        <rect width="44" height="31" rx="7" fill="#fff"/>
+                        <path d="M18.5 9.4 29.5 15.5 18.5 21.6Z" fill="#e60012"/>
+                    </svg>
+                </a>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 5 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--vlight"></span>
+            </div>
+            <!-- col 6 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 7 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 8 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 9 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--vlight"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 10 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 11 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 12 — X -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <a class="nq-honeycomb-band__hex nq-honeycomb-band__hex--x" href="#" aria-label="X (Twitter)">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                </a>
+            </div>
+            <!-- col 13 (offset) — Facebook -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <a class="nq-honeycomb-band__hex nq-honeycomb-band__hex--facebook" href="#" aria-label="Facebook">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                </a>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 14 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 15 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 16 — clipped right edge -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--vlight"></span>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+      <div class="tile-info">
+        <h3>honeycomb-band <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">nimiq.com community honeycomb band: blue 'Community →' pill centered above a clipped flat-top hexagon mosaic in very light grays, with three brand-colored social hexagons mixed in (YouTube red play, X black, Facebook blue f).</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> nimiq.com&rsquo;s community section — flat-top hexagon mosaic in light grays with the YouTube, X and Facebook hexes and the blue Community pill.</p>
       </div>
     </div>
 </div>

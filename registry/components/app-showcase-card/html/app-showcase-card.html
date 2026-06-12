@@ -1,0 +1,74 @@
+<!-- app-showcase-card: nimiq.com "THE APPS" marketing card (screenshot-referenced).
+     Requires app-showcase-card.css + Mulish. Static markup, no script.
+     Standard: centered icon chip + title + 2-line subtitle + CSS phone mock
+     (clipped at the card's bottom edge). Add .wide for the horizontal variant
+     (icon + copy left, dashboard window mock bleeding off bottom-right). -->
+
+<!-- Standard card -->
+<div class="nq-app-showcase-card">
+    <div class="asc-icon">
+        <span class="asc-icon-hex"></span>
+        <span class="asc-icon-label">Pay</span>
+    </div>
+    <h3 class="asc-title">Pay App</h3>
+    <p class="asc-subtitle">Pay with NIM at more acceptance points every day</p>
+    <div class="asc-mock">
+        <div class="asc-phone">
+            <span class="asc-phone-btn"></span>
+            <div class="asc-phone-top">
+                <span class="asc-burger"><i></i><i></i><i></i></span>
+                <span class="asc-counter">230</span>
+            </div>
+            <div class="asc-toast">
+                <svg viewBox="0 0 14 12"><path d="M1.5 6.5 5 10 12.5 1.5"/></svg>
+                Payment successful
+            </div>
+            <div class="asc-amount">150,00&nbsp;&euro;</div>
+            <div class="asc-amount-sub">
+                151,000 NIM
+                <svg viewBox="0 0 14 9"><path d="M1 7.5 5 4l3 2.5L13 1.5M13 1.5h-3M13 1.5v3"/></svg>
+                +4.1%
+            </div>
+            <div><span class="asc-topup">Top up</span></div>
+            <div class="asc-row">
+                <span class="asc-row-avatar"></span>
+                <span class="asc-row-bar"></span>
+                <span class="asc-row-bar amount"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Wide card -->
+<div class="nq-app-showcase-card wide">
+    <div class="asc-copy">
+        <div class="asc-icon">
+            <span class="asc-icon-hex"></span>
+            <span class="asc-icon-label">Pay</span>
+        </div>
+        <h3 class="asc-title">Nimiq Wallet</h3>
+        <p class="asc-subtitle">Buying, staking, swapping, the wallet does it all</p>
+    </div>
+    <div class="asc-mock">
+        <div class="asc-window">
+            <div class="asc-window-side"><i></i><i></i><i></i><i></i></div>
+            <div class="asc-window-main">
+                <div class="asc-toast">
+                    <svg viewBox="0 0 14 12"><path d="M1.5 6.5 5 10 12.5 1.5"/></svg>
+                    Payment successful
+                </div>
+                <div class="asc-amount">2&thinsp;494,09&nbsp;&euro;</div>
+                <div class="asc-amount-sub">
+                    2,522,624.58 NIM
+                    <svg viewBox="0 0 14 9"><path d="M1 7.5 5 4l3 2.5L13 1.5M13 1.5h-3M13 1.5v3"/></svg>
+                    +4.1%
+                </div>
+                <div class="asc-row">
+                    <span class="asc-row-avatar"></span>
+                    <span class="asc-row-bar"></span>
+                    <span class="asc-row-bar amount"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

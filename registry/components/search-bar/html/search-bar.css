@@ -1,0 +1,147 @@
+/* search-bar — wallet SearchBar.vue pill search input (+ inlined CrossCloseButton).
+   All selectors namespaced under .search-bar. Requires the legacy framework CSS
+   (html{font-size:8px}, --nimiq-light-blue, --attr-duration, --nimiq-ease). */
+
+.search-bar {
+    /* wallet themes.scss vars (light theme), overridable by an embedding theme */
+    --body-size: 2rem;
+    --text-16: rgba(31, 35, 72, 0.16);
+    --text-22: rgba(31, 35, 72, 0.22);
+    --light-blue-40: rgba(5, 130, 202, 0.4);
+
+    --default-sb-width: clamp(5.5rem, 100%, 30rem);
+
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    cursor: text;
+    padding: 0.75rem 0;
+    min-width: var(--default-sb-width);
+    max-width: var(--default-sb-width); /* upstream: inline-bound maxWidth, resting state */
+
+    transition-property: color, max-width;
+    transition-duration: var(--attr-duration);
+    transition-timing-function: var(--nimiq-ease);
+}
+
+/* upstream maxWidth flips to 100% while focused or holding text (.active set by script) */
+.search-bar.active {
+    max-width: 100%;
+}
+
+.search-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: inset 0 0 0 0.1875rem var(--text-16); /* 1.5px */
+    border-radius: 500px;
+
+    transition: box-shadow var(--attr-duration) var(--nimiq-ease);
+}
+
+.search-bar:hover::after {
+    box-shadow: inset 0 0 0 0.1875rem var(--text-22);
+}
+
+.search-bar:focus-within {
+    color: var(--nimiq-light-blue);
+}
+
+.search-bar:focus-within > svg {
+    opacity: 1;
+}
+
+.search-bar:focus-within::after {
+    box-shadow: inset 0 0 0 0.1875rem var(--light-blue-40);
+}
+
+.search-bar > svg {
+    justify-self: left;
+    flex-grow: 0;
+    margin-left: 1.75rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+    opacity: 0.4;
+    width: 1.75rem;
+    height: 1.75rem;
+
+    transition: opacity var(--attr-duration) var(--nimiq-ease);
+}
+
+.search-bar input {
+    font-family: inherit;
+    font-weight: 600;
+    color: inherit;
+    justify-self: right;
+    flex-grow: 1;
+    border: 0;
+    line-height: 2.75rem;
+    font-size: var(--body-size);
+    margin: 0;
+    padding: 0;
+    padding-right: 4rem;
+    background: none;
+    min-width: 0;
+}
+
+.search-bar input:focus {
+    outline: none;
+}
+
+.search-bar input::placeholder {
+    font-weight: normal;
+    color: inherit;
+    opacity: 0.4;
+}
+
+@media (max-width: 768px) { /* $mobileBreakpoint */
+    .search-bar input::placeholder {
+        font-weight: 600;
+    }
+}
+
+/* CrossCloseButton (clear), shown while focused or holding text */
+.search-bar .cross-close-button {
+    /* wallet global button.reset */
+    background: none;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    line-height: inherit;
+    font-weight: inherit;
+    color: inherit;
+
+    position: absolute;
+    z-index: 1;
+    right: 1rem;
+    cursor: pointer;
+
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+
+    display: none;
+}
+
+.search-bar.active .cross-close-button {
+    display: block;
+}
+
+.search-bar .cross-close-button svg {
+    height: 1em;
+    width: 1em;
+    display: block;
+    opacity: 0.7;
+    transition: opacity 0.2s var(--nimiq-ease);
+}
+
+.search-bar .cross-close-button:hover svg,
+.search-bar .cross-close-button:active svg,
+.search-bar .cross-close-button:focus svg {
+    opacity: 1 !important;
+}
