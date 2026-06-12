@@ -1,7 +1,7 @@
 {
   "name": "nimiq-branding-cli",
-  "version": "0.1.0",
-  "description": "Scaffold pixel-accurate Nimiq-branded UI components — Vue 3 or plain HTML/CSS — from a verified registry.",
+  "version": "1.0.0",
+  "description": "nq \u2014 pixel-verified Nimiq UI component registry + CLI. 39 components (Vue 3 + plain HTML) diffed against the real Nimiq apps, plus the team's real asset library. Unofficial community tool.",
   "type": "module",
   "bin": {
     "nq": "./bin/nq.js"
@@ -17,5 +17,35 @@
     "pixelmatch": "^5.3.0",
     "playwright": "^1.49.0",
     "pngjs": "^7.0.0"
-  }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Andjroo111/nimiq-branding-cli.git"
+  },
+  "homepage": "https://github.com/Andjroo111/nimiq-branding-cli#readme",
+  "bugs": {
+    "url": "https://github.com/Andjroo111/nimiq-branding-cli/issues"
+  },
+  "keywords": [
+    "nimiq",
+    "cli",
+    "design-system",
+    "components",
+    "vue",
+    "scaffolding",
+    "crypto",
+    "ui"
+  ],
+  "files": [
+    "bin/",
+    "assets/",
+    "scripts/verify.mjs",
+    "scripts/snap.mjs",
+    "NOTICE.md",
+    "registry/index.json",
+    "registry/components/*/meta.json",
+    "registry/components/*/html/",
+    "registry/components/*/vue/"
+  ]
 }
