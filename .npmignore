@@ -1,3 +1,13 @@
-registry/components/*/truth/
-registry/components/*/reference.png
+references/
+upstream/
 .verify/
+.github/
+node_modules/
+showcase.html
+supporting-elements.html
+scripts/build-*.mjs
+scripts/check-*.mjs
+scripts/gen-*.mjs
+registry/components/*/truth
+registry/components/*/reference.png
+*.tgz
