@@ -1,12 +1,21 @@
 <script setup>
-// nimiq.com "THE APPS" showcase card — MARKETING component, screenshot-referenced
-// (no upstream Vue source; calibrated against references/screenshots/nimiq-com/
-// home-card-component.png and the THE APPS section of home-desktop-full.png).
+// nimiq.com "THE APPS" showcase card — MARKETING component, layout calibrated
+// against references/screenshots/nimiq-com/home-card-component.png and the
+// THE APPS section of home-desktop-full.png.
 //
-// Standard: centered gold app-icon chip, title, 2-line gray subtitle and a
-// CSS-built phone mock ("Payment successful" toast + amount) clipped at the
-// card's bottom edge. Set `wide` for the horizontal variant: icon + copy left,
-// dashboard window mock bleeding off the bottom-right.
+// The device previews and hexagon marks are the REAL team-shipped assets
+// (`nq add` copies them into your project at ./nimiq/assets/<subpath>):
+//   img/nimiq-pay-preview.webp     490x916 Nimiq Pay phone screenshot (standard)
+//   img/nimiq-wallet-preview.webp  1734x1164 Nimiq Wallet desktop screenshot (wide)
+//   logos/official/white/nimiq_signet_white_base_size.svg   white signet (chip glyph)
+//   logos/official/colored/nimiq_signet_rgb_base_size.svg   gold signet (wide-card mark)
+// Pass `previewSrc` / `signetSrc` / `markSrc` resolved for your bundler (e.g.
+// new URL('./nimiq/assets/img/nimiq-pay-preview.webp', import.meta.url).href).
+//
+// Standard: centered gold chip (white signet + label), title, 2-line gray
+// subtitle and the phone screenshot clipped at the card's bottom edge.
+// Set `wide` for the horizontal variant: bare gold signet + copy left,
+// desktop window screenshot bleeding off the bottom-right.
 //
 // All styling lives in ../html/app-showcase-card.css (selectors namespaced
 // under .nq-app-showcase-card). No npm dependencies.
@@ -20,40 +29,36 @@ defineProps({
         type: String,
         default: 'Pay with NIM at more acceptance points every day',
     },
-    // Short label inside the gold chip (hidden automatically in the wide variant).
+    // Short label inside the gold chip (standard variant only).
     appLabel: {
         type: String,
         default: 'Pay',
     },
-    // Horizontal layout: icon + copy left, dashboard mock right.
+    // Horizontal layout: bare gold signet + copy left, desktop screenshot right.
     wide: {
         type: Boolean,
         default: false,
     },
-    // Mock content
-    amount: {
+    // REAL product screenshot. Standard card expects the 490x916 phone shot
+    // (nimiq-pay-preview.webp); wide card expects the 1734x1164 desktop shot
+    // (nimiq-wallet-preview.webp).
+    previewSrc: {
         type: String,
-        default: '150,00 €',
+        required: true,
     },
-    amountSecondary: {
+    previewAlt: {
         type: String,
-        default: '151,000 NIM',
+        default: '',
     },
-    delta: {
+    // White official signet shown inside the gold chip (standard variant).
+    markSrc: {
         type: String,
-        default: '+4.1%',
+        default: '',
     },
-    topUpLabel: {
+    // Colored official signet shown bare in the wide variant.
+    signetSrc: {
         type: String,
-        default: 'Top up',
-    },
-    counter: {
-        type: String,
-        default: '230',
-    },
-    toastText: {
-        type: String,
-        default: 'Payment successful',
+        default: '',
     },
 });
 </script>
@@ -62,67 +67,23 @@ defineProps({
     <div class="nq-app-showcase-card" :class="{ wide }">
         <template v-if="!wide">
             <div class="asc-icon">
-                <span class="asc-icon-hex"></span>
+                <img v-if="markSrc" class="asc-icon-mark" :src="markSrc" alt="" width="72" height="64">
                 <span class="asc-icon-label">{{ appLabel }}</span>
             </div>
             <h3 class="asc-title">{{ title }}</h3>
             <p class="asc-subtitle">{{ subtitle }}</p>
             <div class="asc-mock">
-                <div class="asc-phone">
-                    <span class="asc-phone-btn"></span>
-                    <div class="asc-phone-top">
-                        <span class="asc-burger"><i></i><i></i><i></i></span>
-                        <span class="asc-counter">{{ counter }}</span>
-                    </div>
-                    <div class="asc-toast">
-                        <svg viewBox="0 0 14 12"><path d="M1.5 6.5 5 10 12.5 1.5"/></svg>
-                        {{ toastText }}
-                    </div>
-                    <div class="asc-amount">{{ amount }}</div>
-                    <div class="asc-amount-sub">
-                        {{ amountSecondary }}
-                        <svg viewBox="0 0 14 9"><path d="M1 7.5 5 4l3 2.5L13 1.5M13 1.5h-3M13 1.5v3"/></svg>
-                        {{ delta }}
-                    </div>
-                    <div><span class="asc-topup">{{ topUpLabel }}</span></div>
-                    <div class="asc-row">
-                        <span class="asc-row-avatar"></span>
-                        <span class="asc-row-bar"></span>
-                        <span class="asc-row-bar amount"></span>
-                    </div>
-                </div>
+                <img class="asc-shot" :src="previewSrc" :alt="previewAlt" width="490" height="916">
             </div>
         </template>
         <template v-else>
             <div class="asc-copy">
-                <div class="asc-icon">
-                    <span class="asc-icon-hex"></span>
-                    <span class="asc-icon-label">{{ appLabel }}</span>
-                </div>
+                <img v-if="signetSrc" class="asc-signet" :src="signetSrc" alt="" width="72" height="64">
                 <h3 class="asc-title">{{ title }}</h3>
                 <p class="asc-subtitle">{{ subtitle }}</p>
             </div>
             <div class="asc-mock">
-                <div class="asc-window">
-                    <div class="asc-window-side"><i></i><i></i><i></i><i></i></div>
-                    <div class="asc-window-main">
-                        <div class="asc-toast">
-                            <svg viewBox="0 0 14 12"><path d="M1.5 6.5 5 10 12.5 1.5"/></svg>
-                            {{ toastText }}
-                        </div>
-                        <div class="asc-amount">{{ amount }}</div>
-                        <div class="asc-amount-sub">
-                            {{ amountSecondary }}
-                            <svg viewBox="0 0 14 9"><path d="M1 7.5 5 4l3 2.5L13 1.5M13 1.5h-3M13 1.5v3"/></svg>
-                            {{ delta }}
-                        </div>
-                        <div class="asc-row">
-                            <span class="asc-row-avatar"></span>
-                            <span class="asc-row-bar"></span>
-                            <span class="asc-row-bar amount"></span>
-                        </div>
-                    </div>
-                </div>
+                <img class="asc-shot" :src="previewSrc" :alt="previewAlt" width="1734" height="1164">
             </div>
         </template>
     </div>

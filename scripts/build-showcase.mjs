@@ -60,7 +60,7 @@ for (const [name, usage, opts = {}] of TILES) {
   const cssPath = join(C, name, 'html', `${name}.css`);
   if (!existsSync(htmlPath)) { console.warn(`skip tile ${name}: no snippet`); continue; }
   const meta = JSON.parse(await readFile(join(C, name, 'meta.json'), 'utf8'));
-  let snippet = await readFile(htmlPath, 'utf8');
+  let snippet = (await readFile(htmlPath, 'utf8')).replaceAll('../../../../assets/', 'assets/'); // rewriteAssetPaths: pages live at repo root
   if (opts.wrapSmallPage) snippet = `<div class="small-page nq-card" style="position:relative;margin:0">${snippet}</div>`;
   if (existsSync(cssPath)) styles += `\n/* === ${name} === */\n` + await readFile(cssPath, 'utf8');
   tiles += `

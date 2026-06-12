@@ -60,7 +60,13 @@
     // Scoped to .payment-info-line roots; each img is derived from its own
     // data-address, so running this once per embedded snippet is harmless.
     import Iqons from 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.js';
-    Iqons.svgPath = 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.svg';
+    // Identicon sprite: the REAL @nimiq/iqons@1.6.0 iqons.min.svg is vendored at ../../../../assets/img/iqons.min.svg
+    // (consumer projects: `nq add` copies it to ./nimiq/assets/img/iqons.min.svg). The iqons LIBRARY import
+    // above stays on the jsdelivr pin — it is code, not artwork. The CDN sprite (byte-identical content)
+    // is only the fallback when the local copy is unreachable (e.g. file:// contexts that block fetch).
+    const localIqonsSprite = '../../../../assets/img/iqons.min.svg';
+    const cdnIqonsSprite = 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.svg';
+    Iqons.svgPath = await fetch(localIqonsSprite, { method: 'HEAD' }).then((r) => (r.ok ? localIqonsSprite : cdnIqonsSprite)).catch(() => cdnIqonsSprite);
     for (const el of document.querySelectorAll('.payment-info-line .identicon[data-address]')) {
         el.querySelector('img').src = await Iqons.toDataUrl(el.dataset.address);
     }

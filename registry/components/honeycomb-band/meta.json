@@ -1,6 +1,6 @@
 {
   "name": "honeycomb-band",
-  "purpose": "nimiq.com community honeycomb band: blue 'Community →' pill centered above a clipped flat-top hexagon mosaic in very light grays, with three brand-colored social hexagons mixed in (YouTube red play, X black, Facebook blue f).",
+  "purpose": "nimiq.com community honeycomb band: blue 'Community →' pill centered above the real nimiq.com fading honeycomb background (bg-hexagons.svg) with three brand-colored social hexagons overlaid (YouTube red, X black, Facebook blue).",
   "category": "marketing",
   "variants": ["vue", "html"],
   "props": [
@@ -11,14 +11,20 @@
     { "name": "facebookHref", "type": "string", "default": "#", "description": "Link target of the blue Facebook hexagon." }
   ],
   "cssFiles": ["honeycomb-band.css"],
+  "assetFiles": [
+    "img/bg-hexagons.svg",
+    "logos/nimiq-icons-logos/logos-youtube-mono.svg",
+    "logos/nimiq-icons-logos/logos-twitter-mono.svg",
+    "logos/nimiq-icons-logos/logos-facebook-mono.svg"
+  ],
   "dependsOn": [],
   "npmDeps": [],
   "verified": true,
   "verify": {
-    "viewport": { "width": 1200, "height": 560 },
+    "viewport": { "width": 1200, "height": 700 },
     "selector": ".nq-honeycomb-band",
     "maxDiffPct": 0.5,
     "settleMs": 300
   },
-  "notes": "MARKETING component, screenshot-referenced (no upstream source) — per references/supporting-elements-brief-2026-06-11.md item 9. The live mosaic did not render in references/screenshots/nimiq-com/home-desktop-full.png (lazy-loaded), so the band is calibrated against the brief plus Andrew's own ../nimiq-branding-skill/banner.html, whose hexagon technique is reused verbatim: rounded flat-top hexagon via SVG mask-image (smoother corners than a sharp clip-path polygon), tone palette rgba(225,225,230,.08)/rgba(210,212,220,.22)/rgba(195,197,208,.42), 120x110 hexes in 16 flex columns (gap 10px, margin 0 -9px, offset columns +60px) hand-expanded to static markup — deterministic, no JS, no randomness. Pill uses the nimiq-style light-blue gradient radial-gradient(100% 100% at bottom right, #265DD7, #0582CA), calibrated against the 'Community →' pill in home-desktop-full.png (y≈10650/2x). Social glyphs are inline SVGs (YouTube rounded rect + play, simple-icons X and Facebook paths). Mulish via Google Fonts; no legacy framework dependency. Grid is 1650px wide and clips at both edges of the 1200px viewport, as on the live site."
+  "notes": "MARKETING component. Band background is the REAL nimiq.com asset assets/img/bg-hexagons.svg (2795x544 fading honeycomb, currentColor hexagons at .01-.06 opacity), swept from www.nimiq.com inline CSS as custom--bg-hexagons (references/assets/nimiq-com/css-inline/custom--bg-hexagons.svg). Rendered 1:1 as a CSS alpha mask filled with currentColor (site text navy #1F2348) — the same currentColor mechanism the live page uses — centered and clipped at the section edges. The live mosaic is lazy-loaded and did not render in references/screenshots/nimiq-com/home-desktop-full.png, so the foreground composition (three social hexagons + pill) follows references/supporting-elements-brief-2026-06-11.md item 9. Social hexagon shape = the hexagon path extracted verbatim from bg-hexagons.svg (one lattice cell, viewBox 45.5 248 124 110); the hexagons sit on exact lattice cells of the background (column step 107.5px, row step 124px, half-offset 62px; cells (967.5,303) YouTube, (1827.5,303) X, (1935,241) Facebook). Social glyphs are the REAL nimiq-icons mono logos from assets/logos/nimiq-icons-logos/ (logos-youtube-mono.svg, logos-twitter-mono.svg = the X glyph, logos-facebook-mono.svg — the same icon set nimiq.com inlines as nimiq--logos-*-mono), applied as white CSS masks. Pill uses the nimiq-style light-blue gradient radial-gradient(100% 100% at bottom right, #265DD7, #0582CA), calibrated against the 'Community →' pill in home-desktop-full.png. Asset url()s are ../../../../assets/… relative to the snippet; nq add copies them to ./nimiq/assets/… in consumer projects. Mulish via Google Fonts; deterministic, no JS."
 }
