@@ -1,0 +1,24 @@
+{
+  "name": "hero-section",
+  "purpose": "nimiq.com home hero: deep purple radial-gradient sky with floating translucent hexagons, white 800-weight 'Universal Money for Independent Individuals' headline, lavender subtitle, light-blue 'Create Wallet ↗' pill, WORKS WITH partner row, and a dotted-globe white arc cresting at the bottom.",
+  "category": "marketing",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "title", "type": "string", "default": "Universal Money for\\nIndependent Individuals" },
+    { "name": "subtitle", "type": "string", "default": "In a centralized world, Nimiq gives independence back to you." },
+    { "name": "ctaLabel", "type": "string", "default": "Create Wallet" },
+    { "name": "ctaHref", "type": "string", "default": "#" },
+    { "name": "showPartners", "type": "boolean", "default": true }
+  ],
+  "cssFiles": ["hero-section.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 1200, "height": 800 },
+    "selector": ".nq-hero-section",
+    "maxDiffPct": 0.5,
+    "settleMs": 400
+  },
+  "notes": "MARKETING component, screenshot-referenced (no upstream source). Calibrated against references/screenshots/nimiq-com/home-hero-section.png, home-hero-cta-button.png and home-desktop-full.png per references/supporting-elements-brief-2026-06-11.md item 7. Dotted globe is generated (SVG dot pattern over rough continent blobs clipped to a huge white circle) — dot/continent positions are illustrative, not geographic. Partner logos (CryptoPayment Link, ₿ coin, NAKA, ring mark) are simplified placeholder marks. Modern px-based styling with Mulish; no legacy framework dependency. SVG ids prefixed nq-hs- to stay collision-safe when embedded with other snippets."
+}

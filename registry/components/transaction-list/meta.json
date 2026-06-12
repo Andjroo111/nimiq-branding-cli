@@ -1,0 +1,21 @@
+{
+  "name": "transaction-list",
+  "purpose": "Wallet transaction history list — month header + per-transaction rows: stacked day/month date, peer identicon, Fira Mono address with time underneath, and right-aligned amount (outgoing plain at 60%, incoming in the green tinted pill) over a loading fiat placeholder bar.",
+  "category": "payment",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "transactions", "type": "TxDisplay[]", "required": true, "description": "Transactions to list: { transactionHash, peerAddress, peerLabel?, value (luna), isIncoming, timestamp (ms), fiatValue? (number, undefined = loading placeholder), fiatCurrency?, message? }. Month headers are derived from timestamps." },
+    { "name": "fiatCurrency", "type": "string", "default": "usd", "description": "Fallback fiat currency code for rows that do not set their own." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": ["identicon", "amount", "fiat-amount"],
+  "npmDeps": ["@nimiq/iqons"],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 800, "height": 420 },
+    "selector": ".transaction-list",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Source: upstream/wallet/src/components/TransactionListItem.vue (row markup + scoped styles, verbatim; amount-loading-placeholder/fiat-unavailable mixins inlined from scss/mixins.scss) + TransactionList.vue (.month-label styles). Sample state per supporting-elements brief item 3: month header 'MAY' + two confirmed rows — outgoing 14 May 22:58 '- 5.0 NIM' (plain navy, opacity .6, '-' from ::before) to NQ49 Q4GS PG77 NTQT VRC9 6FF0 VXJX FKXF 829U, and incoming 14 May 22:34 '+ 1000 NIM' (green pill: --nimiq-green on rgba(33,188,165,.1), radius .5rem) from NQ11 Q47D E086 MDXU TEE9 2A9A ALFT LHN1 7NPG. Both addresses are checksum-valid (IBAN mod-97 verified). Fiat value undefined → .fiat-loading breathing placeholder bar (4rem x 1.6rem, --text-12); screenshots disable animations so it renders at its resting state deterministically. Identicons via pinned @nimiq/iqons@1.6.0 jsdelivr recipe (same as identicon component). Theme vars (--body-size, --small-size, --label-size, --small-label-size, --text-50, --text-12, --bg-primary) from wallet themes.scss are defined on the component root in the snippet CSS. Pending/expired/invalid/new states, cashlink/swap badges and peer labels exist upstream but are not in the sample."
+}

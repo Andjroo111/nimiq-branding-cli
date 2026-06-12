@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>honeycomb-band — truth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* honeycomb-band TRUTH — marketing component, screenshot-referenced.
+   nimiq.com "Join our live community" honeycomb band: blue Community pill
+   centered above a clipped flat-top hexagon mosaic in very light grays with
+   three brand-colored social hexagons (YouTube red, X black, Facebook blue).
+   Hexagon technique (rounded flat-top SVG mask, tone palette, column layout)
+   reused from Andrew's nimiq-branding-skill/banner.html. Deterministic:
+   hardcoded 16-column grid, no randomness, no JS. */
+html, body { margin: 0; padding: 0; background: #fff; }
+body { font-family: 'Mulish', sans-serif; }
+
+.nq-honeycomb-band {
+    background: #fff;
+    text-align: center;
+    overflow: hidden;
+}
+
+/* Blue "Community →" pill (nimiq light-blue gradient from nimiq-style) */
+.nq-honeycomb-band__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    height: 38px;
+    padding: 0 21px;
+    border-radius: 999px;
+    background: radial-gradient(100% 100% at bottom right, #265DD7, #0582CA);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.1px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+.nq-honeycomb-band__cta:hover,
+.nq-honeycomb-band__cta:focus {
+    background: radial-gradient(100% 100% at bottom right, #2355C4, #0071C3);
+}
+.nq-honeycomb-band__cta svg { display: block; }
+
+/* Mosaic: wider than the container, clipped at both edges */
+.nq-honeycomb-band__mosaic {
+    margin-top: 56px;
+    display: flex;
+    justify-content: center;
+}
+.nq-honeycomb-band__grid {
+    display: flex;
+    align-items: flex-start;
+    flex: 0 0 auto;
+}
+.nq-honeycomb-band__col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 0 -9px;
+    flex-shrink: 0;
+}
+.nq-honeycomb-band__col--offset { margin-top: 60px; }
+
+/* Rounded flat-top hexagon via SVG mask (smooth corners) */
+.nq-honeycomb-band__hex {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 110px;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 110'%3E%3Cpath d='M35,3 L85,3 Q90,3 93,8 L118,47 Q121,52 118,57 L93,97 Q90,102 85,102 L35,102 Q30,102 27,97 L2,57 Q-1,52 2,47 L27,8 Q30,3 35,3 Z' fill='black'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 110'%3E%3Cpath d='M35,3 L85,3 Q90,3 93,8 L118,47 Q121,52 118,57 L93,97 Q90,102 85,102 L35,102 Q30,102 27,97 L2,57 Q-1,52 2,47 L27,8 Q30,3 35,3 Z' fill='black'/%3E%3C/svg%3E");
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    transition: background-color 0.3s ease, transform 0.35s ease;
+}
+
+/* Gray tones (one shade darker on hover) */
+.nq-honeycomb-band__hex--vlight { background-color: rgba(225, 225, 230, 0.08); }
+.nq-honeycomb-band__hex--light  { background-color: rgba(210, 212, 220, 0.22); }
+.nq-honeycomb-band__hex--gray   { background-color: rgba(195, 197, 208, 0.42); }
+.nq-honeycomb-band__hex--vlight:hover { background-color: rgba(210, 212, 220, 0.22); }
+.nq-honeycomb-band__hex--light:hover  { background-color: rgba(195, 197, 208, 0.42); }
+.nq-honeycomb-band__hex--gray:hover   { background-color: rgba(180, 182, 195, 0.55); }
+.nq-honeycomb-band__hex--spacer { visibility: hidden; }
+
+/* Brand-colored social hexagons */
+.nq-honeycomb-band__hex--youtube  { background-color: #e60012; cursor: pointer; }
+.nq-honeycomb-band__hex--x        { background-color: #1a1a1a; cursor: pointer; }
+.nq-honeycomb-band__hex--facebook { background-color: #1877F2; cursor: pointer; }
+.nq-honeycomb-band__hex--youtube:hover,
+.nq-honeycomb-band__hex--x:hover,
+.nq-honeycomb-band__hex--facebook:hover { transform: scale(1.12); }
+.nq-honeycomb-band__hex svg { display: block; }
+</style>
+</head>
+<body>
+<section class="nq-honeycomb-band">
+    <a class="nq-honeycomb-band__cta" href="#">Community
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2.5 8h10.4M8.6 3.6 13 8l-4.4 4.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+
+    <div class="nq-honeycomb-band__mosaic" aria-hidden="false">
+        <div class="nq-honeycomb-band__grid">
+            <!-- col 1 (offset) — clipped left edge -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 2 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--spacer"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 3 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--vlight"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 4 — YouTube -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <a class="nq-honeycomb-band__hex nq-honeycomb-band__hex--youtube" href="#" aria-label="YouTube">
+                    <svg width="44" height="31" viewBox="0 0 44 31" aria-hidden="true">
+                        <rect width="44" height="31" rx="7" fill="#fff"/>
+                        <path d="M18.5 9.4 29.5 15.5 18.5 21.6Z" fill="#e60012"/>
+                    </svg>
+                </a>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 5 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--vlight"></span>
+            </div>
+            <!-- col 6 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 7 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 8 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 9 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--vlight"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 10 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 11 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+            </div>
+            <!-- col 12 — X -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+                <a class="nq-honeycomb-band__hex nq-honeycomb-band__hex--x" href="#" aria-label="X (Twitter)">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                </a>
+            </div>
+            <!-- col 13 (offset) — Facebook -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <a class="nq-honeycomb-band__hex nq-honeycomb-band__hex--facebook" href="#" aria-label="Facebook">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                </a>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 14 -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 15 (offset) -->
+            <div class="nq-honeycomb-band__col nq-honeycomb-band__col--offset">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--light"></span>
+            </div>
+            <!-- col 16 — clipped right edge -->
+            <div class="nq-honeycomb-band__col">
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--gray"></span>
+                <span class="nq-honeycomb-band__hex nq-honeycomb-band__hex--vlight"></span>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

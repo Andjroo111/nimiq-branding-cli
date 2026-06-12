@@ -1,0 +1,24 @@
+{
+  "name": "honeycomb-band",
+  "purpose": "nimiq.com community honeycomb band: blue 'Community →' pill centered above a clipped flat-top hexagon mosaic in very light grays, with three brand-colored social hexagons mixed in (YouTube red play, X black, Facebook blue f).",
+  "category": "marketing",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "ctaLabel", "type": "string", "default": "Community", "description": "Label of the blue pill above the mosaic." },
+    { "name": "ctaHref", "type": "string", "default": "#", "description": "Link target of the pill." },
+    { "name": "youtubeHref", "type": "string", "default": "#", "description": "Link target of the red YouTube hexagon." },
+    { "name": "xHref", "type": "string", "default": "#", "description": "Link target of the black X hexagon." },
+    { "name": "facebookHref", "type": "string", "default": "#", "description": "Link target of the blue Facebook hexagon." }
+  ],
+  "cssFiles": ["honeycomb-band.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 1200, "height": 560 },
+    "selector": ".nq-honeycomb-band",
+    "maxDiffPct": 0.5,
+    "settleMs": 300
+  },
+  "notes": "MARKETING component, screenshot-referenced (no upstream source) — per references/supporting-elements-brief-2026-06-11.md item 9. The live mosaic did not render in references/screenshots/nimiq-com/home-desktop-full.png (lazy-loaded), so the band is calibrated against the brief plus Andrew's own ../nimiq-branding-skill/banner.html, whose hexagon technique is reused verbatim: rounded flat-top hexagon via SVG mask-image (smoother corners than a sharp clip-path polygon), tone palette rgba(225,225,230,.08)/rgba(210,212,220,.22)/rgba(195,197,208,.42), 120x110 hexes in 16 flex columns (gap 10px, margin 0 -9px, offset columns +60px) hand-expanded to static markup — deterministic, no JS, no randomness. Pill uses the nimiq-style light-blue gradient radial-gradient(100% 100% at bottom right, #265DD7, #0582CA), calibrated against the 'Community →' pill in home-desktop-full.png (y≈10650/2x). Social glyphs are inline SVGs (YouTube rounded rect + play, simple-icons X and Facebook paths). Mulish via Google Fonts; no legacy framework dependency. Grid is 1650px wide and clips at both edges of the 1200px viewport, as on the live site."
+}

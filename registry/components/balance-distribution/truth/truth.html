@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BalanceDistribution — truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Sidebar context: the component lives on the navy sidebar (--bg-secondary: var(--nimiq-blue)) */
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 16px; background: var(--nimiq-blue); }
+
+    /* wallet theme vars used by the scoped styles (themes.scss) */
+    html {
+        --bitcoin-orange: #F7931A;
+        --usdc-blue: #2775CA;
+        --usdt-green: #009393;
+    }
+
+    /* BalanceDistribution.vue scoped styles — verbatim (Vue scoping emulated with [data-v-bd]) */
+    .balance-distribution[data-v-bd] {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    svg[data-v-bd] .arc {
+        --transition-time: 1.5s;
+        cx: 50%;
+        cy: 50%;
+        fill: none;
+        stroke-linecap: round;
+        /* regular transition while arc is shown and resizes or changes color due to distribution changes. */
+        transition: stroke-dashoffset var(--transition-time) var(--nimiq-ease),
+            stroke-dasharray var(--transition-time) var(--nimiq-ease),
+            stroke calc(.75 * var(--transition-time)) var(--nimiq-ease);
+    }
+    svg[data-v-bd] .arc.nim {
+        stroke: var(--nimiq-gold);
+    }
+    svg[data-v-bd] .arc.btc {
+        stroke: var(--bitcoin-orange);
+    }
+    svg[data-v-bd] .arc.usdc {
+        stroke: var(--usdc-blue);
+    }
+    svg[data-v-bd] .arc.usdt {
+        stroke: var(--usdt-green);
+    }
+    svg[data-v-bd] .arc.inactive {
+        stroke: rgba(255, 255, 255, .2);
+        cursor: default;
+    }
+
+    .breakdown[data-v-bd] {
+        padding: 0;
+        margin: 0;
+        min-width: 10.75rem;
+    }
+    .breakdown[data-v-bd] li {
+        display: flex;
+        padding-left: .5rem;
+        justify-content: space-between;
+        font-size: 1.75rem;
+        font-weight: 700;
+        line-height: 1;
+        color: white;
+        list-style: none;
+        cursor: default;
+    }
+    .breakdown[data-v-bd] li:not(:first-child) {
+        padding-top: .5rem;
+    }
+    .breakdown[data-v-bd] li:not(:last-child) {
+        padding-bottom: .5rem;
+    }
+    .breakdown[data-v-bd] li * {
+        transition: opacity .5s var(--nimiq-ease);
+    }
+    .breakdown[data-v-bd] li .currency {
+        text-transform: uppercase;
+    }
+    .breakdown[data-v-bd] li .percentage {
+        margin-left: 1.5rem; /* for maintaining a minimum distance to the currency label */
+        opacity: .5;
+    }
+    .breakdown[data-v-bd] li.inactive {
+        cursor: default;
+    }
+    .breakdown[data-v-bd] li.inactive * {
+        opacity: .3;
+    }
+</style>
+</head>
+<body>
+    <!-- BalanceDistribution, hand-expanded for the sample state:
+         currencies = [nim, btc], fiat distribution nim = 1, btc = 0.
+         BTC is empty -> arcCurrencies = [nim] (only non-empty currencies get an arc);
+         single currency -> full circle, no gap, no line caps:
+           SVG_SIZE = 51, STROKE_WIDTH = 4, RADIUS = (51 - 4) / 2 = 23.5
+           fullCircleLength = 2 * PI * 23.5 = 147.655
+           length = 147.655, spacing = 0
+           offset = circleStart = 147.655 / 4 - 4 = 32.914
+         Breakdown: NIM 100% (active), BTC 0% (inactive -> children at opacity .3). -->
+    <div class="balance-distribution" data-v-bd>
+        <svg data-v-bd xmlns="http://www.w3.org/2000/svg" width="51" height="51" viewBox="0 0 51 51">
+            <circle r="23.5" stroke-width="4" stroke-dasharray="147.655 0" stroke-dashoffset="32.914"
+                class="arc nim" data-currency="nim"/>
+        </svg>
+        <ul class="breakdown" data-v-bd>
+            <li>
+                <div class="currency">nim</div>
+                <div class="percentage">100%</div>
+            </li>
+            <li class="inactive">
+                <div class="currency">btc</div>
+                <div class="percentage">0%</div>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

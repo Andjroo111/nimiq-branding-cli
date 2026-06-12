@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SearchBar — truth (upstream wallet SearchBar.vue, resting state)</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Mulish', 'Muli', system-ui, sans-serif; background: #fff; margin: 0; padding: 24px; }
+/* wallet themes.scss vars used by the component (light theme) */
+:root {
+    --body-size: 2rem;
+    --text-16: rgba(31, 35, 72, 0.16);
+    --text-22: rgba(31, 35, 72, 0.22);
+    --light-blue-40: rgba(5, 130, 202, 0.4);
+    --bg-primary: var(--nimiq-white);
+}
+/* host gives the search bar a row to live in (AccountOverview .actions row) */
+.host { width: 400px; }
+
+/* SearchBar.vue scoped CSS — verbatim (SCSS expanded; $borderTickness: .1875rem = 1.5px) */
+.container {
+    width: 100%;
+    min-width: 5.5rem;
+}
+
+.search-bar {
+    --default-sb-width: clamp(5.5rem, 100%, 30rem);
+
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    cursor: text;
+    padding: 0.75rem 0;
+    min-width: var(--default-sb-width);
+
+    transition-property: color, max-width;
+    transition-duration: var(--attr-duration);
+    transition-timing-function: var(--nimiq-ease);
+}
+
+.search-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: inset 0 0 0 0.1875rem var(--text-16);
+    border-radius: 500px;
+
+    transition: box-shadow var(--attr-duration) var(--nimiq-ease);
+}
+
+.search-bar:hover::after {
+    box-shadow: inset 0 0 0 0.1875rem var(--text-22);
+}
+
+.search-bar:focus-within {
+    color: var(--nimiq-light-blue);
+}
+
+.search-bar:focus-within svg {
+    opacity: 1;
+}
+
+.search-bar:focus-within::after {
+    box-shadow: inset 0 0 0 0.1875rem var(--light-blue-40);
+}
+
+svg {
+    justify-self: left;
+    flex-grow: 0;
+    margin-left: 1.75rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+    opacity: 0.4;
+    width: 1.75rem;
+    height: 1.75rem;
+
+    transition: opacity var(--attr-duration) var(--nimiq-ease);
+}
+
+input {
+    font-family: inherit;
+    font-weight: 600;
+    color: inherit;
+    justify-self: right;
+    flex-grow: 1;
+    border: 0;
+    line-height: 2.75rem;
+    font-size: var(--body-size);
+    margin: 0;
+    padding: 0;
+    padding-right: 4rem;
+    background: none;
+    min-width: 0;
+}
+
+input:focus {
+    outline: none;
+}
+
+input::placeholder {
+    font-weight: normal;
+    color: inherit;
+    opacity: 0.4;
+}
+
+@media (max-width: 768px) { /* $mobileBreakpoint — full mobile breakpoint */
+    input::placeholder {
+        font-weight: 600;
+    }
+}
+
+.cross-close-button {
+    position: absolute;
+    z-index: 1;
+    right: 1rem;
+    cursor: pointer;
+}
+
+@media (min-width: 768px) and (max-width: 960px) { /* $mobileBreakpoint..$tabletBreakpoint */
+    .cover-all:focus-within {
+        position: absolute;
+        top: 0;
+        z-index: 10;
+        background: var(--bg-primary);
+        box-shadow: 0 0 0 1rem var(--bg-primary);
+        border-radius: 6rem;
+
+        width: calc(100% - 5rem);
+    }
+}
+</style>
+</head>
+<body>
+<div class="host">
+    <!-- Sample state: value='', unfocused -> isInputActive=false, maxWidth='var(--default-sb-width)',
+         placeholderText='Search transactions' (containerWidth > 210), CrossCloseButton not rendered. -->
+    <div class="container">
+        <div class="search-bar cover-all" style="max-width: var(--default-sb-width);">
+            <svg fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2" />
+                <path d="M13.31 14.73a1 1 0 001.42-1.42l-1.42 1.42zM8.3 9.7l5.02 5.02 1.42-1.42L9.7 8.3 8.29 9.71z"
+                    fill="currentColor" />
+            </svg>
+            <input type="text" value="" placeholder="Search transactions">
+        </div>
+    </div>
+</div>
+</body>
+</html>
