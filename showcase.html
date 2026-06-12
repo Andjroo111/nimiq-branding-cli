@@ -4098,23 +4098,27 @@ a.nq-button {
     overflow: hidden;
     font-family: 'Mulish', sans-serif;
     background:
-        radial-gradient(1050px 640px at 50% 26%, rgba(110, 82, 192, 0.6), rgba(110, 82, 192, 0) 68%),
-        radial-gradient(1500px 900px at 50% 108%, rgba(72, 92, 196, 0.38), rgba(72, 92, 196, 0) 62%),
-        linear-gradient(180deg, #211c4a 0%, #2c2562 42%, #232456 72%, #1f2348 100%);
+        /* corner/edge vignette (topmost layer) */
+        radial-gradient(135% 105% at 50% 38%, rgba(10, 8, 26, 0) 52%, rgba(10, 8, 26, 0.72) 100%),
+        /* violet glow, upper center */
+        radial-gradient(820px 560px at 50% 16%, rgba(126, 78, 204, 0.5), rgba(126, 78, 204, 0) 66%),
+        /* broad indigo bloom */
+        radial-gradient(1500px 860px at 50% 34%, rgba(72, 60, 168, 0.5), rgba(72, 60, 168, 0) 72%),
+        linear-gradient(180deg, #171331 0%, #251e55 44%, #1b1843 78%, #121029 100%);
 }
 
 /* ---- floating hexagons (flat left/right points, Nimiq orientation) ---- */
 .nq-hero-section__hex {
     position: absolute;
     clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
-    background: linear-gradient(135deg, rgba(148, 134, 255, 0.85) 0%, rgba(64, 105, 224, 0.45) 100%);
-    filter: blur(1px);
+    background: linear-gradient(135deg, rgba(124, 120, 220, 0.55) 0%, rgba(74, 86, 190, 0.3) 100%);
+    filter: blur(1.5px);
     z-index: 1;
 }
-.nq-hero-section__hex--a { left: 86px;   top: 126px; width: 22px; height: 19px; opacity: 0.55; }
-.nq-hero-section__hex--b { left: 1102px; top: 102px; width: 26px; height: 22px; opacity: 0.6; }
-.nq-hero-section__hex--c { left: 1144px; top: 448px; width: 28px; height: 24px; opacity: 0.5; }
-.nq-hero-section__hex--d { left: 168px;  top: 352px; width: 58px; height: 50px; opacity: 0.28; filter: blur(2px); }
+.nq-hero-section__hex--a { left: 86px;   top: 126px; width: 20px; height: 17px; opacity: 0.5; }
+.nq-hero-section__hex--b { left: 1108px; top: 102px; width: 22px; height: 19px; opacity: 0.5; }
+.nq-hero-section__hex--c { left: 1146px; top: 470px; width: 26px; height: 22px; opacity: 0.45; }
+.nq-hero-section__hex--d { left: 150px;  top: 372px; width: 48px; height: 41px; opacity: 0.22; filter: blur(2.5px); }
 
 /* ---- copy block ---- */
 .nq-hero-section__inner {
@@ -4129,42 +4133,42 @@ a.nq-button {
 
 .nq-hero-section__title {
     margin: 0;
-    font-size: 52px;
-    line-height: 1.25;
-    font-weight: 800;
-    letter-spacing: -0.3px;
+    font-size: 50px;
+    line-height: 1.28;
+    font-weight: 700;
+    letter-spacing: -0.2px;
     color: #ffffff;
 }
 
 .nq-hero-section__subtitle {
-    margin: 20px auto 0;
-    max-width: 430px;
-    font-size: 16px;
-    line-height: 1.65;
+    margin: 18px auto 0;
+    max-width: 420px;
+    font-size: 15px;
+    line-height: 1.6;
     font-weight: 600;
-    color: #9d9ac4;
+    color: #8f8cbc;
 }
 
 .nq-hero-section__cta {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    margin-top: 28px;
-    padding: 12px 28px 13px;
+    gap: 8px;
+    margin-top: 26px;
+    padding: 8px 20px 9px;
     border: none;
     border-radius: 999px;
-    background: radial-gradient(120% 180% at 100% 100%, #46a8f4 0%, #2a69e2 78%);
+    background: radial-gradient(120% 180% at 100% 100%, #3f96f2 0%, #2766e0 78%);
     color: #ffffff;
     font-family: inherit;
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.2px;
     text-decoration: none;
     cursor: pointer;
-    box-shadow: 0 6px 20px rgba(31, 35, 72, 0.35);
+    box-shadow: 0 5px 16px rgba(13, 11, 36, 0.45);
 }
 .nq-hero-section__cta-arrow {
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1;
     transform: translateY(-1px);
 }
@@ -6093,18 +6097,27 @@ J5XX 74DB 5XJ8</textarea>
     <svg class="nq-hero-section__globe" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
         <defs>
             <radialGradient id="nq-hs-glow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#8a93ff" stop-opacity="0.7"/>
-                <stop offset="55%" stop-color="#5868e8" stop-opacity="0.25"/>
-                <stop offset="100%" stop-color="#5868e8" stop-opacity="0"/>
+                <stop offset="0%" stop-color="#7d8cff" stop-opacity="0.55"/>
+                <stop offset="55%" stop-color="#4f63e6" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="#4f63e6" stop-opacity="0"/>
             </radialGradient>
             <pattern id="nq-hs-dots" width="7" height="7" patternUnits="userSpaceOnUse">
-                <circle cx="1.6" cy="1.6" r="1.15" fill="#c3c8d8"/>
+                <circle cx="1.6" cy="1.6" r="1.1" fill="#d7dae4"/>
             </pattern>
-            <clipPath id="nq-hs-clip"><circle cx="600" cy="1906" r="1370"/></clipPath>
+            <clipPath id="nq-hs-clip"><circle cx="600" cy="2122" r="1600"/></clipPath>
+            <linearGradient id="nq-hs-fade" x1="0" y1="500" x2="0" y2="690" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+                <stop offset="1" stop-color="#fff" stop-opacity="1"/>
+            </linearGradient>
+            <mask id="nq-hs-dotmask"><rect x="0" y="0" width="1200" height="800" fill="url(#nq-hs-fade)"/></mask>
+            <filter id="nq-hs-blur" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="14"/></filter>
         </defs>
-        <ellipse cx="600" cy="548" rx="980" ry="150" fill="url(#nq-hs-glow)"/>
-        <circle cx="600" cy="1906" r="1370" fill="#ffffff"/>
-        <g clip-path="url(#nq-hs-clip)" fill="url(#nq-hs-dots)">
+        <ellipse cx="600" cy="528" rx="980" ry="170" fill="url(#nq-hs-glow)"/>
+        <!-- blue atmosphere hugging the dome rim: tight bright halo + wider soft bloom -->
+        <circle cx="600" cy="2122" r="1604" fill="none" stroke="#6493ff" stroke-width="34" stroke-opacity="0.95" filter="url(#nq-hs-blur)"/>
+        <circle cx="600" cy="2122" r="1616" fill="none" stroke="#4f6fe8" stroke-width="64" stroke-opacity="0.5" filter="url(#nq-hs-blur)"/>
+        <circle cx="600" cy="2122" r="1600" fill="#ffffff"/>
+        <g clip-path="url(#nq-hs-clip)" mask="url(#nq-hs-dotmask)" fill="url(#nq-hs-dots)">
             <!-- rough continent blobs; exact dot positions are not meaningful -->
             <path d="M96 668 Q120 612 188 596 Q252 580 312 600 Q376 620 356 660 Q332 700 296 712 Q330 740 312 776 Q290 800 240 800 L150 800 Q120 760 128 716 Q96 704 96 668 Z"/>
             <path d="M356 590 Q392 572 436 582 Q462 592 444 606 Q416 618 376 612 Q348 604 356 590 Z"/>

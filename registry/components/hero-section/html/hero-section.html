@@ -7,18 +7,27 @@
     <svg class="nq-hero-section__globe" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
         <defs>
             <radialGradient id="nq-hs-glow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#8a93ff" stop-opacity="0.7"/>
-                <stop offset="55%" stop-color="#5868e8" stop-opacity="0.25"/>
-                <stop offset="100%" stop-color="#5868e8" stop-opacity="0"/>
+                <stop offset="0%" stop-color="#7d8cff" stop-opacity="0.55"/>
+                <stop offset="55%" stop-color="#4f63e6" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="#4f63e6" stop-opacity="0"/>
             </radialGradient>
             <pattern id="nq-hs-dots" width="7" height="7" patternUnits="userSpaceOnUse">
-                <circle cx="1.6" cy="1.6" r="1.15" fill="#c3c8d8"/>
+                <circle cx="1.6" cy="1.6" r="1.1" fill="#d7dae4"/>
             </pattern>
-            <clipPath id="nq-hs-clip"><circle cx="600" cy="1906" r="1370"/></clipPath>
+            <clipPath id="nq-hs-clip"><circle cx="600" cy="2122" r="1600"/></clipPath>
+            <linearGradient id="nq-hs-fade" x1="0" y1="500" x2="0" y2="690" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+                <stop offset="1" stop-color="#fff" stop-opacity="1"/>
+            </linearGradient>
+            <mask id="nq-hs-dotmask"><rect x="0" y="0" width="1200" height="800" fill="url(#nq-hs-fade)"/></mask>
+            <filter id="nq-hs-blur" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="14"/></filter>
         </defs>
-        <ellipse cx="600" cy="548" rx="980" ry="150" fill="url(#nq-hs-glow)"/>
-        <circle cx="600" cy="1906" r="1370" fill="#ffffff"/>
-        <g clip-path="url(#nq-hs-clip)" fill="url(#nq-hs-dots)">
+        <ellipse cx="600" cy="528" rx="980" ry="170" fill="url(#nq-hs-glow)"/>
+        <!-- blue atmosphere hugging the dome rim: tight bright halo + wider soft bloom -->
+        <circle cx="600" cy="2122" r="1604" fill="none" stroke="#6493ff" stroke-width="34" stroke-opacity="0.95" filter="url(#nq-hs-blur)"/>
+        <circle cx="600" cy="2122" r="1616" fill="none" stroke="#4f6fe8" stroke-width="64" stroke-opacity="0.5" filter="url(#nq-hs-blur)"/>
+        <circle cx="600" cy="2122" r="1600" fill="#ffffff"/>
+        <g clip-path="url(#nq-hs-clip)" mask="url(#nq-hs-dotmask)" fill="url(#nq-hs-dots)">
             <!-- rough continent blobs; exact dot positions are not meaningful -->
             <path d="M96 668 Q120 612 188 596 Q252 580 312 600 Q376 620 356 660 Q332 700 296 712 Q330 740 312 776 Q290 800 240 800 L150 800 Q120 760 128 716 Q96 704 96 668 Z"/>
             <path d="M356 590 Q392 572 436 582 Q462 592 444 606 Q416 618 376 612 Q348 604 356 590 Z"/>
