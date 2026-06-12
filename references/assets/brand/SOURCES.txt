@@ -1,0 +1,26 @@
+Provenance (fetched 2026-06-11):
+
+logo-pack/            github.com/nimiq/designs (master) — official Nimiq logo pack.
+                      All RGB SVGs, flattened from logo/RGB/<color>/svg/.
+                      Skipped: CMYK EPS+JPEG print files (~600KB each) and RGB PNG
+                      rasters (redundant with SVGs). _extended/ = legacy product
+                      logos (keyguard, miner, safe, shop).
+nimiq-logo.min.svg    repo root of nimiq/designs (inside logo-pack/).
+
+identicons/           github.com/nimiq/identicons (master).
+                      src-svg/ = the 84 named identicon part sources
+                      (bottom/face/side/top). identicons.min.svg = compiled
+                      symbol sprite (same content the @nimiq/iqons CDN bundle ships).
+
+awesome-apps/         github.com/nimiq/awesome src/data/assets — app icons/cards
+                      that nimiq.com hotlinks via raw.githubusercontent.com on its
+                      apps section (nim-world.svg, nimiq-hexagon.svg, etc).
+awesome-exchanges/    same repo, assets/exchanges — exchange logos.
+awesome-mini-apps/    same repo, assets/mini-apps.
+awesome-data-nimiq-apps.json  same repo, src/data/dist/nimiq-apps.json —
+                      machine-readable app index mapping names -> logo URLs.
+
+nimiq-com-meta/       og.png = https://www.nimiq.com/__og-image__/static/og.png
+                      (1200x600). favicon.ico = https://www.nimiq.com/favicon.ico
+                      (48/32/16 multi-size). No other favicon/manifest conventions
+                      exist on nimiq.com (all 404). /brand /press /media-kit also 404.
