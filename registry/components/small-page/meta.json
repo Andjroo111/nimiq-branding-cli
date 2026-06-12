@@ -1,0 +1,18 @@
+{
+  "name": "small-page",
+  "purpose": "Standard 420x564px white card container (SmallPage) that frames a page of content in Nimiq apps; pairs with PageHeader/PageBody/PageFooter.",
+  "category": "layout",
+  "variants": ["vue", "html"],
+  "props": [],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 500, "height": 700 },
+    "selector": ".small-page",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "SmallPage itself is just <div class=\"small-page nq-card\"> + slot; all visual styling (background, radius, shadow, text color) comes from .nq-card in legacy nimiq-style. Scoped CSS fixes size to 52.5rem x 70.5rem (420x564px at the 8px html root font-size set by nimiq-style) and overrides .nq-card margin with 0 1.25rem. Sample state fills the slot with .nq-card-header (.nq-h1) and .nq-card-body (.nq-text) placeholder content."
+}

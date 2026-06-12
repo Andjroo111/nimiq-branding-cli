@@ -1,0 +1,96 @@
+/* BalanceDistribution — namespaced under .balance-distribution for showcase embedding.
+   Upstream: wallet/src/components/BalanceDistribution.vue (scoped styles verbatim,
+   minus the Vue transition-group enter/leave classes which need JS to drive them).
+
+   Sits on the navy wallet sidebar (background: var(--nimiq-blue)); the legend text
+   is white, so give it a dark background.
+
+   Ring geometry (computed by the upstream component):
+   SVG_SIZE = 51px, STROKE_WIDTH = 4, RADIUS = 23.5, ARC_GAP = 4,
+   fullCircleLength = 2 * PI * 23.5 = 147.655, circleStart = 147.655/4 - 4 = 32.914.
+   - Single non-empty currency: full circle -> dasharray "147.655 0", offset 32.914.
+   - Multiple currencies: per-arc length = share * (147.655 - n * 8), each arc offset
+     advances clockwise by length + 8 (line caps + gap); dasharray "<length> <147.655 - length>". */
+
+.balance-distribution {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    /* wallet theme currency colors (wallet/src/scss/themes.scss);
+       --nimiq-gold comes from the legacy framework */
+    --bitcoin-orange: #F7931A;
+    --usdc-blue: #2775CA;
+    --usdt-green: #009393;
+}
+
+.balance-distribution svg .arc {
+    --transition-time: 1.5s;
+    cx: 50%;
+    cy: 50%;
+    fill: none;
+    stroke-linecap: round;
+    /* regular transition while arc is shown and resizes or changes color due to distribution changes. */
+    transition: stroke-dashoffset var(--transition-time) var(--nimiq-ease),
+        stroke-dasharray var(--transition-time) var(--nimiq-ease),
+        stroke calc(.75 * var(--transition-time)) var(--nimiq-ease);
+}
+
+.balance-distribution svg .arc.nim {
+    stroke: var(--nimiq-gold);
+}
+.balance-distribution svg .arc.btc {
+    stroke: var(--bitcoin-orange);
+}
+.balance-distribution svg .arc.usdc {
+    stroke: var(--usdc-blue);
+}
+.balance-distribution svg .arc.usdt {
+    stroke: var(--usdt-green);
+}
+.balance-distribution svg .arc.inactive {
+    stroke: rgba(255, 255, 255, .2);
+    cursor: default;
+}
+
+.balance-distribution .breakdown {
+    padding: 0;
+    margin: 0;
+    min-width: 10.75rem;
+}
+
+.balance-distribution .breakdown li {
+    display: flex;
+    padding-left: .5rem;
+    justify-content: space-between;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+    color: white;
+    list-style: none;
+    cursor: default;
+}
+.balance-distribution .breakdown li:not(:first-child) {
+    padding-top: .5rem;
+}
+.balance-distribution .breakdown li:not(:last-child) {
+    padding-bottom: .5rem;
+}
+
+.balance-distribution .breakdown li * {
+    transition: opacity .5s var(--nimiq-ease);
+}
+.balance-distribution .breakdown li .currency {
+    text-transform: uppercase;
+}
+.balance-distribution .breakdown li .percentage {
+    margin-left: 1.5rem; /* for maintaining a minimum distance to the currency label */
+    opacity: .5;
+}
+
+.balance-distribution .breakdown li.inactive {
+    cursor: default;
+}
+.balance-distribution .breakdown li.inactive * {
+    opacity: .3;
+}

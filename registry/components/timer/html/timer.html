@@ -1,0 +1,92 @@
+<!-- Timer: circular countdown. Works without JS as a static frozen render (the svg
+     attributes below encode progress = 1/3, i.e. 2/3 remaining, 10 minutes left).
+     The script re-derives the arcs from data attributes:
+       data-progress  (0..1, fraction ELAPSED) + data-time-left (ms)  -> frozen render
+       data-start-time + data-end-time (ms timestamps)                -> live countdown
+       data-stroke-width (default 2, in viewBox units)
+     Root classes: time-shown shows the remaining time (larger ring, radius 12 vs 8);
+     little-time-left (orange) is applied automatically at progress >= .75. -->
+<div class="timer time-shown" data-progress="0.3333333333333333" data-time-left="600000" data-stroke-width="2">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26">
+        <circle class="time-circle" cx="50%" cy="50%" r="12"
+            stroke-dasharray="50.2654824574367 25.132741228718338"
+            stroke-dashoffset="-6.283185307179579"
+            stroke-width="2"></circle>
+        <circle class="filler-circle" cx="50%" cy="50%" r="12"
+            stroke-dasharray="17.132741228718338 58.2654824574367"
+            stroke-dashoffset="14.849555921538759"
+            stroke-width="2"></circle>
+        <text class="countdown" x="50%" y="50%">10</text>
+    </svg>
+</div>
+<script>
+(() => {
+    // Scoped to the .timer element directly preceding this script — safe to embed
+    // multiple instances on one page.
+    const root = document.currentScript.previousElementSibling;
+    if (!root || !root.classList.contains('timer')) return;
+    const timeCircle = root.querySelector('.time-circle');
+    const fillerCircle = root.querySelector('.filler-circle');
+    const countdown = root.querySelector('.countdown');
+    const strokeWidth = parseFloat(root.dataset.strokeWidth || '2');
+
+    const TIME_STEPS = [
+        { unit: 'minute', factor: 60 },
+        { unit: 'hour', factor: 60 },
+        { unit: 'day', factor: 24 },
+    ];
+
+    function toSimplifiedTime(millis) {
+        let time = millis / 1000;
+        for (const { factor } of TIME_STEPS) {
+            if (time / factor < 1) break;
+            time /= factor;
+        }
+        return Math.floor(time);
+    }
+
+    function render(progress, timeLeft) {
+        // radius 12 while the time is shown, 8 otherwise (upstream tweens between them)
+        const radius = root.classList.contains('time-shown') ? 12 : 8;
+        const full = 2 * Math.PI * radius;
+        // time circle: never a full circle (gap of at least 1.5 strokeWidths + line caps)
+        const maxLength = full - 2.5 * strokeWidth;
+        const length = Math.min(maxLength, (1 - progress) * full);
+        const lengthWithLineCaps = length + strokeWidth;
+        const gap = full - length;
+        timeCircle.setAttribute('r', radius);
+        timeCircle.setAttribute('stroke-dasharray', `${length} ${gap}`);
+        timeCircle.setAttribute('stroke-dashoffset', full / 4 - gap);
+        timeCircle.setAttribute('stroke-width', strokeWidth);
+        // filler circle: fills the gap with a strokeWidth margin on both sides
+        const availableSpace = full - lengthWithLineCaps - 2 * strokeWidth;
+        const fillerLengthWithCaps = Math.max(0, availableSpace);
+        const fillerStrokeWidth = Math.min(strokeWidth, fillerLengthWithCaps);
+        const fillerLength = Math.max(0, fillerLengthWithCaps - fillerStrokeWidth);
+        fillerCircle.setAttribute('r', radius);
+        fillerCircle.setAttribute('stroke-dasharray', `${fillerLength} ${full - fillerLength}`);
+        fillerCircle.setAttribute('stroke-dashoffset',
+            full / 4 - strokeWidth / 2 - strokeWidth - fillerStrokeWidth / 2);
+        fillerCircle.setAttribute('stroke-width', fillerStrokeWidth);
+        root.classList.toggle('little-time-left', progress >= .75);
+        if (countdown) countdown.textContent = toSimplifiedTime(timeLeft);
+    }
+
+    const startTime = parseFloat(root.dataset.startTime);
+    const endTime = parseFloat(root.dataset.endTime);
+    if (!isNaN(startTime) && !isNaN(endTime)) {
+        // live countdown
+        const totalTime = Math.max(0, endTime - startTime);
+        const tick = () => {
+            const timeLeft = Math.max(0, Math.min(totalTime, endTime - Date.now()));
+            render(totalTime ? 1 - timeLeft / totalTime : 0, timeLeft);
+            // ~226 steps per cycle (full circle length * 3), clamped to [1/60s, 500ms]
+            if (timeLeft > 0) setTimeout(tick, Math.min(500, Math.max(1000 / 60, totalTime / 226)));
+        };
+        tick();
+    } else if (root.dataset.progress !== undefined) {
+        // frozen render (deterministic — no Date involved)
+        render(parseFloat(root.dataset.progress), parseFloat(root.dataset.timeLeft || '0'));
+    }
+})();
+</script>

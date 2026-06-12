@@ -1,0 +1,394 @@
+{
+  "components": [
+    {
+      "name": "account-header",
+      "purpose": "The wallet address-overview header: large identicon, account name + chunked Fira Mono address, NIM balance + fiat value, and the actions row — search pill, green Stake pill with the green 'Earn NIM every month by staking your NIM' CTA tooltip, divider, light-blue Send and neutral Receive pills.",
+      "category": "wallet",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "account-list",
+      "purpose": "Selectable list of accounts — identicon + label + balance rows with hover caret — used as the account chooser in Hub flows (inside AccountSelector).",
+      "category": "identity",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "account-ring",
+      "purpose": "Ring of up to 6 identicons representing a logged-in multi-address account set — hexagonally arranged identicons for filled slots, faint hexagon placeholders for empty ones.",
+      "category": "identity",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "address-display",
+      "purpose": "Displays a Nimiq (or Ethereum) address as a grid of monospace chunks — 9 four-char blocks in 3 columns for Nimiq format — optionally copyable.",
+      "category": "identity",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "address-input",
+      "purpose": "A 3x3 block grid textarea for typing Nimiq addresses (optionally Ethereum addresses and domains), with live formatting into 4-char blocks, validation, and per-block focus coloring.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "amount",
+      "purpose": "Formats a crypto amount given in its smallest unit (luna, satoshi, ...) as a human-readable number with thin-space digit grouping, configurable decimals and a currency ticker.",
+      "category": "payment",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "amount-input",
+      "purpose": "Large centered amount entry field that auto-fits its width and shrinks its font to the available space, with the currency ticker (NIM, BTC, ...) rendered beside the value.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "amount-with-fee",
+      "purpose": "Large centered amount entry field (auto-sizing AmountInput with currency ticker) plus a secondary line that shows either an 'Insufficient balance' error, an approximate fiat value and/or the network fee. Used in send-transaction flows.",
+      "category": "payment",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "app-showcase-card",
+      "purpose": "nimiq.com 'THE APPS' marketing card: light-gray rounded card with gold app-icon chip (official white Nimiq signet), title, 2-line gray subtitle and the REAL Nimiq Pay phone screenshot clipped at the card edge. .wide modifier puts the bare gold signet + copy left and the REAL Nimiq Wallet desktop screenshot bleeding off the bottom-right.",
+      "category": "marketing",
+      "variants": [
+        "default",
+        "wide"
+      ],
+      "verified": true
+    },
+    {
+      "name": "backup-banner",
+      "purpose": "The wallet's persistent orange warning banner — \"There is no 'forgot password'\" with a Backup→ pill — shown until the account's recovery words are exported.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "balance-distribution",
+      "purpose": "Sidebar balance-distribution donut from the Nimiq wallet: a ring made of one rounded SVG arc per currency (gold NIM, orange BTC, blue USDC, teal USDT), sized by each currency's share of the account's total fiat value, next to a bold white CURRENCY / percentage legend. Empty currencies get no arc and a dimmed legend row; hovering a row or arc highlights that currency. Lives on the navy wallet sidebar.",
+      "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "buttons",
+      "purpose": "Primary Nimiq buttons (.nq-button) from the nimiq-style CSS framework: pill-shaped gradient buttons in blue (default), light-blue, green, orange, red, gold, plus disabled and inverse states.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "card",
+      "purpose": "Standard Nimiq card container (.nq-card) with header, body and footer sections; the base layout block of @nimiq/style used for grouping content.",
+      "category": "layout",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "close-button",
+      "purpose": "Circled X dismiss button used on modals and overlays. A .nq-button-s stripped of its pill background, showing the Nimiq close icon at 20% opacity (40% on hover/focus/active), with a round hover halo and enlarged hit area.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "consensus-icon",
+      "purpose": "Network consensus indicator shown by every Nimiq light-client app: a globe icon that reflects the consensus state — animated globe sprite while syncing, globe with checkmark when consensus is established (green when its parent is :hover/:focus/.active), globe with alert triangle in orange when connecting or stalled.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "copyable",
+      "purpose": "Wrapper that makes a click on its content copy it (or a provided text) to the clipboard, with a light-blue hover/focus tint and an animated 'Copied' tooltip as feedback.",
+      "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "fiat-amount",
+      "purpose": "Displays a fiat amount with an optimized currency symbol (e.g. $1234.56 instead of USD 1234.56) and adaptive decimal precision: decimals are extended until the rounded display deviates from the true amount by at most maxRelativeDeviation.",
+      "category": "payment",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "hero-section",
+      "purpose": "nimiq.com home hero: deep purple radial-gradient sky with floating translucent hexagons, white 800-weight 'Universal Money for Independent Individuals' headline, lavender subtitle, light-blue 'Create Wallet ↗' pill, WORKS WITH partner row, and a dotted-globe white arc cresting at the bottom.",
+      "category": "marketing",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "honeycomb-band",
+      "purpose": "nimiq.com community honeycomb band: blue 'Community →' pill centered above the real nimiq.com fading honeycomb background (bg-hexagons.svg) with three brand-colored social hexagons overlaid (YouTube red, X black, Facebook blue).",
+      "category": "marketing",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "identicon",
+      "purpose": "Nimiq identicon avatar — a deterministic hexagonal avatar generated from a Nimiq address via @nimiq/iqons; shows a hexagon placeholder for missing/invalid addresses.",
+      "category": "identity",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "label-input",
+      "purpose": "A self-sizing text input for naming things (addresses, accounts), styled as an nq-input whose width grows and shrinks with its content.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "loading-spinner",
+      "purpose": "Animated hexagon loading indicator: two dashed hexagon outlines (one at 40% opacity) whose dash offsets rotate around the hexagon in a 4s stepped ease cycle. Inherits its color via currentColor.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "page-body",
+      "purpose": "Scrollable content area of a card-style page. Pairs .page-body with the legacy .nq-card-body padding rules and flex-grows to fill the parent SmallPage, scrolling vertically when content overflows.",
+      "category": "layout",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "page-footer",
+      "purpose": "Footer area of a Nimiq page/card (nq-card-footer). Flex column that pins action buttons at the bottom of a SmallPage and applies the standard nq-button margins.",
+      "category": "layout",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "page-header",
+      "purpose": "Card header for Nimiq page flows: centered title, optional back arrow, optional step progress indicator. Used at the top of a SmallPage.",
+      "category": "layout",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "payment-info-line",
+      "purpose": "Checkout header line: crypto amount (with optional fiat value + price-breakdown tooltip) on the left, an animated arrow runway, the recipient (shop logo or identicon + origin domain) and an expiry countdown timer on the right. Used at the top of the Nimiq Hub checkout.",
+      "category": "payment",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "price-chart",
+      "purpose": "The wallet sidebar's crypto price sparkline — '24H' badge over a smoothed white line chart, with the currency ticker, fiat price and 24h percentage change below, on the navy sidebar background.",
+      "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "qr-code",
+      "purpose": "Nimiq QR code — renders arbitrary data (typically a nimiq: payment URI) as a rounded-module QR code on a canvas, filled by default with the Nimiq light-blue radial gradient (#265DD7 → #0582CA) on a transparent background.",
+      "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "search-bar",
+      "purpose": "The wallet's pill-shaped transaction search input: magnifier icon + borderless input inside a 500px-radius inset border, light-blue on focus, with a clear (cross) button while active.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "select-bar",
+      "purpose": "Segmented radio bar (pill-shaped) for choosing one of several ordered options, e.g. a transaction fee level. All options up to and including the selected one are tinted with the selected option's color; later options stay on the neutral highlight background.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "slider-toggle",
+      "purpose": "Pill-shaped radio toggle with a white 'active box' that slides under the selected option. Used in the Nimiq Wallet as a currency switcher (NIM/BTC) and for filter/sort selection.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "small-page",
+      "purpose": "Standard 420x564px white card container (SmallPage) that frames a page of content in Nimiq apps; pairs with PageHeader/PageBody/PageFooter.",
+      "category": "layout",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "status-alert",
+      "purpose": "Status alert / callout block (note-info, tip-success, warning, caution-error, important) in the real Nimiq pattern: tinted background, 1.5px tonal outline, uppercase icon title and colored text. Used for status notices, warnings and error feedback.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "status-screen",
+      "purpose": "Full-card overlay status screen from the Nimiq Hub: loading (navy/light-blue gradient + hexagon spinner + status line), success (green gradient + animated checkmark), warning (orange + neutral face) and error (red + sad face) states, with optional action button/link. Covers the whole SmallPage while a request is processed and resolves into the iconic green checkmark end screen.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "swap-balance-bar",
+      "purpose": "Swap Currencies distribution bar — draggable handle splits total fiat value between two assets: solid address-colored NIM segment left, orange diagonal-hatched BTC change segment right, white round arrow handle on a light-blue hairline, 10-tick percent scale and curved connector lines up to the account labels.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "timer",
+      "purpose": "Circular countdown timer (Hub checkout 'offer expires' indicator): a light-blue arc shrinking clockwise as time runs out, a faint filler arc in the gap, and the remaining time (simplified to the largest fitting unit) in the center. Turns orange when >= 75% of the time has elapsed.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "toast-notification",
+      "purpose": "Bottom-fixed toast notification in Nimiq wallet style: small dark gradient card with icon, bold status line and dimmed sub-line. Color states: info/in-progress (blue + hexagon spinner), success (green + checkmark), error (orange + alert triangle), warning/expired (gold + stopwatch). Used in the wallet for swap progress and persistent status toasts.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "tooltip",
+      "purpose": "Hover/focus/click tooltip with a positioned arrow box. Wraps a trigger element (icon by default) and shows a dark Nimiq-blue gradient box with an arrow, positioned via a preferred '[primary] [secondary]' position (e.g. 'top right'), optionally constrained to a container.",
+      "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "transaction-list",
+      "purpose": "Wallet transaction history list — month header + per-transaction rows: stacked day/month date, peer identicon, Fira Mono address with time underneath, and right-aligned amount (outgoing plain at 60%, incoming in the green tinted pill) over a loading fiat placeholder bar.",
+      "category": "payment",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "search-bar",
+  "purpose": "The wallet's pill-shaped transaction search input: magnifier icon + borderless input inside a 500px-radius inset border, light-blue on focus, with a clear (cross) button while active.",
+  "category": "form",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "value", "type": "string", "default": "", "description": "The search query, bindable via v-model (modelValue/update:modelValue in the Vue 3 port)." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 480, "height": 120 },
+    "selector": ".search-bar",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Source: upstream/wallet/src/components/SearchBar.vue (+ CrossCloseButton.vue, inlined in the Vue port). Sample state: resting — empty value, unfocused, placeholder 'Search transactions' (the upstream ResizeObserver picks that string for container widths >210px and non-expanded max-width), magnifier icon at opacity 0.4, no cross button, max-width 'var(--default-sb-width)' = clamp(5.5rem, 100%, 30rem). Theme vars from wallet themes.scss defined on the root: --text-16/--text-22 (inset 1.5px pill border, hover), --light-blue-40 (focus border), --body-size: 2rem. --attr-duration/--nimiq-ease come from the legacy framework CSS. The upstream svg has no viewBox/size attributes; CSS sizes it to 1.75rem, exactly as in the wallet."
+}

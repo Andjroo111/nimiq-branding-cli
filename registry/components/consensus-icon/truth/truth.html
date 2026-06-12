@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ConsensusIcon — truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; background: white; }
+
+    /* ConsensusIcon.vue scoped styles — verbatim */
+    .consensus-icon {
+        width: 2.75rem;
+        height: 2.75rem;
+        margin: -0.125rem;
+    }
+
+    :hover > .established,
+    :focus > .established,
+    .active > .established {
+        color: var(--nimiq-green) !important;
+        opacity: 1 !important;
+    }
+
+    .connecting, .stalled {
+        color: var(--nimiq-orange) !important;
+        opacity: 1 !important;
+    }
+
+    svg {
+        display: block;
+    }
+</style>
+</head>
+<body>
+    <!-- ConsensusIcon, consensus === 'established', inside an .active parent
+         (as in the wallet sidebar network button while the network page is open:
+         `.active > .established` → nimiq-green, opacity 1) -->
+    <div class="active">
+        <div class="consensus-icon established">
+            <!-- WorldCheckIcon.vue — verbatim -->
+            <svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.84 21a10 10 0 119.73-12.91M14.97 12.22c.02-.4.03-.8.03-1.22 0-5.52-1.8-10-4-10S7 5.48 7 11c0 5.4 1.7 9.79 3.84 10M1.75 8.17h18.6M2 15.02h9.34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M15 18.71L17.29 21 23 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+    </div>
+</body>
+</html>

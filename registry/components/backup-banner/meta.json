@@ -1,0 +1,15 @@
+{
+  "name": "backup-banner",
+  "purpose": "The wallet's persistent orange warning banner — \"There is no 'forgot password'\" with a Backup→ pill — shown until the account's recovery words are exported.",
+  "category": "feedback",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "variant", "type": "'words' | 'file'", "description": "words = orange text on white with tonal inset border (recovery words not backed up); file = solid orange gradient (login file not saved)" }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": { "viewport": { "width": 600, "height": 130 }, "selector": ".words", "maxDiffPct": 0.5, "settleMs": 250 },
+  "notes": "Source: upstream/wallet/src/components/layouts/AccountOverview.vue (.backup-warning block, SCSS expanded; .words variant). Needs wallet theme vars --body-size:2rem and --text-10:rgba(31,35,72,0.1) (from wallet themes.scss) — the snippet CSS defines them on the component root. AlertTriangleIcon + ArrowRightSmallIcon inlined from @nimiq/style icons. .nq-button-pill.orange comes from the legacy framework. Hover slides the arrow right 0.25rem. Verify selector is .words so it crops the same element in truth (.backup-warning.words) and demo (.backup-banner.words). Upstream click handlers (router push to Backup / hub backup()) are app wiring; the Vue port emits 'action'."
+}

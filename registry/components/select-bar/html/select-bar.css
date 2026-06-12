@@ -1,0 +1,35 @@
+/* SelectBar — segmented radio bar (requires nimiq-style for .nq-label,
+   the .nq-*-bg color classes and --nimiq-highlight-bg). */
+.select-bar {
+    display: flex;
+    border-radius: 3.75rem;
+    overflow: hidden;
+    width: 100%;
+}
+
+.select-bar > div {
+    display: flex;
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.select-bar > div + div {
+    margin-left: .25rem;
+}
+
+.select-bar input {
+    display: none;
+}
+
+.select-bar label {
+    padding: 1.75rem 2rem;
+    margin: 0;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    border-radius: .5rem;
+}
+
+.select-bar .nq-highlight-bg {
+    background: var(--nimiq-highlight-bg);
+}

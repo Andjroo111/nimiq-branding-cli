@@ -1,0 +1,154 @@
+<template>
+    <div class="consensus-icon" :class="consensus">
+        <!-- WorldIcon (syncing): animated globe sprite -->
+        <div v-if="consensus === 'syncing'" class="world-icon"></div>
+        <!-- WorldCheckIcon (established) -->
+        <svg v-else-if="consensus === 'established'" width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.84 21a10 10 0 119.73-12.91M14.97 12.22c.02-.4.03-.8.03-1.22 0-5.52-1.8-10-4-10S7 5.48 7 11c0 5.4 1.7 9.79 3.84 10M1.75 8.17h18.6M2 15.02h9.34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M15 18.71L17.29 21 23 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <!-- WorldAlertIcon (connecting / stalled / anything else) -->
+        <svg v-else width="25" height="23" viewBox="0 0 25 23" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.53 8.15C19.38 3.2 15.43 1 11.05 1A9.98 9.98 0 001 10.9a9.93 9.93 0 007.47 9.57" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14.89 7.94C14.38 3.92 12.85 1 11.05 1c-2.22 0-4.02 4.43-4.02 9.9 0 3.44.71 6.48 1.8 8.25M1.75 8.17h18.6M2 15.02h9.34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path fill-rule="evenodd" clip-rule="evenodd" d="M24.09 21.38l-5.4-9.89c-.2-.36-.6-.59-1.03-.59-.43 0-.83.23-1.03.6l-5.4 9.88c-.19.34-.18.75.03 1.09.21.33.59.53 1 .53h10.8c.4 0 .78-.2 1-.53.2-.34.22-.75.03-1.1zm-7.12-6.42c0-.3.37-.55.68-.55.32 0 .7.25.7.55v3.3c0 .3-.38.55-.7.55-.31 0-.68-.24-.68-.55v-3.3zm.7 6.59h.02c.26 0 .5-.1.68-.29a.9.9 0 00.26-.67.97.97 0 00-1-.91c-.27 0-.51.1-.69.29a.9.9 0 00-.26.66c.02.51.46.92.99.92z" fill="currentColor"/></svg>
+    </div>
+</template>
+
+<script setup lang="ts">
+/**
+ * **ConsensusIcon**
+ *
+ * Network consensus indicator. Upstream (wallet/src/components/ConsensusIcon.vue)
+ * reads the consensus state live from the Network store; this port exposes it as
+ * a prop instead. Wire it to your client, e.g.:
+ * `client.addConsensusChangedListener((state) => consensus.value = state)`.
+ *
+ * States:
+ * - `syncing` — animated globe sprite (white strokes: use on a dark/colored
+ *   background, or apply a filter as the wallet's AccountOverview does)
+ * - `established` — globe + checkmark; nimiq-green at full opacity while a parent
+ *   is `:hover`/`:focus`/`.active`, otherwise inherits color from context
+ * - `connecting` / `stalled` — globe + alert triangle, forced nimiq-orange
+ *
+ * The three world icons (icons/WorldIcon.vue, WorldCheckIcon.vue,
+ * WorldAlertIcon.vue) are inlined; the syncing sprite
+ * (assets/consensus-sprite.svg) is inlined as a data URI so no asset file is
+ * needed.
+ */
+withDefaults(defineProps<{
+    consensus?: 'syncing' | 'established' | 'connecting' | 'stalled',
+}>(), {
+    consensus: 'syncing',
+});
+</script>
+
+<style scoped>
+.consensus-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: -0.125rem;
+}
+
+:hover > .established,
+:focus > .established,
+.active > .established {
+    color: var(--nimiq-green) !important;
+    opacity: 1 !important;
+}
+
+.connecting, .stalled {
+    color: var(--nimiq-orange) !important;
+    opacity: 1 !important;
+}
+
+svg {
+    display: block;
+}
+
+/* icons/WorldIcon.vue scoped styles — verbatim except the sprite inlined as a data URI */
+.world-icon,
+.world-icon::before,
+.world-icon::after {
+    width: 100%;
+    height: 100%;
+    background-image: var(--consensus-icon-sprite);
+    background-repeat: repeat-x;
+    background-size: 1000% 300%;
+}
+
+.world-icon::before,
+.world-icon::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.world-icon::before {
+    background-position: 0 0;
+    animation: top 4.6s steps(10) infinite;
+}
+
+.world-icon {
+    position: relative;
+    background-position: 0 50%;
+    animation: center 4.6s steps(10) infinite;
+}
+
+.world-icon::after {
+    background-position: 0 100%;
+    animation: bottom 4.6s steps(10) infinite -0.4s;
+}
+
+/**
+ * The CSS steps() function does NOT generate *time steps*. Instead, it
+ * generates *distance steps* (1 frame = 100% / 115 frames).
+ */
+
+@keyframes top {
+    0%      { background-position: 0 0; }
+    8.695%  { background-position: 0 0; }
+    17.391% { background-position: calc(-10 * 100%) 0; }
+    26.086% { background-position: calc(-20 * 100%) 0; }
+    34.782% { background-position: calc(-30 * 100%) 0; }
+    43.478% { background-position: calc(-40 * 100%) 0; }
+    47.826% { background-position: calc(-40 * 100%) 0; }
+    56.521% { background-position: calc(-30 * 100%) 0; }
+    65.217% { background-position: calc(-20 * 100%) 0; }
+    73.913% { background-position: calc(-10 * 100%) 0; }
+    82.608% { background-position: 0 0; }
+    91.304% { background-position: calc( 10 * 100%) 0; }
+    100%    { background-position: calc( 20 * 100%) 0; }
+}
+
+@keyframes center {
+    0%      { background-position: 0 50%; }
+    8.695%  { background-position: calc( 10 * 100%) 50%; }
+    21.739% { background-position: calc( 10 * 100%) 50%; }
+    30.434% { background-position: 0 50%; }
+    39.130% { background-position: calc(-10 * 100%) 50%; }
+    47.826% { background-position: calc(-20 * 100%) 50%; }
+    56.521% { background-position: calc(-30 * 100%) 50%; }
+    65.217% { background-position: calc(-40 * 100%) 50%; }
+    73.913% { background-position: calc(-40 * 100%) 50%; }
+    82.608% { background-position: calc(-30 * 100%) 50%; }
+    91.304% { background-position: calc(-20 * 100%) 50%; }
+    100%    { background-position: calc(-10 * 100%) 50%; }
+}
+
+@keyframes bottom {
+    0%      { background-position: 0 100%; }
+    8.695%  { background-position: 0 100%; }
+    17.391% { background-position: calc( 10 * 100%) 100%; }
+    26.086% { background-position: calc( 20 * 100%) 100%; }
+    34.782% { background-position: calc( 30 * 100%) 100%; }
+    43.478% { background-position: calc( 40 * 100%) 100%; }
+    47.826% { background-position: calc( 40 * 100%) 100%; }
+    56.521% { background-position: calc( 30 * 100%) 100%; }
+    65.217% { background-position: calc( 20 * 100%) 100%; }
+    73.913% { background-position: calc( 10 * 100%) 100%; }
+    82.608% { background-position: 0 100%; }
+    91.304% { background-position: calc(-10 * 100%) 100%; }
+    100%    { background-position: calc(-20 * 100%) 100%; }
+}
+
+.consensus-icon {
+    --consensus-icon-sprite: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNjYiIHdpZHRoPSIyMjAiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDIyMCA2NiI+PGcgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBmaWxsPSJub25lIj48Zz48cGF0aCBkPSJNMS4yOCA3Ljc1YTEwLjI0IDEwLjI0IDAgMDExOS40MyAwIi8+PHBhdGggZD0iTTEuMjggNy43NWgxOS40MyIvPjxwYXRoIGQ9Ik0xMSAuNzVjMi4wNiAwIDMuOCAyLjkzIDQuNDIgNyIvPjxwYXRoIGQ9Ik0xMSAuNzVjLTIuMDYgMC0zLjggMi45My00LjQyIDciLz48cGF0aCBkPSJNMjMuMjkgNy43NWExMC4yNCAxMC4yNCAwIDAxMTkuNDMgMCIvPjxwYXRoIGQ9Ik0yMy4yOSA3Ljc1aDE5LjQzIi8+PHBhdGggZD0iTTI5LjQ3IDcuNzVjLjUtNC4wNyAxLjg4LTcgMy41My03Ii8+PHBhdGggZD0iTTMzIC43NWMyLjQ3IDAgNC41NiAyLjkzIDUuMyA3Ii8+PHBhdGggZD0iTTQ1LjI4IDcuNzVhMTAuMjQgMTAuMjQgMCAwMTE5LjQzIDAiLz48cGF0aCBkPSJNNDUuMjggNy43NWgxOS40MyIvPjxwYXRoIGQ9Ik01NSAuNzVjLTEuMjMgMC0yLjI4IDIuOTMtMi42NSA3Ii8+PHBhdGggZD0iTTU1IC43NWMyLjg4IDAgNS4zMiAyLjkzIDYuMTggNyIvPjxwYXRoIGQ9Ik02Ny4yOCA3Ljc1YTEwLjI0IDEwLjI0IDAgMDExOS40MyAwIi8+PHBhdGggZD0iTTY3LjI5IDcuNzVoMTkuNDIiLz48cGF0aCBkPSJNNzcgLjc1Yy0uODIgMC0xLjUyIDIuOTMtMS43NyA3Ii8+PHBhdGggZD0iTTc3IC43NWMzLjI5IDAgNi4wOCAyLjkzIDcuMDcgNyIvPjxwYXRoIGQ9Ik04OS4yOCA3Ljc1YTEwLjI0IDEwLjI0IDAgMDExOS40MyAwIi8+PHBhdGggZD0iTTg5LjI5IDcuNzVoMTkuNDMiLz48cGF0aCBkPSJNOTguMTIgNy43NWMuMTItNC4wNy40Ny03IC44OC03Ii8+PHBhdGggZD0iTTk5IC43NWMzLjcgMCA2Ljg0IDIuOTMgNy45NSA3Ii8+PHBhdGggZD0iTTExMS4yOCA3Ljc1YTEwLjI0IDEwLjI0IDAgMDExOS40MyAwIi8+PHBhdGggZD0iTTExMS4yOCA3Ljc1aDE5LjQ0Ii8+PHBhdGggZD0iTTExMi4xNyA3Ljc1YTkuNDQgOS40NCAwIDAxOC44My03Ii8+PHBhdGggZD0iTTEyMSAuNzVhOS40NCA5LjQ0IDAgMDE4LjgzIDciLz48cGF0aCBkPSJNMTIxIDcuNzV2LTciLz48cGF0aCBkPSJNMTMzLjI4IDcuNzVhMTAuMjQgMTAuMjQgMCAwMTE5LjQzIDAiLz48cGF0aCBkPSJNMTMzLjI4IDcuNzVoMTkuNDQiLz48cGF0aCBkPSJNMTQzIC43NWMuNDEgMCAuNzYgMi45My44OCA3Ii8+PHBhdGggZD0iTTE0MyAuNzVjLTMuNyAwLTYuODQgMi45My03Ljk1IDciLz48cGF0aCBkPSJNMTU1LjI4IDcuNzVhMTAuMjQgMTAuMjQgMCAwMTE5LjQzIDAiLz48cGF0aCBkPSJNMTU1LjI4IDcuNzVoMTkuNDQiLz48cGF0aCBkPSJNMTY1IC43NWMuODIgMCAxLjUyIDIuOTMgMS43NyA3Ii8+PHBhdGggZD0iTTE2NSAuNzVjLTMuMjkgMC02LjA4IDIuOTMtNy4wNyA3Ii8+PHBhdGggZD0iTTE3Ny4yOCA3Ljc1YTEwLjI0IDEwLjI0IDAgMDExOS40MyAwIi8+PHBhdGggZD0iTTE3Ny4yOCA3Ljc1aDE5LjQ0Ii8+PHBhdGggZD0iTTE4NyAuNzVjMS4yMyAwIDIuMjggMi45MyAyLjY1IDciLz48cGF0aCBkPSJNMTgwLjgyIDcuNzVjLjg2LTQuMDcgMy4zLTcgNi4xOC03Ii8+PHBhdGggZD0iTTE5OS4yOCA3Ljc1YTEwLjI0IDEwLjI0IDAgMDExOS40MyAwIi8+PHBhdGggZD0iTTE5OS4yOCA3Ljc1aDE5LjQ0Ii8+PHBhdGggZD0iTTIwOSAuNzVjMS42NSAwIDMuMDQgMi45MyAzLjUzIDciLz48cGF0aCBkPSJNMjA5IC43NWMtMi40NyAwLTQuNTYgMi45My01LjMgNyIvPjwvZz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMS4yOCAxKSI+PHBhdGggZD0iTTE2LjYxIDM1LjVhMjEuMzcgMjEuMzcgMCAwMC4zMy0zLjc1IDIxLjcyIDIxLjcyIDAgMDAtLjI1LTMuMjUiLz48cGF0aCBkPSJNNy44NiAyOC41YTIxLjcyIDIxLjcyIDAgMDAtLjI0IDMuMjUgMjEuMzcgMjEuMzcgMCAwMC4zMyAzLjc1Ii8+PHBhdGggZD0iTTIyIDI4LjVhMTAuMTUgMTAuMTUgMCAwMS0uMTkgNyIvPjxwYXRoIGQ9Ik0yLjU2IDI4LjVhMTAuMTUgMTAuMTUgMCAwMC4xOSA3Ii8+PHBhdGggZD0iTTMwLjc1IDI4LjVhMjcuMDYgMjcuMDYgMCAwMC0uMiAzLjI1IDI2LjUgMjYuNSAwIDAwLjI2IDMuNzUiLz48cGF0aCBkPSJNMzkuNDggMzUuNWExNy44OSAxNy44OSAwIDAwLjM5LTMuNzUgMTguMDkgMTguMDkgMCAwMC0uMy0zLjI1Ii8+PHBhdGggZD0iTTQ0IDI4LjVhMTAuMTUgMTAuMTUgMCAwMS0uMTkgNyIvPjxwYXRoIGQ9Ik0yNC41NiAyOC41YTEwLjE1IDEwLjE1IDAgMDAuMTkgNyIvPjxwYXRoIGQ9Ik01My42MyAyOC41Yy0uMSAxLjAyLS4xNSAyLjEtLjE1IDMuMjVhMzUuMjcgMzUuMjcgMCAwMC4yIDMuNzUiLz48cGF0aCBkPSJNNjIuMzQgMzUuNWExNS42MyAxNS42MyAwIDAwLjEyLTciLz48cGF0aCBkPSJNNjYgMjguNWExMC4xNSAxMC4xNSAwIDAxLS4xOSA3Ii8+PHBhdGggZD0iTTQ2LjU2IDI4LjVhMTAuMTUgMTAuMTUgMCAwMC4xOSA3Ii8+PHBhdGggZD0iTTc2LjUxIDI4LjVhNTMuNzcgNTMuNzcgMCAwMC4wMyA3Ii8+PHBhdGggZD0iTTg1LjIxIDM1LjVhMTMuNjMgMTMuNjMgMCAwMC41Mi0zLjc1IDEzLjc4IDEzLjc4IDAgMDAtLjM5LTMuMjUiLz48cGF0aCBkPSJNODggMjguNWExMC4xNSAxMC4xNSAwIDAxLS4xOSA3Ii8+PHBhdGggZD0iTTY4LjU2IDI4LjVhMTAuMTUgMTAuMTUgMCAwMC4xOSA3Ii8+PHBhdGggZD0iTTk5LjQgMjguNWExMDcuNTMgMTA3LjUzIDAgMDAuMDEgNyIvPjxwYXRoIGQ9Ik0xMDguMDggMzUuNWExMi4yNiAxMi4yNiAwIDAwLjE1LTciLz48cGF0aCBkPSJNMTEwIDI4LjVhMTAuMTUgMTAuMTUgMCAwMS0uMTkgNyIvPjxwYXRoIGQ9Ik05MC41NiAyOC41YTEwLjE1IDEwLjE1IDAgMDAuMTkgNyIvPjxwYXRoIGQ9Ik0xMTMuNDUgMjguNWExMS4xMSAxMS4xMSAwIDAwLjE2IDciLz48cGF0aCBkPSJNMTMwLjk0IDM1LjVhMTEuMTEgMTEuMTEgMCAwMC4xNy03Ii8+PHBhdGggZD0iTTEyMi4yOCAzNS41di03Ii8+PHBhdGggZD0iTTEzMiAyOC41YTEwLjE1IDEwLjE1IDAgMDEtLjE5IDciLz48cGF0aCBkPSJNMTEyLjU2IDI4LjVhMTAuMTUgMTAuMTUgMCAwMC4xOSA3Ii8+PHBhdGggZD0iTTE0NS4xNSAzNS41YTEwNi45NSAxMDYuOTUgMCAwMC4wMS03Ii8+PHBhdGggZD0iTTEzNi4zMyAyOC41YTEyLjI5IDEyLjI5IDAgMDAuMTUgNyIvPjxwYXRoIGQ9Ik0xNTQgMjguNWExMC4xNSAxMC4xNSAwIDAxLS4xOSA3Ii8+PHBhdGggZD0iTTEzNC41NiAyOC41YTEwLjE1IDEwLjE1IDAgMDAuMTkgNyIvPjxwYXRoIGQ9Ik0xNjguMDEgMzUuNWE1Mi45MyA1Mi45MyAwIDAwLjAzLTciLz48cGF0aCBkPSJNMTU5LjIxIDI4LjVhMTMuNzggMTMuNzggMCAwMC0uMzkgMy4yNSAxMy42MyAxMy42MyAwIDAwLjUzIDMuNzUiLz48cGF0aCBkPSJNMTc2IDI4LjVhMTAuMTUgMTAuMTUgMCAwMS0uMTkgNyIvPjxwYXRoIGQ9Ik0xNTYuNTYgMjguNWExMC4xNSAxMC4xNSAwIDAwLjE5IDciLz48cGF0aCBkPSJNMTkwLjg4IDM1LjVhMzUuMjYgMzUuMjYgMCAwMC4yLTMuNzVjMC0xLjE0LS4wNS0yLjIzLS4xNS0zLjI1Ii8+PHBhdGggZD0iTTE4Mi4xIDI4LjVhMTUuNjcgMTUuNjcgMCAwMC4xMSA3Ii8+PHBhdGggZD0iTTE5OCAyOC41YTEwLjE1IDEwLjE1IDAgMDEtLjE5IDciLz48cGF0aCBkPSJNMTc4LjU2IDI4LjVhMTAuMTUgMTAuMTUgMCAwMC4xOSA3Ii8+PHBhdGggZD0iTTIxMy43NSAzNS41YTI2LjY0IDI2LjY0IDAgMDAuMjYtMy43NSAyNy4wNSAyNy4wNSAwIDAwLS4yLTMuMjUiLz48cGF0aCBkPSJNMjA0Ljk4IDI4LjVhMTguMDkgMTguMDkgMCAwMC0uMyAzLjI1IDE3Ljg5IDE3Ljg5IDAgMDAuNCAzLjc1Ii8+PHBhdGggZD0iTTIyMCAyOC41YTEwLjE1IDEwLjE1IDAgMDEtLjE5IDciLz48cGF0aCBkPSJNMjAwLjU2IDI4LjVhMTAuMTUgMTAuMTUgMCAwMC4xOSA3Ii8+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xMC4yOSAtMTMuNikiPjxwYXRoIGQ9Ik0zMC44MiA3Mi4zNGExMC4yNCAxMC4yNCAwIDAxLTE5LjA2IDAiLz48cGF0aCBkPSJNMjUuNjIgNzIuMzRjLS42OCAzLjgtMi4zNiA2LjUtNC4zMyA2LjUiLz48cGF0aCBkPSJNMjEuMjkgNzguODRjLTEuOTcgMC0zLjY1LTIuNy00LjM0LTYuNSIvPjxwYXRoIGQ9Ik0zMC44MiA3Mi4zNEgxMS43NiIvPjxwYXRoIGQ9Ik01Mi44MiA3Mi4zNGExMC4yNCAxMC4yNCAwIDAxLTE5LjA2IDAiLz48cGF0aCBkPSJNNDMuMjkgNzguODRjLTEuNTggMC0yLjkyLTIuNy0zLjQ3LTYuNSIvPjxwYXRoIGQ9Ik00OC40OSA3Mi4zNGMtLjgyIDMuOC0yLjg0IDYuNS01LjIgNi41Ii8+PHBhdGggZD0iTTUyLjgyIDcyLjM0SDMzLjc2Ii8+PHBhdGggZD0iTTc0LjgyIDcyLjM0YTEwLjI0IDEwLjI0IDAgMDEtMTkuMDYgMCIvPjxwYXRoIGQ9Ik02NS4yOSA3OC44NGMtMS4xOCAwLTIuMi0yLjctMi42LTYuNSIvPjxwYXRoIGQ9Ik03MS4zNSA3Mi4zNGMtLjk1IDMuOC0zLjMgNi41LTYuMDYgNi41Ii8+PHBhdGggZD0iTTc0LjgyIDcyLjM0SDU1Ljc2Ii8+PHBhdGggZD0iTTk2LjgyIDcyLjM0YTEwLjI0IDEwLjI0IDAgMDEtMTkuMDYgMCIvPjxwYXRoIGQ9Ik04Ny4yOSA3OC44NGMtLjc5IDAtMS40Ni0yLjctMS43NC02LjUiLz48cGF0aCBkPSJNOTQuMjIgNzIuMzRjLTEuMDkgMy44LTMuNzggNi41LTYuOTMgNi41Ii8+PHBhdGggZD0iTTk2LjgyIDcyLjM0SDc3Ljc2Ii8+PHBhdGggZD0iTTExOC44MiA3Mi4zNGExMC4yNCAxMC4yNCAwIDAxLTE5LjA2IDAiLz48cGF0aCBkPSJNMTA5LjI5IDc4Ljg0Yy0uNCAwLS43My0yLjctLjg3LTYuNSIvPjxwYXRoIGQ9Ik0xMTcuMDkgNzIuMzRjLTEuMjMgMy44LTQuMjUgNi41LTcuOCA2LjUiLz48cGF0aCBkPSJNMTE4LjgyIDcyLjM0SDk5Ljc2Ii8+PHBhdGggZD0iTTE0MC44MiA3Mi4zNGExMC4yNCAxMC4yNCAwIDAxLTE5LjA2IDAiLz48cGF0aCBkPSJNMTMxLjI5IDc4Ljg0YTkuMzggOS4zOCAwIDAxLTguNjctNi41Ii8+PHBhdGggZD0iTTEzOS45NSA3Mi4zNGE5LjM4IDkuMzggMCAwMS04LjY2IDYuNSIvPjxwYXRoIGQ9Ik0xMzEuMjkgNzguODR2LTYuNSIvPjxwYXRoIGQ9Ik0xNDAuODIgNzIuMzRoLTE5LjA2Ii8+PHBhdGggZD0iTTE2Mi44MiA3Mi4zNGExMC4yNCAxMC4yNCAwIDAxLTE5LjA2IDAiLz48cGF0aCBkPSJNMTU0LjE1IDcyLjM0Yy0uMTMgMy44LS40NyA2LjUtLjg2IDYuNSIvPjxwYXRoIGQ9Ik0xNTMuMjkgNzguODRjLTMuNTUgMC02LjU4LTIuNy03LjgtNi41Ii8+PHBhdGggZD0iTTE2Mi44MiA3Mi4zNGgtMTkuMDYiLz48cGF0aCBkPSJNMTg0LjgyIDcyLjM0YTEwLjI0IDEwLjI0IDAgMDEtMTkuMDYgMCIvPjxwYXRoIGQ9Ik0xNzcuMDIgNzIuMzRjLS4yNyAzLjgtLjk0IDYuNS0xLjczIDYuNSIvPjxwYXRoIGQ9Ik0xNzUuMjkgNzguODRjLTMuMTYgMC01Ljg1LTIuNy02LjkzLTYuNSIvPjxwYXRoIGQ9Ik0xODQuODIgNzIuMzRoLTE5LjA2Ii8+PHBhdGggZD0iTTIwNi44MiA3Mi4zNGExMC4yNCAxMC4yNCAwIDAxLTE5LjA2IDAiLz48cGF0aCBkPSJNMTk5Ljg5IDcyLjM0Yy0uNDEgMy44LTEuNDIgNi41LTIuNiA2LjUiLz48cGF0aCBkPSJNMTk3LjI5IDc4Ljg0Yy0yLjc2IDAtNS4xMi0yLjctNi4wNy02LjUiLz48cGF0aCBkPSJNMjA2LjgyIDcyLjM0aC0xOS4wNiIvPjxwYXRoIGQ9Ik0yMjguODIgNzIuMzRhMTAuMjQgMTAuMjQgMCAwMS0xOS4wNiAwIi8+PHBhdGggZD0iTTIyMi43NSA3Mi4zNGMtLjU0IDMuOC0xLjg5IDYuNS0zLjQ2IDYuNSIvPjxwYXRoIGQ9Ik0yMTkuMjkgNzguODRjLTIuMzcgMC00LjM4LTIuNy01LjItNi41Ii8+PHBhdGggZD0iTTIyOC44MiA3Mi4zNGgtMTkuMDYiLz48L2c+PC9nPjwvc3ZnPgo=');
+}
+</style>

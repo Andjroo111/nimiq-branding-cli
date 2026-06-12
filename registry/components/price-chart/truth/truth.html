@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>price-chart — truth (upstream wallet PriceChart.vue + LineChart.vue in Sidebar.vue context)</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Mulish', 'Muli', system-ui, sans-serif; margin: 0; padding: 24px; background: #fff; }
+
+/* wallet themes.scss — vars + global helpers used by the component */
+:root {
+    --body-size: 2rem;
+    --small-size: 1.75rem;
+    --tiny-label-size: 1.375rem;
+    --bg-secondary: var(--nimiq-blue); /* Sidebar */
+}
+.flex-column { display: flex; flex-direction: column; }
+.flex-row { display: flex; flex-direction: row; }
+button.reset {
+    background: none;
+    border: none;
+    outline: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-weight: inherit;
+    color: inherit;
+    text-align: inherit;
+    cursor: pointer;
+}
+
+/* sidebar excerpt frame (Sidebar.vue: background var(--bg-secondary), color white,
+   --sidebar-width: 24rem (App.vue), --padding-sides: 1.5rem) */
+.price-chart-widget {
+    width: 24rem;
+    padding: 0 1.5rem;
+    background: var(--bg-secondary);
+    color: white;
+}
+
+/* ============ LineChart.vue scoped CSS (data-v-line), verbatim ============ */
+.line-chart[data-v-line] {
+    position: relative;
+}
+svg[data-v-line] {
+    flex-grow: 1;
+    transition: opacity .3s var(--nimiq-ease);
+}
+svg[data-v-line] path {
+    transition: stroke-dasharray 1.2s linear;
+}
+
+/* ============ PriceChart.vue scoped CSS (data-v-price), verbatim ============ */
+.price-chart[data-v-price] {
+    position: relative;
+}
+.timespan[data-v-price] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    text-transform: uppercase;
+    background: rgb(109, 112, 135); /* A background of rgba(255, 255, 255, 0.35) on Nimiq Blue */
+    border: 0.25rem solid var(--bg-secondary);
+    margin: -0.25rem;
+    border-radius: calc(0.25rem + 0.25rem); /* border-width + effective border-radius of the label */
+    padding: 0.375rem; /* 3px */
+    font-size: var(--tiny-label-size); /* 11px */
+    line-height: 1;
+    font-weight: bold;
+    color: var(--bg-secondary);
+    letter-spacing: 0.055em;
+}
+.meta[data-v-price] {
+    min-height: 4.5rem; /* to avoid jumping of UI when children are hidden via v-if */
+    justify-content: space-between;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--small-size);
+    margin-top: 1rem;
+}
+.price[data-v-price] {
+    text-align: right;
+}
+.change[data-v-price] {
+    font-weight: bold;
+}
+.change.positive[data-v-price] {
+    color: var(--nimiq-green);
+}
+.change.positive[data-v-price]::before {
+    content: '+';
+}
+
+/* ============ Sidebar.vue scoped CSS (data-v-sidebar) — price chart rules, verbatim.
+   Injected AFTER the child components' styles (Sidebar imports them), so its
+   ::v-deep .timespan override (equal specificity) wins by order, as upstream. ============ */
+.price-chart-wrapper[data-v-sidebar] {
+    overflow-y: auto;
+    width: 100%;
+    scrollbar-width: none;
+    /* upstream also applies a 3rem top+bottom scroll-fade mask to the full-height
+       sidebar wrapper; omitted in this exact-height excerpt (it would fade the meta row) */
+}
+.price-chart-wrapper[data-v-sidebar]::-webkit-scrollbar {
+    width: 0;
+}
+.price-chart[data-v-sidebar] {
+    height: 15rem;
+    width: 100%;
+    padding: 1.5rem;
+}
+.price-chart[data-v-sidebar]:first-child {
+    margin-top: 1.25rem;
+}
+.price-chart[data-v-sidebar]:last-child {
+    margin-bottom: .75rem;
+}
+.price-chart[data-v-sidebar] .timespan {
+    left: 1.5rem;
+    top: 1.5rem;
+}
+</style>
+</head>
+<body>
+<div class="price-chart-widget">
+    <div class="price-chart-wrapper" data-v-sidebar>
+        <!-- PriceChart.vue, hand-expanded: currency="nim", timeRange="24h", sample 18-point
+             24h history (NIM ~$0.0005, +0.1%). LineChart root carries PriceChart's
+             :style opacity binding + its own containerStyle (100%/100%). -->
+        <div class="price-chart flex-column" data-v-price data-v-sidebar>
+            <div class="line-chart flex-column" data-v-line data-v-price style="width: 100%; height: 100%; opacity: 1;">
+                <!-- svg box: 144x52px (price-chart 168x120 minus 1.5rem padding, minus meta 4.5rem + 1rem margin);
+                     viewBox per LineChart calculateViewBox(strokeWidth 2.5, padding 5) -->
+                <svg data-v-line xmlns="http://www.w3.org/2000/svg" viewBox="-1.25 -5 146.5 62" preserveAspectRatio="none" style="opacity: 1;">
+                    <path data-v-line
+                        d="M 0 12 C 1.69 12.8, 5.08 13.6, 8.47 16 C 11.86 18.4, 13.55 20, 16.94 24 C 20.33 28, 22.02 34.4, 25.41 36 C 28.8 37.6, 30.49 30.4, 33.88 32 C 37.27 33.6, 38.96 40, 42.35 44 C 45.74 48, 47.44 51.2, 50.82 52 C 54.21 52.8, 55.91 51.2, 59.29 48 C 62.68 44.8, 64.38 37.6, 67.76 36 C 71.15 34.4, 72.85 41.6, 76.24 40 C 79.62 38.4, 81.32 32.8, 84.71 28 C 88.09 23.2, 89.79 17.6, 93.18 16 C 96.56 14.4, 98.26 21.6, 101.65 20 C 105.04 18.4, 106.73 12, 110.12 8 C 113.51 4, 115.2 0.8, 118.59 0 C 121.98 -0.8, 123.67 1.6, 127.06 4 C 130.45 6.4, 132.14 10.8, 135.53 12 C 138.92 13.2, 142.31 10.4, 144 10"
+                        fill="none" stroke="currentColor" opacity="0.5" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <button class="reset timespan" data-v-price>24h</button>
+                <div class="meta flex-row" data-v-price>
+                    <strong data-v-price>NIM</strong>
+                    <div class="price" data-v-price>
+                        <span class="fiat-amount">$0.000501</span>
+                        <div class="change positive" data-v-price>0.1%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

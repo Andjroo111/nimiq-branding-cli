@@ -1,0 +1,51 @@
+Provenance (fetched 2026-06-11) — swept from www.nimiq.com page HTML + CSS.
+ipx note: src="/_ipx/s_WxH/assets/images/foo" → original at /_ipx/_/assets/images/foo
+(some prismic files only resolve via the bare /assets/images/prismic/ path).
+
+home-hero/map.svg        /_ipx/_/assets/images/home-hero/map.svg — THE hero world map
+                         (977x362, dotted continents, #1F2348 at .2 opacity, 484KB).
+home/card.svg            /_ipx/_/assets/images/home/{card,email,stats}.svg — the three
+home/email.svg           132x80 gradient feature illustrations on the homepage
+home/stats.svg           ("Pay & get paid" / contact / stats cards).
+gods-light.webp          /_ipx/s_3200x1800/assets/images/gods-light.webp (server max =
+                         1600x900, 30KB). alt="Nimiq Gods Rays Background" — IS the home
+                         hero sky: rendered absolute inset-0 with blur-60 brightness-80.
+apple-store-badge.png    /_ipx/_/assets/images/… — store badges on /nimiq-pay.
+google-play-badge.svg
+alert.gif                /assets/announcement-banner/alert.gif — animated megaphone used
+                         in the orange announcement banner (staking/wallet pages).
+
+prismic/                 /assets/images/prismic/<hash>_<name> — Prismic CMS uploads:
+                         homepage product previews (NimiqWalletPreview/NimiqPayPreview/
+                         CPLPreview webp, multisig-preview.svg), white partner logos
+                         (cryptopayment-link/btc-lightning/naka, polygon-logo),
+                         /staking images (wallet-black-white, Frame48104392 phone shot),
+                         /nimiq-pay set (nimiq-pay-hero.webp, zig-zag-map, cryptocities-
+                         logos, bluecode, naka, how-to-* app screenshots, white feature
+                         icons), /cryptopaymentlink set (Cryptopayment_link_hero_2_1.svg
+                         + 64x64 duotone feature icons + Frame_*.jpg screenshots),
+                         /buy-and-sell exchange logos (moonpay…simplex + Wallet.webp).
+                         NOTE: /albatross block-diagram webps (macro/micro/skip-block,
+                         batch-and-epoch) are 404 on the live site — not saved.
+
+css-inline/              Decoded from data-URI url() refs in /_nuxt/*.css (UnoCSS icon
+                         classes), named after the class: nimiq--* = full i-nimiq icon
+                         set (~100: chevrons, duotone-*, logos-* incl. nimiq horizontal/
+                         white wordmarks, usdc/usdt/bitcoin, socials), nimiq-flags--* =
+                         41 hexagonal country flags, continents--* = 6 dotted-style
+                         continent cutouts, oasis-regions--* = 3 OASIS region maps,
+                         custom--bg-hexagons (2795x544 fading honeycomb band),
+                         custom--buy-and-sell-bg (1734x1374 blurred glow blob),
+                         custom--10-million-nim, custom--cloud, custom--curly,
+                         custom--apps, custom--cli-docs, roadmap--{js,rust,wasm}.
+
+staking-inline/          13 validator/pool logos base64-embedded in /staking HTML
+                         (AceStaking, NimiqHub Fun, Garuda, Pocket, Whalidator, etc).
+
+staking-calculator/      /staking-calculator/ is a separate Vue app; piggy.svg +
+                         triangle.svg from its css/app.6aacaace.css url() refs.
+                         (bg hexagon rain is canvas-drawn, no asset.)
+
+NOT duplicated here (already in references/assets/brand/, see its SOURCES.txt):
+favicon.ico, __og-image__/static/og.png, and the raw.githubusercontent.com/nimiq/awesome
+app artwork that nimiq.com hotlinks on / and /apps.

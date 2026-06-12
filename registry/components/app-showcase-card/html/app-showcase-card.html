@@ -1,0 +1,41 @@
+<!-- app-showcase-card: nimiq.com "THE APPS" marketing card.
+     Requires app-showcase-card.css + Mulish. Static markup, no script.
+     The device previews and hexagon marks are the REAL team-shipped assets
+     (vendored in this repo under assets/; `nq add` copies them into your
+     project at ./nimiq/assets/<subpath>). This snippet references them as
+     ../../../../assets/<subpath> (registry-relative) — in a consumer project
+     the expected location is ./nimiq/assets/<subpath> relative to your page,
+     so adjust the src prefixes to where your page lives:
+       img/nimiq-pay-preview.webp     490x916 Nimiq Pay phone screenshot (standard card)
+       img/nimiq-wallet-preview.webp  1734x1164 Nimiq Wallet desktop screenshot (wide card)
+       logos/official/white/nimiq_signet_white_base_size.svg    white signet (chip glyph)
+       logos/official/colored/nimiq_signet_rgb_base_size.svg    gold signet (wide-card mark)
+     Standard: centered gold chip + title + 2-line subtitle + phone screenshot
+     clipped at the card's bottom edge. Add .wide for the horizontal variant
+     (bare gold signet + copy left, desktop window screenshot bleeding off the
+     bottom-right, clipped by the card edges). -->
+
+<!-- Standard card -->
+<div class="nq-app-showcase-card">
+    <div class="asc-icon">
+        <img class="asc-icon-mark" src="../../../../assets/logos/official/white/nimiq_signet_white_base_size.svg" alt="" width="72" height="64">
+        <span class="asc-icon-label">Pay</span>
+    </div>
+    <h3 class="asc-title">Pay App</h3>
+    <p class="asc-subtitle">Pay with NIM at more acceptance points every day</p>
+    <div class="asc-mock">
+        <img class="asc-shot" src="../../../../assets/img/nimiq-pay-preview.webp" alt="Nimiq Pay app — payment successful" width="490" height="916">
+    </div>
+</div>
+
+<!-- Wide card -->
+<div class="nq-app-showcase-card wide">
+    <div class="asc-copy">
+        <img class="asc-signet" src="../../../../assets/logos/official/colored/nimiq_signet_rgb_base_size.svg" alt="" width="72" height="64">
+        <h3 class="asc-title">Nimiq Wallet</h3>
+        <p class="asc-subtitle">Buying, staking, swapping, the wallet does it all</p>
+    </div>
+    <div class="asc-mock">
+        <img class="asc-shot" src="../../../../assets/img/nimiq-wallet-preview.webp" alt="Nimiq Wallet dashboard" width="1734" height="1164">
+    </div>
+</div>

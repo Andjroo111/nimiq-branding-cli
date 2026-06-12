@@ -1,0 +1,97 @@
+{
+  "name": "swap-balance-bar",
+  "purpose": "Swap Currencies distribution bar — draggable handle splits total fiat value between two assets: solid address-colored NIM segment left, orange diagonal-hatched BTC change segment right, white round arrow handle on a light-blue hairline, 10-tick percent scale and curved connector lines up to the account labels.",
+  "category": "form",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "leftAsset",
+      "type": "String",
+      "required": true,
+      "default": "'NIM'",
+      "description": "Asset shown on the left side ('NIM' | 'BTC' | 'USDC_MATIC' | 'USDT_MATIC'). Sample/demo: 'NIM'."
+    },
+    {
+      "name": "rightAsset",
+      "type": "String",
+      "required": true,
+      "default": "'BTC'",
+      "description": "Asset shown on the right side. Sample/demo: 'BTC'."
+    },
+    {
+      "name": "newLeftBalance",
+      "type": "Number",
+      "required": true,
+      "default": "0",
+      "description": "Projected left balance after the swap, in smallest units (luna for NIM). Sample: 51_900_000 (519 NIM)."
+    },
+    {
+      "name": "newRightBalance",
+      "type": "Number",
+      "required": true,
+      "default": "0",
+      "description": "Projected right balance after the swap, in smallest units (sat for BTC). Sample: 476 (0.00000476 BTC)."
+    },
+    {
+      "name": "nimAddresses",
+      "type": "Object[]",
+      "required": false,
+      "default": "[]",
+      "description": "Replaces the upstream useAddressStore(): [{ address, label, balance }]. First entry is the active address. Sample: Indigo Address, 99_500_000 luna."
+    },
+    {
+      "name": "btcBalance",
+      "type": "Number",
+      "required": false,
+      "default": "0",
+      "description": "Replaces useBtcAddressStore().accountBalance, in sat."
+    },
+    {
+      "name": "exchangeRates",
+      "type": "Object",
+      "required": false,
+      "default": "{ nim: 0.000501, btc: 63417 }",
+      "description": "Replaces useFiatStore(): fiat rate per whole coin, keyed by lowercase currency code."
+    },
+    {
+      "name": "fiatLimit",
+      "type": "Number",
+      "required": false,
+      "default": "undefined",
+      "description": "Maximum fiat amount that may be moved from either side while dragging."
+    },
+    {
+      "name": "disabled",
+      "type": "Boolean",
+      "required": false,
+      "default": "false",
+      "description": "Grays out bars, labels and handle and disables dragging."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "dependsOn": [
+    "identicon"
+  ],
+  "npmDeps": [
+    "@nimiq/iqons"
+  ],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 560,
+      "height": 320
+    },
+    "selector": ".container",
+    "maxDiffPct": 0.5,
+    "settleMs": 400
+  },
+  "notes": "Source: upstream/wallet/src/components/swap/SwapBalanceBar.vue (+ icons/SwapBalanceBar/CurvedLine.vue, assets/swap-change-background.svg, assets/horizontal-double-arrow.svg; container width from swap/SwapModal.vue .small-page 63.5rem - 2*4rem page padding = 444px). Sample state per supporting-elements brief item 4: NIM 'Indigo Address' (NQ87 JY9X...) 519 NIM solid navy (.nq-blue via getColorClass: indigo identicon -> nq-blue) at 46%, BTC 0.00 -> +0.00000476 BTC at 54% rendered as full-width .change diagonal hatch over bitcoin orange, white round drag handle with double-arrow on the light-blue separator hairline, 46%/54% tick scale, CurvedLine connectors (widths 82/98px hand-computed from the upstream rAF formulas for a 444px root). Static frozen render; drag/touch logic lives in the Vue port only. Identicon via pinned @nimiq/iqons@1.6.0 jsdelivr recipe (module script iterates .swap-balance-bar .identicon[data-address], namespaced under the component root like the account-ring snippet). Vue port translates the upstream Pinia stores into props (nimAddresses/btcBalance/exchangeRates). Identicon sprite is the REAL team-shipped iqons.min.svg (84-symbol part catalog, 88KB) vendored at assets/img/iqons.min.svg — byte-identical to the Hub-deployed sprite captured in references/assets/hub/iqons.min.svg and to @nimiq/iqons@1.6.0 dist; the snippet probes the local copy and falls back to the same CDN sprite, while the iqons JS library itself stays pinned on jsdelivr (code, not artwork).",
+  "assetFiles": [
+    "img/iqons.min.svg"
+  ]
+}

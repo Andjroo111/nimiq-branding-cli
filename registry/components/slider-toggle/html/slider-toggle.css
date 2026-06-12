@@ -1,0 +1,74 @@
+/* Nimiq slider toggle — pill radio group, the checked option gets a white pill.
+   Pure CSS port of @nimiq/vue-components SliderToggle.vue: selection works via the
+   hidden radio inputs and :has(). Requires the Nimiq style CSS variables
+   (--nimiq-highlight-bg, --nimiq-ease) from nimiq-style.css. */
+.slider-toggle {
+    --borderRadius: 9999px;
+    --transitionDuration: 200ms;
+    --padding: .5rem;
+
+    position: relative;
+    display: flex;
+
+    background-color: var(--nimiq-highlight-bg);
+    border-radius: var(--borderRadius);
+    padding: var(--padding);
+}
+
+/* Currency type (compact) */
+.slider-toggle.type-currency {
+    --inactiveOpacity: .5;
+    --horizontalPadding: 16px;
+    --verticalPadding: 14px;
+
+    font-size: 1.75rem;
+    letter-spacing: 0.1em;
+    font-weight: bold;
+}
+
+/* Default type (large) */
+.slider-toggle.type-default {
+    --inactiveOpacity: .625;
+    --horizontalPadding: 2.5rem;
+    --verticalPadding: 1.125rem;
+
+    font-size: 2.5rem;
+    letter-spacing: 0;
+    font-weight: 600;
+    color: rgba(31, 35, 72, 0.8); /* --nimiq-blue */
+}
+
+.slider-toggle input { display: none }
+
+.slider-toggle label {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    line-height: 150%;
+
+    padding: var(--verticalPadding) var(--horizontalPadding);
+    cursor: pointer;
+
+    transition: opacity var(--transitionDuration) var(--nimiq-ease);
+}
+
+.slider-toggle label:not(:has(input:checked)) {
+    opacity: var(--inactiveOpacity);
+}
+
+.slider-toggle label:not(:has(input:checked)):hover {
+    opacity: calc(var(--inactiveOpacity) + .12);
+}
+
+/* The white pill under the selected option.
+   (Upstream renders a separate JS-positioned .active-box that slides between options;
+   this CSS-only version styles the active label directly — same geometry, no slide animation.) */
+.slider-toggle label:has(input:checked) {
+    background-color: white;
+    border-radius: var(--borderRadius);
+    box-shadow: 0px 13px 27px rgba(31, 35, 72, .07), /* --nimiq-blue */
+        0px 5px 6px rgba(31, 35, 72, .04), /* --nimiq-blue */
+        0px 1px 2px rgba(31, 35, 72, .02); /* --nimiq-blue */
+}

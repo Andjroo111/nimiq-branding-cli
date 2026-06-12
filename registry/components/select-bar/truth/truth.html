@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SelectBar — truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; }
+
+    /* SelectBar.vue scoped styles — verbatim, with Vue's [data-v-*] scoping
+       emulated as [data-v-select-bar]. This preserves the real specificity:
+       label[data-v-select-bar] (0,1,1) beats .nq-label (0,1,0) for margin,
+       and .nq-highlight-bg[data-v-select-bar] applies the unselected tint. */
+    .select-bar[data-v-select-bar] {
+        display: flex;
+        border-radius: 3.75rem;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .select-bar > div[data-v-select-bar] {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 0;
+    }
+
+    .select-bar > div + div[data-v-select-bar] {
+        margin-left: .25rem;
+    }
+
+    input[data-v-select-bar] {
+        display: none;
+    }
+
+    label[data-v-select-bar] {
+        padding: 1.75rem 2rem;
+        margin: 0;
+        width: 100%;
+        text-align: center;
+        cursor: pointer;
+        border-radius: .5rem;
+    }
+
+    .nq-highlight-bg[data-v-select-bar] {
+        background: var(--nimiq-highlight-bg);
+    }
+</style>
+</head>
+<body>
+    <!-- SelectBar: fee selector, name="fee".
+         options = [
+           { color: 'nq-light-blue-bg', text: 'free',     value: 0, index: 0 },
+           { color: 'nq-green-bg',      text: 'standard', value: 1, index: 1 },
+           { color: 'nq-gold-bg',       text: 'express',  value: 2, index: 2 },
+         ], selectedValue = 1 ("standard", the middle option). $t stubbed as identity.
+         getColor(): option.index <= selected.index → selected.color ('nq-green-bg'
+         for "free" and "standard"); otherwise 'nq-highlight-bg' ("express"). -->
+    <div class="select-bar" data-v-select-bar>
+        <div data-v-select-bar>
+            <input value="[object Object]" type="radio" name="fee" id="0" data-v-select-bar>
+            <label for="0" class="nq-label nq-green-bg" data-v-select-bar>free</label>
+        </div>
+        <div data-v-select-bar>
+            <input value="[object Object]" type="radio" name="fee" id="1" checked data-v-select-bar>
+            <label for="1" class="nq-label nq-green-bg" data-v-select-bar>standard</label>
+        </div>
+        <div data-v-select-bar>
+            <input value="[object Object]" type="radio" name="fee" id="2" data-v-select-bar>
+            <label for="2" class="nq-label nq-highlight-bg" data-v-select-bar>express</label>
+        </div>
+    </div>
+</body>
+</html>

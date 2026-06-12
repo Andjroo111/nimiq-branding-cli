@@ -1,0 +1,23 @@
+/* Card — no extra CSS needed. All styling comes from nimiq-style (legacy):
+ * css/legacy/nimiq-style.min.css. The relevant framework rules are, for reference:
+ *
+ * .nq-card {
+ *     max-width: 75rem;
+ *     background: var(--nimiq-card-bg);
+ *     border-radius: 1.25rem;
+ *     box-shadow: 0 .5rem 3.5rem rgba(0, 0, 0, .111158);
+ *     margin: 2rem 1rem;            (2rem at >=450px viewports)
+ *     color: var(--nimiq-blue);
+ *     --nimiq-light-blue: #0582CA;
+ *     --nimiq-red: #D94432;
+ * }
+ * .nq-card-header { padding: 3rem; text-align: center; }   (4rem at >=450px)
+ * .nq-card-header .nq-h1, .nq-card-header .nq-h2 { margin: 0; }
+ * .nq-card-header .nq-notice { margin: 3rem 0 0; text-align: center; }
+ * .nq-card-body { padding: 3rem; }                          (4rem at >=450px)
+ * .nq-card-header + .nq-card-body { padding-top: 1rem; }
+ * .nq-card-body > :first-child { margin-top: 0; }
+ * .nq-card-body > :last-child { margin-bottom: 0; }
+ * .nq-card-footer { padding: 1rem; }
+ * .nq-card-body + .nq-card-footer { padding-top: 0; }
+ */

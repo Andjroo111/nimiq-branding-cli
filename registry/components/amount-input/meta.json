@@ -1,0 +1,25 @@
+{
+  "name": "amount-input",
+  "purpose": "Large centered amount entry field that auto-fits its width and shrinks its font to the available space, with the currency ticker (NIM, BTC, ...) rendered beside the value.",
+  "category": "form",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "value", "type": "number", "default": null, "description": "Amount in the currency's smallest unit (Luna for NIM, i.e. value / 10^decimals is displayed)." },
+    { "name": "maxFontSize", "type": "number", "default": 8, "description": "Maximum font size in rem; the font shrinks below this when the value would overflow the available width." },
+    { "name": "placeholder", "type": "string", "default": "0", "description": "Placeholder shown when empty." },
+    { "name": "vanishing", "type": "boolean", "default": false, "description": "Removes the input's inset border (nq-input .vanishing style)." },
+    { "name": "decimals", "type": "number", "default": 5, "description": "Number of decimals the entered value is parsed with (5 for NIM/Luna)." },
+    { "name": "currency", "type": "string", "default": "nim", "description": "Currency code; rendered as ticker (nim→NIM, tnim→tNIM, mbtc→mBTC, tbtc→tBTC, usdc.e→USDC.e, else uppercased) and applied as a class on the ticker span." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 600, "height": 400 },
+    "selector": ".amount-input",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Sample state: '100.00' NIM entered, unfocused, maxFontSize 8rem. The component's width/font-size auto-fit is inherently JS-driven (upstream measures hidden width-finder spans on every input); truth.html and demo.html both include a minimal script that replicates mounted()+updateWidth() once after fonts load — deterministic for a fixed value. Truth emulates Vue's [data-v-*] scoping on the component CSS because scoped attribute selectors are what let the upstream `input` rule (padding 0 .25rem) beat .nq-input's specificity."
+}
