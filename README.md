@@ -8,6 +8,16 @@ Nimiq apps before it ships, plus the team's real asset library (logos, icons, fl
 > real shipped files or faithful ports of their open-source components, never hand-drawn
 > approximations.
 
+## The soul of the tool
+
+Everything here flows from the **[Nimiq Design Principles](PRINCIPLES.md)** — distilled from
+the NIMIQ Style Guide (October 2018) and the
+[A New Visual Identity](https://www.nimiq.com/blog/a-new-visual-identity/) essay: radical
+simplicity, a light stage structured by white space, traditional colors with the radial-gradient
+spin, warm-and-round-yet-tangible form, and one calculated break per experience. `nq principles`
+prints them; `nq new <name>` scaffolds a component with the 10-point principles checklist
+embedded — a component isn't done until the checklist and the pixel verification both pass.
+
 ## Install
 
 ```bash
