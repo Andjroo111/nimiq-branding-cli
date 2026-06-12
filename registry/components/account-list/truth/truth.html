@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AccountList — upstream truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; }
+</style>
+
+<!-- Identicon.vue <style scoped>, verbatim (img selector scoped to the component root) -->
+<style>
+    .identicon {
+        width: 10rem;
+    }
+
+    .identicon img {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<!-- Amount.vue <style scoped>, verbatim -->
+<style>
+    .amount {
+        white-space: nowrap;
+    }
+
+    .amount.approx::before {
+        content: '~ ';
+        opacity: 0.5;
+    }
+</style>
+
+<!-- Account.vue <style scoped>, verbatim -->
+<style>
+    .account {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.75rem 2rem;
+        box-sizing: border-box;
+        flex-shrink: 0;
+        font-size: 2rem;
+        line-height: 1.2;
+        overflow: hidden; /* hide chevron right on hover*/
+    }
+
+    .account.row {
+        width: 100%;
+        flex-direction: row;
+    }
+
+    .account.column {
+        flex-direction: column;
+    }
+
+    .identicon-and-label {
+        display: flex;
+        align-items: center;
+    }
+
+    .row .identicon-and-label {
+        flex-direction: row;
+        overflow: hidden;
+        min-width: 5.625rem;
+        flex-grow: 1;
+    }
+
+    .column .identicon-and-label {
+        flex-direction: column;
+    }
+
+    .identicon {
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    .row .identicon {
+        width: 5.625rem;
+        height: 5.625rem;
+        margin-right: 1.5rem;
+    }
+
+    .column .identicon {
+        width: 10rem;
+        height: 10rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .cashlink .identicon {
+        padding: .5rem;
+    }
+
+    .cashlink .identicon div {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+    .cashlink .identicon:before {
+        display: block;
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: .25rem solid rgba(31, 35, 72, .2); /* based on nimiq-blue */
+    }
+
+    .account-image {
+        border-radius: 1rem;
+    }
+
+    .wallet-label {
+        margin-bottom: 0;
+    }
+
+    .label,
+    .wallet-label {
+        overflow: hidden;
+    }
+
+    .row .label:not(.editable) {
+        opacity: 0.7;
+        padding-left: 1rem;
+    }
+
+    .row .label,
+    .row .wallet-label {
+        white-space: nowrap;
+        font-weight: 600;
+        mask-image: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+    }
+
+    .row .label {
+        flex-grow: 1;
+    }
+
+    .column .label,
+    .column .wallet-label {
+        max-width: 18.5rem; /* 148px, the width the automatic labels are designed for */
+        text-align: center;
+        line-height: 1.5;
+        /* TODO implement multi line ellipsis */
+        max-height: calc(2 * 1em * 1.5); /* #lines * font-size * line-height */
+    }
+
+    .label.address-font {
+        font-family: "Fira Mono", "Andale Mono", monospace;
+        font-weight: normal;
+        text-transform: uppercase;
+    }
+
+    .balance {
+        flex-shrink: 0;
+    }
+
+    .row .balance {
+        margin-left: 1rem;
+        font-weight: bold;
+        opacity: 0.7;
+    }
+
+    .column .balance {
+        margin-top: 1.5rem;
+    }
+</style>
+
+<!-- AccountList.vue <style scoped>, verbatim ('>>>' deep combinator -> descendant) -->
+<style>
+    .account-list {
+        flex-grow: 1;
+    }
+
+    .account-entry {
+        display: block;
+        transition: background-color .3s var(--nimiq-ease);
+        border-radius: 0.5rem;
+        margin: 0.5rem 2rem;
+        position: relative;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .account-entry .identicon img {
+        transform: scale(0.9);
+        transition: transform .45s var(--nimiq-ease);
+    }
+
+    .account-entry .label,
+    .account-entry .balance {
+        transition: opacity .3s var(--nimiq-ease), color .3s var(--nimiq-ease), margin-right .45s var(--nimiq-ease);
+    }
+
+    .account-entry .caret,
+    .account-entry .tooltip {
+        position: absolute;
+        right: 2rem;
+        top: 3.625rem;
+        font-size: 2rem;
+    }
+
+    .account-entry .caret {
+        transform: translateX(3rem);
+        opacity: 0;
+        transition: transform .45s var(--nimiq-ease), opacity .35s .1s var(--nimiq-ease);
+    }
+
+    a.account-entry:focus {
+        outline: none;
+    }
+
+    a.account-entry:focus::after {
+        content: "";
+        position: absolute;
+        left: -0.625rem;
+        top: -0.625rem;
+        right: -0.625rem;
+        bottom: -0.625rem;
+        border: 0.25rem solid rgba(5, 130, 202, 0.5); /* Based on Nimiq Light Blue */
+        border-radius: 1rem;
+        pointer-events: none;
+    }
+
+    a.account-entry:hover,
+    a.account-entry:focus {
+        background-color: rgba(31, 35, 72, 0.06); /* Based on Nimiq Blue */
+    }
+
+    a.account-entry:hover .identicon img,
+    a.account-entry:focus .identicon img {
+        transform: scale(1);
+    }
+
+    a.account-entry:hover .label,
+    a.account-entry:hover .balance,
+    a.account-entry:focus .label,
+    a.account-entry:focus .balance {
+        opacity: 1;
+    }
+
+    a.account-entry:hover .balance,
+    a.account-entry:focus .balance,
+    .account-entry.has-tooltip .balance {
+        margin-right: 3rem; /* make space for caret or tooltip trigger */
+    }
+
+    a.account-entry:hover .balance,
+    a.account-entry:focus .balance {
+        color: var(--nimiq-green);
+    }
+
+    a.account-entry:hover .caret,
+    a.account-entry:focus .caret {
+        transform: translateX(0);
+        opacity: 0.23;
+    }
+
+    .account-entry.disabled {
+        cursor: not-allowed;
+    }
+
+    .account-entry.disabled .identicon,
+    .account-entry.disabled .label,
+    .account-entry.disabled .balance {
+        opacity: 0.2;
+    }
+
+    .account-entry.highlight-insufficient-balance .balance {
+        color: var(--nimiq-red);
+        opacity: 1;
+    }
+</style>
+
+<!-- Page/demo state: list rendered at the Hub's SmallPage content width -->
+<style>
+    body {
+        margin: 0;
+        padding: 32px;
+        background: white;
+    }
+    .account-list {
+        width: 420px;
+    }
+</style>
+</head>
+<body>
+
+<!-- Upstream template expanded for the sample state:
+     accounts = [
+       { userFriendlyAddress: 'NQ11 MAIN ACCO UNT0 0000 0000 0000 0000 001X', label: 'Main Account', balance: 1234567890 },
+       { userFriendlyAddress: 'NQ38 SAVI NGS0 0000 0000 0000 0000 0000 0002', label: 'Savings',      balance:  250000000 },
+       { userFriendlyAddress: 'NQ09 P0CK ETM0 NEY0 0000 0000 0000 0000 0003', label: 'Pocket Money', balance:    4992000 },
+     ], minBalance = 1 (so balances render), no disabled/editable rows.
+     Each entry is an <a> (enabled, not editable) wrapping an Account (layout 'row')
+     and a CaretRightSmallIcon (hidden until hover). Amounts come from
+     FormattableNumber(balance).moveDecimalSeparator(-5).toString({minDecimals:2, maxDecimals:5, useGrouping:true})
+     — group separator is U+202F narrow no-break space, used only above 4 integer digits. -->
+<div class="account-list">
+    <a href="javascript:void(0)" class="account-entry">
+        <div class="account row">
+            <div class="identicon-and-label">
+                <div class="identicon" data-address="NQ11 MAIN ACCO UNT0 0000 0000 0000 0000 001X">
+                    <img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>'>
+                </div>
+                <div class="label">Main Account</div>
+            </div>
+            <span class="amount balance">12&#8239;345.6789 <span class="currency nim">NIM</span></span>
+        </div>
+        <svg class="nq-icon caret" viewBox="0 0 10 11" xmlns="http://www.w3.org/2000/svg"><path d="M5.00098 2L8.53602 5.53603L5.00098 9.07107" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <a href="javascript:void(0)" class="account-entry">
+        <div class="account row">
+            <div class="identicon-and-label">
+                <div class="identicon" data-address="NQ38 SAVI NGS0 0000 0000 0000 0000 0000 0002">
+                    <img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>'>
+                </div>
+                <div class="label">Savings</div>
+            </div>
+            <span class="amount balance">2500.00 <span class="currency nim">NIM</span></span>
+        </div>
+        <svg class="nq-icon caret" viewBox="0 0 10 11" xmlns="http://www.w3.org/2000/svg"><path d="M5.00098 2L8.53602 5.53603L5.00098 9.07107" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <a href="javascript:void(0)" class="account-entry">
+        <div class="account row">
+            <div class="identicon-and-label">
+                <div class="identicon" data-address="NQ09 P0CK ETM0 NEY0 0000 0000 0000 0000 0003">
+                    <img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>'>
+                </div>
+                <div class="label">Pocket Money</div>
+            </div>
+            <span class="amount balance">49.92 <span class="currency nim">NIM</span></span>
+        </div>
+        <svg class="nq-icon caret" viewBox="0 0 10 11" xmlns="http://www.w3.org/2000/svg"><path d="M5.00098 2L8.53602 5.53603L5.00098 9.07107" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+</div>
+
+<script type="module">
+    import Iqons from 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.js';
+    // Equivalent of the Identicon component's svgPath setup (file-loader copy of iqons.min.svg)
+    // Identicon sprite: the REAL @nimiq/iqons@1.6.0 iqons.min.svg is vendored at ../../../../assets/img/iqons.min.svg
+    // (consumer projects: `nq add` copies it to ./nimiq/assets/img/iqons.min.svg). The iqons LIBRARY import
+    // above stays on the jsdelivr pin — it is code, not artwork. The CDN sprite (byte-identical content)
+    // is only the fallback when the local copy is unreachable (e.g. file:// contexts that block fetch).
+    const localIqonsSprite = '../../../../assets/img/iqons.min.svg';
+    const cdnIqonsSprite = 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.svg';
+    Iqons.svgPath = await fetch(localIqonsSprite, { method: 'HEAD' }).then((r) => (r.ok ? localIqonsSprite : cdnIqonsSprite)).catch(() => cdnIqonsSprite);
+
+    for (const el of document.querySelectorAll('.account-list .identicon[data-address]')) {
+        el.querySelector('img').src = await Iqons.toDataUrl(el.dataset.address);
+    }
+</script>
+</body>
+</html>

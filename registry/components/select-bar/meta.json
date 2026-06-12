@@ -1,0 +1,22 @@
+{
+  "name": "select-bar",
+  "purpose": "Segmented radio bar (pill-shaped) for choosing one of several ordered options, e.g. a transaction fee level. All options up to and including the selected one are tinted with the selected option's color; later options stay on the neutral highlight background.",
+  "category": "form",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "name", "type": "string", "required": false, "description": "The radio group's name attribute, shared by all option inputs." },
+    { "name": "options", "type": "SelectBarOption[]", "required": false, "description": "Options as { color, value, text, index }. color is a nimiq-style bg class (e.g. 'nq-green-bg'), index defines the order, value is emitted on change." },
+    { "name": "selectedValue", "type": "number", "required": false, "description": "value of the initially selected option. Defaults to the first option (lowest index)." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 600, "height": 200 },
+    "selector": ".select-bar",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Sample state: fee selector name='fee' with options free (nq-light-blue-bg, value 0), standard (nq-green-bg, value 1), express (nq-gold-bg, value 2); selectedValue=1 so 'standard' (middle) is selected — free+standard render nq-green-bg, express renders nq-highlight-bg. $t stubbed as identity (texts come pre-translated through the options prop upstream). Emits 'changed' with the option's value. Color classes (nq-light-blue-bg/nq-green-bg/nq-gold-bg) and --nimiq-highlight-bg come from the legacy nimiq-style CSS; bg classes also flip the label text to white via the stylesheet's later .nq-*-bg{color:var(--nimiq-white)} rule. The HTML snippet is interactive: each label carries its option color in data-color and a scoped inline script (root resolved via document.currentScript.previousElementSibling — safe when embedded among other snippets) replicates upstream getColor() on the bubbling 'change' event, so clicking free/standard/express re-colors correctly; listen for 'change' on .select-bar as the plain-HTML equivalent of the Vue 'changed' emit. Resting state is unchanged and pixel-verified."
+}

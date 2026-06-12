@@ -1,0 +1,24 @@
+{
+  "name": "app-showcase-card",
+  "purpose": "nimiq.com 'THE APPS' marketing card: light-gray rounded card with gold app-icon chip (official white Nimiq signet), title, 2-line gray subtitle and the REAL Nimiq Pay phone screenshot clipped at the card edge. .wide modifier puts the bare gold signet + copy left and the REAL Nimiq Wallet desktop screenshot bleeding off the bottom-right.",
+  "category": "marketing",
+  "variants": ["default", "wide"],
+  "props": [],
+  "cssFiles": ["app-showcase-card.css"],
+  "assetFiles": [
+    "img/nimiq-pay-preview.webp",
+    "img/nimiq-wallet-preview.webp",
+    "logos/official/white/nimiq_signet_white_base_size.svg",
+    "logos/official/colored/nimiq_signet_rgb_base_size.svg"
+  ],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 860, "height": 1000 },
+    "selector": ".stage",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "MARKETING component, layout screenshot-calibrated against references/screenshots/nimiq-com/home-card-component.png (standard 'Pay App' card) and home-desktop-full.png THE APPS section (wide 'Nimiq wallet' card). Device mocks are the REAL team-shipped product screenshots (default, not optional): standard card renders assets/img/nimiq-pay-preview.webp (490x916 Nimiq Pay phone shot incl. its own rounded frame, clipped by the card's overflow:hidden bottom edge like the live site) and the wide card renders assets/img/nimiq-wallet-preview.webp (1734x1164 Nimiq Wallet desktop shot, absolutely positioned so it bleeds off the right + bottom card edges). Both originate from nimiq.com's Prismic CDN (raw sweep copies: references/assets/nimiq-com/prismic/Zt7oXRoQrfVKl2hA_NimiqPayPreview.webp and Zt7oXhoQrfVKl2hB_NimiqWalletPreview.webp). Hexagon marks are the official signet SVGs from the team logo pack: white signet (assets/logos/official/white/nimiq_signet_white_base_size.svg) inside the gold chip with the 'Pay' label, and the colored gold signet (assets/logos/official/colored/nimiq_signet_rgb_base_size.svg) shown bare in the wide card exactly like the live site. The chip's gold radial gradient uses the same stops as the official colored signet (#EC991C -> #E9B213). The old CSS-built phone/window mocks and clip-path hexagons were deleted. Snippet references assets as ../../../../assets/<subpath>; nq add copies them into consumer projects at ./nimiq/assets/<subpath>. Self-contained px units (marketing pages don't use the legacy html{font-size:8px} framework); Mulish via Google Fonts. Static markup, no script."
+}

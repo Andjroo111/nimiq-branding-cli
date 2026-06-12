@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FiatAmount — upstream truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; }
+</style>
+</head>
+<body>
+    <!--
+        <FiatAmount :amount="1234.56" currency="USD" locale="en-US" />
+        Upstream template expanded by hand for this sample state.
+        _currencyString trace (en-US, USD):
+          toLocaleString(['en-US','en',...], { style:'currency', currencyDisplay:'code',
+            useGrouping:false, numberingSystem:'latn', min/maxFractionDigits:2 })
+            -> "USD 1234.56"
+          relativeDeviation = 0 <= 0.1 -> no extra decimals
+          CurrencyInfo('USD','en-US').symbol = "$" (no trailing alpha -> no space)
+            -> "$1234.56"
+          integers.length 4 <= 4 -> no grouping
+        FiatAmount.vue has no <style> block; the span inherits page styles.
+    -->
+    <span class="fiat-amount">
+        $1234.56
+    </span>
+</body>
+</html>

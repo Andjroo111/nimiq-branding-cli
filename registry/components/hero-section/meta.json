@@ -1,0 +1,56 @@
+{
+  "name": "hero-section",
+  "purpose": "nimiq.com home hero: deep purple radial-gradient sky with floating translucent hexagons, white 800-weight 'Universal Money for Independent Individuals' headline, lavender subtitle, light-blue 'Create Wallet \u2197' pill, WORKS WITH partner row, and a dotted-globe white arc cresting at the bottom.",
+  "category": "marketing",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "Universal Money for\\nIndependent Individuals"
+    },
+    {
+      "name": "subtitle",
+      "type": "string",
+      "default": "In a centralized world, Nimiq gives independence back to you."
+    },
+    {
+      "name": "ctaLabel",
+      "type": "string",
+      "default": "Create Wallet"
+    },
+    {
+      "name": "ctaHref",
+      "type": "string",
+      "default": "#"
+    },
+    {
+      "name": "showPartners",
+      "type": "boolean",
+      "default": true
+    }
+  ],
+  "cssFiles": [
+    "hero-section.css"
+  ],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 1200,
+      "height": 800
+    },
+    "selector": ".nq-hero-section",
+    "maxDiffPct": 0.5,
+    "settleMs": 400
+  },
+  "notes": "REAL-ASSETS-ONLY (2026-06-12): sky = vendored img/gods-light.webp ('Nimiq Gods Rays Background', nimiq.com original) rendered absolute inset-0 with blur(60px) brightness(.8) over a #1F2348 base, exactly like the live site; globe continents = vendored img/world-map.svg (nimiq.com /_ipx/_/assets/images/home-hero/map.svg, 977x362) placed via <image> at x25 y545 1150x426 on the white dome (r1600 circle) with the blue atmosphere halo strokes. Partner row uses the real white CPL/BTC-Lightning/NAKA/Polygon logos (nimiq.com prismic originals, inlined SVG). Floating hexagons + dome halo remain CSS/SVG-built (no shipped asset exists \u2014 the live site draws them in code too). nq add copies assetFiles to ./nimiq/assets/img/; snippet hrefs assume ../../../../assets/ which page builders rewrite to assets/. Alternative generated hexagon-dot globe: scripts/gen-hex-map.mjs.",
+  "assetFiles": [
+    "img/world-map.svg",
+    "img/gods-light.webp"
+  ]
+}

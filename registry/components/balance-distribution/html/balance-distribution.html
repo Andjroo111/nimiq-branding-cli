@@ -1,0 +1,26 @@
+<!-- BalanceDistribution: wallet sidebar donut showing each currency's share of the
+     account's total fiat value, with a CURRENCY / percentage legend.
+     Sample state: NIM 100% / BTC 0% — BTC is empty, so only the gold NIM arc renders
+     (a full circle: dasharray "147.655 0", no gap/line caps) and the BTC legend row
+     is .inactive (dimmed to opacity .3).
+     Needs a dark background (wallet sidebar is var(--nimiq-blue)) — legend text is white.
+     More currencies: add <circle class="arc btc|usdc|usdt"> with per-share dasharray
+     (see balance-distribution.css header for the arc math) + a matching legend <li>.
+     In the wallet a "Swap" pill button sits below this component (sidebar sibling, not
+     part of the component). -->
+<div class="balance-distribution">
+    <svg xmlns="http://www.w3.org/2000/svg" width="51" height="51" viewBox="0 0 51 51">
+        <circle r="23.5" stroke-width="4" stroke-dasharray="147.655 0" stroke-dashoffset="32.914"
+            class="arc nim" data-currency="nim"/>
+    </svg>
+    <ul class="breakdown">
+        <li>
+            <div class="currency">nim</div>
+            <div class="percentage">100%</div>
+        </li>
+        <li class="inactive">
+            <div class="currency">btc</div>
+            <div class="percentage">0%</div>
+        </li>
+    </ul>
+</div>

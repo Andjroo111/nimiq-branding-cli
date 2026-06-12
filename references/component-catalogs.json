@@ -1,0 +1,2994 @@
+[
+ {
+  "components": [
+   {
+    "name": "SmallPage",
+    "path": "vue-components/src/components/SmallPage.vue",
+    "purpose": "The canonical 420x564px white card container that every Hub/Wallet flow renders inside.",
+    "category": "layout",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "nimiq-style .nq-card class + small scoped flex sizing (max-width 52.5rem, height 70.5rem)",
+    "dependsOn": [],
+    "notes": "Pure slot wrapper; pairs with PageHeader/PageBody/PageFooter. Depends on @nimiq/style nq-card for radius/shadow/bg."
+   },
+   {
+    "name": "PageHeader",
+    "path": "vue-components/src/components/PageHeader.vue",
+    "purpose": "Card header with nq-h1 slot title, optional back arrow and optional step progress indicator bar.",
+    "category": "layout",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "backArrow: boolean = false",
+     "progressIndicator: boolean = false",
+     "numberSteps: number = 6",
+     "step: number = 1"
+    ],
+    "cssDeps": "nimiq-style .nq-card-header + .nq-h1; scoped CSS uses var(--nimiq-ease); hardcoded indicator colors #e5e5e5/#24bdb6",
+    "dependsOn": [
+     "Icons (ArrowLeftIcon)",
+     "i18n/I18nMixin"
+    ],
+    "notes": "Emits 'back'. Uses I18nMixin ($t) so scaffolding needs the i18n mixin or a $t shim. Slot 'more' for extra content."
+   },
+   {
+    "name": "PageBody",
+    "path": "vue-components/src/components/PageBody.vue",
+    "purpose": "Scrollable card body slot wrapper (flex-grow + overflow-y auto).",
+    "category": "layout",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "nimiq-style .nq-card-body + 4 lines scoped CSS",
+    "dependsOn": []
+   },
+   {
+    "name": "PageFooter",
+    "path": "vue-components/src/components/PageFooter.vue",
+    "purpose": "Card footer slot wrapper that applies standard margins to contained nq-button.",
+    "category": "layout",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "nimiq-style .nq-card-footer; deep selector >>> .nq-button margin 2rem 4.75rem 3rem",
+    "dependsOn": []
+   },
+   {
+    "name": "Identicon",
+    "path": "vue-components/src/components/Identicon.vue",
+    "purpose": "Renders the Nimiq hexagonal identicon image for a user-friendly address, with hexagon placeholder for invalid/empty addresses.",
+    "category": "identity",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "address: string"
+    ],
+    "cssDeps": "scoped only (.identicon width 10rem); placeholder is inline data-url SVG with #260133->#1F2348 radial gradient",
+    "dependsOn": [],
+    "notes": "Imports @nimiq/iqons and @nimiq/utils ValidationUtils. Webpack-specific: dynamic file-loader import of iqons.min.svg and __webpack_public_path__/NIMIQ_VUE_COMPONENTS_IMAGE_ASSET_PATH asset-path hack \u2014 the #1 porting gotcha; standalone scaffold must inline or copy iqons.min.svg."
+   },
+   {
+    "name": "AddressDisplay",
+    "path": "vue-components/src/components/AddressDisplay.vue",
+    "purpose": "Displays a Nimiq (9x4 chunks) or Ethereum address in monospace chunks, optionally click-to-copy via Copyable.",
+    "category": "identity",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "address: string (required)",
+     "format: 'nimiq'|'ethereum' = 'nimiq'",
+     "copyable: boolean = false"
+    ],
+    "cssDeps": "scoped; Fira Mono font, hardcoded rgba(31,35,72,.5) (nimiq-blue @ 50%)",
+    "dependsOn": [
+     "Copyable"
+    ],
+    "notes": "Uses @nimiq/utils ValidationUtils.normalizeAddress. Needs Fira Mono webfont loaded."
+   },
+   {
+    "name": "AddressInput",
+    "path": "vue-components/src/components/AddressInput.vue",
+    "purpose": "The signature 3x3-block Nimiq address textarea input with live parse/format, ETH address + checksum support, domain support, per-block focus coloring via mix-blend-mode, and shake-on-invalid.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "complex",
+    "props": [
+     "value: string (v-model)",
+     "autofocus: boolean",
+     "allowNimAddresses: boolean = true",
+     "allowEthAddresses: boolean",
+     "allowDomains: boolean"
+    ],
+    "cssDeps": "scoped with own CSS vars (--block-width/--block-height/--font-size); uses var(--nimiq-blue), var(--nimiq-light-blue), var(--nimiq-ease); Fira Mono; inline SVG mask-image for selection blocks",
+    "dependsOn": [],
+    "notes": "External deps: input-format lib, @nimiq/utils (Clipboard, ValidationUtils), lazy import('js-sha3') for ETH checksum. Listens on document selectionchange. Emits input/address/paste. Pixel-accuracy depends on letter-spacing calc hack for cross-browser mono rendering."
+   },
+   {
+    "name": "Amount",
+    "path": "vue-components/src/components/Amount.vue",
+    "purpose": "Formats a crypto amount given in smallest units (luna/sats) with grouping, min/max decimals, ~approx prefix and ticker span.",
+    "category": "payment",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "amount: number|bigint|BigInteger (required)",
+     "decimals?: number",
+     "minDecimals: number = 2",
+     "maxDecimals: number = 5",
+     "showApprox: boolean = false",
+     "currency: string = 'nim'",
+     "currencyDecimals: number = 5"
+    ],
+    "cssDeps": "minimal scoped (white-space nowrap, ::before '~')",
+    "dependsOn": [],
+    "notes": "Uses @nimiq/utils FormattableNumber. Exports amountValidator helper reused by other components. Ticker casing rules for tNIM/mBTC/USDC.e."
+   },
+   {
+    "name": "FiatAmount",
+    "path": "vue-components/src/components/FiatAmount.vue",
+    "purpose": "Locale-aware fiat currency formatter that picks a positioning locale, swaps in optimized currency symbols and grows decimals until relative deviation is acceptable.",
+    "category": "payment",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "amount: number (required, base unit)",
+     "currency: string (required)",
+     "maxRelativeDeviation: number = .1",
+     "locale?: string",
+     "hideDecimals: boolean = false"
+    ],
+    "cssDeps": "none (no style block)",
+    "dependsOn": [],
+    "notes": "Uses @nimiq/utils CurrencyInfo + FormattableNumber and navigator.language. Pure logic component \u2014 trivially portable."
+   },
+   {
+    "name": "AmountInput",
+    "path": "vue-components/src/components/AmountInput.vue",
+    "purpose": "Large auto-resizing/auto-shrinking amount input (8rem font) that parses decimal text and emits the value in smallest units (luna).",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "value?: number (smallest unit, v-model)",
+     "maxFontSize: number = 8 (rem)",
+     "placeholder: string = '0'",
+     "decimals: number = 5",
+     "currency: string = 'nim'",
+     "vanishing: boolean = false"
+    ],
+    "cssDeps": "nimiq-style .nq-input class; scoped uses var(--nimiq-blue), var(--nimiq-light-blue), var(--nimiq-ease); hidden width-finder spans technique",
+    "dependsOn": [],
+    "notes": "DOM-measurement based width/font-size fitting (offsetWidth in nextTick). No external libs."
+   },
+   {
+    "name": "AmountWithFee",
+    "path": "vue-components/src/components/AmountWithFee.vue",
+    "purpose": "Composite send-amount widget: AmountInput plus fee line, fiat approximation and insufficient-balance validation, v-model of {amount, fee, isValid}.",
+    "category": "payment",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "value: {amount,fee,isValid}",
+     "availableBalance: number = 0",
+     "fiatAmount: number|null",
+     "fiatCurrency: string|null",
+     "currency: string = 'nim'",
+     "currencyDecimals: number = 5"
+    ],
+    "cssDeps": "scoped; nq-text-s, nq-red classes; var(--nimiq-red); deep >>> overrides into AmountInput",
+    "dependsOn": [
+     "Amount",
+     "AmountInput",
+     "FiatAmount",
+     "i18n/I18nMixin"
+    ],
+    "notes": "Slot insufficient-balance-error for custom message."
+   },
+   {
+    "name": "QrCode",
+    "path": "vue-components/src/components/QrCode.vue",
+    "purpose": "Canvas-rendered QR code with the Nimiq light-blue radial gradient fill by default, rounded modules, and a toDataUrl() export method.",
+    "category": "data-display",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "data: string",
+     "errorCorrection: 'L'|'M'|'H'|'Q' = 'M'",
+     "radius: number = .5",
+     "fill: string|gradient = nimiq light-blue radial gradient",
+     "background: string|null = null",
+     "size: number = 240"
+    ],
+    "cssDeps": "none (no style block); brand look comes from the default gradient #265DD7->#0582CA",
+    "dependsOn": [],
+    "notes": "External dep: qr-creator. Renders nothing until data is set."
+   },
+   {
+    "name": "QrScanner",
+    "path": "vue-components/src/components/QrScanner.vue",
+    "purpose": "Full camera QR scanner with gold viewfinder overlay, cancel button, and per-browser camera-permission help instructions.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "complex",
+    "props": [
+     "reportFrequency: number = 7000",
+     "validate?: (result: string) => boolean"
+    ],
+    "cssDeps": "nimiq-style nq-blue-bg + nq-button-s inverse; scoped uses var(--nimiq-gold), var(--nimiq-blue); inline data-url SVGs for browser icons",
+    "dependsOn": [
+     "i18n/I18nMixin",
+     "i18n/I18n.vue"
+    ],
+    "notes": "External dep: qr-scanner lib + getUserMedia camera API; auto-retries camera every 3s; emits result/cancel/error. Browser detection via @nimiq/utils."
+   },
+   {
+    "name": "Tooltip",
+    "path": "vue-components/src/components/Tooltip.vue",
+    "purpose": "The core Nimiq tooltip/popover: trigger slot + positioned dark-gradient box with arrow, container-aware clamping, preferred position fallback, normal/inverse themes.",
+    "category": "feedback",
+    "reuseValue": "high",
+    "complexity": "complex",
+    "props": [
+     "container?: Vue|{$el}",
+     "preferredPosition: string = 'top right'",
+     "margin?: {top,right,bottom,left}",
+     "autoWidth: boolean = false",
+     "theme: 'normal'|'inverse' = 'normal'",
+     "background?: string",
+     "styles?: CSSStyleDeclaration",
+     "disabled?: boolean",
+     "noFocus?: boolean"
+    ],
+    "cssDeps": "scoped; var(--nimiq-blue-bg) box, var(--nimiq-ease); arrow color hardcoded to gradient sample points (#250737/#23123e/#211e45); SVG mask-image arrow",
+    "dependsOn": [
+     "Icons (AlertTriangleIcon default trigger)"
+    ],
+    "notes": "~620 lines, heavy JS positioning (getBoundingClientRect, scroll listener on container). show()/hide()/toggle() public API; emits show/hide/click. Used by Timer, AccountList, AccountSelector, PaymentInfoLine."
+   },
+   {
+    "name": "Copyable",
+    "path": "vue-components/src/components/Copyable.vue",
+    "purpose": "Click-to-copy wrapper that copies slot content or a given text and shows an animated 'Copied' bubble above.",
+    "category": "feedback",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "text?: string"
+    ],
+    "cssDeps": "scoped; var(--nimiq-light-blue), var(--nimiq-light-blue-bg), var(--nimiq-ease); nimiq-blue based layered box-shadow; SVG mask-image arrow with hardcoded #1A6AD2",
+    "dependsOn": [
+     "i18n/I18nMixin"
+    ],
+    "notes": "Uses @nimiq/utils Clipboard. Keyboard accessible (space/enter). Emits 'copy'."
+   },
+   {
+    "name": "CopyableField",
+    "path": "vue-components/src/components/CopyableField.vue",
+    "purpose": "Labeled copy-to-clipboard field for dark backgrounds, supporting keyed multi-values with selector pills and auto font-size shrink-to-fit.",
+    "category": "data-display",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "value: string|number|{[key]: any} (required)",
+     "label?: string",
+     "small: boolean = false"
+    ],
+    "cssDeps": "nq-label + nq-button-s classes; scoped designed for dark bg (white text, rgba(255,255,255,.1) field); var(--nimiq-light-blue), var(--nimiq-ease)",
+    "dependsOn": [
+     "i18n/I18nMixin"
+    ],
+    "notes": "Used in Keyguard-style dark screens; window resize listener for font fitting."
+   },
+   {
+    "name": "LabelInput",
+    "path": "vue-components/src/components/LabelInput.vue",
+    "purpose": "Auto-width-growing inline text input (for naming accounts/addresses) with UTF-8 byte-length cap and changed-on-blur semantics.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "value: string = ''",
+     "maxBytes?: number",
+     "placeholder?: string",
+     "vanishing: boolean = false",
+     "disabled: boolean = false"
+    ],
+    "cssDeps": "nimiq-style .nq-input; scoped width-finder span technique",
+    "dependsOn": [
+     "i18n/I18nMixin"
+    ],
+    "notes": "Uses @nimiq/utils Utf8Tools for byte counting/truncation. Emits input (live) and changed (on blur/submit)."
+   },
+   {
+    "name": "SelectBar",
+    "path": "vue-components/src/components/SelectBar.vue",
+    "purpose": "Segmented pill radio bar (e.g. fee speed selector) where options at or below the selected index take the selected option's color class.",
+    "category": "form",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "name: string",
+     "options: {color,value,text,index}[]",
+     "selectedValue?: number"
+    ],
+    "cssDeps": "nq-label class + caller-provided nimiq-style color classes (e.g. nq-light-blue-bg); var(--nimiq-highlight-bg)",
+    "dependsOn": [],
+    "notes": "Emits 'changed' with numeric value; mutates/sorts the options prop in created (minor smell)."
+   },
+   {
+    "name": "SliderToggle",
+    "path": "vue-components/src/components/SliderToggle.vue",
+    "purpose": "Animated segmented control where a white sliding 'active box' moves under the selected slot (named slots = options), with loading state.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "name: string (required)",
+     "value: string (v-model, required)",
+     "type: 'default'|'currency' = 'default'",
+     "loading: boolean = false"
+    ],
+    "cssDeps": "scoped; var(--nimiq-highlight-bg), var(--nimiq-ease); nimiq-blue based triple box-shadow on active box",
+    "dependsOn": [
+     "LoadingSpinner",
+     "Icons (all, spread into components)"
+    ],
+    "notes": "Position computed via getBoundingClientRect on resize/value change. Options are defined by named slots, not a prop."
+   },
+   {
+    "name": "CloseButton",
+    "path": "vue-components/src/components/CloseButton.vue",
+    "purpose": "Standard round close (X) icon button, with .top-right helper class for absolute corner placement.",
+    "category": "navigation",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "nimiq-style .nq-button-s + .nq-icon; var(--nimiq-ease)",
+    "dependsOn": [
+     "Icons (CloseIcon)"
+    ],
+    "notes": "Emits click."
+   },
+   {
+    "name": "LongPressButton",
+    "path": "vue-components/src/components/LongPressButton.vue",
+    "purpose": "Hold-to-confirm nq-button with a growing pill progress indicator rendered via nested mix-blend-mode masks and a 'Keep pressing\u2026' prompt.",
+    "category": "form",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "duration: number = 3000 (ms)",
+     "color: string = 'light-blue' (nimiq button color or 'inverse')"
+    ],
+    "cssDeps": "nimiq-style .nq-button color classes; heavy mix-blend-mode (lighten/difference/screen) trickery; var(--nimiq-ease)",
+    "dependsOn": [
+     "i18n/I18nMixin"
+    ],
+    "notes": "Emits 'long-press'. Inverse mode requires same stacking context as colored background. document-level mouseup listener."
+   },
+   {
+    "name": "LoadingSpinner",
+    "path": "vue-components/src/components/LoadingSpinner.vue",
+    "purpose": "The Nimiq double-hexagon stroke-dash loading animation, colored via currentColor.",
+    "category": "feedback",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "scoped keyframes only; inherits color (currentColor)",
+    "dependsOn": [],
+    "notes": "Self-contained SVG; ideal scaffold candidate."
+   },
+   {
+    "name": "CircleSpinner",
+    "path": "vue-components/src/components/CircleSpinner.vue",
+    "purpose": "Small 18px two-arc circular spinner for inline loading states.",
+    "category": "feedback",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "scoped rotate keyframe; hardcoded stroke colors #0582CA (light-blue) + #1F2348 (blue @ .3)",
+    "dependsOn": [],
+    "notes": "Functional template, zero logic."
+   },
+   {
+    "name": "Timer",
+    "path": "vue-components/src/components/Timer.vue",
+    "purpose": "Circular countdown ring (offer-expiry timer) that grows to show remaining time, turns orange under 25% left, with expiry tooltip and synchronize() API.",
+    "category": "feedback",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "startTime?: number (ms epoch)",
+     "endTime?: number",
+     "alwaysShowTime: boolean = true",
+     "theme: 'normal'|'inverse'|'white' = 'normal'",
+     "strokeWidth: number = 2",
+     "maxUnit?: 'second'|'minute'|'hour'|'day'",
+     "tooltipProps?: object"
+    ],
+    "cssDeps": "scoped; var(--nimiq-blue), var(--nimiq-light-blue), var(--nimiq-light-blue-on-dark), var(--nimiq-orange), var(--nimiq-ease)",
+    "dependsOn": [
+     "Tooltip",
+     "i18n/I18nMixin",
+     "i18n/I18n.vue"
+    ],
+    "notes": "Uses @nimiq/utils Tweenable for JS-driven radius animation; adaptive update interval; emits 'end'."
+   },
+   {
+    "name": "BottomOverlay",
+    "path": "vue-components/src/components/BottomOverlay.vue",
+    "purpose": "Fixed bottom-centered snackbar/banner overlay with dark/light/green themes and auto-shown close button when a close listener is bound.",
+    "category": "feedback",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "theme: 'dark'|'light'|'green' = 'dark'"
+    ],
+    "cssDeps": "scoped; var(--nimiq-blue), var(--nimiq-green); responsive breakpoints 912px/450px",
+    "dependsOn": [
+     "CloseButton"
+    ],
+    "notes": "Close button appears only if $listeners.close exists; emits 'close'."
+   },
+   {
+    "name": "Account",
+    "path": "vue-components/src/components/Account.vue",
+    "purpose": "Single account row/column: identicon (or shop image / cashlink icon), label (optionally editable via LabelInput), wallet label and balance.",
+    "category": "wallet",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "label: string",
+     "address?: string",
+     "image?: string",
+     "displayAsCashlink: boolean = false",
+     "placeholder?: string",
+     "walletLabel?: string",
+     "balance?: number (smallest unit)",
+     "decimals: number = 2",
+     "editable?: boolean",
+     "layout: 'row'|'column' = 'row'"
+    ],
+    "cssDeps": "scoped; nq-blue-bg, nq-label classes; Fira Mono for address-as-label; gradient mask-image text fade",
+    "dependsOn": [
+     "Identicon",
+     "Amount",
+     "LabelInput"
+    ],
+    "notes": "Building block for AccountList/AccountDetails/PaymentInfoLine. Emits 'changed' on label edit."
+   },
+   {
+    "name": "AccountList",
+    "path": "vue-components/src/components/AccountList.vue",
+    "purpose": "Interactive list of Account rows with hover caret, disabled/insufficient-balance states and explanatory tooltips, emitting account-selected.",
+    "category": "wallet",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "accounts: AccountInfo[]",
+     "disabledAddresses: string[] = []",
+     "walletId?: string",
+     "editable?: boolean",
+     "decimals?: number",
+     "minBalance?: number",
+     "disableContracts?: boolean",
+     "disabled?: boolean",
+     "tooltipProps?: object"
+    ],
+    "cssDeps": "scoped; var(--nimiq-ease), var(--nimiq-green), var(--nimiq-red); nimiq-blue/light-blue rgba hover + focus ring; deep >>> overrides of Account internals",
+    "dependsOn": [
+     "Account",
+     "Tooltip",
+     "Icons (CaretRightSmallIcon)",
+     "i18n/I18nMixin"
+    ],
+    "notes": "Wallet/Hub specific data shape (AccountInfo from AccountSelector)."
+   },
+   {
+    "name": "AccountSelector",
+    "path": "vue-components/src/components/AccountSelector.vue",
+    "purpose": "Full Hub-style account picker across multiple wallets with sorting, BTC/USDC pills, disabled-type tooltips and a 'Login to another account' footer.",
+    "category": "wallet",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "wallets: WalletInfo[]",
+     "disabledAddresses: string[]",
+     "decimals?: number",
+     "minBalance?: number",
+     "disableContracts/disableLegacyAccounts/disableBip39Accounts/disableLedgerAccounts: boolean",
+     "highlightBitcoinAccounts/highlightUsdcAccounts: boolean",
+     "allowLogin: boolean = true"
+    ],
+    "cssDeps": "nq-label + nq-button-s; scoped scroll fade mask-image; hardcoded #F7931A (BTC) / #2775CA (USDC) pills",
+    "dependsOn": [
+     "AccountList",
+     "Tooltip",
+     "i18n/I18nMixin"
+    ],
+    "notes": "Exports AccountInfo/ContractInfo/WalletInfo interfaces used elsewhere. Hub-specific glue; medium reuse only for wallet-like apps."
+   },
+   {
+    "name": "AccountRing",
+    "path": "vue-components/src/components/AccountRing.vue",
+    "purpose": "Hexagonal flower-of-6 arrangement of identicons representing a multi-address wallet, with staggered pop-in animation.",
+    "category": "identity",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "addresses: string[] = []",
+     "animate: boolean = false"
+    ],
+    "cssDeps": "scoped only; CSS-var driven hex geometry math (--hex-size etc.)",
+    "dependsOn": [
+     "Identicon"
+    ],
+    "notes": "Nice brand visual; only meaningful with identicons."
+   },
+   {
+    "name": "AccountDetails",
+    "path": "vue-components/src/components/AccountDetails.vue",
+    "purpose": "Full-pane account detail overlay: large column-layout Account with editable label, balance, copyable AddressDisplay and a close button.",
+    "category": "wallet",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "address: string",
+     "image?: string",
+     "label?: string",
+     "walletLabel?: string",
+     "balance?: number",
+     "editable?: boolean",
+     "placeholder?: string"
+    ],
+    "cssDeps": "scoped; heavy deep >>> overrides of Account sizing",
+    "dependsOn": [
+     "Account",
+     "AddressDisplay",
+     "CloseButton",
+     "Amount"
+    ],
+    "notes": "Emits close/changed; focus() proxy to editable label."
+   },
+   {
+    "name": "Wallet",
+    "path": "vue-components/src/components/Wallet.vue",
+    "purpose": "Deprecated Hub wallet list row with AccountRing/Identicon, balance, and a hover dots-menu (export/rename/change-password/logout).",
+    "category": "wallet",
+    "reuseValue": "low",
+    "complexity": "moderate",
+    "props": [
+     "wallet: {id,label,accounts,type,fileExported,wordsExported,balance?}"
+    ],
+    "cssDeps": "nq-blue-bg menu, nq-orange/nq-icon classes; var(--nimiq-red), var(--nimiq-orange)",
+    "dependsOn": [
+     "AccountRing",
+     "Amount",
+     "Identicon",
+     "Icons (AlertTriangle, MenuDots, ArrowRightSmall)",
+     "i18n/I18nMixin"
+    ],
+    "notes": "Marked @deprecated in source \u2014 skip for scaffolding."
+   },
+   {
+    "name": "PaymentInfoLine",
+    "path": "vue-components/src/components/PaymentInfoLine.vue",
+    "purpose": "Checkout header line showing crypto amount with fiat price-breakdown tooltip (vendor markup, effective rate, bad-rate warning), animated arrow to the merchant Account, and an expiry Timer.",
+    "category": "payment",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "cryptoAmount: {amount,currency,decimals} (required)",
+     "fiatAmount?: {amount,currency}",
+     "fiatApiProvider: 'CoinGecko'|'CryptoCompare' = CoinGecko",
+     "vendorMarkup?: number",
+     "networkFee?: number|bigint",
+     "origin: string (required)",
+     "address?: string",
+     "shopLogoUrl?: string",
+     "startTime?: number",
+     "endTime?: number",
+     "theme: 'normal'|'inverse'"
+    ],
+    "cssDeps": "scoped; var(--nimiq-light-blue), var(--nimiq-light-blue-on-dark), var(--nimiq-orange), var(--nimiq-green); arrow-shooting keyframes; deep overrides of Account/Timer",
+    "dependsOn": [
+     "Account",
+     "Timer",
+     "Amount",
+     "FiatAmount",
+     "Tooltip",
+     "Icons",
+     "i18n/I18n + I18nMixin"
+    ],
+    "notes": "NETWORK CALLS: polls live exchange rates every 60s via @nimiq/utils getExchangeRates (CoinGecko/CryptoCompare) to flag bad rates. Hub-checkout specific but the strongest 'payment page' reference."
+   },
+   {
+    "name": "LanguageSelector",
+    "path": "vue-components/src/components/LanguageSelector.vue",
+    "purpose": "Compact uppercase language code dropdown that opens a dark nimiq-blue gradient list with full keyboard navigation.",
+    "category": "navigation",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "languages: string[] (required)",
+     "value?: string (v-model)"
+    ],
+    "cssDeps": "scoped; var(--nimiq-blue), var(--nimiq-blue-bg), var(--nimiq-ease); nimiq-blue layered box-shadow; CSS-drawn arrow",
+    "dependsOn": [],
+    "notes": "Uses :where()/:has() selectors (modern browsers only). Emits input."
+   },
+   {
+    "name": "Carousel",
+    "path": "vue-components/src/components/Carousel.vue",
+    "purpose": "3D circular carousel that arranges named slots on a rotating ring with tweened rotation, keyboard arrows and selection events.",
+    "category": "layout",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "entries: string[] (slot names, required)",
+     "selected?: string",
+     "entryMargin: number = 16",
+     "animationDuration: number = 1000",
+     "hideBackgroundEntries: boolean = false",
+     "disabled: boolean = false"
+    ],
+    "cssDeps": "scoped; perspective 1500px + JS-set translate3d/z-index per entry",
+    "dependsOn": [],
+    "notes": "Uses @nimiq/utils Tweenable + requestAnimationFrame loop; document keydown listener. Emits 'select'."
+   },
+   {
+    "name": "Icons",
+    "path": "vue-components/src/components/Icons.ts",
+    "purpose": "Exports ~38 functional Vue icon components (CloseIcon, ArrowLeftIcon, AlertTriangleIcon, QrCodeIcon, etc.) wrapping @nimiq/style SVGs with the nq-icon class.",
+    "category": "misc",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "nimiq-style .nq-icon class (sizing via font-size, currentColor)",
+    "dependsOn": [],
+    "notes": "Build-dependent: imports raw .svg files from @nimiq/style/src/icons via vue-svg-loader \u2014 a CLI scaffold must inline the SVGs (sources at nimiq-style/src/icons/) or replicate the loader."
+   }
+  ],
+  "designTokens": "Tokens live in the sibling vendored nimiq-style package, consumed by vue-components as @nimiq/style. Colors + gradients: nimiq-style/src/theme.css (html-scoped CSS vars: --nimiq-blue #1F2348, --nimiq-light-blue #0582CA, --nimiq-gold #E9B213, --nimiq-green #21BCA5, --nimiq-orange #FC8702, --nimiq-red #D94432 etc., *-darkened hover variants, radial *-bg gradients like --nimiq-blue-bg radial-gradient(100% 100% at bottom right, #260133, var(--nimiq-blue)), on-dark adaptions --nimiq-light-blue-on-dark #0CA6FE, and --nimiq-highlight-bg rgba(31,35,72,.06); plus .nq-* utility color classes). Easing + durations: nimiq-style/src/main.css (--nimiq-ease: cubic-bezier(0.25,0,0,1), --attr-duration .2s, --movement-duration .4s). Typography: nimiq-style/src/typography.css (html font-size: 8px \u2014 the whole system uses 1rem=8px!, font stack Muli + system fallbacks, nq-h1/h2/label/text-s scale; addresses use Fira Mono loaded separately). Card radius/shadows: nimiq-style/src/layout.css (.nq-card border-radius 1.25rem, box-shadow 0 .5rem 3.5rem rgba(0,0,0,0.111158); nq-card-header/body/footer). Buttons/inputs: nimiq-style/src/buttons.css (.nq-button, .nq-button-s, color variants) and inputs.css (.nq-input). Icons: nimiq-style/src/icons/*.svg + icons.css. Compiled bundle: nimiq-style/nimiq-style.min.css. Components otherwise use scoped styles referencing these vars, plus recurring hardcoded rgba(31,35,72,x) nimiq-blue derivatives.",
+  "repo": "nimiq-branding-cli/upstream (vue-components \u2014 @nimiq/vue-components v0.1.0)",
+  "stack": "Vue 2.6 + TypeScript class components (vue-property-decorator) + @nimiq/style CSS framework; scoped CSS per SFC; deps: @nimiq/utils, @nimiq/iqons, qr-creator, qr-scanner, input-format, js-sha3; built with vue-cli/webpack (vue-svg-loader, file-loader, webpack-i18n-tools gettext i18n via src/i18n/I18nMixin)"
+ },
+ {
+  "components": [
+   {
+    "name": "Modal",
+    "path": "wallet/src/components/modals/Modal.vue",
+    "purpose": "Base modal shell with backdrop, SmallPage card, secondary overlay panel, swipe-to-close on mobile, Escape handling and router-aware close that unwinds stacked modal routes.",
+    "category": "layout",
+    "reuseValue": "high",
+    "complexity": "complex",
+    "props": [
+     "emitClose: boolean",
+     "showOverlay: boolean",
+     "closeButtonInverse: boolean",
+     "swipeToClose: boolean (default true)",
+     "swipePadding: boolean"
+    ],
+    "cssDeps": "scoped SCSS; vars --modal-transition-time, --overlay-transition-time, --nimiq-ease, --text-14; relies on SmallPage card styles from @nimiq/style",
+    "dependsOn": [
+     "@nimiq/vue-components SmallPage",
+     "@nimiq/vue-components CloseButton",
+     "composables/useSwipes",
+     "composables/useWindowSize"
+    ],
+    "notes": "Tightly coupled to vue-router (forceClose walks route stack) and a custom v-pointerdown directive; exports enableModalTransition/disableNextModalTransition helpers. Extract router logic to reuse."
+   },
+   {
+    "name": "StatusScreen",
+    "path": "wallet/src/components/StatusScreen.vue",
+    "purpose": "Full-card status overlay cycling loading/success/warning/error states with animated title, rotating status messages, and action buttons.",
+    "category": "feedback",
+    "reuseValue": "high",
+    "complexity": "complex",
+    "props": [
+     "title: string",
+     "state: 'loading'|'success'|'warning'|'error'",
+     "lightBlue: boolean",
+     "status: string",
+     "message: string",
+     "mainAction: string",
+     "alternativeAction: string",
+     "small: boolean"
+    ],
+    "cssDeps": "nimiq-style classes nq-blue-bg/nq-green-bg/nq-orange-bg/nq-red-bg/nq-light-blue-bg, nq-h1/h2, nq-button, nq-link; vars --h2-size, --status-font-size",
+    "dependsOn": [
+     "@nimiq/vue-components LoadingSpinner",
+     "CheckmarkIcon",
+     "FaceNeutralIcon",
+     "FaceSadIcon"
+    ],
+    "notes": "Two style blocks (one unscoped for transitions). Pure props-driven \u2014 drop-in for any Nimiq flow."
+   },
+   {
+    "name": "AmountInput",
+    "path": "wallet/src/components/AmountInput.vue",
+    "purpose": "Auto-resizing crypto amount input that scales font size to fit, enforces max decimals, and converts between display value and smallest unit (luna).",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "value: number (smallest unit)",
+     "maxFontSize: number (rem, default 8)",
+     "max: number",
+     "placeholder: string ('0')",
+     "vanishing: boolean",
+     "decimals: number (default 5)",
+     "preserveSign: boolean",
+     "disabled: boolean"
+    ],
+    "cssDeps": "nq-input class; vars --nimiq-blue, --nimiq-light-blue, --nimiq-ease; hidden width-finder spans for measurement",
+    "dependsOn": [],
+    "notes": "Self-contained (no stores). Default 'NIM' ticker suffix replaceable via prefix/suffix slots. Emits input in smallest units."
+   },
+   {
+    "name": "Amount",
+    "path": "wallet/src/components/Amount.vue",
+    "purpose": "Renders a crypto amount in smallest units with per-currency displayed-decimals logic (NIM/BTC/mBTC/USDC/USDT) wrapping the library Amount component.",
+    "category": "data-display",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "amount: number|null (smallest unit)",
+     "currency: CryptoCurrency|'usdc.e' (default NIM)"
+    ],
+    "cssDeps": "none (inherits nimiq-style typography)",
+    "dependsOn": [
+     "@nimiq/vue-components Amount",
+     "stores/Settings (btcUnit, amountsHidden)",
+     "lib/NumberFormatting"
+    ],
+    "notes": "Reads Settings store for BTC unit + privacy blur \u2014 small coupling, easy to inline."
+   },
+   {
+    "name": "FiatConvertedAmount",
+    "path": "wallet/src/components/FiatConvertedAmount.vue",
+    "purpose": "Shows the live fiat value of a crypto amount using exchange rates from the Fiat store, rendering a FiatAmount or a placeholder while rates load.",
+    "category": "data-display",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "amount: number (luna/sat)",
+     "currency: CryptoCurrency",
+     "roundDown: boolean",
+     "fiat: FiatCurrency (override)",
+     "max: number"
+    ],
+    "cssDeps": "scoped SCSS only",
+    "dependsOn": [
+     "@nimiq/vue-components FiatAmount",
+     "stores/Fiat"
+    ],
+    "notes": "Requires the Fiat exchange-rate store (network-fed); inject your own rate source to reuse."
+   },
+   {
+    "name": "AmountMenu",
+    "path": "wallet/src/components/AmountMenu.vue",
+    "purpose": "Dropdown attached to an amount field offering Set fee, Send all, and display-currency switching across crypto, mBTC and a fiat currency list.",
+    "category": "payment",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "open: boolean",
+     "currency: CryptoCurrency",
+     "onlyFiatCurrencies: boolean",
+     "activeCurrency: CryptoCurrency|'mbtc'|FiatCurrency",
+     "fiatCurrency: FiatCurrency",
+     "otherFiatCurrencies: FiatCurrency[]",
+     "feeOption: boolean (default true)",
+     "sendAllOption: boolean (default true)"
+    ],
+    "cssDeps": "scoped SCSS; vars --nimiq-blue-bg gradient, --nimiq-ease, --body-size; inline SVG glyphs",
+    "dependsOn": [],
+    "notes": "Emits fee-selection / send-max / currency events; fully presentational."
+   },
+   {
+    "name": "FeeSelector",
+    "path": "wallet/src/components/FeeSelector.vue",
+    "purpose": "Three-preset transaction speed/fee picker (6h+, 2-4h, 15m) with an animated SpeedGauge, emitting the chosen fee from a fees array.",
+    "category": "payment",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "fees: number[] (fee per option)"
+    ],
+    "cssDeps": "scoped SCSS; vars --text-40/50/80, --nimiq-highlight-bg, --nimiq-ease; uses global button.reset",
+    "dependsOn": [
+     "SpeedGauge.vue"
+    ],
+    "notes": "Maps delay presets to the fees prop; testnet shortcut via useConfig (removable)."
+   },
+   {
+    "name": "SpeedGauge",
+    "path": "wallet/src/components/SpeedGauge.vue",
+    "purpose": "Small SVG speedometer whose needle animates to a given speed value, used to visualize fee/confirmation speed.",
+    "category": "feedback",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "speed: number (0-100)"
+    ],
+    "cssDeps": "scoped SCSS; vars --nimiq-ease, --nimiq-red",
+    "dependsOn": []
+   },
+   {
+    "name": "AddressList",
+    "path": "wallet/src/components/AddressList.vue",
+    "purpose": "Scrollable list of the active account's NIM addresses (plus optional BTC/stablecoin rows) with balances, active highlight 'background' pill that animates between rows, and add-address button.",
+    "category": "wallet",
+    "reuseValue": "high",
+    "complexity": "complex",
+    "props": [
+     "embedded: boolean",
+     "showAddAddressButton: boolean",
+     "showBitcoin: boolean",
+     "showStablecoin: boolean",
+     "requiredBalance: number (disables rows below it)"
+    ],
+    "cssDeps": "scoped SCSS; vars --nimiq-blue, --nimiq-highlight-bg, --bg-card, --text-50/70/80/100; animated --backgroundYOffset/--backgroundYScale custom props",
+    "dependsOn": [
+     "AddressListItem.vue"
+    ],
+    "notes": "Heavily store-coupled (Address/Account/Btc/Polygon/Staking stores) and router-aware; emits address-selected. The sliding highlight technique is the signature visual."
+   },
+   {
+    "name": "AddressListItem",
+    "path": "wallet/src/components/AddressListItem.vue",
+    "purpose": "Single address row showing Identicon (or BTC/USDC/USDT icon), label, vesting/lock badges, staked badge, Amount and fiat value.",
+    "category": "wallet",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "addressInfo: AddressInfo|{address,label,balance,type} (required)",
+     "embedded: boolean"
+    ],
+    "cssDeps": "scoped SCSS; vars --bitcoin-orange, --usdc-blue, --usdt-green, --nimiq-green-bg, --nimiq-ease; nq-icon",
+    "dependsOn": [
+     "@nimiq/vue-components Identicon, LockLockedIcon, CircleSpinner",
+     "Amount.vue",
+     "FiatConvertedAmount.vue"
+    ]
+   },
+   {
+    "name": "BalanceDistribution",
+    "path": "wallet/src/components/BalanceDistribution.vue",
+    "purpose": "Animated SVG donut/arc chart of portfolio share across NIM, BTC, USDC and USDT with hoverable per-currency breakdown list and FLIP arc transitions.",
+    "category": "data-display",
+    "reuseValue": "high",
+    "complexity": "complex",
+    "props": [],
+    "cssDeps": "scoped SCSS; currency color vars --nimiq-gold, --bitcoin-orange, --usdc-blue, --usdt-green; --nimiq-ease, --transition-time",
+    "dependsOn": [
+     "stores/Address, BtcAddress, PolygonAddress, Fiat, Staking, AccountSettings"
+    ],
+    "notes": "All data from stores \u2014 to reuse, replace setup() computeds with props. The arc math/transition code is the valuable part."
+   },
+   {
+    "name": "TransactionList",
+    "path": "wallet/src/components/TransactionList.vue",
+    "purpose": "Virtual-scrolled, month-grouped NIM transaction history with fuzzy search filtering, skeleton loading, unclaimed-cashlink section and staking reward rows.",
+    "category": "wallet",
+    "reuseValue": "high",
+    "complexity": "complex",
+    "props": [
+     "searchString: string",
+     "showUnclaimedCashlinkList: boolean"
+    ],
+    "cssDeps": "scoped SCSS; nq-h1, nq-button, nq-text, nq-blue/orange; vars --text-6/60, --label-size",
+    "dependsOn": [
+     "TransactionListItem.vue",
+     "LoadingList.vue",
+     "TestnetFaucet.vue",
+     "CrossCloseButton.vue",
+     "staking/StakingRewardsListItem.vue",
+     "vue-virtual-scroller (sisou fork)"
+    ],
+    "notes": "External dep: forked vue-virtual-scroller; deep store coupling (Transactions/Address/Network)."
+   },
+   {
+    "name": "TransactionListItem",
+    "path": "wallet/src/components/TransactionListItem.vue",
+    "purpose": "One NIM transaction row: peer identicon/label resolution (contacts, cashlinks, swaps, bank), state styling (pending/expired/invalidated), amount and historic fiat value.",
+    "category": "wallet",
+    "reuseValue": "high",
+    "complexity": "complex",
+    "props": [
+     "transaction: Transaction (required)"
+    ],
+    "cssDeps": "scoped SCSS; nq-orange/nq-red state colors; vars --nimiq-green, --nimiq-highlight-bg, --fiat-amount-height, currency color vars",
+    "dependsOn": [
+     "Amount.vue",
+     "FiatConvertedAmount.vue",
+     "TransactionListOasisPayoutStatus.vue",
+     "composables/useTransactionInfo"
+    ],
+    "notes": "The peer-resolution logic lives in composables; good reference for any tx row."
+   },
+   {
+    "name": "BtcTransactionList + BtcTransactionListItem",
+    "path": "wallet/src/components/BtcTransactionList.vue",
+    "purpose": "Bitcoin variant of the transaction list/row pair with electrum tx states and swap matching.",
+    "category": "wallet",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "searchString: string (list)",
+     "transaction: Transaction (item)"
+    ],
+    "cssDeps": "same token set as TransactionList; nq-h1/nq-button/nq-orange",
+    "dependsOn": [
+     "BtcTransactionListItem.vue",
+     "Avatar.vue",
+     "Amount.vue",
+     "FiatConvertedAmount.vue"
+    ],
+    "notes": "Also UsdcTransactionList(Item).vue and UsdtTransactionList(Item).vue at wallet/src/components/ \u2014 same pattern per stablecoin; catalog them as variants of this entry."
+   },
+   {
+    "name": "ContactBook",
+    "path": "wallet/src/components/ContactBook.vue",
+    "purpose": "Searchable NIM contact manager overlay: list with identicons, inline label editing, delete, and contact selection for sending.",
+    "category": "wallet",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [],
+    "cssDeps": "scoped SCSS; nq-button-pill, nq-button-s; vars --nimiq-highlight-bg, --nimiq-red, --text-14",
+    "dependsOn": [
+     "@nimiq/vue-components Identicon, LabelInput",
+     "AddressListItem.vue",
+     "InteractiveShortAddress.vue",
+     "stores/Contacts"
+    ],
+    "notes": "Emits contact-selected; UsdcContactBook.vue is the Avatar-based 0x-address sibling (medium reuse)."
+   },
+   {
+    "name": "ContactShortcuts",
+    "path": "wallet/src/components/ContactShortcuts.vue",
+    "purpose": "Row of recent-contact identicon buttons plus an 'open contact book' button shown at the start of a send flow.",
+    "category": "wallet",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "contacts: {address,label}[]",
+     "hasAddresses: boolean"
+    ],
+    "cssDeps": "scoped SCSS; --nimiq-highlight-bg hover; nq-icon",
+    "dependsOn": [
+     "IdenticonButton.vue",
+     "@nimiq/vue-components ContactsIcon"
+    ],
+    "notes": "UsdcContactShortcuts.vue is the AvatarButton sibling."
+   },
+   {
+    "name": "Avatar",
+    "path": "wallet/src/components/Avatar.vue",
+    "purpose": "Letter-initial avatar with deterministic background color from the label, falling back to a generic silhouette SVG when unlabelled (used for BTC/EVM addresses without identicons).",
+    "category": "identity",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "label?: string"
+    ],
+    "cssDeps": "scoped SCSS; background classes from lib/AddressColor (nimiq palette)",
+    "dependsOn": [
+     "lib/AddressColor getBackgroundClass"
+    ]
+   },
+   {
+    "name": "AvatarButton",
+    "path": "wallet/src/components/AvatarButton.vue",
+    "purpose": "Clickable Avatar with label underneath, for contact shortcuts.",
+    "category": "identity",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "address: string",
+     "label?: string"
+    ],
+    "cssDeps": "--nimiq-highlight-bg hover, --text-10",
+    "dependsOn": [
+     "Avatar.vue"
+    ]
+   },
+   {
+    "name": "IdenticonButton",
+    "path": "wallet/src/components/IdenticonButton.vue",
+    "purpose": "Clickable Nimiq Identicon with label, for address/contact pickers.",
+    "category": "identity",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "address: string",
+     "label?: string"
+    ],
+    "cssDeps": "--nimiq-highlight-bg hover, --text-10",
+    "dependsOn": [
+     "@nimiq/vue-components Identicon"
+    ]
+   },
+   {
+    "name": "IdenticonStack",
+    "path": "wallet/src/components/IdenticonStack.vue",
+    "purpose": "Active address identicon stacked over up-to-two background address identicons (or Bitcoin icon) with dropdown triangle \u2014 the address-switcher trigger.",
+    "category": "identity",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "interactive: boolean (default true)"
+    ],
+    "cssDeps": "scoped SCSS; --bitcoin-orange, --nimiq-highlight-bg, movement animations",
+    "dependsOn": [
+     "@nimiq/vue-components Identicon",
+     "stores/Account, Address"
+    ],
+    "notes": "Store-driven; convert background/active addresses to props for reuse."
+   },
+   {
+    "name": "ShortAddress",
+    "path": "wallet/src/components/ShortAddress.vue",
+    "purpose": "Truncated address display: first/last N characters separated by a three-dot SVG ellipsis.",
+    "category": "identity",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "address: string",
+     "displayedCharacters: number (default 8)"
+    ],
+    "cssDeps": "scoped SCSS only; currentColor"
+   },
+   {
+    "name": "InteractiveShortAddress",
+    "path": "wallet/src/components/InteractiveShortAddress.vue",
+    "purpose": "ShortAddress wrapped in a Tooltip revealing the full address, optionally copyable with copied-state feedback.",
+    "category": "identity",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "address: string",
+     "displayedCharacters?: number",
+     "copyable: boolean",
+     "tooltipContainer: Vue|{$el}",
+     "tooltipPosition: 'top|bottom left|right' (default 'bottom right')",
+     "tooltipTheme: Tooltip.Themes",
+     "offsetTooltipPosition: boolean"
+    ],
+    "cssDeps": "scoped SCSS; tooltip styles from @nimiq/vue-components",
+    "dependsOn": [
+     "@nimiq/vue-components Copyable, Tooltip",
+     "ShortAddress.vue"
+    ]
+   },
+   {
+    "name": "ResizingCopyable",
+    "path": "wallet/src/components/ResizingCopyable.vue",
+    "purpose": "Copyable text block that measures its content with a hidden width-finder and scales font-size down so long strings (addresses, IBANs) fit on one line.",
+    "category": "data-display",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "text: string"
+    ],
+    "cssDeps": "--body-size based inline font-size, --nimiq-highlight-bg, --text-100",
+    "dependsOn": [
+     "@nimiq/vue-components Copyable"
+    ]
+   },
+   {
+    "name": "SearchBar",
+    "path": "wallet/src/components/SearchBar.vue",
+    "purpose": "Pill search input with magnifier icon that expands on focus, shows clear (cross) button, and emits v-model input events.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "value: string (v-model)"
+    ],
+    "cssDeps": "scoped SCSS + small unscoped block; vars --nimiq-light-blue, --light-blue-40 focus ring, --text-16/22",
+    "dependsOn": [
+     "CrossCloseButton.vue"
+    ]
+   },
+   {
+    "name": "BlueLink",
+    "path": "wallet/src/components/BlueLink.vue",
+    "purpose": "Light-blue inline link with trailing small arrow icon (nq-link styling passthrough).",
+    "category": "navigation",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "(passthrough $attrs/$listeners, e.g. href)"
+    ],
+    "cssDeps": "nq-link class + --nimiq-ease hover",
+    "dependsOn": [
+     "@nimiq/vue-components ArrowRightSmallIcon"
+    ]
+   },
+   {
+    "name": "CrossCloseButton",
+    "path": "wallet/src/components/CrossCloseButton.vue",
+    "purpose": "Minimal circular X close/dismiss button.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "scoped SCSS; --nimiq-ease hover"
+   },
+   {
+    "name": "AttentionDot",
+    "path": "wallet/src/components/AttentionDot.vue",
+    "purpose": "Small pulsing green notification dot for badges.",
+    "category": "feedback",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "nq-green-bg"
+   },
+   {
+    "name": "ButtonGroup",
+    "path": "wallet/src/components/ButtonGroup.vue",
+    "purpose": "Segmented pill radio-group built from an options record, keyboard accessible, emitting the selected key.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "options: Record<string,{label,disabled?}>",
+     "value: string"
+    ],
+    "cssDeps": "scoped SCSS; --text-20/80, --nimiq-ease"
+   },
+   {
+    "name": "AnnouncementBox",
+    "path": "wallet/src/components/AnnouncementBox.vue",
+    "purpose": "Dismissible green announcement card with text + CTA link/button, persisted dismissal.",
+    "category": "feedback",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "nq-green-bg, nq-icon; --link-size",
+    "dependsOn": [
+     "BlueLink.vue",
+     "CrossCloseButton.vue"
+    ],
+    "notes": "Content is hardcoded/config-driven in setup \u2014 parametrize to reuse."
+   },
+   {
+    "name": "MessageTransition",
+    "path": "wallet/src/components/MessageTransition.vue",
+    "purpose": "Wrapper that animates height and cross-fades when its slotted message/content changes (used under inputs for validation messages).",
+    "category": "feedback",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "reverse: boolean"
+    ],
+    "cssDeps": "scoped SCSS; --message-height, --message-transition-duration custom props"
+   },
+   {
+    "name": "DoubleInput",
+    "path": "wallet/src/components/DoubleInput.vue",
+    "purpose": "Container that animates between a single input and an extended two-input stack (e.g. bank name + IBAN).",
+    "category": "form",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "extended: boolean"
+    ],
+    "cssDeps": "--inputHeight, --short-transition-duration",
+    "dependsOn": [
+     "MessageTransition.vue"
+    ]
+   },
+   {
+    "name": "LoadingList",
+    "path": "wallet/src/components/LoadingList.vue",
+    "purpose": "Skeleton placeholder rows (transaction-shaped or validator-shaped) with staggered shimmer animation.",
+    "category": "feedback",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "delay?: number (ms)",
+     "length: number (default 1)",
+     "type: LoadingListType (TRANSACTION|VALIDATOR)"
+    ],
+    "cssDeps": "--text-6 placeholder color, per-item --delay",
+    "dependsOn": [
+     "@nimiq/vue-components HexagonIcon"
+    ]
+   },
+   {
+    "name": "StepProgressBar",
+    "path": "wallet/src/components/StepProgressBar.vue",
+    "purpose": "Story-style 3-segment progress bar with timed fill animation and pause support, for multi-step onboarding modals.",
+    "category": "navigation",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "currentStep: number",
+     "shouldAnimate: boolean",
+     "isPaused: boolean"
+    ],
+    "cssDeps": "scoped SCSS only"
+   },
+   {
+    "name": "LineChart",
+    "path": "wallet/src/components/LineChart.vue",
+    "purpose": "Generic smoothed SVG line chart from {x,y} points with bezier smoothing factor and draw-in animation.",
+    "category": "data-display",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "points: {x,y}[]",
+     "width/height: number|string",
+     "stroke: string (currentColor)",
+     "strokeWidth: number (2.5)",
+     "strokeOpacity: number",
+     "padding: number",
+     "preserveAspectRatio: string",
+     "smoothingFactor: number (0.2)",
+     "animate: boolean"
+    ],
+    "cssDeps": "scoped SCSS; --nimiq-ease",
+    "dependsOn": []
+   },
+   {
+    "name": "PriceChart",
+    "path": "wallet/src/components/PriceChart.vue",
+    "purpose": "Crypto price history sparkline with percentage change and timespan label per currency, fed by the Fiat store's rate history.",
+    "category": "data-display",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "currency: CryptoCurrency",
+     "showTimespanLabel: boolean",
+     "timeRange: '24h'|'7d'..."
+    ],
+    "cssDeps": "--nimiq-green gain color, --bg-secondary, --tiny-label-size",
+    "dependsOn": [
+     "LineChart.vue",
+     "@nimiq/vue-components FiatAmount",
+     "stores/Fiat"
+    ],
+    "notes": "Network: price history fetched via store; sits on dark sidebar background."
+   },
+   {
+    "name": "CountryFlag",
+    "path": "wallet/src/components/CountryFlag.vue",
+    "purpose": "Country flag icon by ISO code rendered from a sprite asset, with 'all countries' fallback.",
+    "category": "data-display",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "code: string (ISO 3166-1 alpha-2, default 'all')"
+    ],
+    "cssDeps": "--size var; needs flags sprite from src/assets"
+   },
+   {
+    "name": "CountrySelector",
+    "path": "wallet/src/components/CountrySelector.vue",
+    "purpose": "Searchable country dropdown with flags and localized names (Intl.DisplayNames), click-outside close, optional 'All countries' option.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "countryCodes: string[] (default all)",
+     "includeAllOption: boolean"
+    ],
+    "cssDeps": "nq-input; --nimiq-blue-bg dropdown gradient",
+    "dependsOn": [
+     "CountryFlag.vue",
+     "v-click-outside (npm)",
+     "lib/I18nDisplayNames"
+    ],
+    "notes": "External dep v-click-outside; uses browser Intl.DisplayNames."
+   },
+   {
+    "name": "BankCheckInput",
+    "path": "wallet/src/components/BankCheckInput.vue",
+    "purpose": "Bank-name autocomplete validating SEPA Instant support against the OASIS bank list, with country selection and support-level warnings.",
+    "category": "payment",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "value: string",
+     "disabled: boolean",
+     "direction: 'inbound'|'outbound'"
+    ],
+    "cssDeps": "nq-button-pill, nq-orange warning; --nimiq-blue-bg, --nimiq-orange",
+    "dependsOn": [
+     "@nimiq/vue-components LabelInput, Tooltip, AlertTriangleIcon, CrossIcon",
+     "CountrySelector.vue",
+     "@nimiq/oasis-bank-list (network-loaded)"
+    ],
+    "notes": "Loads bank list remotely; OASIS-specific but the autocomplete pattern is reusable."
+   },
+   {
+    "name": "BankIconButton",
+    "path": "wallet/src/components/BankIconButton.vue",
+    "purpose": "Bank icon + name pill with dropdown triangle, the trigger for bank selection.",
+    "category": "payment",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "bankName: string"
+    ],
+    "cssDeps": "--nimiq-highlight-bg hover",
+    "dependsOn": [
+     "icons/BankIcon.vue",
+     "icons/TriangleDownIcon.vue"
+    ]
+   },
+   {
+    "name": "BtcAddressInput",
+    "path": "wallet/src/components/BtcAddressInput.vue",
+    "purpose": "Validating Bitcoin address input with paste/QR request-link parsing and inline QR-scan button.",
+    "category": "form",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "placeholder?: string",
+     "value: string",
+     "disabled: boolean"
+    ],
+    "cssDeps": "nq-orange error state; --nimiq-ease",
+    "dependsOn": [
+     "@nimiq/vue-components LabelInput, ScanQrCodeIcon",
+     "@nimiq/utils parseRequestLink",
+     "lib/BitcoinTransactionUtils"
+    ]
+   },
+   {
+    "name": "BtcLabelInput",
+    "path": "wallet/src/components/BtcLabelInput.vue",
+    "purpose": "Label input with Avatar preview for naming BTC senders/recipients, backed by the BtcLabels store.",
+    "category": "form",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "value: string",
+     "disabled: boolean"
+    ],
+    "cssDeps": "--nimiq-light-blue, --nimiq-blue-bg",
+    "dependsOn": [
+     "@nimiq/vue-components LabelInput",
+     "Avatar.vue",
+     "stores/BtcLabels"
+    ]
+   },
+   {
+    "name": "QrCodeOverlay",
+    "path": "wallet/src/components/modals/overlays/QrCodeOverlay.vue",
+    "purpose": "Modal overlay rendering a large QR code for an address with short-address caption.",
+    "category": "payment",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "qrPrefix: string",
+     "address: string",
+     "currency: string"
+    ],
+    "cssDeps": "--qr-code-canvas-size; nq-light-blue",
+    "dependsOn": [
+     "@nimiq/vue-components QrCode, PageBody, PageHeader",
+     "InteractiveShortAddress.vue"
+    ]
+   },
+   {
+    "name": "PaymentLinkOverlay",
+    "path": "wallet/src/components/modals/overlays/PaymentLinkOverlay.vue",
+    "purpose": "Payment-request creator: amount input with currency menu generating a nimiq:/bitcoin: payment link as QR + copyable URL.",
+    "category": "payment",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "address: string",
+     "currency: CryptoCurrency"
+    ],
+    "cssDeps": "nq-input; --text-10/60",
+    "dependsOn": [
+     "@nimiq/vue-components QrCode, Copyable, PageHeader, PageBody",
+     "AmountInput.vue",
+     "AmountMenu.vue",
+     "FiatConvertedAmount.vue"
+    ]
+   },
+   {
+    "name": "ReceiveModal",
+    "path": "wallet/src/components/modals/ReceiveModal.vue",
+    "purpose": "NIM receive flow modal switching between payment-link creation and plain QR overlays for the active address.",
+    "category": "payment",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [],
+    "cssDeps": "nq-button-s; --nimiq-highlight-bg",
+    "dependsOn": [
+     "Modal.vue",
+     "PaymentLinkOverlay.vue",
+     "QrCodeOverlay.vue"
+    ],
+    "notes": "BtcReceiveModal.vue and StablecoinReceiveModal.vue are the per-chain siblings (low/medium)."
+   },
+   {
+    "name": "SendModal",
+    "path": "wallet/src/components/modals/SendModal.vue",
+    "purpose": "Complete NIM send flow: recipient picking (contacts/addresses/QR), amount entry with fee + send-all, validation, Hub signing and StatusScreen result.",
+    "category": "payment",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "requestUri?: string (nimiq: link prefill)"
+    ],
+    "cssDeps": "broad nimiq-style usage: nq-button, nq-input, nq-label, nq-green-bg/gold-bg, nq-notice",
+    "dependsOn": [
+     "Modal.vue",
+     "ContactShortcuts.vue",
+     "ContactBook.vue",
+     "IdenticonButton.vue",
+     "AddressList.vue",
+     "AmountInput.vue",
+     "AmountMenu.vue",
+     "FiatConvertedAmount.vue",
+     "SendModalFooter.vue",
+     "StatusScreen.vue"
+    ],
+    "notes": "Exports RecipientType enum used by ContactBook. Hub API + stores throughout \u2014 reference implementation rather than drop-in. BtcSendModal.vue / StablecoinSendModal.vue are siblings."
+   },
+   {
+    "name": "SendModalFooter",
+    "path": "wallet/src/components/SendModalFooter.vue",
+    "purpose": "Send-flow footer with the primary send button, error/warning messaging via MessageTransition, and incomplete-history guard.",
+    "category": "payment",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "assets: CryptoCurrency[]",
+     "buttonColor: string ('light-blue')",
+     "error?: string",
+     "disabled: boolean",
+     "requireCompleteBtcHistory: boolean"
+    ],
+    "cssDeps": "nq-button, nq-light-blue/orange/gray",
+    "dependsOn": [
+     "@nimiq/vue-components PageFooter, CircleSpinner, AlertTriangleIcon",
+     "MessageTransition.vue"
+    ]
+   },
+   {
+    "name": "ScanQrModal",
+    "path": "wallet/src/components/modals/ScanQrModal.vue",
+    "purpose": "Camera QR-code scanner modal that parses scanned payment links/addresses and routes to the right send flow.",
+    "category": "payment",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [],
+    "cssDeps": "--text-20",
+    "dependsOn": [
+     "Modal.vue",
+     "@nimiq/vue-components QrScanner",
+     "StatusScreen.vue"
+    ],
+    "notes": "Browser API: camera/getUserMedia; routing glue on scan result."
+   },
+   {
+    "name": "ConsensusIcon",
+    "path": "wallet/src/components/ConsensusIcon.vue",
+    "purpose": "Network consensus indicator switching between syncing/established/warning world icons based on the Network store.",
+    "category": "feedback",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "--nimiq-green/--nimiq-orange state colors",
+    "dependsOn": [
+     "icons/World*.vue",
+     "stores/Network"
+    ]
+   },
+   {
+    "name": "FlaggedAddressWarning",
+    "path": "wallet/src/components/FlaggedAddressWarning.vue",
+    "purpose": "Orange warning page shown when a recipient address is flagged (scam/sanctions dataset), with details and proceed/abort actions.",
+    "category": "feedback",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "info: FlaggedAddressInfo",
+     "currency: CryptoCurrency"
+    ],
+    "cssDeps": "nq-orange-bg, nq-button, nq-notice",
+    "dependsOn": [
+     "@nimiq/vue-components PageBody, AddressDisplay, Tooltip",
+     "InteractiveShortAddress.vue"
+    ]
+   },
+   {
+    "name": "UpdateNotification",
+    "path": "wallet/src/components/UpdateNotification.vue",
+    "purpose": "Bottom overlay prompting the user to reload when a new service-worker version is available.",
+    "category": "feedback",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "nq-button-s, nq-link",
+    "dependsOn": [
+     "@nimiq/vue-components BottomOverlay, CircleSpinner"
+    ],
+    "notes": "Tied to service-worker registration events."
+   },
+   {
+    "name": "MobileActionBar",
+    "path": "wallet/src/components/MobileActionBar.vue",
+    "purpose": "Fixed bottom bar on mobile with Receive/Send buttons and QR-scan shortcut for the active currency.",
+    "category": "navigation",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "nq-button-pill, nq-button-s, nq-icon",
+    "dependsOn": [
+     "@nimiq/vue-components ScanQrCodeIcon",
+     "stores + router glue"
+    ]
+   },
+   {
+    "name": "AccountBalance",
+    "path": "wallet/src/components/AccountBalance.vue",
+    "purpose": "Total account fiat balance header with animated count-up and privacy (blur amounts) toggle.",
+    "category": "wallet",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [],
+    "cssDeps": "nq-label; --text-60, --nimiq-ease",
+    "dependsOn": [
+     "@nimiq/vue-components FiatAmount",
+     "icons/PrivacyOn/OffIcon",
+     "many stores"
+    ],
+    "notes": "Fully store-driven."
+   },
+   {
+    "name": "AccountMenu + AccountMenuItem",
+    "path": "wallet/src/components/AccountMenu.vue",
+    "purpose": "Sidebar account switcher trigger (identicon + label + menu dots) and the per-account row with type icon and total fiat value used inside the account menu modal.",
+    "category": "navigation",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "AccountMenuItem: id: string, tag: string"
+    ],
+    "cssDeps": "nq-blue-bg, nq-icon; --nimiq-orange backup-warning",
+    "dependsOn": [
+     "@nimiq/vue-components Identicon, MenuDotsIcon, FiatAmount",
+     "stores/Account, Address"
+    ],
+    "notes": "modals/AccountMenuModal.vue is the dropdown/modal listing accounts + settings actions (low, app glue)."
+   },
+   {
+    "name": "Sidebar",
+    "path": "wallet/src/components/layouts/Sidebar.vue",
+    "purpose": "Dark-blue app sidebar: price chart, balance distribution, network/consensus status, trade actions, account menu and settings link.",
+    "category": "layout",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [],
+    "cssDeps": "dark theme on --bg-secondary (nimiq-blue); nq-blue, nq-label, custom-scrollbar-inverse mixin",
+    "dependsOn": [
+     "AnnouncementBox.vue",
+     "AccountMenu.vue",
+     "PriceChart.vue",
+     "BalanceDistribution.vue",
+     "ConsensusIcon.vue",
+     "AttentionDot.vue"
+    ],
+    "notes": "Best reference for Nimiq dark-sidebar composition; app glue otherwise."
+   },
+   {
+    "name": "StablecoinSelector",
+    "path": "wallet/src/components/StablecoinSelector.vue",
+    "purpose": "USDC/USDT segmented toggle with brand-colored slider.",
+    "category": "form",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "value: 'usdc'|'usdt'"
+    ],
+    "cssDeps": "--usdc-blue, --usdt-green, --text-20/80"
+   },
+   {
+    "name": "KycPrompt",
+    "path": "wallet/src/components/kyc/KycPrompt.vue",
+    "purpose": "Purple TEN31-Pass KYC upsell box showing raised swap limits, opening the KYC connect overlay.",
+    "category": "identity",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "layout: 'normal'|... (default 'normal')"
+    ],
+    "cssDeps": "nq-purple, nq-purple-bg, nq-button-pill",
+    "dependsOn": [
+     "icons/KycIcon.vue",
+     "@nimiq/fastspot-api getUserLimits (network)",
+     "stores/Kyc"
+    ],
+    "notes": "kyc/KycOverlay.vue is the matching connect overlay (PageHeader/Body/Footer; TEN31 Pass popup)."
+   },
+   {
+    "name": "TextShimmer",
+    "path": "wallet/src/components/staking/TextShimmer.vue",
+    "purpose": "Inline shimmering placeholder text effect for loading numeric values.",
+    "category": "feedback",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "scoped gradient animation only"
+   },
+   {
+    "name": "AmountSlider",
+    "path": "wallet/src/components/staking/AmountSlider.vue",
+    "purpose": "Draggable amount slider with identicon-style knob, live NIM amount editing in a pill, and percentage track fills \u2014 used to pick stake size.",
+    "category": "form",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "stakedAmount: number"
+    ],
+    "cssDeps": "nq-input; --nimiq-green track, --nimiq-blue",
+    "dependsOn": [
+     "Amount.vue",
+     "stores/Address"
+    ],
+    "notes": "719 lines of pointer-event math; store-coupled to available balance but the slider mechanics are generically useful."
+   },
+   {
+    "name": "ValidatorIcon",
+    "path": "wallet/src/components/staking/ValidatorIcon.vue",
+    "purpose": "Validator logo image with Identicon fallback for unregistered validators.",
+    "category": "identity",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "validator: Validator|{address}"
+    ],
+    "cssDeps": "--size var",
+    "dependsOn": [
+     "@nimiq/vue-components Identicon"
+    ],
+    "notes": "ValidatorIconStack.vue stacks several with hover spread (medium/simple)."
+   },
+   {
+    "name": "ValidatorTrustScore + ValidatorReward",
+    "path": "wallet/src/components/staking/tooltips/ValidatorTrustScore.vue",
+    "purpose": "Pill badges showing a validator's trust score (color-graded green/orange/red) and estimated annual reward percentage.",
+    "category": "data-display",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "score: number",
+     "reward: number",
+     "dry/borderless/percentOnly flags"
+    ],
+    "cssDeps": "--nimiq-green/orange/red graded --color var",
+    "dependsOn": []
+   },
+   {
+    "name": "ValidatorListItem",
+    "path": "wallet/src/components/staking/ValidatorListItem.vue",
+    "purpose": "Selectable validator row with icon, label/description tooltip, trust score and reward, used in the validator picker.",
+    "category": "data-display",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "validator: Validator",
+     "container: HTMLElement"
+    ],
+    "cssDeps": "scoped SCSS; --nimiq-ease hover",
+    "dependsOn": [
+     "ValidatorIcon.vue",
+     "tooltips/ValidatorReward.vue",
+     "tooltips/ValidatorTrustScore.vue",
+     "ShortAddress.vue"
+    ]
+   },
+   {
+    "name": "ValidatorScoreDetails",
+    "path": "wallet/src/components/staking/ValidatorScoreDetails.vue",
+    "purpose": "Expandable breakdown of a validator's score components (availability, reliability, dominance) with bars.",
+    "category": "data-display",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "score: RegisteredValidator['score']"
+    ],
+    "cssDeps": "--nimiq-green/orange/red, --border-color",
+    "dependsOn": [
+     "tooltips/ValidatorTrustScore.vue"
+    ]
+   },
+   {
+    "name": "StakingButton",
+    "path": "wallet/src/components/staking/StakingButton.vue",
+    "purpose": "Green staking entry button/pill with tooltip states (disabled reasons), opening the staking modal.",
+    "category": "wallet",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "showText: boolean (default true)"
+    ],
+    "cssDeps": "nq-button-pill, --nimiq-green/-bg",
+    "dependsOn": [
+     "@nimiq/vue-components Tooltip",
+     "stores + router"
+    ]
+   },
+   {
+    "name": "Staking flow pages (StakingModal, StakingWelcomePage, StakingValidatorPage, StakingGraphPage, StakingInfoPage, StakingRewardsPage, SelectAccountOverlay, ValidatorsListOverlay, ValidatorDetailsOverlay/Modal, ValidatorFilter, StakingGraph, StakingRewardsChart, StakingRewardsListItem, StakingOverview, StakingPreview, AccountStake, WelcomeStakingModal, LabelTooltip, ValidatorDescriptionTooltip, ValidatorInfoBar, ValidatorLabel)",
+    "path": "wallet/src/components/staking/StakingModal.vue",
+    "purpose": "Multi-page staking wizard (welcome, validator pick with filter/sort, amount graph, info/rewards dashboards) plus reward history chart (vue-chartjs) and overview widgets.",
+    "category": "wallet",
+    "reuseValue": "low",
+    "complexity": "complex",
+    "props": [
+     "varies per page; StakingModal: month?: string"
+    ],
+    "cssDeps": "mix of nq-* classes, --nimiq-green accents, scoped SCSS per file",
+    "dependsOn": [
+     "Modal.vue",
+     "StatusScreen.vue",
+     "AmountSlider.vue",
+     "Validator* components",
+     "stores/Staking"
+    ],
+    "notes": "App-specific staking glue; StakingRewardsChart pulls in chart.js/vue-chartjs. Reusable pieces broken out above (AmountSlider, ValidatorIcon, TrustScore, ListItem, ScoreDetails, TextShimmer)."
+   },
+   {
+    "name": "SwapBalanceBar",
+    "path": "wallet/src/components/swap/SwapBalanceBar.vue",
+    "purpose": "Interactive two-asset balance bar with draggable handle to set swap amounts, showing before/after distribution per asset with brand colors.",
+    "category": "payment",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "leftAsset/rightAsset: SwapAsset",
+     "newLeftBalance/newRightBalance: number",
+     "fiatLimit?: number",
+     "disabled: boolean"
+    ],
+    "cssDeps": "--usdc-blue/--usdt-green/--bitcoin-orange, nq-light-blue-bg, grid custom props (--currency-columns)",
+    "dependsOn": [
+     "@nimiq/vue-components Identicon, Amount",
+     "icons/SwapBalanceBar/CurvedLine.vue, SlideHint.vue"
+    ],
+    "notes": "1088 lines of drag math; unique Nimiq-wallet visual worth scaffolding."
+   },
+   {
+    "name": "SwapAnimation",
+    "path": "wallet/src/components/swap/SwapAnimation.vue",
+    "purpose": "Full-screen animated swap progress scene (coins flying between asset/bank icons) driven by SwapState, with error and success states.",
+    "category": "feedback",
+    "reuseValue": "low",
+    "complexity": "complex",
+    "props": [
+     "swapId, swapState, fromAsset/toAsset, fromAmount/toAmount, fromAddress/toAddress, nimAddress, bankLogo, bankColor, error..."
+    ],
+    "cssDeps": "nq-blue-bg scene, nq-card-header/footer, many nq-* classes; bundled SVG assets in swap/animation/",
+    "dependsOn": [
+     "Amount.vue",
+     "ShortAddress.vue",
+     "BlueLink.vue",
+     "MessageTransition.vue"
+    ],
+    "notes": "Fastspot/OASIS swap-specific."
+   },
+   {
+    "name": "SwapFeesTooltip",
+    "path": "wallet/src/components/swap/SwapFeesTooltip.vue",
+    "purpose": "Tooltip itemizing per-network and service fees of a swap in fiat.",
+    "category": "payment",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "btcFeeFiat?, oasisFeeFiat?, oasisFeePercentage?, sepaFeeFiat?, nimFeeFiat?, usdcFeeFiat?, usdtFeeFiat?, serviceSwapFeeFiat?, serviceSwapFeePercentage?, currency"
+    ],
+    "cssDeps": "uses global .tooltip .price-breakdown grid styles from themes.scss",
+    "dependsOn": [
+     "@nimiq/vue-components Tooltip, FiatAmount, InfoCircleSmallIcon"
+    ]
+   },
+   {
+    "name": "SwapNotification",
+    "path": "wallet/src/components/swap/SwapNotification.vue",
+    "purpose": "Floating bottom notification tracking an in-flight swap across views with progress, expiry countdown and error states.",
+    "category": "feedback",
+    "reuseValue": "low",
+    "complexity": "complex",
+    "props": [],
+    "cssDeps": "nq color-bg vars (--nimiq-gold-bg, green/orange)",
+    "dependsOn": [
+     "@nimiq/vue-components LoadingSpinner, CheckmarkIcon, StopwatchIcon",
+     "swap stores/libswap"
+    ],
+    "notes": "Deep swap-engine coupling; the toast pattern itself is reusable."
+   },
+   {
+    "name": "SwapModal + SwapSepaFundingInstructions + OasisLaunchModal",
+    "path": "wallet/src/components/swap/SwapModal.vue",
+    "purpose": "Full Fastspot swap flow (asset pair pick, quote, limits, KYC gates, SEPA funding instructions) \u2014 the app's largest component.",
+    "category": "payment",
+    "reuseValue": "low",
+    "complexity": "complex",
+    "props": [
+     "pair: 'NIM-BTC' etc."
+    ],
+    "cssDeps": "extensive nq-* + token usage",
+    "dependsOn": [
+     "Modal.vue",
+     "SwapBalanceBar.vue",
+     "SwapAnimation.vue",
+     "SwapFeesTooltip.vue",
+     "AmountInput.vue",
+     "AddressList.vue",
+     "kyc/*"
+    ],
+    "notes": "3078 lines; network: Fastspot/OASIS APIs."
+   },
+   {
+    "name": "TransactionModal family (TransactionModal, BtcTransactionModal, UsdcTransactionModal, UsdtTransactionModal)",
+    "path": "wallet/src/components/modals/TransactionModal.vue",
+    "purpose": "Per-currency transaction detail modals: parties with identicon/avatar, amounts, historic fiat, fee, block data, message decoding, swap linkage and explorer links.",
+    "category": "wallet",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "hash: string"
+    ],
+    "cssDeps": "nq-card-header, nq-button-s, nq-green/red state colors, --nimiq-light-blue-on-dark",
+    "dependsOn": [
+     "Modal.vue",
+     "Amount.vue",
+     "FiatConvertedAmount.vue",
+     "InteractiveShortAddress.vue",
+     "BlueLink.vue",
+     "Avatar.vue"
+    ],
+    "notes": "Good reference for a Nimiq detail-card layout; store coupled."
+   },
+   {
+    "name": "AddressSelectorModal",
+    "path": "wallet/src/components/modals/AddressSelectorModal.vue",
+    "purpose": "Slim modal wrapping AddressList to pick a sender/recipient address.",
+    "category": "wallet",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "PageHeader/PageBody defaults",
+    "dependsOn": [
+     "Modal.vue",
+     "AddressList.vue"
+    ]
+   },
+   {
+    "name": "HistoryExportModal",
+    "path": "wallet/src/components/modals/HistoryExportModal.vue",
+    "purpose": "Export transaction history as CSV with format/scope selection via ButtonGroup.",
+    "category": "wallet",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "type: 'account'|'address'"
+    ],
+    "cssDeps": "nq-button, nq-input",
+    "dependsOn": [
+     "Modal.vue",
+     "ButtonGroup.vue"
+    ]
+   },
+   {
+    "name": "NetworkMap + NetworkMapPeerList + NetworkStats",
+    "path": "wallet/src/components/NetworkMap.vue",
+    "purpose": "Canvas hexagon world map plotting network peers with tooltip peer lists, plus consensus/peer/height stat tiles for the Network view.",
+    "category": "data-display",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "NetworkMapPeerList: peers: Set"
+    ],
+    "cssDeps": "scoped SCSS; --nimiq-gold-darkened peer dots, dark-bg context",
+    "dependsOn": [
+     "@nimiq/vue-components Tooltip",
+     "lib/NetworkMap (canvas renderer)",
+     "stores/Network"
+    ],
+    "notes": "Distinctive Nimiq visual; rendering logic in src/lib/NetworkMap.ts."
+   },
+   {
+    "name": "TestnetFaucet",
+    "path": "wallet/src/components/TestnetFaucet.vue",
+    "purpose": "Button requesting free testnet NIM from the faucet API for a given address, with loading/error states.",
+    "category": "wallet",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "address: string"
+    ],
+    "cssDeps": "nq-button",
+    "dependsOn": [
+     "@nimiq/vue-components CircleSpinner"
+    ],
+    "notes": "Network call to faucet endpoint; handy for any testnet demo app."
+   },
+   {
+    "name": "PolygonWarningPage + PolygonWarningFooter",
+    "path": "wallet/src/components/PolygonWarningPage.vue",
+    "purpose": "Warning page/footer educating users that stablecoin send/receive must use the Polygon network.",
+    "category": "feedback",
+    "reuseValue": "low",
+    "complexity": "moderate",
+    "props": [
+     "type: 'sending'|'receiving'",
+     "level: 'info'|'warning'",
+     "canGoBack: boolean"
+    ],
+    "cssDeps": "nq-orange/nq-light-blue, nq-button",
+    "dependsOn": [
+     "@nimiq/vue-components PageHeader/PageBody/PageFooter"
+    ]
+   },
+   {
+    "name": "BtcCopiedAddress",
+    "path": "wallet/src/components/BtcCopiedAddress.vue",
+    "purpose": "Row for an already-shared BTC receive address with label editing, short address tooltip, and remove action.",
+    "category": "wallet",
+    "reuseValue": "low",
+    "complexity": "moderate",
+    "props": [
+     "addressInfo: BtcCopiedAddressInfo",
+     "container",
+     "showTooltip: boolean"
+    ],
+    "cssDeps": "nq-input; --nimiq-red delete",
+    "dependsOn": [
+     "InteractiveShortAddress.vue",
+     "Avatar.vue",
+     "@nimiq/vue-components LabelInput"
+    ]
+   },
+   {
+    "name": "UsdcAddressInfo",
+    "path": "wallet/src/components/UsdcAddressInfo.vue",
+    "purpose": "Polygon 0x-address display with avatar, optional label editing and copy tooltip, themable dark variant.",
+    "category": "identity",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "address: string",
+     "label?: string",
+     "copyable: boolean",
+     "editable: boolean (default true)",
+     "tooltipPosition",
+     "dark: boolean"
+    ],
+    "cssDeps": "nq-input-s, nq-link; --usdc-blue/--usdt-green",
+    "dependsOn": [
+     "Avatar.vue",
+     "InteractiveShortAddress.vue"
+    ]
+   },
+   {
+    "name": "Fiat on/off-ramp modals (BuyCryptoModal, SellCryptoModal, BuyOptionsModal, TradeModal, CoinifyModal, MoonpayModal, SimplexModal, CoinifySellInfoModal, MoonpaySellInfoModal, BuyCryptoBankCheckOverlay, SellCryptoBankCheckOverlay)",
+    "path": "wallet/src/components/modals/BuyCryptoModal.vue",
+    "purpose": "Provider-specific buy/sell flows (OASIS SEPA, Coinify, Moonpay, Simplex iframes) plus the provider/country chooser.",
+    "category": "payment",
+    "reuseValue": "low",
+    "complexity": "complex",
+    "props": [
+     "flow: 'buy'|'sell' (provider modals)"
+    ],
+    "cssDeps": "nq-* classes throughout; --nimiq-purple KYC accents",
+    "dependsOn": [
+     "Modal.vue",
+     "BankCheckInput.vue",
+     "CountrySelector.vue",
+     "SwapAnimation.vue",
+     "kyc/*"
+    ],
+    "notes": "Third-party iframes + Fastspot/OASIS network calls; app-specific glue."
+   },
+   {
+    "name": "Onboarding/notice modals (WelcomeModal, MigrationWelcomeModal, WelcomeStakingModal, BackupModal, BtcActivationModal, PolygonActivationModal, StablecoinSelectionModal, UsdtAddedModal, MultisigAnnouncementModal, LegacyAccountNoticeModal, ReleaseNotesModal, DisclaimerModal, NetworkInfoModal, WalletStatusModal, OasisLaunchModal)",
+    "path": "wallet/src/components/modals/WelcomeModal.vue",
+    "purpose": "One-off informational and onboarding dialogs (welcome slides with StepProgressBar, backup reminder, currency activation, release notes, disclaimers).",
+    "category": "misc",
+    "reuseValue": "low",
+    "complexity": "moderate",
+    "props": [
+     "varies; mostly none"
+    ],
+    "cssDeps": "PageHeader/PageBody/PageFooter + nq-button/nq-text patterns",
+    "dependsOn": [
+     "Modal.vue",
+     "StepProgressBar.vue (WelcomeModal)"
+    ],
+    "notes": "Useful as copy/layout references for Nimiq multi-step onboarding cards; logic is app glue."
+   },
+   {
+    "name": "App layouts (Groundfloor, AccountOverview, AddressOverview, Network, Settings)",
+    "path": "wallet/src/components/layouts/AccountOverview.vue",
+    "purpose": "Top-level 3-column wallet shell and its panels: account column (balance, address list, promo boxes), address column (header, action buttons, tx lists), network view and settings page.",
+    "category": "layout",
+    "reuseValue": "low",
+    "complexity": "complex",
+    "props": [],
+    "cssDeps": "--bg-base/--bg-primary/--bg-secondary theme vars, breakpoint-heavy SCSS from scss/variables.scss, scroll-mask mixin",
+    "dependsOn": [
+     "AccountBalance.vue",
+     "AddressList.vue",
+     "TransactionList* family",
+     "SearchBar.vue",
+     "MobileActionBar.vue",
+     "Sidebar.vue"
+    ],
+    "notes": "The canonical wallet.nimiq.com responsive layout \u2014 valuable as a structural reference, not as a scaffoldable component."
+   },
+   {
+    "name": "Misc small glue (CashlinkButton, LegacyAccountNotice, LegacyAccountUpgradeButton, WalletStatusButton, TransactionListOasisPayoutStatus, TransactionDetailOasisPayoutStatus, UsdcContactBook, UsdcContactShortcuts, AccountStake, _Template)",
+    "path": "wallet/src/components/CashlinkButton.vue",
+    "purpose": "App-specific helpers: unclaimed-cashlink pill, legacy-account migration notices, wallet status indicator, OASIS payout status chips, USDC contact variants, and the blank SFC template.",
+    "category": "misc",
+    "reuseValue": "low",
+    "complexity": "simple",
+    "props": [
+     "varies"
+    ],
+    "cssDeps": "nq-button/nq-button-pill, token vars",
+    "dependsOn": [
+     "Avatar.vue",
+     "InteractiveShortAddress.vue"
+    ],
+    "notes": "Catalogued for completeness; skip when scaffolding."
+   },
+   {
+    "name": "icons/ directory (~70 SVG icon components)",
+    "path": "wallet/src/components/icons/",
+    "purpose": "Single-file SVG icon components: currencies (BitcoinIcon, UsdcIcon, UsdtIcon(Padded)), world/consensus set, staking leaf set (icons/Staking/), account-menu set, swap, bank, flags, arrows, misc decorative icons (HighFive, OverflowingCup).",
+    "category": "misc",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "none (some accept CSS --size/currentColor)"
+    ],
+    "cssDeps": "currentColor fill; sized via font-size/--size",
+    "dependsOn": [],
+    "notes": "Pure inline SVG, zero logic \u2014 trivially portable. AnimatedLeafIcon contains CSS keyframe animation."
+   }
+  ],
+  "designTokens": "Two layers. (1) Package @nimiq/style v0.8.2 \u2014 imported once in wallet/src/main.ts as '@nimiq/style/nimiq-style.min.css' \u2014 supplies the brand foundation: Muli font, --nimiq-blue (#1F2348), --nimiq-light-blue (#0582CA), green/orange/red/gold/purple + their *-bg radial gradients, --nimiq-ease easing, --nimiq-highlight-bg, border radii, and all nq-* utility classes (nq-h1/h2, nq-text, nq-button(-pill/-s), nq-input(-s), nq-card-header/footer, nq-link, nq-notice, color classes). (2) App tokens in wallet/src/scss/: themes.scss (loaded globally via main.ts) defines surface vars --bg-base/--bg-primary/--bg-secondary, the text-opacity scale --text-100..--text-6 (alpha steps of nimiq blue), asset colors --bitcoin-orange #F7931A / --usdc-blue #2775CA / --usdt-green #009393, the full font-size scale (--body-size 2rem, --small-size 1.75rem, --label-size, --small-label-size, --tiny-label-size, --h1-size 3rem, --h2-size 2.5rem, button/link sizes) with mobile overrides at $halfMobileBreakpoint, purple-darkened gradients, and nq-* overrides (tooltip box, price-breakdown grid, nq-label). functions.scss has nimiq-blue($alpha)/nimiq-light-blue($alpha) SCSS helpers; variables.scss holds the responsive breakpoints (mobile 768px, tablet 960px, halfMobile 1160px ... ultraLarge 2000px), mirrored for JS in scss/modules/variables.module.scss + variables.ts; mixins.scss provides custom-scrollbar(-inverse) and scroll-mask gradient mixins. wallet/src/App.vue's unscoped style block defines --transition-time and the global route/modal slide-fade transitions. Root font sizing follows the nimiq-style 8px rem convention (1rem = 8px), so --body-size: 2rem = 16px.",
+  "repo": "nimiq/wallet (vendored at /Users/andrjoo/Projects/nimiq/nimiq-branding-cli/upstream/wallet)",
+  "stack": "Vue 2.6 + TypeScript + @vue/composition-api, SCSS scoped styles, @nimiq/style 0.8.2 + @nimiq/vue-components (albatross build) + @nimiq/iqons identicons, vue-i18n, vue-router 3, custom composable stores, vue-virtual-scroller (sisou fork), chart.js/vue-chartjs (staking rewards only)"
+ },
+ {
+  "components": [
+   {
+    "name": "StatusScreen",
+    "path": "hub/src/components/StatusScreen.vue",
+    "purpose": "Full-card overlay that animates between loading (title + spinner + sliding status text), success, warning, and error states with optional action button and alternative-action link.",
+    "category": "feedback",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "title?: string",
+     "state: 'loading'|'success'|'warning'|'error' (default 'loading')",
+     "status?: string (current loading step, cross-fades on change)",
+     "message?: string",
+     "mainAction?: string (button label)",
+     "alternativeAction?: string (link label)",
+     "lightBlue?: boolean",
+     "small?: boolean"
+    ],
+    "cssDeps": "nimiq-style classes nq-blue-bg/nq-light-blue-bg/nq-green-bg/nq-orange-bg/nq-red-bg, nq-h1/nq-h2/nq-text, nq-button orange|red inverse, nq-link; scoped CSS + one global <style> block (.status-screen .title etc., grow-from-bottom-button keyframes); no CSS vars except own --status-screen-margin/--status-font-size",
+    "dependsOn": [
+     "@nimiq/vue-components: LoadingSpinner, CheckmarkIcon, FaceNeutralIcon, FaceSadIcon"
+    ],
+    "notes": "Fully self-contained (no store/RPC). Emits 'main-action'/'alternative-action'. Exposes StatusScreen.State and StatusScreen.SUCCESS_REDIRECT_DELAY=2000ms. Slots: loading/success/warning/error for custom icons. The single best reusable piece in the repo \u2014 every hub flow layers it over a SmallPage."
+   },
+   {
+    "name": "OnboardingMenu",
+    "path": "hub/src/components/OnboardingMenu.vue",
+    "purpose": "Three-choice login/signup card (Create Account / Login / Connect Ledger) with a sliding colored background panel that follows hover/focus between the choices.",
+    "category": "navigation",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [],
+    "cssDeps": "nimiq-style: nq-h2, nq-green-bg/nq-light-blue-bg/nq-blue-bg gradients, var(--nimiq-blue); scoped CSS with cubic-bezier(0.25,0,0,1) easing, sibling-selector hover choreography, 750px column-layout breakpoint; wrapped in SmallPage",
+    "dependsOn": [
+     "@nimiq/vue-components: SmallPage, LedgerIcon, PlusCircleIcon, LoginIcon"
+    ],
+    "notes": "Pure presentational; emits signup/login/ledger via @Emit. Measures text offsetHeight on mount to toggle 3-line layout (i18n-driven). Class is misnamed 'AccountList' internally. Canonical Nimiq login UI."
+   },
+   {
+    "name": "IdenticonSelector",
+    "path": "hub/src/components/IdenticonSelector.vue",
+    "purpose": "Hexagonal grid of 7 identicons for choosing a new address avatar, with pop-in animation, 'More Avatars' paging, and a blur-backdrop confirm panel containing label input + address display.",
+    "category": "identity",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "accounts: AccountInfo[] (need .userFriendlyAddress, .label, .defaultLabel)",
+     "confirmAccountSelection: boolean (default true)",
+     "confirmButtonText: string (default 'Select')"
+    ],
+    "cssDeps": "nimiq-style: nq-h2, nq-button light-blue, nq-button-s; scoped CSS with absolute translate() honeycomb layout, pop-in keyframes, filter:blur(20px) on .blur-target, cubic-bezier(0.25,0,0,1)",
+    "dependsOn": [
+     "@nimiq/vue-components: PageHeader, LoadingSpinner, Identicon, AddressDisplay, CloseIcon",
+     "hub Input.vue (LabelInput wrapper)",
+     "hub lib/Helpers isDesktop()",
+     "hub lib/AccountInfo (type only)"
+    ],
+    "notes": "Emits 'identicon-selected' with the chosen account. AccountInfo coupling is shallow (3 fields) \u2014 easy to genericize. Header slot overridable."
+   },
+   {
+    "name": "CheckoutManualPaymentDetails",
+    "path": "hub/src/components/CheckoutManualPaymentDetails.vue",
+    "purpose": "Dark-blue card showing manual payment instructions as copyable label/value fields (address, amount, fee, reference) with PaymentInfoLine header and back arrow.",
+    "category": "payment",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "paymentDetails: Array<{label: string, value: string|number|object}> (required, validated)",
+     "paymentOptions: ParsedPaymentOptions (required; uses .amount/.currency/.decimals/.feeString)"
+    ],
+    "cssDeps": "nimiq-style: nq-blue-bg, nq-notice warning, nq-h1; scoped CSS, 375px media query; SmallPage shell",
+    "dependsOn": [
+     "@nimiq/vue-components: CopyableField, SmallPage, PageHeader, PageBody, PaymentInfoLine",
+     "hub lib/CheckoutServerApi (fetchTime)",
+     "hub StaticStore @Static rpcState/request"
+    ],
+    "notes": "Emits 'close'. The PaymentInfoLine + CheckoutServerApi.fetchTime wiring is hub glue; the CopyableField list card itself is broadly reusable. Network call on mount when callbackUrl present."
+   },
+   {
+    "name": "CurrencyInfo",
+    "path": "hub/src/components/CurrencyInfo.vue",
+    "purpose": "Header above a checkout card showing the currency name with its icon (nimiq-logo class for NIM, img src otherwise) and the approximate fiat fee ('No Fee' / '~ 0' / '~ $0.12 Fee').",
+    "category": "payment",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "currency: string (required)",
+     "fiatCurrency: string (required)",
+     "fiatFeeAmount: number (required)",
+     "currencyIcon?: string (img URL)"
+    ],
+    "cssDeps": "nimiq-style: nq-h1, nq-text, nq-icon nimiq-logo (from nimiq-style.icons.svg); small scoped block",
+    "dependsOn": [
+     "@nimiq/vue-components: FiatAmount",
+     "client/PublicRequestTypes Currency enum (trivially replaceable)"
+    ],
+    "notes": "Clever isAlmostFree check via toLocaleString digit stripping. Near zero coupling."
+   },
+   {
+    "name": "LabelAvatar",
+    "path": "hub/src/components/LabelAvatar.vue",
+    "purpose": "Circular avatar that renders the first letter of a label on a deterministic iqons background color, or a placeholder ghost SVG when unlabeled.",
+    "category": "identity",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "label?: string"
+    ],
+    "cssDeps": "nimiq-style nq-{color}-bg gradient classes (gold/blue/light-blue/green/light-green/orange/red/purple/brown via mapping); tiny scoped block (5.25rem circle)",
+    "dependsOn": [
+     "@nimiq/iqons getBackgroundColorName"
+    ],
+    "notes": "Maps iqons color names to nimiq-style CSS names (yellow\u2192gold, indigo\u2192blue, blue\u2192light-blue, teal\u2192green, green\u2192light-green). Embedded inline placeholder SVG uses #1F2348 (nimiq blue) at .25 opacity."
+   },
+   {
+    "name": "CircleSpinner",
+    "path": "hub/src/components/CircleSpinner.vue",
+    "purpose": "Tiny 18px two-arc inline loading spinner (light-blue over faded dark-blue) spun by a CSS keyframe.",
+    "category": "feedback",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "None external \u2014 functional template, scoped keyframes; colors hardcoded as hex #0582CA (nimiq light blue) and #1F2348 at .3 opacity",
+    "dependsOn": [],
+    "notes": "Functional component, zero dependencies. Drop-in for button/inline loading states."
+   },
+   {
+    "name": "CheckoutCard (base)",
+    "path": "hub/src/components/CheckoutCard.vue",
+    "purpose": "Script-only abstract base class for all checkout payment cards: merchant-server state polling (paid/underpaid/overpaid), offer-expiry timeout with server time offset, currency selection + history-state re-selection, and StatusScreen success/warning orchestration.",
+    "category": "payment",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "paymentOptions: ParsedPaymentOptions (required, generic Parsed type)"
+    ],
+    "cssDeps": "None (no template/style \u2014 children render)",
+    "dependsOn": [
+     "StatusScreen.vue",
+     "hub lib/CheckoutServerApi (fetch to merchant callbackUrl with csrf)",
+     "hub StaticStore @Static rpcState/request",
+     "@nimiq/rpc via this.$rpc"
+    ],
+    "notes": "Valuable as the reference checkout state machine but inseparable from hub RPC ($rpc.resolve/reject), ParsedCheckoutRequest, and the Nimiq checkout-server protocol (payment_state/payment_accepted JSON). Network calls: getState/fetchPaymentOption polling."
+   },
+   {
+    "name": "CheckoutCardNimiq",
+    "path": "hub/src/components/CheckoutCardNimiq.vue",
+    "purpose": "The native NIM checkout card: PaymentInfoLine header, demo video + Login CTA when no wallets, AccountSelector with live balance check via pico consensus, insufficient-balance 'Get NIM' notice, then handoff to Keyguard or Ledger signing.",
+    "category": "payment",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "paymentOptions: ParsedNimiqDirectPaymentOptions (inherited)"
+    ],
+    "cssDeps": "nimiq-style: nq-h1, nq-text nq-orange, nq-button-pill light-blue, nq-button-s, var(--nimiq-ease), var(--nimiq-gray); SmallPage 52.5rem wide; scoped CSS incl. transition-fade for StatusScreen overlay",
+    "dependsOn": [
+     "extends CheckoutCard.vue",
+     "StatusScreen.vue",
+     "CurrencyInfo.vue",
+     "@nimiq/vue-components: AccountSelector, PageBody, PageFooter, SmallPage, PaymentInfoLine, StopwatchIcon, TransferIcon, UnderPaymentIcon, QrCodeIcon",
+     "@nimiq/keyguard-client",
+     "hub NetworkClient, WalletStore, Vuex store"
+    ],
+    "notes": "Visually the canonical Nimiq checkout, but deeply wired to hub: Vuex wallets/getters, IndexedDB WalletStore, sessionStorage balance cache, blockchain consensus listeners, Keyguard SignTransactionRequest construction, vue-router redirects. Extract template+styles only; logic is app glue. References /checkout-demo.mp4 public asset."
+   },
+   {
+    "name": "CheckoutCardExternal",
+    "path": "hub/src/components/CheckoutCardExternal.vue",
+    "purpose": "Generic external-wallet checkout card: 'Pay with X' confirm step, then QR code (nimiq-blue radial-gradient fill) + payment-URI deep link with wallet-app detection via window blur trick, big crypto Amount, and a 3D card-flip to manual payment details.",
+    "category": "payment",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "paymentOptions (inherited)",
+     "preSelectCurrency?: boolean"
+    ],
+    "cssDeps": "nimiq-style: nq-h1, nq-notice warning, nq-button light-blue, nq-link, nq-text-s, nq-light-blue, var(--nimiq-ease); relies on global transition-flip/.flip-primary/.flip-secondary classes defined in hub/src/App.vue; heavy scoped CSS with >>> deep selectors into vue-components internals",
+    "dependsOn": [
+     "extends CheckoutCard.vue",
+     "CurrencyInfo.vue",
+     "StatusScreen.vue",
+     "CheckoutManualPaymentDetails.vue",
+     "@nimiq/vue-components: Account, QrCode, Amount, FiatAmount, PaymentInfoLine, SmallPage, PageBody, PageFooter, CaretRightSmallIcon, StopwatchIcon, UnderPaymentIcon"
+    ],
+    "notes": "paymentLink getter is abstract \u2014 must subclass per currency. 10s polling interval against merchant callbackUrl. QR gradient stops [#260133,#1F2348] = nimiq-blue gradient. checkBlur() app-not-found detection is a reusable mobile pattern."
+   },
+   {
+    "name": "CheckoutCardBitcoin / CheckoutCardEthereum / CheckoutCardNimiqExternal",
+    "path": "hub/src/components/CheckoutCardBitcoin.vue (+ CheckoutCardEthereum.vue, CheckoutCardNimiqExternal.vue)",
+    "purpose": "Script-only per-currency subclasses of CheckoutCardExternal that build the payment deep link (BIP21 / EIP681 / Nimiq URI via @nimiq/utils create*RequestLink) and supply currency-specific manual payment details (amount, fee, gas, payment reference).",
+    "category": "payment",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "paymentOptions: ParsedBitcoinDirectPaymentOptions | ParsedEtherDirectPaymentOptions | ParsedNimiqDirectPaymentOptions"
+    ],
+    "cssDeps": "None own (inherit CheckoutCardExternal template/styles)",
+    "dependsOn": [
+     "CheckoutCardExternal.vue",
+     "@nimiq/utils (createBitcoinRequestLink / createEthereumRequestLink / createNimiqRequestLink, FormattableNumber, Utf8Tools)",
+     "hub lib/paymentOptions/*"
+    ],
+    "notes": "Three thin adapter files (~55 lines each); good reference for adding a currency to the checkout pattern. Icons referenced by filename ('icon-btc.svg'/'icon-eth.svg', NIM uses nimiq-logo CSS class)."
+   },
+   {
+    "name": "LedgerUi",
+    "path": "hub/src/components/LedgerUi.vue",
+    "purpose": "Ledger hardware-wallet instruction screen layered on StatusScreen: pure-CSS animated Ledger device illustration (cable plug-in, PIN dots, app/dashboard/confirm screens) driven by @nimiq/ledger-api state, with a Connect button for user-gesture WebUSB/WebHID connection.",
+    "category": "wallet",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "small?: boolean"
+    ],
+    "cssDeps": "nimiq-style nq-button-s inverse; massive scoped CSS (~500 lines) with own CSS vars (--ledger-container-width, --ledger-scale-factor, --ledger-opacity, --ledger-connect-animation-step-duration) and background-image device art; uses StatusScreen deep selectors",
+    "dependsOn": [
+     "StatusScreen.vue",
+     "@nimiq/vue-components LoadingSpinner",
+     "@nimiq/ledger-api (state machine, events)",
+     "hub Config (ledgerApiNimiqVersion)"
+    ],
+    "notes": "752 lines. Any Nimiq app adding Ledger support wants this, but it requires @nimiq/ledger-api and browser WebUSB/WebHID; instruction strings are i18n ($t). Singleton LedgerApi event listeners attached on created."
+   },
+   {
+    "name": "CashlinkSparkle",
+    "path": "hub/src/components/CashlinkSparkle.vue",
+    "purpose": "Decorative celebratory sparkle graphic (desktop 252x240 and mobile 375x84 SVG dot fields with blue/green/gold radial gradients) around a circular nimiq-blue CashlinkIcon badge.",
+    "category": "misc",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "nq-blue-bg class, var(--nimiq-blue), var(--nimiq-green); brand gradient hexes inline in SVG (#0582ca/#265dd7, #21bca5/#41a38e, #e9b213/#ec991c); scoped styles map cls-N classes to opacities",
+    "dependsOn": [
+     "@nimiq/vue-components CashlinkIcon"
+    ],
+    "notes": "Pure SVG/CSS, no script logic beyond the icon import. Nice brand confetti for success screens; gradient stops are the official Nimiq light-blue/green/gold gradients."
+   },
+   {
+    "name": "icons/LedgerIcon + icons/LoginFileIcon",
+    "path": "hub/src/components/icons/LedgerIcon.vue (+ LoginFileIcon.vue)",
+    "purpose": "Functional-template brand SVG icons: a Ledger Nano outline (currentColor, .7 opacity) and the Nimiq Login File (identicon hexagons + QR code, white fill).",
+    "category": "misc",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "None; LedgerIcon uses fill=currentColor (themeable), LoginFileIcon hardcodes fill #fff (dark backgrounds only)",
+    "dependsOn": [],
+    "notes": "Zero-dependency functional components; copy-paste safe."
+   },
+   {
+    "name": "GlobalClose",
+    "path": "hub/src/components/GlobalClose.vue",
+    "purpose": "Bottom 'Back to {appName}' cancel button shown under every hub request page, rejecting the RPC request (ERROR_CANCELED) or running a custom onClose.",
+    "category": "navigation",
+    "reuseValue": "low",
+    "complexity": "simple",
+    "props": [
+     "buttonLabel?: string",
+     "onClose?: () => void",
+     "hidden?: boolean"
+    ],
+    "cssDeps": "nimiq-style nq-button-s, var(--nimiq-ease), var(--nimiq-light-blue); scoped, 450px mobile breakpoint repositions to top-right",
+    "dependsOn": [
+     "@nimiq/vue-components ArrowLeftSmallIcon",
+     "hub StaticStore @Static request (appName)",
+     "hub $rpc"
+    ],
+    "notes": "Hub-popup glue (RPC reject + hardcoded appName translation switch), though the ghost back-button styling pattern is borrowable."
+   },
+   {
+    "name": "Input",
+    "path": "hub/src/components/Input.vue",
+    "purpose": "Eleven-line subclass of @nimiq/vue-components LabelInput that defaults maxBytes to the hub's LABEL_MAX_LENGTH constant.",
+    "category": "form",
+    "reuseValue": "low",
+    "complexity": "simple",
+    "props": [
+     "maxBytes: number (default LABEL_MAX_LENGTH=63)",
+     "...all LabelInput props"
+    ],
+    "cssDeps": "Inherits LabelInput styles from NimiqVueComponents.css",
+    "dependsOn": [
+     "@nimiq/vue-components LabelInput",
+     "hub lib/Constants"
+    ],
+    "notes": "Use upstream LabelInput directly in a generic app."
+   },
+   {
+    "name": "Network",
+    "path": "hub/src/components/Network.vue",
+    "purpose": "Renderless (empty template) Nimiq blockchain helper: builds/signs transaction objects, relays them with history-state retry storage, fetches balances, height, and genesis vesting contracts, and emits consensus events.",
+    "category": "wallet",
+    "reuseValue": "low",
+    "complexity": "complex",
+    "props": [],
+    "cssDeps": "None (no UI)",
+    "dependsOn": [
+     "hub NetworkClient (@nimiq/core consumer)",
+     "hub Config, Helpers, ContractInfo, LabelingMachine"
+    ],
+    "notes": "Not a UI component at all \u2014 blockchain plumbing using global Nimiq namespace; out of scope for a branding/scaffolding CLI."
+   },
+   {
+    "name": "NotEnoughCookieSpace",
+    "path": "hub/src/components/NotEnoughCookieSpace.vue",
+    "purpose": "Error card (StatusScreen in error state inside SmallPage) telling Safari users the cookie account storage is full, then rejecting the RPC request.",
+    "category": "feedback",
+    "reuseValue": "low",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "Inherits StatusScreen/SmallPage styling; no own styles",
+    "dependsOn": [
+     "StatusScreen.vue",
+     "@nimiq/vue-components SmallPage",
+     "hub $rpc + ERROR_COOKIE_SPACE"
+    ],
+    "notes": "Hub/Safari-specific glue; useful only as a minimal example of composing StatusScreen + SmallPage into an error page."
+   }
+  ],
+  "designTokens": "The hub defines almost no tokens itself \u2014 everything comes from @nimiq/style and @nimiq/vue-components, both imported globally in hub/src/App.vue lines 21-22 (and hub/src/CashlinkApp.vue lines 25-26): '@nimiq/style/nimiq-style.min.css' + '@nimiq/vue-components/dist/NimiqVueComponents.css'. The @nimiq/style source is vendored as a sibling in this repo at upstream/nimiq-style/: src/theme.css defines the CSS custom properties (--nimiq-blue #1F2348, --nimiq-light-blue, --nimiq-green, --nimiq-orange, --nimiq-red, --nimiq-gold etc., their *-bg radial-gradient variants, *-darkened hover variants, --nimiq-ease easing, --nimiq-gray/--nimiq-card-bg/--nimiq-highlight-bg); src/typography.css sets the Muli font stack and nq-h1/nq-h2/nq-text type scale; src/buttons.css holds pill radii/shadows; src/icons.css + nimiq-style.icons.svg supply nq-icon sprites (e.g. nimiq-logo); built bundle at upstream/nimiq-style/nimiq-style.min.css. Component-level CSS (SmallPage card radius/shadow, PageHeader/PageBody/PageFooter layout, AccountSelector, PaymentInfoLine) lives in upstream/vue-components/. Hub-local additions: hub/src/App.vue <style> defines the global transition-fade and transition-flip helpers (used by the checkout card flip) and overrides .nq-button height to 6.5rem. Conventions: rem sizing against nimiq-style's 8px root font-size, cubic-bezier(0.25, 0, 0, 1) (= --nimiq-ease) everywhere, recurring hardcoded brand hexes #1F2348/#0582CA/#260133 in SVGs and rgba() derivations.",
+  "repo": "nimiq-branding-cli/upstream/hub (Nimiq Hub, github.com/nimiq/hub)",
+  "stack": "Vue 2.6 + TypeScript class components (vue-property-decorator/vuex-class) + @nimiq/style + @nimiq/vue-components, scoped CSS per SFC"
+ },
+ {
+  "repo": "nimiq-branding-cli/upstream (onmax/nimiq-ui modern nimiq-css monorepo + legacy nimiq/nimiq-style)",
+  "stack": "CSS-first, no Vue components in these packages. Modern: nimiq-css with cascade @layers (nq-colors, nq-preflight, nq-typography, nq-spacing, nq-utilities, nq-animations, nq-atomic) + an optional UnoCSS preset (src/unocss/index.ts) + Iconify icon set (nimiq-icons). Legacy: plain hand-written CSS (@nimiq/style) with --nimiq-* CSS vars and an 8px root font-size rem system.",
+  "designTokens": "MODERN (nimiq-ui/packages/nimiq-css): colors in src/css/colors.css (auto-generated :root vars, oklch + light-dark() dual-mode: --colors-neutral-0..1100, --colors-blue/green/orange/red/gold/purple + 400/500/600/1100 tints + radial-gradient from/to/darkened pairs); TS source of truth for the palette is src/colors.ts (light/dark tuples consumed by unocss-preset-light-dark). Easing/shadows/fonts/scrollbar vars in src/css/preflight.css (:root: --nq-ease cubic-bezier(0.25,0,0,1), --nq-shadow, --nq-shadow-lg, --nq-font-sans 'Mulish', --nq-font-mono 'Fira Code', --nq-track/--nq-thumb, fluid base font-size 16px via clamp between 320-1152px viewports). @font-face in src/css/fonts.css (Mulish variable 200-1000 + Fira Mono, expects /assets/fonts/). Fluid spacing scale in src/css/spacing.css (--f-mt/mb/pt/pb/pl/pr min/max clamp engine, classes nq-mt-12..nq-p-128). Radii are per-component constants (pill 999px, card 0.5rem, card-lg 0.625rem, input 0.125em). Animation durations 400ms in src/css/animations.css. LEGACY (nimiq-style): everything in src/theme.css (--nimiq-blue #1F2348, --nimiq-light-blue #0582CA, --nimiq-gold #E9B213, --nimiq-green #21BCA5, --nimiq-orange #FC8702, --nimiq-red #D94432, purple/pink/light-green/brown, *-darkened hover variants, *-bg radial-gradient(100% 100% at bottom right,...) pairs, --nimiq-highlight-bg, --nimiq-card-bg) + src/main.css (--nimiq-ease, --attr-duration .2s, --movement-duration .4s) + src/typography.css (html font-size: 8px, --nimiq-size, Muli font stack). Shadows hardcoded: 0 .5rem 1.5rem rgba(0,0,0,.15) (nq-shadow), card 0 .5rem 3.5rem rgba(0,0,0,.111).",
+  "components": [
+   {
+    "name": "nq-colors token layer",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/colors.css",
+    "purpose": "Auto-generated :root design-token sheet defining the entire modern Nimiq palette as oklch light-dark() CSS vars including gradient from/to/darkened pairs for every brand hue.",
+    "category": "misc",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "--colors-neutral-{0..1100}",
+     "--colors-{blue,green,orange,red,gold,purple}{,-400,-500,-600,-1100}",
+     "--colors-{hue}-gradient{,-from,-to,-darkened}"
+    ],
+    "cssDeps": "Self-contained; requires browser light-dark() support; dark mode flips automatically via color-scheme",
+    "dependsOn": [],
+    "notes": "Auto-generated from src/colors.ts \u2014 edit the TS, not the CSS. Every other modern component reads these vars. Loaded into layer(nq-colors) by index.css."
+   },
+   {
+    "name": "nq-preflight",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/preflight.css",
+    "purpose": "Base reset and global defaults: fluid base font-size engine (clamp 320-1152px), Mulish/Fira Code font stacks, heading/p/small/blockquote/code defaults, invisible 1rem touch hit-area around links/buttons on non-hover devices, --nq-ease/--nq-shadow tokens.",
+    "category": "layout",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "opt-out: .nq-raw / [nq-raw] subtree escape hatch",
+     "[data-inverted] inverts body text color"
+    ],
+    "cssDeps": "Defines --nq-ease, --nq-shadow, --nq-shadow-lg, --nq-font-sans, --nq-font-mono, --nq-track/--nq-thumb; consumes --colors-* vars",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": "Styles bare h1-h6/p/blockquote/code element selectors \u2014 opinionated; use .nq-raw to escape. Blockquotes get green callout treatment by default."
+   },
+   {
+    "name": "nq-pill (button family)",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "The modern Nimiq button/badge: pill-shaped with radial brand gradient that animates between normal and darkened states via registered @property custom properties.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "base: .nq-pill",
+     "size: .nq-pill-lg, .nq-pill-xl (uppercase CTA w/ shadow+lift, min-width 12.5rem)",
+     "color: .nq-pill-blue|white|gold|green|orange|red",
+     "style: .nq-pill-secondary (neutral bg), .nq-pill-tertiary (outlined)",
+     "[disabled] state, attributify [nq-pill-lg] supported"
+    ],
+    "cssDeps": "--colors-{hue}-gradient-from/to + darkened variants, --nq-ease; uses @property --nq-gradient-from/to (Chromium-grade CSS needed for gradient transition)",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": "Gradient hover animation degrades gracefully without @property support. -secondary has dark-context overrides for .dark/.bg-darkblue/.bg-neutral parents."
+   },
+   {
+    "name": "nq-ghost-btn",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "Small low-emphasis text button (6x8px padding, 12px text) with neutral hover background, for toolbars and inline actions.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "dark-mode + [data-inverted] color overrides built in"
+    ],
+    "cssDeps": "--colors-neutral-100/400/700, --colors-blue (focus ring), --nq-ease",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": ""
+   },
+   {
+    "name": "nq-close-btn",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "Circular 1em close button with embedded base64 SVG cross rendered via CSS mask, sized by font-size.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "size via font-size (1em circle)"
+    ],
+    "cssDeps": "--colors-neutral-0/500/600, --colors-blue focus ring; data-URI mask, no external asset",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": "Cross icon is inline base64 \u2014 no icon dependency."
+   },
+   {
+    "name": "nq-switch",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "Pure-CSS toggle switch styling for input[type=checkbox] (appearance:none, sliding white knob, blue when checked).",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "applies to input[type=checkbox].nq-switch",
+     "[disabled] state",
+     "scales with font-size (em-based)"
+    ],
+    "cssDeps": "--colors-neutral-300, --colors-blue, --nq-shadow; prefers-reduced-motion handled",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": "No JS needed; it is the native checkbox restyled."
+   },
+   {
+    "name": "nq-input-box",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "Modern text input/textarea style with outline border, blue hover/focus tinting, orange invalid state (.nq-invalid or :user-invalid), and auto-growing textarea via field-sizing:content (3-5 lines).",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "state: .nq-invalid forced error, :user-invalid native",
+     "works on input, textarea, or wrapper :has(textarea)",
+     "[data-inverted] placeholder override"
+    ],
+    "cssDeps": "--colors-neutral/blue/orange via color-mix, --nq-ease; field-sizing is Chromium-only (degrades to fixed)",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": "Valid+focused turns the outline solid blue \u2014 a subtle validity affordance."
+   },
+   {
+    "name": "nq-card",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "Basic content card: neutral-50 background, 0.5rem radius, 1.5px inset color-mix outline, flex column, 1.5rem padding.",
+    "category": "data-display",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "--colors-neutral-50, --colors-neutral via color-mix",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": ""
+   },
+   {
+    "name": "nq-card-lg",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "Large dialog/hub card (max-width 37.5rem) with semantic header/section/footer child styling, shadow + outline, responsive padding \u2014 the modern successor of the Hub card.",
+    "category": "layout",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "children: <header> (centered, h1/h2 zeroed), <section> (2rem pad), <footer>",
+     "header+section / section+footer spacing collapse built in"
+    ],
+    "cssDeps": "--colors-neutral-0, --nq-shadow, color-mix outline; expects .nq-notice inside header (legacy class)",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": "Uses semantic elements not classes for inner structure \u2014 markup shape matters."
+   },
+   {
+    "name": "nq-hoverable (card family)",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "Interactive marketing card with radial gradient background that lifts (-0.375rem translateY), whitens, and gains shadow on hover; color variants invert to darkened brand gradients with white text.",
+    "category": "data-display",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "base: .nq-hoverable (neutral)",
+     "color: .nq-hoverable-blue|green|orange|red|gold",
+     "addon: .nq-hoverable-cta child reveals 'Learn more' (override text via --nq-content) on parent hover"
+    ],
+    "cssDeps": "--colors-{hue}-gradient-* tokens, --nq-shadow, --nq-ease, @property gradient transition; @media (hover:hover) gated",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": "Used heavily on nimiq.com grid sections; nq-hoverable-cta uses --nq-content custom property for the label."
+   },
+   {
+    "name": "nq-arrow / nq-arrow-back",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "Link affordance that appends (or prepends) a masked arrow glyph which auto-rotates for external http links (45deg) vs internal links (right-pointing) and nudges on hover.",
+    "category": "navigation",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "detects a[href^=http] on self or ancestor for external rotation",
+     "inherits currentColor and font-size"
+    ],
+    "cssDeps": "Inline base64 SVG mask, no token deps beyond currentColor",
+    "dependsOn": [],
+    "notes": "Pure CSS external-link detection via attribute selectors \u2014 clever but means non-anchor usage defaults to internal style."
+   },
+   {
+    "name": "nq-label",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "Uppercase tracked-out (0.17em) bold section label in neutral-800 with dark/inverted overrides.",
+    "category": "data-display",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "[data-inverted] and .dark context variants"
+    ],
+    "cssDeps": "--colors-neutral-800, color-mix",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": "Same class name exists in legacy nimiq-style with different metrics."
+   },
+   {
+    "name": "nq-subline",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "Hero subtitle text style (1.375rem mobile / 1.5rem desktop, neutral-800, 2.75rem bottom margin).",
+    "category": "data-display",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "--colors-neutral-800",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": ""
+   },
+   {
+    "name": "nq-prose typography",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/typography.css",
+    "purpose": "Article/markdown typography system (.nq-prose / .nq-prose-compact): fluid em/lh-based font sizes and margins for h1-h6, p, lists with custom counters/bullets, green blockquote callouts, tables with sticky headers, kbd, details/summary accordions, and hover # anchor links on headings.",
+    "category": "data-display",
+    "reuseValue": "high",
+    "complexity": "complex",
+    "props": [
+     "root font-size on .nq-prose scales everything proportionally",
+     "escape: .nq-raw, .nq-not-prose subtrees",
+     "--nq-prose-max-width (default 78ch)",
+     "attributify [nq-prose] supported"
+    ],
+    "cssDeps": "--colors-* tokens, --nq-font-sans/mono, --nq-ease; heavy use of 1lh units and :where chains; inline base64 chevron for summary",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": "Equivalent of Tailwind prose for Nimiq docs/blog. Non-compact variant adds 6-8rem trailing padding to last child \u2014 surprising outside full-page articles."
+   },
+   {
+    "name": "static-content sections",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/static-content.css",
+    "purpose": "Landing-page layout layer for nimiq.com-style sites: every <section>/[data-section] becomes a centered flex column with fluid 160-200px vertical padding that auto-collapses to 36-48px between same-background neighbors, plus large fluid h1-h4 display scales (44-64px) and .nq-wide full-bleed modifier.",
+    "category": "layout",
+    "reuseValue": "high",
+    "complexity": "complex",
+    "props": [
+     "section bg classes drive spacing: .bg-darkblue/.bg-darkerblue/.bg-neutral-0/.bg-neutral-100",
+     "modifiers: .nq-wide, .nq-section-gap, .nq-heading-lg, .nq-heading, .nq-no-color",
+     "--nq-max-width content cap (73rem)"
+    ],
+    "cssDeps": "--colors-* tokens; bg-darkblue sections flip color-scheme:dark; NOT imported by index.css \u2014 import layer(nq-static-content) manually",
+    "dependsOn": [
+     "nq-colors token layer",
+     "nq-preflight"
+    ],
+    "notes": "Opt-in layer; adjacent-section padding logic relies on :has() chains. This is the secret sauce of nimiq.com page rhythm."
+   },
+   {
+    "name": "fluid spacing utilities",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/spacing.css",
+    "purpose": "Generated utility classes (nq-mt-12 ... nq-p-128) that set fluid margin/padding via clamp() interpolating between min/max px across 320-1440px viewports.",
+    "category": "layout",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "sides: mt/mb/ml/mr/mx/my/m, pt/pb/pl/pr/px/py/p",
+     "steps: 12,16,24,32,40,48,64,80,96,128 (max value; min auto-derived)"
+    ],
+    "cssDeps": "Self-contained clamp engine on *; pairs with unocss-preset-fluid-sizing for Uno users",
+    "dependsOn": [],
+    "notes": "Classes only set the --f-*-min/max vars; the * rule computes/applies \u2014 so they don't compose with non-nq margin utilities."
+   },
+   {
+    "name": "atomic helpers",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/atomic.css",
+    "purpose": "Small set of plain atomic classes for non-UnoCSS consumers: text-{hue}, bg-neutral-{50..1100}, bg-{hue}, flex-grow variants, margin-top-1..5, nq-shadow/nq-shadow-lg, hidden/display-none.",
+    "category": "misc",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "--colors-* tokens; note .nq-shadow here references --colors-shadow (token name mismatch with preflight's --nq-shadow \u2014 verify before relying on it)",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": "Redundant if the app uses Tailwind/UnoCSS; intended for raw-CSS consumers."
+   },
+   {
+    "name": "animation classes",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/animations.css",
+    "purpose": "Keyframes (spin, shake, fade, move-left/right, shrink, grow, from-left/right/bottom) plus paired *-in/*-out classes at 400ms for view transitions, identical in spirit to the legacy set.",
+    "category": "feedback",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "classes: .shake, .fade-in/.fade-out, .move-left-in/out, .shrink-in/out, .grow-in/out, .from-left-in/out, .from-bottom-in/out"
+    ],
+    "cssDeps": "Self-contained; classes set animation-name/duration only \u2014 element needs animation trigger (mount/class swap)",
+    "dependsOn": [],
+    "notes": "Bug upstream: .from-right-in maps to from-bottom keyframes."
+   },
+   {
+    "name": "nq-curtain-y",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "Scroll container that fades its top/bottom edges with an animated gradient mask driven by scroll-timeline (mask appears only when content overflows in that direction).",
+    "category": "layout",
+    "reuseValue": "medium",
+    "complexity": "complex",
+    "props": [
+     "--mask-size (default 2rem)",
+     "requires top-0 or bottom-0 positioning per inline comment"
+    ],
+    "cssDeps": "CSS scroll-timeline + animation-timeline:scroll(self) + mask-composite \u2014 Chromium-only today",
+    "dependsOn": [],
+    "notes": "Progressive enhancement only; no fallback fade in unsupported browsers."
+   },
+   {
+    "name": "nq-scrollbar / nq-scrollbar-sm / nq-hide-scrollbar",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "Custom webkit scrollbar theming (rounded thumb using --nq-thumb/--nq-track tokens, responsive widths) and a cross-browser scrollbar hider.",
+    "category": "misc",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "nested modifier .nq-scroll-sm",
+     "themable via --nq-thumb / --nq-track"
+    ],
+    "cssDeps": "--nq-track/--nq-thumb from preflight; ::-webkit-scrollbar only (Firefox gets scrollbar-width:none path for hide variant only)",
+    "dependsOn": [
+     "nq-preflight"
+    ],
+    "notes": "Typo upstream: '-thum' selectors in the sm variants are dead rules."
+   },
+   {
+    "name": "nq-focusable",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/utilities.css",
+    "purpose": "One-liner focus-visible ring utility (2px blue outline, 3px offset) matching the ring used across all nq components.",
+    "category": "form",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "--colors-blue",
+    "dependsOn": [
+     "nq-colors token layer"
+    ],
+    "notes": ""
+   },
+   {
+    "name": "fonts (@font-face)",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/fonts.css",
+    "purpose": "@font-face declarations for Mulish variable (200-1000 weight) and Fira Mono, expected at /assets/fonts/.",
+    "category": "misc",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "font files NOT bundled \u2014 app must serve /assets/fonts/Mulish-VariableFont_wght.ttf etc."
+    ],
+    "cssDeps": "None; preflight font stacks fall back to system fonts if missing",
+    "dependsOn": [],
+    "notes": "Mulish src says format('woff2') but points at a .ttf \u2014 copy fonts and fix format when scaffolding. Not imported by index.css."
+   },
+   {
+    "name": "UnoCSS Nimiq preset",
+    "path": "nimiq-ui/packages/nimiq-css/src/unocss/index.ts",
+    "purpose": "definePreset wrapper that exposes every CSS layer as toggleable preflights/rules for UnoCSS, wires the light-dark color palette (unocss-preset-light-dark), local Mulish/Fira Code web fonts, attributify utilities, and i-nimiq:* icons.",
+    "category": "misc",
+    "reuseValue": "high",
+    "complexity": "complex",
+    "props": [
+     "prefix ('nq-')",
+     "fonts: boolean|LocalFontProcessorOptions",
+     "preflight/typography/utilities/staticContent/attributifyUtilities: boolean",
+     "icons: boolean|NimiqIconsOptions",
+     "outputCSSLayer: boolean"
+    ],
+    "cssDeps": "Generates the same CSS as the static files; deps: unocss, unocss-preset-light-dark, @unocss/preset-web-fonts, ts-cssjson",
+    "dependsOn": [
+     "nq-colors token layer",
+     "nimiq-icons (Iconify set)"
+    ],
+    "notes": "Build-time only (reads CSS files from disk via node:fs); the path for Vite/Uno apps, while css/index.css is the path for plain-CSS apps."
+   },
+   {
+    "name": "nimiq-icons (Iconify set)",
+    "path": "nimiq-ui/packages/nimiq-icons/src/icons/icons.json",
+    "purpose": "323 brand icons (plus flags set in src/flags/) exported as an Iconify JSON collection, consumed as i-nimiq:<name> via UnoCSS/Iconify, auto-synced from Figma by scripts/.",
+    "category": "identity",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "usage: i-nimiq:arrow-right, i-nimiq:alert, i-nimiq:btc-nim-swap, ...",
+     "also ships index.js/mjs/d.ts for programmatic access"
+    ],
+    "cssDeps": "Rendered as mask/background by Iconify tooling; currentColor-driven",
+    "dependsOn": [],
+    "notes": "Builder needs a Figma token to regenerate; the committed JSON is the usable artifact for scaffolding."
+   },
+   {
+    "name": "nimiq-css legacy compat layer",
+    "path": "nimiq-ui/packages/nimiq-css/src/css/legacy/",
+    "purpose": "Verbatim port of the old @nimiq/style framework (buttons, inputs, layout, theme, typography, dark-adaptions, icons) bundled inside nimiq-css so apps can migrate incrementally; MIGRATION.md documents the class mapping.",
+    "category": "misc",
+    "reuseValue": "medium",
+    "complexity": "moderate",
+    "props": [
+     "same classes as legacy nimiq-style below"
+    ],
+    "cssDeps": "--nimiq-* vars (own theme.css), independent of the new --colors-* tokens",
+    "dependsOn": [],
+    "notes": "Read MIGRATION.md for old-to-new mapping (nq-button to nq-pill-xl, nq-card to nq-card-lg, etc.)."
+   },
+   {
+    "name": "nimiq-theme (VS Code theme)",
+    "path": "nimiq-ui/packages/nimiq-theme/themes/nimiq-dark.json",
+    "purpose": "'Nimiq Dark' code editor color theme (TextMate/semantic token colors), not a web UI artifact.",
+    "category": "misc",
+    "reuseValue": "low",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "None",
+    "dependsOn": [],
+    "notes": "Useful only for docs code-block highlighting or an editor extension; skip for app scaffolding."
+   },
+   {
+    "name": "nq-button (legacy)",
+    "path": "nimiq-style/src/buttons.css",
+    "purpose": "The classic large Nimiq CTA button: 7.5rem-tall uppercase pill with radial brand gradient, layered ::before darkened-gradient hover crossfade, lift/press transforms, and ::after focus ring.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "moderate",
+    "props": [
+     "color: .light-blue, .green, .orange, .red, .gold (default nimiq-blue)",
+     "style: .inverse (white bg, colored text)",
+     "[disabled] state"
+    ],
+    "cssDeps": "--nimiq-{hue}-bg / -bg-darkened radial gradients, --nimiq-white, --nimiq-ease from theme.css/main.css; 8px-rem sizing (2rem = 16px)",
+    "dependsOn": [
+     "legacy theme tokens"
+    ],
+    "notes": "Gradient hover done with an opacity-crossfaded ::before (pre-@property technique). All rem values assume html{font-size:8px}."
+   },
+   {
+    "name": "nq-button-s / nq-button-pill (legacy)",
+    "path": "nimiq-style/src/buttons.css",
+    "purpose": "Small secondary button (translucent blue-tinted bg, colored text) and its filled gradient pill sibling, with the same color variants and an invisible 1.5rem extended hit area.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "color: .light-blue, .green, .orange, .red, .gold",
+     "style: .inverse (for dark backgrounds)",
+     "[disabled]"
+    ],
+    "cssDeps": "--nimiq-* colors/gradients, hardcoded rgba tints per hue, --nimiq-ease",
+    "dependsOn": [
+     "legacy theme tokens"
+    ],
+    "notes": ""
+   },
+   {
+    "name": "nq-input / nq-input-s (legacy)",
+    "path": "nimiq-style/src/inputs.css",
+    "purpose": "Legacy text inputs drawn with an inset box-shadow border (2px/1.5px) that tints light-blue on hover/focus, with a .vanishing borderless variant.",
+    "category": "form",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "size: .nq-input (large) / .nq-input-s",
+     "style: .vanishing (transparent border until focus)"
+    ],
+    "cssDeps": "--nimiq-blue, --nimiq-light-blue, hardcoded rgba placeholder colors; background-clip:padding-box iOS fix",
+    "dependsOn": [
+     "legacy theme tokens",
+     "legacy dark adaptions (for .nq-blue-bg context)"
+    ],
+    "notes": "File is mostly commented-out dead code (old range slider/password styles) \u2014 only the top ~55 lines are live."
+   },
+   {
+    "name": "nq-card + header/body/footer (legacy)",
+    "path": "nimiq-style/src/layout.css",
+    "purpose": "The Keyguard/Hub white sheet card (max-width 75rem, 1.25rem radius, big soft shadow) with .nq-card-header (centered 4rem pad), .nq-card-body, .nq-card-footer and adjacency padding collapses.",
+    "category": "layout",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "children: .nq-card-header, .nq-card-body, .nq-card-footer",
+     "responsive padding at max-width 450px"
+    ],
+    "cssDeps": "--nimiq-card-bg, --nimiq-blue; expects .nq-h1/.nq-h2/.nq-notice inside header",
+    "dependsOn": [
+     "legacy theme tokens",
+     "legacy typography"
+    ],
+    "notes": "This is the pixel reference for every Nimiq wallet/keyguard screen card."
+   },
+   {
+    "name": "legacy typography (nq-h1/h2/h3, nq-text, nq-notice, nq-link, nq-list)",
+    "path": "nimiq-style/src/typography.css",
+    "purpose": "Type scale on the 8px-rem system: headings (24/20/16px bold), .nq-text body (16px, 70% blue), .nq-text-s, .nq-label (uppercase 0.107em tracking), .nq-notice with .info/.success/.warning/.error colorways, .nq-link, .nq-list, plus a .nq-style wrapper that styles bare h1/p/a/ul.",
+    "category": "data-display",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "notice states: .info .success .warning .error",
+     "wrapper mode: .nq-style on a container styles plain markup"
+    ],
+    "cssDeps": "--nimiq-* colors, Muli font + html{font-size:8px} root \u2014 the framework's load-bearing gotcha",
+    "dependsOn": [
+     "legacy theme tokens"
+    ],
+    "notes": ".nq-notice.error/.warning are the de-facto feedback messaging components of old Nimiq apps."
+   },
+   {
+    "name": "legacy theme tokens + color utilities",
+    "path": "nimiq-style/src/theme.css",
+    "purpose": "Defines all --nimiq-* color vars, darkened hover variants, and the signature bottom-right radial background gradients, plus .nq-{color} text utilities (!important) and .nq-{color}-bg gradient background classes.",
+    "category": "misc",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "text: .nq-blue|light-blue|gold|green|orange|red|purple|pink|light-green|brown",
+     "bg: .nq-{color}-bg, .nq-gray-bg"
+    ],
+    "cssDeps": "Self-contained; body defaults to blue-on-gray",
+    "dependsOn": [],
+    "notes": "The hex values here (#1F2348, #0582CA, #21BCA5, #FC8702, #D94432, #E9B213) are the canonical legacy brand palette \u2014 the CLI's pixel-accuracy source for older-style apps."
+   },
+   {
+    "name": "legacy dark adaptions",
+    "path": "nimiq-style/src/dark-adaptions.css",
+    "purpose": "Context overrides making components legible on colored/gradient backgrounds: inside .nq-{color}-bg, links/text go white/70%-white, --nimiq-light-blue and --nimiq-red swap to on-dark variants, and inputs switch to white-alpha borders.",
+    "category": "misc",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [
+     "activated by parent .nq-blue-bg etc.; .nq-card inside resets to light palette"
+    ],
+    "cssDeps": "--nimiq-light-blue-on-dark #0CA6FE, --nimiq-red-on-dark #FF5C48",
+    "dependsOn": [
+     "legacy theme tokens",
+     "nq-input / nq-input-s (legacy)"
+    ],
+    "notes": "Class-context based, not media-query based \u2014 the legacy 'dark mode' is per-surface."
+   },
+   {
+    "name": "legacy icon sprite (.nq-icon)",
+    "path": "nimiq-style/nimiq-style.icons.svg",
+    "purpose": "SVG symbol sprite of ~39 wallet-centric icons (cashlink, qr-code, scan-qr-code, ledger, keys, login, transfer, checkmark, alerts, view/view-off...) used via <svg class=nq-icon><use xlink:href=...#nq-{name}/></svg>; icons.css just sizes .nq-icon to 1em square.",
+    "category": "identity",
+    "reuseValue": "high",
+    "complexity": "simple",
+    "props": [
+     "names from src/icons/*.svg, e.g. #nq-cashlink, #nq-qr-code, #nq-checkmark"
+    ],
+    "cssDeps": "src/icons.css (.nq-icon {width/height:1em}); currentColor fills",
+    "dependsOn": [],
+    "notes": "Individual SVG sources in nimiq-style/src/icons/ with _FORMAT.md conventions. Payment/wallet glyphs absent from generic sets live here."
+   },
+   {
+    "name": "legacy animations",
+    "path": "nimiq-style/src/animations/animations.css",
+    "purpose": "Optional keyframe set (shake, fade, move, shrink/grow, from-left/right/bottom) predating and matching the modern animations layer.",
+    "category": "feedback",
+    "reuseValue": "low",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "Self-contained",
+    "dependsOn": [],
+    "notes": "Commented out of main.css by default \u2014 opt-in import."
+   },
+   {
+    "name": "legacy layout utilities",
+    "path": "nimiq-style/src/layout.css",
+    "purpose": "Misc utilities batch: .flex-grow/.flex-grow-half/.flex-grow-double, .hidden, .display-none, .margin-top-1..5 (rem steps), .nq-shadow/.nq-shadow-l.",
+    "category": "misc",
+    "reuseValue": "low",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "None",
+    "dependsOn": [],
+    "notes": "App-era glue; superseded by the modern atomic.css equivalents."
+   },
+   {
+    "name": "nimiq-style.min.css (built bundle)",
+    "path": "nimiq-style/nimiq-style.min.css",
+    "purpose": "The single-file production build of the entire legacy framework (v0.8.5) that downstream apps actually link; demo.html in the same dir renders every component as a live styleguide.",
+    "category": "misc",
+    "reuseValue": "medium",
+    "complexity": "simple",
+    "props": [],
+    "cssDeps": "Self-contained bundle of all src/*.css",
+    "dependsOn": [
+     "legacy theme tokens"
+    ],
+    "notes": "For pixel-accurate scaffolding of legacy-style apps, ship this file verbatim; demo.html is the visual regression reference."
+   }
+  ]
+ }
+]

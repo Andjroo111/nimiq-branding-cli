@@ -1,0 +1,24 @@
+{
+  "name": "toast-notification",
+  "purpose": "Bottom-fixed toast notification in Nimiq wallet style: small dark gradient card with icon, bold status line and dimmed sub-line. Color states: info/in-progress (blue + hexagon spinner), success (green + checkmark), error (orange + alert triangle), warning/expired (gold + stopwatch). Used in the wallet for swap progress and persistent status toasts.",
+  "category": "feedback",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "type", "type": "'info' | 'success' | 'error' | 'warning'", "default": "'info'", "description": "Toast state; selects the Nimiq gradient (blue/green/orange/gold) and built-in icon (spinner/checkmark/alert-triangle/stopwatch)." },
+    { "name": "title", "type": "string", "default": "''", "description": "Bold status line (e.g. 'Swap successful!')." },
+    { "name": "message", "type": "string", "default": "''", "description": "Dimmed sub-line (e.g. 'It\\'s safe to close your wallet now')." },
+    { "name": "emphasizeMessage", "type": "boolean", "default": "false", "description": "Renders the sub-line in full-opacity Nimiq orange (upstream's 'Don\\'t close your wallet!' treatment on the blue info toast)." },
+    { "name": "showMaximize", "type": "boolean", "default": "false", "description": "Shows the small maximize glyph in the top-right corner (the toast is a button that re-opens the underlying flow)." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 800, "height": 320 },
+    "selector": "body",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Source of truth: upstream/wallet/src/components/swap/SwapNotification.vue (the wallet's bottom toast), SCSS hand-compiled with $mobileBreakpoint=768px from wallet/src/scss/variables.scss; wallet globals button.reset/.flex-row/.flex-column/--body-size/--small-label-size from wallet/src/scss/themes.scss; icons from @nimiq/style (checkmark.svg, alert-triangle.svg, stopwatch.svg) via vue-components IconBase (adds class nq-icon), spinner from vue-components LoadingSpinner.vue, maximize glyph from wallet icons/MaximizeIcon.vue. BottomOverlay.vue (vue-components, used by UpdateNotification.vue) was the other candidate but has no error/success-vs-info color system, so SwapNotification was chosen as the canonical toast. Sample state: three stacked toasts — info/in-progress (blue, resting at +19rem), error (orange, +9.5rem) and success (green, untouched upstream resting position bottom:3rem right:3rem); stacking offsets are page chrome, component CSS unchanged. Upstream quirks preserved: toast is position:fixed and is a <button class=\"reset\"> that re-opens the swap modal; success state has no maximize glyph and pads the checkmark by 0.5rem; spinner keyframes get cancelled by the screenshot harness (animations:disabled) so renders are deterministic. Snippet namespaces everything under .nq-toast and converts the upstream #big-hex/#small-hex spinner ids to classes so multiple toasts can coexist on one page. Vue port is a faithful Vue 3 script-setup wrapper written for this registry (type/title/message props pick gradient + built-in icon)."
+}

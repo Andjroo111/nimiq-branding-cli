@@ -1,0 +1,25 @@
+{
+  "name": "timer",
+  "purpose": "Circular countdown timer (Hub checkout 'offer expires' indicator): a light-blue arc shrinking clockwise as time runs out, a faint filler arc in the gap, and the remaining time (simplified to the largest fitting unit) in the center. Turns orange when >= 75% of the time has elapsed.",
+  "category": "feedback",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "startTime", "type": "number", "default": null, "note": "timestamp (ms) the countdown started" },
+    { "name": "endTime", "type": "number", "default": null, "note": "timestamp (ms) the countdown ends; 'end' event emitted when reached" },
+    { "name": "alwaysShowTime", "type": "boolean", "default": true, "note": "show the remaining-time number permanently (larger radius); otherwise an info icon until hover" },
+    { "name": "theme", "type": "'normal' | 'inverse' | 'white'", "default": "normal" },
+    { "name": "strokeWidth", "type": "number", "default": 2, "note": "in svg viewBox units (viewBox 0 0 26 26)" },
+    { "name": "maxUnit", "type": "'second' | 'minute' | 'hour' | 'day'", "default": null, "note": "cap the displayed unit" }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 160, "height": 120 },
+    "selector": ".timer",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Sample state: frozen at 2/3 remaining (progress=1/3) with 10 minutes left ('10'), defaults alwaysShowTime=true (time-shown, radius 12), theme normal, strokeWidth 2. Element is 3.25rem = 26px square (1rem = 8px). Geometry derived in JS upstream: fullCircleLength=2*PI*r; time arc capped below a full circle (gap >= 2.5 strokeWidths) so it always reads as a timer; filler arc fills the gap minus strokeWidth margins; both offset by 90deg so the gap is centered on top. Upstream wraps a Tooltip ('This offer expires in {time}.') and tweens the radius 8->12 on hover via @nimiq/utils Tweenable; the HTML snippet drops the tooltip (static frozen render, optional live mode via data-start-time/data-end-time, no radius tween) and the Vue port inlines a tiny tween + en-only unit strings instead of Tooltip/I18n. Snippet script recomputes arcs from data-progress/data-time-left; demo stays deterministic (no Date when frozen)."
+}

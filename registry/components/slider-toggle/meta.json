@@ -1,0 +1,23 @@
+{
+  "name": "slider-toggle",
+  "purpose": "Pill-shaped radio toggle with a white 'active box' that slides under the selected option. Used in the Nimiq Wallet as a currency switcher (NIM/BTC) and for filter/sort selection.",
+  "category": "form",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "name", "type": "string", "required": true, "description": "The radio input group name." },
+    { "name": "value", "type": "string", "required": true, "description": "The currently selected option (slot name). Upstream v-model: emits 'input' on change." },
+    { "name": "type", "type": "'currency' | 'default'", "required": false, "default": "'default'", "description": "Visual style: 'currency' is compact (1.75rem, bold, wide letter-spacing), 'default' is large (2.5rem, semibold)." },
+    { "name": "loading", "type": "boolean", "required": false, "default": "false", "description": "Replaces the options with a LoadingSpinner + 'Loading' label." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 500, "height": 200 },
+    "selector": ".slider-toggle",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Sample state: name='currency', type='currency', two slots nim/btc rendering 'NIM'/'BTC' with first active (matches the upstream storybook currency story). Upstream positions the .active-box via JS (getBoundingClientRect on the active label); truth.html replicates that with a small inline script, while html/demo.html is CSS-only — the active label itself gets the white pill via label:has(input:checked), which is geometrically identical (active-box width = label width, height = label height). Upstream options are dynamic named slots (one label per slot). The Vue port inlines LoadingSpinner.vue (hexagon SVG spinner) instead of importing it."
+}

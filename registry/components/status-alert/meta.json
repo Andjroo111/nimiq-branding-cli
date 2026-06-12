@@ -1,0 +1,22 @@
+{
+  "name": "status-alert",
+  "purpose": "Status alert / callout block (note-info, tip-success, warning, caution-error, important) in the real Nimiq pattern: tinted background, 1.5px tonal outline, uppercase icon title and colored text. Used for status notices, warnings and error feedback.",
+  "category": "feedback",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "type", "type": "'info' | 'success' | 'warning' | 'error' | 'important'", "default": "'info'", "description": "Alert severity; maps to the upstream callout classes note/tip/warning/caution/important (blue/green/orange/red/purple)." },
+    { "name": "title", "type": "string", "default": "''", "description": "Title line text. Defaults to the upstream label for the type (Note/Tip/Warning/Caution/Important). Rendered uppercase with the type icon." },
+    { "name": "message", "type": "string", "default": "''", "description": "Alert body text. The default slot overrides it when provided." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 600, "height": 640 },
+    "selector": "body",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "REBUILT 2026-06-11: previous port came from a local example file (icon-chip + navy text + 1px border) which is NOT a real Nimiq pattern. Source of truth now = upstream/nimiq-ui/packages/nimiq-vitepress-theme/src/assets/github-callouts.css (.custom-block.github-alert), the alert pattern nimiq-branding-skill/references/status-alerts.md cites; color tokens inlined as the light-mode halves of light-dark() from upstream/nimiq-ui/packages/nimiq-css/src/css/colors.css. Truth keeps the component CSS verbatim and restores the upstream docs context (html/body 16px; @nimiq/style's 8px rem base would halve the rem padding). Snippet/Vue porting decisions: rem converted to px at the upstream 16px root (padding 1rem 1.25rem -> 16px 20px) and font-size:16px pinned on the root class so the snippet renders identically under @nimiq/style; selectors renamed/namespaced under .nq-status-alert; the upstream docs full-bleed quirk (transform translateX(-8px) + width calc(100%+16px)) is kept for pixel parity — consumers can delete that pair for a non-bleeding alert. The legacy framework's own inline pattern is .nq-notice (colored text only), already covered by upstream apps; this component is the block-level alert. No upstream Vue component exists (callouts are markdown-rendered), so the Vue port is a faithful wrapper (type/title/message props + slot)."
+}

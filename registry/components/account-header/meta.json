@@ -1,0 +1,70 @@
+{
+  "name": "account-header",
+  "purpose": "The wallet address-overview header: large identicon, account name + chunked Fira Mono address, NIM balance + fiat value, and the actions row — search pill, green Stake pill with the green 'Earn NIM every month by staking your NIM' CTA tooltip, divider, light-blue Send and neutral Receive pills.",
+  "category": "wallet",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "description": "Account/address name, e.g. 'Indigo Address'"
+    },
+    {
+      "name": "address",
+      "type": "string",
+      "description": "Chunked Nimiq address, drives the identicon"
+    },
+    {
+      "name": "balance",
+      "type": "string",
+      "description": "Formatted NIM balance, e.g. '995'"
+    },
+    {
+      "name": "fiatValue",
+      "type": "string",
+      "description": "Formatted fiat value, e.g. '$0.50'"
+    },
+    {
+      "name": "searchPlaceholder",
+      "type": "string",
+      "description": "Search input placeholder (default 'Search transactions')"
+    },
+    {
+      "name": "showStakeTooltip",
+      "type": "boolean",
+      "description": "Show the green staking CTA tooltip under the Stake button"
+    },
+    {
+      "name": "stakeTooltipText",
+      "type": "string",
+      "description": "Tooltip copy (default 'Earn NIM every month by staking your NIM')"
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "dependsOn": [
+    "identicon",
+    "tooltip"
+  ],
+  "npmDeps": [
+    "@nimiq/iqons"
+  ],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 920,
+      "height": 360
+    },
+    "selector": ".account-header",
+    "maxDiffPct": 0.5,
+    "settleMs": 500
+  },
+  "notes": "Composition. Sources: upstream/wallet/src/components/layouts/AddressOverview.vue (.active-address + .actions desktop markup and scoped SCSS), upstream/wallet/src/components/SearchBar.vue, upstream/wallet/src/components/staking/StakingButton.vue (.staking-feature-tip green CTA tooltip, ::v-deep expanded), upstream/wallet/src/components/icons/Staking/StakingIcon.vue (gradients=false pill mode), upstream/vue-components Tooltip.vue base (bottom-position subset) and Amount.vue. Wallet theme vars (--body-size:2rem, --h1-size:3rem, --large-button-size:2rem, --text-16, --light-blue-40) from wallet src/scss/themes.scss are defined on the component root. Identicon via the pinned @nimiq/iqons@1.6.0 jsdelivr recipe (registry identicon component). Component chrome: root gets padding-bottom:9rem to reserve space for the CTA tooltip (in the wallet it overlays the transaction list); tooltip-box positioned inline (top:100%; left:50%; translate(-50%,1rem)) replacing the upstream JS positioning. Identicon sprite is the REAL team-shipped iqons.min.svg (84-symbol part catalog, 88KB) vendored at assets/img/iqons.min.svg — byte-identical to the Hub-deployed sprite captured in references/assets/hub/iqons.min.svg and to @nimiq/iqons@1.6.0 dist; the snippet probes the local copy and falls back to the same CDN sprite, while the iqons JS library itself stays pinned on jsdelivr (code, not artwork).",
+  "assetFiles": [
+    "img/iqons.min.svg"
+  ]
+}

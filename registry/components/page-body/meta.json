@@ -1,0 +1,18 @@
+{
+  "name": "page-body",
+  "purpose": "Scrollable content area of a card-style page. Pairs .page-body with the legacy .nq-card-body padding rules and flex-grows to fill the parent SmallPage, scrolling vertically when content overflows.",
+  "category": "layout",
+  "variants": ["vue", "html"],
+  "props": [],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": ["small-page", "page-header"],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 500, "height": 700 },
+    "selector": ".small-page",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "PageBody is a pure slot container (no props, no logic). Demo renders it in its natural habitat: a SmallPage with a PageHeader 'Settings' and two nq-text paragraphs. Styling comes almost entirely from the legacy framework's .nq-card-body rules (padding 4rem, padding-top 1rem after .nq-card-header, first/last child margin trimming); the component itself only adds flex-grow:1 and overflow-y:auto."
+}

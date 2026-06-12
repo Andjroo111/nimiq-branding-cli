@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Timer — truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; background: white; }
+
+    /* Tooltip.vue scoped styles (subset used by the hidden tooltip root + trigger) — verbatim */
+    .tooltip {
+        /* contain: layout style; */
+        display: inline-block;
+        position: relative;
+        line-height: 1;
+    }
+
+    .trigger {
+        /* contain: layout style; */
+        position: relative;
+        display: inline-block;
+        vertical-align: bottom;
+        text-decoration: none;
+        outline: none;
+        cursor: default;
+        color: inherit;
+    }
+
+    /* Timer.vue scoped styles — verbatim ('>>>' deep selectors flattened) */
+    .timer {
+        width: 3.25rem;
+        position: relative;
+    }
+
+    /* for setting height automatically depending on width */
+    .timer::before {
+        content: '';
+        padding-top: 100%;
+        display: block;
+    }
+
+    .tooltip .trigger,
+    svg {
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    svg {
+        fill: none;
+        stroke-linecap: round;
+    }
+
+    circle {
+        stroke: var(--nimiq-blue);
+        transition: stroke .3s var(--nimiq-ease), opacity .3s var(--nimiq-ease);
+    }
+
+    .inverse-theme circle,
+    .white-theme circle {
+        stroke: white;
+    }
+
+    .filler-circle {
+        opacity: .2;
+    }
+
+    .time-circle {
+        opacity: .3;
+    }
+
+    .time-shown .time-circle {
+        stroke: var(--nimiq-light-blue);
+        opacity: 1;
+    }
+
+    .inverse-theme.time-shown:not(.little-time-left) .time-circle {
+        stroke: var(--nimiq-light-blue-on-dark, var(--nimiq-light-blue));
+    }
+
+    .white-theme.time-shown:not(.little-time-left) .time-circle {
+        stroke: rgba(255, 255, 255, 0.4);
+    }
+
+    .little-time-left .time-circle {
+        stroke: var(--nimiq-orange);
+        opacity: 1;
+    }
+
+    .info-exclamation-icon {
+        fill: var(--nimiq-blue);
+        opacity: .4;
+        transform-origin: center;
+        transition: fill .3s var(--nimiq-ease), opacity .3s var(--nimiq-ease), transform .3s var(--nimiq-ease);
+    }
+
+    .inverse-theme .info-exclamation-icon,
+    .white-theme .info-exclamation-icon {
+        fill: white;
+    }
+
+    .little-time-left .info-exclamation-icon {
+        fill: var(--nimiq-orange);
+        opacity: 1;
+        transform: rotate(180deg); /* turn info icon into an exclamation mark */
+    }
+
+    .countdown {
+        font-size: 12px; /* relative to svg viewBox */
+        font-weight: bold;
+        text-anchor: middle;
+        dominant-baseline: central;
+        fill: var(--nimiq-light-blue);
+        transition: fill .3s var(--nimiq-ease);
+    }
+
+    .inverse-theme .countdown {
+        fill: var(--nimiq-light-blue-on-dark, var(--nimiq-light-blue));
+    }
+
+    .white-theme .countdown {
+        fill: rgba(255, 255, 255, 0.6);
+    }
+
+    .little-time-left .countdown {
+        fill: var(--nimiq-orange);
+    }
+
+    .transition-fade-enter-active,
+    .transition-fade-leave-active {
+        transition: opacity .3s var(--nimiq-ease);
+    }
+
+    .transition-fade-enter,
+    .transition-fade-leave-to {
+        opacity: 0 !important;
+    }
+</style>
+</head>
+<body>
+    <!-- Timer: sample state frozen at 2/3 remaining (progress = 1/3), 10 minutes left.
+         Props: defaults — alwaysShowTime=true => 'time-shown' class, radius tweened to
+         BASE_RADIUS * RADIUS_GROWTH_FACTOR = 8 * 1.5 = 12 (settled); theme='normal';
+         strokeWidth=2. Sample times: startTime=0, endTime=900000 (15 min total),
+         sampledTime stubbed at 300000 => _timeLeft=600000ms => countdown text '10' (minutes).
+         Tooltip not shown (no hover) => tooltip-box absent, 'time-shown' shows <text> not the
+         info-exclamation icon.
+         JS-computed SVG attrs, expanded by hand (r=12, fullCircleLength=2*PI*12=75.39822368615503):
+           time-circle:   length=(1-1/3)*75.398..=50.2654824574367  gap=25.132741228718338
+                          offset=75.398../4-gap=-6.283185307179579  strokeWidth=2
+           filler-circle: lengthWithLineCaps=75.398..-52.265..-4=19.132741228718338
+                          length=17.132741228718338  gap=58.2654824574367
+                          offset=75.398../4-1-2-1=14.849555921538759  strokeWidth=2
+    -->
+    <span class="tooltip timer position-bottom-right time-shown">
+        <a href="javascript:void(0);" tabindex="0" class="trigger">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26">
+                <circle class="time-circle" cx="50%" cy="50%" r="12"
+                    stroke-dasharray="50.2654824574367 25.132741228718338"
+                    stroke-dashoffset="-6.283185307179579"
+                    stroke-width="2"></circle>
+                <circle class="filler-circle" cx="50%" cy="50%" r="12"
+                    stroke-dasharray="17.132741228718338 58.2654824574367"
+                    stroke-dashoffset="14.849555921538759"
+                    stroke-width="2"></circle>
+                <text class="countdown" x="50%" y="50%">10</text>
+            </svg>
+        </a>
+    </span>
+</body>
+</html>

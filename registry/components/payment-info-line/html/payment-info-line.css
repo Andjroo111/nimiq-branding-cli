@@ -1,0 +1,340 @@
+/* Nimiq PaymentInfoLine — from @nimiq/vue-components PaymentInfoLine.vue
+   (composed with Identicon, Amount, Account, Tooltip [closed-state subset] and Timer).
+   All selectors are namespaced under the .payment-info-line root. Rule order and
+   specificity mirror the upstream scoped-CSS cascade — don't reorder. Requires the
+   legacy nimiq-style.min.css for CSS vars (--nimiq-blue, --nimiq-light-blue, ...)
+   and .nq-icon sizing. */
+
+/* --- Identicon.vue --- */
+.payment-info-line .identicon {
+    width: 10rem;
+}
+
+.payment-info-line .identicon img {
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Amount.vue --- */
+.payment-info-line .amount {
+    white-space: nowrap;
+}
+
+.payment-info-line .amount.approx::before {
+    content: '~ ';
+    opacity: 0.5;
+}
+
+/* --- Account.vue (subset used here: row layout, identicon/image + label) --- */
+.payment-info-line .account {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.75rem 2rem;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    font-size: 2rem;
+    line-height: 1.2;
+    overflow: hidden;
+}
+
+.payment-info-line .account.row {
+    width: 100%;
+    flex-direction: row;
+}
+
+.payment-info-line .identicon-and-label {
+    display: flex;
+    align-items: center;
+}
+
+.payment-info-line .row .identicon-and-label {
+    flex-direction: row;
+    overflow: hidden;
+    min-width: 5.625rem;
+    flex-grow: 1;
+}
+
+.payment-info-line .account .identicon {
+    flex-shrink: 0;
+    position: relative;
+}
+
+.payment-info-line .row .identicon {
+    width: 5.625rem;
+    height: 5.625rem;
+    margin-right: 1.5rem;
+}
+
+.payment-info-line .account-image {
+    border-radius: 1rem;
+}
+
+.payment-info-line .label {
+    overflow: hidden;
+}
+
+.payment-info-line .row .label:not(.editable) {
+    opacity: 0.7;
+    padding-left: 1rem;
+}
+
+.payment-info-line .row .label {
+    white-space: nowrap;
+    font-weight: 600;
+    mask-image: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+    flex-grow: 1;
+}
+
+/* --- Tooltip.vue (closed state: trigger only; for the open tooltip box use the
+       'tooltip' registry component) --- */
+.payment-info-line .tooltip {
+    display: inline-block;
+    position: relative;
+    line-height: 1;
+}
+
+.payment-info-line .trigger {
+    position: relative;
+    display: inline-block;
+    vertical-align: bottom;
+    text-decoration: none;
+    outline: none;
+    cursor: default;
+    color: inherit;
+}
+
+.payment-info-line .trigger svg:first-child:last-child,
+.payment-info-line .trigger img:first-child:last-child {
+    display: block;
+}
+
+/* --- Timer.vue --- */
+.payment-info-line .timer {
+    width: 3.25rem;
+    position: relative;
+}
+
+/* sets the height automatically from the width */
+.payment-info-line .timer::before {
+    content: '';
+    padding-top: 100%;
+    display: block;
+}
+
+.payment-info-line .timer .trigger,
+.payment-info-line .timer svg {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.payment-info-line .timer svg {
+    fill: none;
+    stroke-linecap: round;
+}
+
+.payment-info-line .timer circle {
+    stroke: var(--nimiq-blue);
+    transition: stroke .3s var(--nimiq-ease), opacity .3s var(--nimiq-ease);
+}
+
+.payment-info-line .filler-circle {
+    opacity: .2;
+}
+
+.payment-info-line .time-circle {
+    opacity: .3;
+}
+
+.payment-info-line .time-shown .time-circle {
+    stroke: var(--nimiq-light-blue);
+    opacity: 1;
+}
+
+/* timer at >= 75% elapsed: add .little-time-left to the .timer element */
+.payment-info-line .little-time-left .time-circle {
+    stroke: var(--nimiq-orange);
+    opacity: 1;
+}
+
+.payment-info-line .countdown {
+    font-size: 12px; /* relative to the 26x26 svg viewBox */
+    font-weight: bold;
+    text-anchor: middle;
+    dominant-baseline: central;
+    fill: var(--nimiq-light-blue);
+    transition: fill .3s var(--nimiq-ease);
+}
+
+.payment-info-line .little-time-left .countdown {
+    fill: var(--nimiq-orange);
+}
+
+/* --- PaymentInfoLine.vue --- */
+.payment-info-line .info-line {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    margin: 1.75rem 2.5rem 1rem 2.375rem;
+    flex-shrink: 0;
+    font-size: 2rem;
+    line-height: 1.5;
+    font-weight: normal;
+}
+
+.payment-info-line .amounts {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: .125rem;
+    cursor: default;
+}
+
+.payment-info-line .amounts > .amount {
+    color: var(--nimiq-light-blue);
+    font-weight: bold;
+}
+
+/* bad-rate warning icon (when shown next to the fiat amount) */
+.payment-info-line .amounts .trigger .nq-icon {
+    font-size: 1.625rem;
+    color: var(--nimiq-orange);
+    vertical-align: middle;
+}
+
+.payment-info-line .amounts .trigger .fiat-amount {
+    margin-top: .25rem;
+    color: var(--nimiq-blue);
+    font-size: 1.625rem;
+    line-height: 1;
+    font-weight: 600;
+    opacity: .6;
+}
+
+/* Price-breakdown tooltip contents (rendered inside the tooltip box when the
+   price tooltip is opened — see the 'tooltip' registry component for the box). */
+.payment-info-line .price-tooltip label {
+    font-weight: normal;
+}
+
+.payment-info-line .price-tooltip .price-breakdown {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 2rem;
+    row-gap: 1.5rem;
+    white-space: nowrap;
+}
+
+.payment-info-line .price-tooltip .price-breakdown label + * {
+    justify-self: end;
+}
+
+.payment-info-line .price-tooltip .info {
+    font-size: 1.625rem;
+    opacity: .5;
+}
+
+.payment-info-line .price-tooltip .rate-info {
+    margin-top: .5rem;
+}
+
+.payment-info-line .price-tooltip .rate-info.nq-orange {
+    opacity: 1;
+}
+
+.payment-info-line .price-tooltip .free-service-info {
+    margin-top: 1.5rem;
+    color: var(--nimiq-green);
+    opacity: 1;
+}
+
+.payment-info-line .price-tooltip hr {
+    margin: 2rem -1rem 1.5rem;
+    border: unset;
+    border-top: 1px solid currentColor;
+    opacity: .2;
+}
+
+.payment-info-line .price-tooltip .total {
+    display: flex;
+    justify-content: space-between;
+}
+
+.payment-info-line .price-tooltip .total .amount {
+    font-weight: bold;
+}
+
+.payment-info-line .price-tooltip .network-fee-info {
+    margin-top: .5rem;
+    margin-bottom: -.25rem;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.payment-info-line .arrow-runway {
+    flex-grow: 1;
+    min-width: 3rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.payment-info-line .arrow-runway .nq-icon {
+    opacity: 0;
+    font-size: 2rem;
+    animation: payment-info-line-arrow-shooting 2.7s cubic-bezier(.2,.5,.75,.5) infinite;
+}
+
+@keyframes payment-info-line-arrow-shooting {
+    0%   { transform: translate3D(-3.5rem, 0, 0); }
+    15%  { transform: translate3D(-3.5rem, 0, 0); opacity: 0; }
+    30%  { opacity: .2; }
+    70%  { opacity: .2; }
+    85%  { transform: translate3D(3rem, 0, 0); opacity: 0; }
+    100% { transform: translate3D(3rem, 0, 0); }
+}
+
+/* PaymentInfoLine's overrides of the embedded Account (order matters: these come
+   after the Account rules, like upstream's style injection order) */
+.payment-info-line .account {
+    padding: 0;
+    width: auto !important;
+    flex-shrink: 1;
+}
+
+.payment-info-line .account .identicon {
+    min-width: unset;
+    width: 3.375rem;
+    height: 3.375rem;
+    margin-right: 0;
+}
+
+.payment-info-line .account .account-image {
+    border-radius: .5rem;
+    width: 3rem;
+    height: 3rem;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.payment-info-line .account .label {
+    padding-left: .75rem; /* note: upstream's .row .label:not(.editable) padding-left 1rem wins by specificity */
+    margin-bottom: .25rem;
+    font-weight: unset;
+    opacity: 1 !important;
+    mask-image: unset;
+    white-space: nowrap;
+    text-overflow: fade;
+}
+
+.payment-info-line .timer {
+    margin: auto -.5rem auto 1rem;
+    flex-shrink: 0;
+}

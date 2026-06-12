@@ -1,0 +1,127 @@
+/* app-showcase-card — nimiq.com "THE APPS" marketing card.
+   Layout is screenshot-calibrated (references/screenshots/nimiq-com/home-card-component.png
+   + home-desktop-full.png THE APPS section). The device previews and the hexagon marks are
+   the REAL team-shipped assets vendored under assets/ — see the snippet HTML for the paths.
+   Self-contained: marketing pages don't use the legacy 8px-root framework, so all
+   units are plain px. Every selector is namespaced under .nq-app-showcase-card. */
+
+.nq-app-showcase-card {
+    --asc-navy: #1F2348;
+    --asc-text-60: rgba(31, 35, 72, 0.6);
+    /* official signet gradient (same stops as assets/logos/official/colored/nimiq_signet_rgb_*.svg) */
+    --asc-gold-bg: radial-gradient(at 100% 100%, #EC991C, #E9B213);
+
+    position: relative;
+    box-sizing: border-box;
+    width: 420px;
+    height: 520px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #EFEEF0;
+    padding: 44px 32px 0;
+    text-align: center;
+    font-family: 'Mulish', sans-serif;
+    color: var(--asc-navy);
+}
+
+.nq-app-showcase-card *,
+.nq-app-showcase-card *::before,
+.nq-app-showcase-card *::after { box-sizing: border-box; }
+
+/* ---- gold app-icon chip (official white Nimiq signet inside) ---- */
+.nq-app-showcase-card .asc-icon {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 15px;
+    background: var(--asc-gold-bg);
+}
+.nq-app-showcase-card .asc-icon-mark {
+    display: block;
+    width: 22px;
+    height: auto;
+}
+.nq-app-showcase-card .asc-icon-label {
+    margin-top: 3px;
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* ---- copy ---- */
+.nq-app-showcase-card .asc-title {
+    margin: 22px 0 0;
+    font-size: 27px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: var(--asc-navy);
+}
+.nq-app-showcase-card .asc-subtitle {
+    margin: 12px auto 0;
+    max-width: 300px;
+    font-size: 19px;
+    line-height: 1.5;
+    font-weight: 400;
+    color: var(--asc-text-60);
+}
+
+/* ---- real phone screenshot, clipped by the card's bottom edge ---- */
+.nq-app-showcase-card .asc-mock {
+    position: relative;
+    margin: 40px auto 0;
+    width: 246px;
+}
+.nq-app-showcase-card .asc-shot {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* drop-shadow (not box-shadow) so the shadow follows the screenshot's
+       rounded alpha edges instead of its rectangular bounding box */
+    filter: drop-shadow(0 6px 20px rgba(31, 35, 72, 0.11));
+}
+
+/* =========================================================
+   .wide modifier — signet + copy left, desktop shot right
+   ========================================================= */
+.nq-app-showcase-card.wide {
+    width: 760px;
+    height: 320px;
+    padding: 0;
+    text-align: left;
+}
+.nq-app-showcase-card.wide .asc-copy {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 48px;
+    width: 230px;
+    z-index: 1;
+}
+/* wide cards show the bare colored signet (no chip box), like the live site */
+.nq-app-showcase-card.wide .asc-signet {
+    display: block;
+    width: 44px;
+    height: auto;
+}
+.nq-app-showcase-card.wide .asc-title {
+    margin-top: 20px;
+    font-size: 24px;
+}
+.nq-app-showcase-card.wide .asc-subtitle {
+    margin: 10px 0 0;
+    max-width: none;
+    font-size: 17px;
+}
+
+/* desktop window screenshot, bleeding off the right + bottom edges */
+.nq-app-showcase-card.wide .asc-mock {
+    position: absolute;
+    top: 44px;
+    left: 330px;
+    margin: 0;
+    width: 520px;
+}

@@ -1,0 +1,18 @@
+{
+  "name": "page-footer",
+  "purpose": "Footer area of a Nimiq page/card (nq-card-footer). Flex column that pins action buttons at the bottom of a SmallPage and applies the standard nq-button margins.",
+  "category": "layout",
+  "variants": ["vue", "html"],
+  "props": [],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": ["small-page"],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 500, "height": 700 },
+    "selector": ".small-page",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "PageFooter is a pure slot container: .page-footer.nq-card-footer. The upstream scoped '>>>' deep selector (.page-footer >>> .nq-button) is flattened to a plain descendant selector in the HTML variant and :deep() in the Vue 3 port. Sample state renders it inside a SmallPage with one light-blue 'Continue' nq-button. With only a footer as card child (no PageBody), the footer sits at the top of the card — in real layouts PageBody flex-grows to push it down."
+}
