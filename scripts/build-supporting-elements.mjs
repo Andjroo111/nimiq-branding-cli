@@ -23,7 +23,7 @@ for (const name of NEEDED) {
   const htmlPath = join(C, name, 'html', `${name}.html`);
   const cssPath = join(C, name, 'html', `${name}.css`);
   if (!existsSync(htmlPath)) { console.warn(`skip ${name}: no snippet dir`); continue; }
-  snippets[name] = await readFile(htmlPath, 'utf8');
+  snippets[name] = (await readFile(htmlPath, 'utf8')).replaceAll('../../../../assets/', 'assets/'); // rewriteAssetPaths: page lives at repo root
   if (existsSync(cssPath)) styles += `\n/* === ${name} === */\n` + await readFile(cssPath, 'utf8');
 }
 

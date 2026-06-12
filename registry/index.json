@@ -82,7 +82,7 @@
     },
     {
       "name": "app-showcase-card",
-      "purpose": "nimiq.com 'THE APPS' marketing card: light-gray rounded card with gold hexagon app-icon chip, title, 2-line gray subtitle and a CSS-built device mock ('Payment successful' toast + amount) clipped at the card edge. .wide modifier puts icon+copy left and a dashboard window mock right.",
+      "purpose": "nimiq.com 'THE APPS' marketing card: light-gray rounded card with gold app-icon chip (official white Nimiq signet), title, 2-line gray subtitle and the REAL Nimiq Pay phone screenshot clipped at the card edge. .wide modifier puts the bare gold signet + copy left and the REAL Nimiq Wallet desktop screenshot bleeding off the bottom-right.",
       "category": "marketing",
       "variants": [
         "default",
@@ -182,7 +182,7 @@
     },
     {
       "name": "honeycomb-band",
-      "purpose": "nimiq.com community honeycomb band: blue 'Community →' pill centered above a clipped flat-top hexagon mosaic in very light grays, with three brand-colored social hexagons mixed in (YouTube red play, X black, Facebook blue f).",
+      "purpose": "nimiq.com community honeycomb band: blue 'Community →' pill centered above the real nimiq.com fading honeycomb background (bg-hexagons.svg) with three brand-colored social hexagons overlaid (YouTube red, X black, Facebook blue).",
       "category": "marketing",
       "variants": [
         "vue",

@@ -2,23 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>App showcase card — truth (screenshot-referenced recreation)</title>
+<title>App showcase card — truth (real team-shipped assets)</title>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* app-showcase-card — nimiq.com "THE APPS" marketing card (screenshot-referenced).
+/* app-showcase-card — nimiq.com "THE APPS" marketing card.
+   Layout is screenshot-calibrated (references/screenshots/nimiq-com/home-card-component.png
+   + home-desktop-full.png THE APPS section). The device previews and the hexagon marks are
+   the REAL team-shipped assets vendored under assets/ — see the snippet HTML for the paths.
    Self-contained: marketing pages don't use the legacy 8px-root framework, so all
    units are plain px. Every selector is namespaced under .nq-app-showcase-card. */
 
 .nq-app-showcase-card {
     --asc-navy: #1F2348;
     --asc-text-60: rgba(31, 35, 72, 0.6);
-    --asc-text-50: rgba(31, 35, 72, 0.5);
-    --asc-green: #21BCA5;
-    --asc-light-blue: #0582CA;
+    /* official signet gradient (same stops as assets/logos/official/colored/nimiq_signet_rgb_*.svg) */
     --asc-gold-bg: radial-gradient(at 100% 100%, #EC991C, #E9B213);
-    --asc-frame: #D9D9D9;
-    --asc-screen: #F8F8F8;
-    --asc-bar: #E2E2E7;
 
     position: relative;
     box-sizing: border-box;
@@ -37,7 +35,7 @@
 .nq-app-showcase-card *::before,
 .nq-app-showcase-card *::after { box-sizing: border-box; }
 
-/* ---- gold app-icon chip ---- */
+/* ---- gold app-icon chip (official white Nimiq signet inside) ---- */
 .nq-app-showcase-card .asc-icon {
     display: inline-flex;
     flex-direction: column;
@@ -48,11 +46,10 @@
     border-radius: 15px;
     background: var(--asc-gold-bg);
 }
-.nq-app-showcase-card .asc-icon-hex {
+.nq-app-showcase-card .asc-icon-mark {
+    display: block;
     width: 22px;
-    height: 19px;
-    background: #fff;
-    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    height: auto;
 }
 .nq-app-showcase-card .asc-icon-label {
     margin-top: 3px;
@@ -79,174 +76,23 @@
     color: var(--asc-text-60);
 }
 
-/* ---- phone device mock (CSS-built, neutral) ---- */
+/* ---- real phone screenshot, clipped by the card's bottom edge ---- */
 .nq-app-showcase-card .asc-mock {
     position: relative;
     margin: 40px auto 0;
     width: 246px;
 }
-.nq-app-showcase-card .asc-phone {
-    position: relative;
-    width: 246px;
-    height: 280px; /* clipped by the card's bottom edge */
-    border: 6px solid var(--asc-frame);
-    border-bottom: none;
-    border-radius: 28px 28px 0 0;
-    background: var(--asc-screen);
-    padding: 18px 16px 0;
-}
-.nq-app-showcase-card .asc-phone-btn {
-    position: absolute;
-    top: 78px;
-    right: -10px;
-    width: 4px;
-    height: 38px;
-    border-radius: 2px;
-    background: var(--asc-frame);
-}
-
-/* status row: hamburger left, counter pill right */
-.nq-app-showcase-card .asc-phone-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.nq-app-showcase-card .asc-burger {
-    display: inline-flex;
-    flex-direction: column;
-    gap: 4px;
-    width: 17px;
-}
-.nq-app-showcase-card .asc-burger i {
+.nq-app-showcase-card .asc-shot {
     display: block;
-    height: 2px;
-    border-radius: 1px;
-    background: #B0B2BD;
-}
-.nq-app-showcase-card .asc-burger i:nth-child(2) { width: 13px; }
-.nq-app-showcase-card .asc-burger i:nth-child(3) { width: 15px; }
-.nq-app-showcase-card .asc-counter {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    border-radius: 999px;
-    background: #EAEAEC;
-    padding: 4px 10px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--asc-navy);
-}
-.nq-app-showcase-card .asc-counter::before {
-    content: '';
-    width: 7px;
-    height: 9px;
-    background: #FC8702;
-    clip-path: polygon(50% 0%, 100% 55%, 80% 100%, 20% 100%, 0% 55%);
-}
-
-/* "Payment successful" toast pill, overlapping the status row */
-.nq-app-showcase-card .asc-toast {
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    white-space: nowrap;
-    border-radius: 999px;
-    background: #fff;
-    box-shadow: 0 5px 14px rgba(31, 35, 72, 0.10);
-    padding: 10px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--asc-navy);
-}
-.nq-app-showcase-card .asc-toast svg {
-    width: 14px;
-    height: 12px;
-    stroke: var(--asc-green);
-    stroke-width: 2.5;
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-/* balance block */
-.nq-app-showcase-card .asc-amount {
-    margin-top: 56px;
-    font-size: 33px;
-    line-height: 1.2;
-    font-weight: 400;
-    color: var(--asc-navy);
-}
-.nq-app-showcase-card .asc-amount-sub {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    margin-top: 6px;
-    font-size: 12.5px;
-    font-weight: 600;
-    color: var(--asc-text-50);
-}
-.nq-app-showcase-card .asc-amount-sub svg {
-    width: 14px;
-    height: 9px;
-    stroke: #9A9CAB;
-    stroke-width: 1.5;
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-.nq-app-showcase-card .asc-topup {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    margin-top: 14px;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--asc-light-blue);
-    text-decoration: none;
-}
-.nq-app-showcase-card .asc-topup::after {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-right: 2px solid var(--asc-light-blue);
-    border-top: 2px solid var(--asc-light-blue);
-    transform: rotate(45deg);
-    margin-left: 2px;
-}
-
-/* faint transaction row, cut off by the card edge */
-.nq-app-showcase-card .asc-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 34px;
-}
-.nq-app-showcase-card .asc-row-avatar {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--asc-bar);
-    flex-shrink: 0;
-}
-.nq-app-showcase-card .asc-row-bar {
-    height: 9px;
-    border-radius: 4.5px;
-    background: var(--asc-bar);
-    width: 92px;
-}
-.nq-app-showcase-card .asc-row-bar.amount {
-    width: 52px;
-    margin-left: auto;
+    width: 100%;
+    height: auto;
+    /* drop-shadow (not box-shadow) so the shadow follows the screenshot's
+       rounded alpha edges instead of its rectangular bounding box */
+    filter: drop-shadow(0 6px 20px rgba(31, 35, 72, 0.11));
 }
 
 /* =========================================================
-   .wide modifier — icon + copy left, dashboard mock right
+   .wide modifier — signet + copy left, desktop shot right
    ========================================================= */
 .nq-app-showcase-card.wide {
     width: 760px;
@@ -260,10 +106,14 @@
     transform: translateY(-50%);
     left: 48px;
     width: 230px;
+    z-index: 1;
 }
-/* wide cards show a bare hexagon glyph in the chip (no app label) */
-.nq-app-showcase-card.wide .asc-icon-label { display: none; }
-.nq-app-showcase-card.wide .asc-icon-hex { width: 26px; height: 23px; }
+/* wide cards show the bare colored signet (no chip box), like the live site */
+.nq-app-showcase-card.wide .asc-signet {
+    display: block;
+    width: 44px;
+    height: auto;
+}
 .nq-app-showcase-card.wide .asc-title {
     margin-top: 20px;
     font-size: 24px;
@@ -274,59 +124,14 @@
     font-size: 17px;
 }
 
-/* dashboard window mock */
+/* desktop window screenshot, bleeding off the right + bottom edges */
 .nq-app-showcase-card.wide .asc-mock {
     position: absolute;
     top: 44px;
     left: 330px;
     margin: 0;
-    width: 500px; /* bleeds off the right + bottom edges */
+    width: 520px;
 }
-.nq-app-showcase-card .asc-window {
-    position: relative;
-    display: flex;
-    width: 500px;
-    height: 300px;
-    border-radius: 8px 0 0 0;
-    background: #fff;
-    box-shadow: 0 10px 30px rgba(31, 35, 72, 0.08);
-    overflow: hidden;
-}
-.nq-app-showcase-card .asc-window-side {
-    width: 64px;
-    flex-shrink: 0;
-    background: var(--asc-navy);
-    padding: 16px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-}
-.nq-app-showcase-card .asc-window-side i {
-    display: block;
-    width: 22px;
-    height: 22px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.16);
-}
-.nq-app-showcase-card .asc-window-side i:first-child {
-    background: var(--asc-gold-bg);
-    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-    border-radius: 0;
-    height: 19px;
-}
-.nq-app-showcase-card .asc-window-main {
-    position: relative;
-    flex-grow: 1;
-    background: var(--asc-screen);
-    padding: 20px 24px 0;
-    text-align: center;
-}
-.nq-app-showcase-card .asc-window-main .asc-toast { top: 14px; }
-.nq-app-showcase-card .asc-window-main .asc-amount { margin-top: 64px; }
-.nq-app-showcase-card .asc-window-main .asc-row { margin-top: 40px; }
-.nq-app-showcase-card .asc-window-main .asc-row-bar { width: 120px; }
-.nq-app-showcase-card .asc-window-main .asc-row-bar.amount { width: 64px; }
 </style>
 <style>
     body { margin: 0; background: #fff; font-family: 'Mulish', sans-serif; }
@@ -339,69 +144,25 @@
     <!-- Standard card -->
     <div class="nq-app-showcase-card">
         <div class="asc-icon">
-            <span class="asc-icon-hex"></span>
+            <img class="asc-icon-mark" src="../../../../assets/logos/official/white/nimiq_signet_white_base_size.svg" alt="" width="72" height="64">
             <span class="asc-icon-label">Pay</span>
         </div>
         <h3 class="asc-title">Pay App</h3>
         <p class="asc-subtitle">Pay with NIM at more acceptance points every day</p>
         <div class="asc-mock">
-            <div class="asc-phone">
-                <span class="asc-phone-btn"></span>
-                <div class="asc-phone-top">
-                    <span class="asc-burger"><i></i><i></i><i></i></span>
-                    <span class="asc-counter">230</span>
-                </div>
-                <div class="asc-toast">
-                    <svg viewBox="0 0 14 12"><path d="M1.5 6.5 5 10 12.5 1.5"/></svg>
-                    Payment successful
-                </div>
-                <div class="asc-amount">150,00&nbsp;&euro;</div>
-                <div class="asc-amount-sub">
-                    151,000 NIM
-                    <svg viewBox="0 0 14 9"><path d="M1 7.5 5 4l3 2.5L13 1.5M13 1.5h-3M13 1.5v3"/></svg>
-                    +4.1%
-                </div>
-                <div><span class="asc-topup">Top up</span></div>
-                <div class="asc-row">
-                    <span class="asc-row-avatar"></span>
-                    <span class="asc-row-bar"></span>
-                    <span class="asc-row-bar amount"></span>
-                </div>
-            </div>
+            <img class="asc-shot" src="../../../../assets/img/nimiq-pay-preview.webp" alt="Nimiq Pay app — payment successful" width="490" height="916">
         </div>
     </div>
 
     <!-- Wide card -->
     <div class="nq-app-showcase-card wide">
         <div class="asc-copy">
-            <div class="asc-icon">
-                <span class="asc-icon-hex"></span>
-                <span class="asc-icon-label">Pay</span>
-            </div>
+            <img class="asc-signet" src="../../../../assets/logos/official/colored/nimiq_signet_rgb_base_size.svg" alt="" width="72" height="64">
             <h3 class="asc-title">Nimiq Wallet</h3>
             <p class="asc-subtitle">Buying, staking, swapping, the wallet does it all</p>
         </div>
         <div class="asc-mock">
-            <div class="asc-window">
-                <div class="asc-window-side"><i></i><i></i><i></i><i></i></div>
-                <div class="asc-window-main">
-                    <div class="asc-toast">
-                        <svg viewBox="0 0 14 12"><path d="M1.5 6.5 5 10 12.5 1.5"/></svg>
-                        Payment successful
-                    </div>
-                    <div class="asc-amount">2&thinsp;494,09&nbsp;&euro;</div>
-                    <div class="asc-amount-sub">
-                        2,522,624.58 NIM
-                        <svg viewBox="0 0 14 9"><path d="M1 7.5 5 4l3 2.5L13 1.5M13 1.5h-3M13 1.5v3"/></svg>
-                        +4.1%
-                    </div>
-                    <div class="asc-row">
-                        <span class="asc-row-avatar"></span>
-                        <span class="asc-row-bar"></span>
-                        <span class="asc-row-bar amount"></span>
-                    </div>
-                </div>
-            </div>
+            <img class="asc-shot" src="../../../../assets/img/nimiq-wallet-preview.webp" alt="Nimiq Wallet dashboard" width="1734" height="1164">
         </div>
     </div>
 
