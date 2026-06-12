@@ -1,0 +1,68 @@
+name: verify
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  pixel-verify:
+    name: nq verify all (pixel diff vs truth renders)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      # References in git were rendered on macOS; font rasterization differs per
+      # platform, so re-snap every reference from its truth render ON THIS RUNNER,
+      # then diff the demo render against it. Truth == demo on the same machine is
+      # the invariant a PR must not break.
+      - name: Snap references from truth renders
+        run: |
+          for d in registry/components/*/; do
+            name=$(basename "$d")
+            node scripts/snap.mjs "$name" || exit 1
+          done
+
+      - name: nq verify all
+        run: node bin/nq.js verify all
+
+      - name: Upload diffs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pixel-diffs
+          path: .verify/
+          if-no-files-found: ignore
+
+  cli-smoke:
+    name: CLI smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: nq list / info / add / assets
+        run: |
+          node bin/nq.js list
+          node bin/nq.js info amount-with-fee
+          mkdir -p /tmp/smoke && cd /tmp/smoke
+          node "$GITHUB_WORKSPACE/bin/nq.js" init --style legacy
+          node "$GITHUB_WORKSPACE/bin/nq.js" add amount-with-fee account-header --html
+          node "$GITHUB_WORKSPACE/bin/nq.js" assets add icon:logos-nimiq-horizontal world-map
+          test -f components/amount-with-fee/demo.html
+          test -f nimiq/assets/img/world-map.svg
+          test -f nimiq/assets/img/iqons.min.svg
+          echo "smoke OK"
