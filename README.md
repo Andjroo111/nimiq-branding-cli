@@ -1,16 +1,35 @@
 # nimiq-branding-cli
 
 Scaffold **pixel-accurate Nimiq-branded UI components** into any project — Vue 3 SFCs or plain
-HTML/CSS — from a registry where every component is screenshot-diffed against the real Nimiq
-apps before it ships.
+HTML/CSS — from a registry of 39 components where every one is pixel-diffed against the real
+Nimiq apps before it ships, plus the team's real asset library (logos, icons, flags, imagery).
+
+> Unofficial community project — see [NOTICE.md](NOTICE.md). All visuals are the Nimiq team's
+> real shipped files or faithful ports of their open-source components, never hand-drawn
+> approximations.
+
+## Install
+
+```bash
+git clone https://github.com/Andjroo111/nimiq-branding-cli
+cd nimiq-branding-cli && npm install     # dev deps only needed for `nq verify`
+ln -s "$PWD/bin/nq.js" ~/.local/bin/nq   # or: npm link
+```
+
+## Use
 
 ```
-nq list                     # browse the registry
+nq list                     # browse the 39-component registry
 nq init --style modern      # drop Nimiq design tokens into your project
-nq add amount-input         # copy a component (+ its deps + CSS) into src/components
-nq add wallet-card --html   # plain HTML/CSS variant instead of Vue
+nq add amount-input         # copy a component (+ deps + CSS + real assets) into src/components
+nq add account-header --html   # plain HTML/CSS variant instead of Vue
+nq assets search wallet     # search 182 vendored files + 323 nimiq-icons + 422 hexagon flags
+nq assets add icon:logos-nimiq-horizontal flag:cr-hexagon world-map
 nq verify all               # (repo dev) re-run pixel verification against references
 ```
+
+Open `showcase.html` for the full component gallery and `supporting-elements.html` for the
+wallet + marketing element demos.
 
 ## How pixel accuracy is enforced
 
