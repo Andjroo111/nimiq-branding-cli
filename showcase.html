@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nimiq Component Registry — Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Fira+Mono:400,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/legacy/nimiq-style.min.css">
+<style>
+body { font-family: 'Mulish', 'Muli', system-ui, sans-serif !important; background: #F8F8F8; margin: 0; }
+
+/* hero */
+.hero { background-image: radial-gradient(100% 100% at bottom right, #260133, #1F2348); color: #fff; padding: 72px 32px 64px; text-align: center; }
+.hero svg { margin-bottom: 24px; }
+.hero h1 { font-size: 34px; font-weight: 800; margin: 0 0 12px; letter-spacing: -0.5px; }
+.hero p { font-size: 17px; color: rgba(255,255,255,0.6); max-width: 640px; margin: 0 auto; line-height: 1.6; }
+.hero .pill { display: inline-block; margin-top: 24px; background: rgba(233,178,19,0.15); color: #E9B213; font-weight: 700; font-size: 13px; padding: 8px 18px; border-radius: 500px; }
+
+.section-title { max-width: 1280px; margin: 64px auto 8px; padding: 0 32px; font-size: 22px; font-weight: 800; color: #1F2348; }
+.section-sub { max-width: 1280px; margin: 0 auto 28px; padding: 0 32px; color: rgba(31,35,72,0.5); font-size: 15px; line-height: 1.6; }
+
+/* composite exhibit */
+.composite-wrap { display: flex; flex-wrap: wrap; gap: 40px; align-items: center; justify-content: center; max-width: 1280px; margin: 0 auto; padding: 24px 32px 8px; }
+.composite-body { align-items: center; display: flex; flex-direction: column; gap: 16px; justify-content: center; }
+.composite-notes { max-width: 460px; }
+.composite-notes li { color: rgba(31,35,72,0.75); font-size: 15px; line-height: 1.65; margin-bottom: 14px; }
+.composite-notes b { color: #1F2348; }
+
+/* grid */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 28px; max-width: 1280px; margin: 0 auto; padding: 16px 32px 80px; }
+.tile { background: #fff; border-radius: 10px; box-shadow: 0 4px 28px rgba(0,0,0,0.111); display: flex; flex-direction: column; overflow: hidden; }
+.tile-stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 44px 32px; min-height: 190px; background: #fff; }
+.stage-tall-top { padding-top: 110px; }
+.tile-info { border-top: 1px solid rgba(31,35,72,0.08); padding: 22px 28px 26px; }
+.tile-info h3 { margin: 0 0 8px; font-size: 16px; font-weight: 800; color: #1F2348; font-family: 'Fira Mono', monospace; }
+.verified-badge { font-family: 'Mulish', sans-serif; font-size: 11px; font-weight: 700; color: #21BCA5; background: rgba(33,188,165,0.1); border-radius: 500px; padding: 3px 10px; vertical-align: 2px; margin-left: 6px; }
+.tile-info .purpose { margin: 0 0 10px; color: rgba(31,35,72,0.5); font-size: 13.5px; line-height: 1.55; }
+.tile-info .usage { margin: 0; color: rgba(31,35,72,0.8); font-size: 14px; line-height: 1.6; }
+.tile-info .usage strong { color: #0582CA; font-weight: 700; }
+
+/* footer */
+.page-footer-band { background-image: radial-gradient(100% 100% at bottom right, #260133, #1F2348); color: rgba(255,255,255,0.5); text-align: center; padding: 48px 32px; font-size: 14px; }
+.page-footer-band a { color: rgba(255,255,255,0.5); text-decoration: none; }
+.page-footer-band a:hover { color: #fff; }
+
+/* keep snippet buttons from stretching the buttons tile too tall */
+#buttons .tile-stage .nq-button { margin: 8px auto; }
+
+/* component snippet styles (verbatim from the registry) */
+
+/* === identicon === */
+/* Nimiq Identicon — from @nimiq/vue-components Identicon.vue.
+   Size the identicon by setting width (and optionally height) on .identicon. */
+.identicon {
+    width: 10rem;
+}
+
+.identicon img {
+    width: 100%;
+    height: 100%;
+}
+
+/* === address-display === */
+/* AddressDisplay (from @nimiq/vue-components AddressDisplay.vue)
+   Assumes the Nimiq style root font-size of 8px (html { font-size: 8px })
+   and Fira Mono loaded, e.g.:
+   https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500&display=swap */
+
+.address-display {
+    width: 100%;
+    box-sizing: content-box;
+    color: rgba(31, 35, 72, .5); /* nimiq-blue with .5 opacity */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    font-size: 3rem;
+}
+
+.format-nimiq {
+    max-width: 28.25rem;
+}
+
+.format-ethereum {
+    max-width: 27rem;
+}
+
+.address-display.copyable:hover,
+.address-display.copyable:focus,
+.address-display.copyable.copied {
+    font-weight: 500;
+}
+
+.chunk {
+    font-family: 'Fira Mono', monospace;
+    margin: 0.875rem 0;
+    line-height: 1.11;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.format-nimiq .chunk {
+    width: 33%;
+    text-transform: uppercase;
+}
+
+.format-ethereum .chunk {
+    width: 100%;
+}
+
+.space {
+    font-size: 0;
+}
+
+/* === copyable === */
+/* Copyable — Nimiq legacy style
+ * Requires nimiq-style.min.css (defines --nimiq-light-blue, --nimiq-light-blue-bg,
+ * --nimiq-ease and the 8px rem base) and the Mulish font.
+ * Markup:
+ *   <div class="copyable" tabindex="0">
+ *     <div class="background"></div>
+ *     YOUR CONTENT
+ *     <div class="tooltip">Copied</div>
+ *   </div>
+ * Toggle the "copied" class on .copyable for ~800ms after copying to show the tooltip.
+ */
+
+.copyable {
+    position: relative;
+    padding: 1.5rem;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color .3s var(--nimiq-ease);
+}
+
+.copyable:hover,
+.copyable:focus,
+.copyable.copied {
+    color: var(--nimiq-light-blue) !important;
+    outline: none;
+}
+
+.copyable .background {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-image: var(--nimiq-light-blue-bg);
+    border-radius: .5rem;
+    opacity: 0;
+    transition: opacity .3s var(--nimiq-ease);
+}
+
+.copyable:hover .background,
+.copyable:focus .background,
+.copyable.copied .background {
+    opacity: .07;
+}
+
+.copyable .tooltip {
+    pointer-events: none;
+    font-size: 1.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--nimiq-light-blue-bg);
+    position: absolute;
+    top: -5rem;
+    left: 50%;
+    margin-left: -3.75rem; /* half width of tooltip */
+    border-radius: .5rem;
+    color: white;
+    font-weight: 600;
+    line-height: 1.1;
+    box-shadow:
+        0px 2px 2.5px rgba(31, 35, 72, 0.02),
+        0px 7px 8.5px rgba(31, 35, 72, 0.04),
+        0px 18px 38px rgba(31, 35, 72, 0.07);
+
+    /* Animated styles */
+    transform: translate3d(0, 1rem, 0);
+    opacity: 0;
+
+    transition: transform .3s var(--nimiq-ease), opacity .3s var(--nimiq-ease);
+    transition-delay: .2s;
+}
+
+.copyable .tooltip::after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 2.25rem;
+    height: 2rem;
+    left: calc(50% - 1.125rem);
+    mask-image: url('data:image/svg+xml,<svg viewBox="0 0 18 16" xmlns="http://www.w3.org/2000/svg"><path d="M9 7.12c-.47 0-.93.2-1.23.64L3.2 14.29A4 4 0 0 1 0 16h18a4 4 0 0 1-3.2-1.7l-4.57-6.54c-.3-.43-.76-.64-1.23-.64z" fill="white"/></svg>');
+    z-index: 1000; /* move above tooltip-box's box-shadow */
+    background: #1A6AD2;
+    transform: rotate(180deg) translateY(-0.75rem);
+}
+
+.copyable.copied .tooltip {
+    transition-delay: 0s;
+    pointer-events: all;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+/* === address-input === */
+/* AddressInput — Nimiq address entry field (static visual)
+   Requires: nimiq-style (css vars --nimiq-blue, --nimiq-light-blue, --nimiq-ease; html { font-size: 8px })
+   and the Fira Mono font. */
+
+.address-input {
+    --font-size: 3rem;
+    --block-height: 4.125rem;
+    --block-width: 8.5rem;
+    --block-gap-v: 0.75rem;
+    --block-gap-h: 1rem;
+
+    contain: size layout paint style;
+    width: calc(3 * var(--block-width) + 3 * var(--block-gap-h));
+    height: calc(3 * var(--block-height) + 3.5 * var(--block-gap-v));
+    position: relative;
+    background: white;
+
+    border-radius: 0.5rem;
+    --border-color: rgba(31, 35, 72, 0.1); /* Based on Nimiq Blue */
+    box-shadow: inset 0 0 0 1.5px var(--border-color);
+    transition: box-shadow .2s ease, height 0.3s var(--nimiq-ease);
+    overflow: hidden;
+}
+
+.address-input:hover {
+    --border-color: rgba(31, 35, 72, 0.14); /* Based on Nimiq Blue */
+}
+
+.address-input:focus-within {
+    --border-color: rgba(5, 130, 202, 0.4); /* Based on Nimiq Light Blue */
+}
+
+.address-input textarea {
+    --line-height: calc(var(--block-height) + var(--block-gap-v));
+
+    contain: size layout paint style;
+    position: absolute;
+    width: 100%;
+    height: calc(3 * var(--line-height));
+    line-height: var(--line-height);
+    top: calc(var(--font-size) / 24 + var(--block-gap-v) / 2);
+    left: calc(var(--font-size) / 24 * 5 + var(--block-gap-h) / 2);
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: unset !important;
+    resize: none;
+    overflow: hidden;
+    z-index: 1;
+    font-family: Fira Mono, 'monospace';
+    font-size: var(--font-size);
+    letter-spacing: calc(1.8rem - 0.6em);
+    word-spacing: calc(var(--block-gap-h) / 2);
+    color: var(--nimiq-blue);
+    background: transparent;
+    transition: color 0.2s ease;
+}
+
+.address-input textarea:focus {
+    color: var(--nimiq-light-blue);
+}
+
+.address-input.display-as-nim-address textarea {
+    text-transform: uppercase;
+    /* Mask so text/selections are only visible within the blocks */
+    mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 123"><rect x="-1" y="6" width="62" height="28"/><rect x="79" y="6" width="62" height="28"/><rect x="159" y="6" width="62" height="28"/><rect x="-1" y="47" width="62" height="28"/><rect x="79" y="47" width="62" height="28"/><rect x="159" y="47" width="62" height="28"/><rect x="-1" y="88" width="62" height="28"/><rect x="79" y="88" width="62" height="28"/><rect x="159" y="88" width="62" height="28"/></svg>');
+}
+
+@supports (mix-blend-mode: screen) {
+    .address-input.display-as-nim-address textarea {
+        color: black; /* upstream colors the text via mix-blend-mode overlays */
+    }
+}
+
+.address-input ::-webkit-input-placeholder {
+    opacity: .6;
+    transition: color .2s var(--nimiq-ease);
+}
+.address-input ::-moz-placeholder {
+    opacity: .6;
+    transition: color .2s var(--nimiq-ease);
+}
+.address-input ::placeholder {
+    opacity: .6;
+    transition: color .2s var(--nimiq-ease);
+}
+
+.address-input textarea:focus::-webkit-input-placeholder {
+    color: var(--nimiq-light-blue);
+}
+.address-input textarea:focus::-moz-placeholder {
+    color: var(--nimiq-light-blue);
+}
+.address-input textarea:focus::placeholder {
+    color: var(--nimiq-light-blue);
+}
+
+.address-input .grid {
+    contain: size layout paint style;
+    position: absolute;
+    top: calc(var(--font-size) / 24 * 8 + var(--block-gap-v) / 2);
+    left: calc(var(--font-size) / 24 * 5 + var(--block-gap-h) / 2);
+    stroke: var(--border-color);
+    transition: stroke .2s ease, opacity 0.2s ease;
+}
+
+.address-input textarea:focus ~ .grid {
+    opacity: 0.5;
+}
+
+/* === label-input === */
+/* Nimiq label-input — requires css/legacy/nimiq-style.min.css (nq-input, --nimiq-* vars) */
+.label-input {
+    position: relative;
+    overflow: hidden; /* limit width-finder width to parent available width */
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.label-input .width-finder {
+    position: absolute;
+    color: transparent;
+    pointer-events: none;
+    user-select: none;
+    white-space: pre;
+    padding: 0 2.25rem; /* nq-input padding + border-width */
+}
+
+.label-input input {
+    padding-right: 0;
+    max-width: 100%;
+    transition:
+        color .2s ease, box-shadow .2s ease,
+        width 50ms ease-out;
+}
+
+.label-input input:disabled {
+    pointer-events: none; /* Prevent hover effects */
+}
+
+/* === amount === */
+/* Nimiq Amount — from @nimiq/vue-components Amount.vue */
+.amount {
+    white-space: nowrap;
+}
+
+/* Prefix '~ ' when the displayed value was rounded: <span class="amount approx"> */
+.amount.approx::before {
+    content: '~ ';
+    opacity: 0.5;
+}
+
+/* === fiat-amount === */
+/* FiatAmount has no styles of its own upstream (FiatAmount.vue contains no <style> block).
+   The .fiat-amount span inherits font-family, size and color from its surroundings —
+   typically the Nimiq legacy stylesheet (css/legacy/nimiq-style.min.css) on the page. */
+.fiat-amount {}
+
+/* === amount-input === */
+/* Nimiq AmountInput — requires @nimiq/style (nq-input) and the Mulish font. */
+
+.amount-input {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    width: 100%;
+    font-size: 8rem;
+    color: rgba(31, 35, 72, 0.5); /* Based on Nimiq Blue */
+    transition: color .2s var(--nimiq-ease);
+}
+
+.amount-input.has-value {
+    color: var(--nimiq-blue);
+}
+
+.amount-input.focussed {
+    color: var(--nimiq-light-blue);
+}
+
+.amount-input form {
+    display: flex;
+}
+
+.amount-input .label-input {
+    position: relative;
+    overflow: hidden; /* limit width-finder width to parent available width */
+    max-width: 100%;
+    height: 100%;
+}
+
+.amount-input .width-finder {
+    position: absolute;
+    color: transparent;
+    pointer-events: none;
+    user-select: none;
+    white-space: pre;
+    padding: 1.25rem;
+}
+
+.amount-input .full-width {
+    width: 1000px;
+}
+
+.amount-input input {
+    padding: 0 0.25rem;
+    max-width: 100%;
+    text-align: center;
+    transition: width 50ms ease-out, color .2s var(--nimiq-ease);
+}
+
+.amount-input .nim {
+    margin-left: 1rem;
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 4.5rem;
+}
+
+/* === amount-with-fee === */
+/* amount-with-fee — requires nimiq-style (legacy) for .nq-input, .nq-text-s, .nq-red
+   and the --nimiq-* CSS variables. 1rem = 8px (nimiq-style sets html { font-size: 8px }). */
+
+.amount-with-fee {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.amount-with-fee .amount-input {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    width: 100%;
+    font-size: 8rem;
+    color: rgba(31, 35, 72, 0.5); /* placeholder state, based on Nimiq Blue */
+    transition: color .2s var(--nimiq-ease);
+}
+
+.amount-with-fee .amount-input.has-value { color: var(--nimiq-blue); }
+.amount-with-fee .amount-input.focussed { color: var(--nimiq-light-blue); }
+
+.amount-with-fee .amount-field {
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    max-width: 100%;
+    height: 100%;
+}
+
+/* Hidden measuring span: the input is sized to this span's width via JS. */
+.amount-with-fee .width-finder {
+    position: absolute;
+    color: transparent;
+    pointer-events: none;
+    user-select: none;
+    white-space: pre;
+    padding: 1.25rem;
+}
+
+.amount-with-fee .amount-input input {
+    padding: 0 0.25rem;
+    max-width: 100%;
+    text-align: center;
+    font-size: 8rem;
+    transition: width 50ms ease-out, color .2s var(--nimiq-ease);
+}
+
+.amount-with-fee .ticker {
+    margin-left: 1rem;
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 4.5rem;
+}
+
+/* Insufficient balance state (add .invalid to .amount-input) */
+.amount-with-fee .amount-input.invalid input,
+.amount-with-fee .amount-input.invalid .ticker {
+    color: var(--nimiq-red) !important;
+}
+
+/* Secondary line: insufficient-balance error (.nq-red), '~ fiat' and/or '+ fee' */
+.amount-with-fee .fee-section {
+    color: rgba(31, 35, 72, 0.5);
+    min-height: 2rem;
+}
+
+.amount-with-fee .fiat {
+    display: inline-flex;
+}
+
+/* === select-bar === */
+/* SelectBar — segmented radio bar (requires nimiq-style for .nq-label,
+   the .nq-*-bg color classes and --nimiq-highlight-bg). */
+.select-bar {
+    display: flex;
+    border-radius: 3.75rem;
+    overflow: hidden;
+    width: 100%;
+}
+
+.select-bar > div {
+    display: flex;
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.select-bar > div + div {
+    margin-left: .25rem;
+}
+
+.select-bar input {
+    display: none;
+}
+
+.select-bar label {
+    padding: 1.75rem 2rem;
+    margin: 0;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    border-radius: .5rem;
+}
+
+.select-bar .nq-highlight-bg {
+    background: var(--nimiq-highlight-bg);
+}
+
+/* === slider-toggle === */
+/* Nimiq slider toggle — pill radio group, the checked option gets a white pill.
+   Pure CSS port of @nimiq/vue-components SliderToggle.vue: selection works via the
+   hidden radio inputs and :has(). Requires the Nimiq style CSS variables
+   (--nimiq-highlight-bg, --nimiq-ease) from nimiq-style.css. */
+.slider-toggle {
+    --borderRadius: 9999px;
+    --transitionDuration: 200ms;
+    --padding: .5rem;
+
+    position: relative;
+    display: flex;
+
+    background-color: var(--nimiq-highlight-bg);
+    border-radius: var(--borderRadius);
+    padding: var(--padding);
+}
+
+/* Currency type (compact) */
+.slider-toggle.type-currency {
+    --inactiveOpacity: .5;
+    --horizontalPadding: 16px;
+    --verticalPadding: 14px;
+
+    font-size: 1.75rem;
+    letter-spacing: 0.1em;
+    font-weight: bold;
+}
+
+/* Default type (large) */
+.slider-toggle.type-default {
+    --inactiveOpacity: .625;
+    --horizontalPadding: 2.5rem;
+    --verticalPadding: 1.125rem;
+
+    font-size: 2.5rem;
+    letter-spacing: 0;
+    font-weight: 600;
+    color: rgba(31, 35, 72, 0.8); /* --nimiq-blue */
+}
+
+.slider-toggle input { display: none }
+
+.slider-toggle label {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    line-height: 150%;
+
+    padding: var(--verticalPadding) var(--horizontalPadding);
+    cursor: pointer;
+
+    transition: opacity var(--transitionDuration) var(--nimiq-ease);
+}
+
+.slider-toggle label:not(:has(input:checked)) {
+    opacity: var(--inactiveOpacity);
+}
+
+.slider-toggle label:not(:has(input:checked)):hover {
+    opacity: calc(var(--inactiveOpacity) + .12);
+}
+
+/* The white pill under the selected option.
+   (Upstream renders a separate JS-positioned .active-box that slides between options;
+   this CSS-only version styles the active label directly — same geometry, no slide animation.) */
+.slider-toggle label:has(input:checked) {
+    background-color: white;
+    border-radius: var(--borderRadius);
+    box-shadow: 0px 13px 27px rgba(31, 35, 72, .07), /* --nimiq-blue */
+        0px 5px 6px rgba(31, 35, 72, .04), /* --nimiq-blue */
+        0px 1px 2px rgba(31, 35, 72, .02); /* --nimiq-blue */
+}
+
+/* === qr-code === */
+/* Nimiq QR code.
+ * Upstream QrCode.vue ships NO component CSS — the visual is drawn entirely
+ * onto the canvas by qr-creator. This file exists only as the extraction
+ * convention placeholder; the .qr-code canvas needs no styling. */
+
+/* === tooltip === */
+/* Nimiq Tooltip
+   Requires the legacy nimiq-style CSS (for --nimiq-blue, --nimiq-blue-bg, --nimiq-ease).
+   Structure:
+     <span class="tooltip position-<primary>-<secondary|center> [shown] [inverse-theme]">
+         <a class="trigger" ...>ICON</a>
+         <div class="tooltip-box" style="top:..; left:..; width:..">TEXT</div>
+     </span>
+   Positioning (done by JS in the upstream Vue component, inline styles here):
+     top right (above):  left = triggerWidth/2 - 25px; top = -boxHeight
+     bottom right:       left = triggerWidth/2 - 25px; top = triggerHeight
+     top left:           right = triggerWidth/2 - 25px... (mirror)
+   Toggle visibility by adding/removing the "shown" class (and the .tooltip-box element).
+   Set a custom background via style="--background: <css color>" on .tooltip. */
+
+.tooltip {
+    display: inline-block;
+    position: relative;
+    line-height: 1;
+}
+
+.tooltip .trigger {
+    position: relative;
+    display: inline-block;
+    vertical-align: bottom;
+    text-decoration: none;
+    outline: none;
+    cursor: default;
+    color: inherit;
+}
+
+.tooltip .trigger svg:first-child:last-child,
+.tooltip .trigger img:first-child:last-child {
+    display: block;
+}
+
+/* The arrow, masked out of a triangle SVG */
+.tooltip .trigger::after {
+    opacity: 0;
+    content: '';
+    display: block;
+    position: absolute;
+    width: 2.25rem;
+    height: 2rem;
+    left: calc(50% - 1.125rem);
+    mask-image: url('data:image/svg+xml,<svg viewBox="0 0 18 16" xmlns="http://www.w3.org/2000/svg"><path d="M9 7.12c-.47 0-.93.2-1.23.64L3.2 14.29A4 4 0 0 1 0 16h18a4 4 0 0 1-3.2-1.7l-4.57-6.54c-.3-.43-.76-.64-1.23-.64z" fill="white"/></svg>');
+    transition: opacity .3s var(--nimiq-ease), .3s visibility;
+    transition-delay: 16ms;
+    visibility: hidden;
+    z-index: 1000;
+}
+
+.tooltip[class*='position-top'] .trigger::after {
+    top: -2rem;
+    transform: scaleY(-1);
+}
+.tooltip[class*='position-bottom'] .trigger::after {
+    top: 100%;
+}
+.tooltip[class*='position-left'] .trigger::after {
+    top: 50%;
+    left: -2.25rem;
+    transform: translateY(-50%) rotate(90deg);
+}
+.tooltip[class*='position-right'] .trigger::after {
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%) rotate(-90deg);
+}
+
+/* Arrow color = the nimiq-blue-bg gradient color where the arrow touches the box */
+.tooltip.position-top-left .trigger::after,
+.tooltip.position-left-top .trigger::after {
+    background: var(--background, #250737);
+}
+.tooltip.position-top-center .trigger::after,
+.tooltip.position-left-center .trigger::after {
+    background: var(--background, #23123e);
+}
+.tooltip.position-top-right .trigger::after,
+.tooltip.position-left-bottom .trigger::after {
+    background: var(--background, #211e45);
+}
+.tooltip[class*='position-bottom'] .trigger::after,
+.tooltip[class*='position-right'] .trigger::after {
+    background: var(--background, var(--nimiq-blue));
+}
+
+.tooltip.inverse-theme .trigger::after {
+    background: var(--background, white);
+}
+
+.tooltip.shown .trigger::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+.tooltip .tooltip-box {
+    contain: layout paint style;
+    position: absolute;
+    color: white;
+    background: var(--background, var(--nimiq-blue-bg));
+    padding: 1.5rem;
+    border-radius: .5rem;
+    font-size: 1.75rem;
+    line-height: 1.5;
+    font-weight: 600;
+    transition: opacity .3s var(--nimiq-ease);
+    box-shadow: 0 1.125rem 2.275rem rgba(0, 0, 0, 0.11);
+    z-index: 999;
+}
+
+.tooltip.inverse-theme .tooltip-box {
+    color: var(--nimiq-blue);
+    background: white;
+}
+
+.tooltip[class*='position-top'] .tooltip-box {
+    transform: translateY(-2rem);
+}
+.tooltip[class*='position-bottom'] .tooltip-box {
+    transform: translateY(2rem);
+}
+.tooltip[class*='position-left'] .tooltip-box {
+    transform: translateX(-2rem);
+}
+.tooltip[class*='position-right'] .tooltip-box {
+    transform: translateX(2rem);
+}
+
+/* === status-alert === */
+/* Nimiq status alert block — info / success / warning / error.
+   Note: @nimiq/style sets html { font-size: 62.5% }, so this uses px throughout.
+   Pair with the markup in status-alert.html. */
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.alert .icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.alert .icon svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Info (Blue) */
+.alert.info {
+  background: rgba(5, 130, 202, 0.08);
+  border: 1px solid rgba(5, 130, 202, 0.2);
+  color: #1F2348;
+}
+.alert.info .icon {
+  background: rgba(5, 130, 202, 0.15);
+}
+.alert.info .icon svg { fill: #0582CA; }
+
+/* Success (Green) */
+.alert.success {
+  background: rgba(33, 188, 165, 0.08);
+  border: 1px solid rgba(33, 188, 165, 0.2);
+  color: #1F2348;
+}
+.alert.success .icon {
+  background: rgba(33, 188, 165, 0.15);
+}
+.alert.success .icon svg { fill: #21BCA5; }
+
+/* Warning (Orange) */
+.alert.warning {
+  background: rgba(236, 153, 28, 0.08);
+  border: 1px solid rgba(236, 153, 28, 0.2);
+  color: #1F2348;
+}
+.alert.warning .icon {
+  background: rgba(236, 153, 28, 0.15);
+}
+.alert.warning .icon svg { fill: #EC991C; }
+
+/* Error (Red) */
+.alert.error {
+  background: rgba(217, 68, 50, 0.08);
+  border: 1px solid rgba(217, 68, 50, 0.2);
+  color: #1F2348;
+}
+.alert.error .icon {
+  background: rgba(217, 68, 50, 0.15);
+}
+.alert.error .icon svg { fill: #D94432; }
+
+/* === buttons === */
+/* Nimiq button styles — extracted verbatim from upstream nimiq-style/src/buttons.css (v0.8.5).
+ Covers .nq-button (primary), .nq-button-s (small) and .nq-button-pill plus all color variants.
+ Requires the --nimiq-* color/gradient CSS variables and --nimiq-ease, defined on html/:root by
+ nimiq-style (see assets/css/legacy/nimiq-style.min.css). If you use this file standalone, copy
+ those variable definitions too. */
+
+.nq-button::-moz-focus-inner,
+.nq-button-s::-moz-focus-inner {
+    border: 0;
+}
+
+.nq-button {
+    position: relative;
+    height: 7.5rem;
+    line-height: 2.5rem;
+    background-image: var(--nimiq-blue-bg);
+    color: var(--nimiq-white);
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.094em;
+    border: none;
+    padding: 0 4rem;
+    border-radius: 500px;
+    min-width: 25rem;
+    margin: 2rem auto;
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: transform 450ms var(--nimiq-ease), box-shadow 450ms var(--nimiq-ease);
+    will-change: box-shadow;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    font-family: inherit;
+}
+
+a.nq-button {
+    display: inline-flex;
+    color: var(--nimiq-white);
+    justify-content: center;
+    align-items: center;
+}
+
+.nq-button:not([disabled])::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 500px;
+    background-image: var(--nimiq-blue-bg-darkened);
+    opacity: 0;
+    transition: opacity 300ms var(--nimiq-ease);
+    z-index: -1;
+}
+
+.nq-button:hover,
+.nq-button:focus {
+    box-shadow: 0 1rem 2.5rem rgba(0,0,0,0.2);
+    transform: translate3D(0,-2px,0);
+}
+
+.nq-button:hover::before,
+.nq-button:active::before,
+.nq-button:focus::before {
+    opacity: 1;
+}
+
+.nq-button:active {
+    outline: none;
+    box-shadow: 0 .2rem .3rem rgba(0,0,0,0.2);
+    transform: translate3D(0,1px,0);
+    transition: transform 200ms cubic-bezier(.41,.34,.26,1.55), box-shadow 200ms cubic-bezier(.41,.34,.26,1.55) !important;
+}
+
+.nq-button-s,
+.nq-button-pill {
+    display: inline-block;
+    font-size: 1.75rem;
+    line-height: 3.375rem;
+    height: 3.375rem;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0 1.5rem;
+    background-color: rgba(31, 35, 72, 0.07); /* Based on Nimiq Blue */
+    color: var(--nimiq-blue);
+    border-radius: 1.6875rem;
+    transition: color 300ms var(--nimiq-ease), background-color 300ms var(--nimiq-ease);
+    will-change: color, background-color;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    font-family: inherit;
+}
+
+.nq-button-s[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.nq-button-s::before,
+.nq-button-pill::before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: -1.5rem;
+    top: -1.5rem;
+    right: -1.5rem;
+    bottom: -1.5rem;
+}
+
+.nq-button-s:hover,
+.nq-button-s:active,
+.nq-button-s:focus {
+    color: var(--nimiq-blue-darkened);
+    background: rgba(31, 35, 72, 0.12); /* Based on Nimiq Blue */
+}
+
+.nq-button-s[disabled]:hover {
+    background: rgba(31, 35, 72, 0.07); /* Based on Nimiq Blue */
+}
+
+.nq-button-pill {
+    color: var(--nimiq-white);
+    background: var(--nimiq-blue);
+    background-image: var(--nimiq-blue-bg);
+}
+
+.nq-button-pill:hover,
+.nq-button-pill:active,
+.nq-button-pill:focus {
+    background: var(--nimiq-blue-darkened);
+    background-image: var(--nimiq-blue-bg-darkened);
+}
+
+/* Color variations */
+
+/* light blue */
+.nq-button.light-blue {
+    background: var(--nimiq-light-blue);
+    background-image: var(--nimiq-light-blue-bg);
+}
+
+.nq-button.light-blue::before {
+    background-image: var(--nimiq-light-blue-bg-darkened);
+}
+
+.nq-button.light-blue.inverse {
+    color: var(--nimiq-light-blue);
+}
+
+.nq-button.light-blue.inverse:hover,
+.nq-button.light-blue.inverse:active,
+.nq-button.light-blue.inverse:focus {
+    color: var(--nimiq-light-blue-darkened);
+}
+
+.nq-button-s.light-blue {
+    color: var(--nimiq-light-blue);
+    background: rgba(5, 130, 202, 0.1); /* Based on Nimiq Light Blue */
+}
+
+.nq-button-s.light-blue:hover,
+.nq-button-s.light-blue:active,
+.nq-button-s.light-blue:focus {
+    color: var(--nimiq-light-blue-darkened);
+    background: rgba(5, 130, 202, 0.2); /* Based on Nimiq Light Blue */
+}
+
+.nq-button-s.light-blue[disabled]:hover {
+    color: var(--nimiq-light-blue);
+    background: rgba(5, 130, 202, 0.1); /* Based on Nimiq Light Blue */
+}
+
+.nq-button-pill.light-blue {
+    background: var(--nimiq-light-blue);
+    background-image: var(--nimiq-light-blue-bg);
+}
+
+.nq-button-pill.light-blue:hover,
+.nq-button-pill.light-blue:active,
+.nq-button-pill.light-blue:focus {
+    background: var(--nimiq-light-blue-darkened);
+    background-image: var(--nimiq-light-blue-bg-darkened);
+}
+
+/* green */
+.nq-button.green {
+    background: var(--nimiq-green);
+    background-image: var(--nimiq-green-bg);
+}
+
+.nq-button.green::before {
+    background-image: var(--nimiq-green-bg-darkened);
+}
+
+.nq-button.green.inverse {
+    color: var(--nimiq-green);
+}
+
+.nq-button.green.inverse:hover,
+.nq-button.green.inverse:active,
+.nq-button.green.inverse:focus {
+    color: var(--nimiq-green-darkened);
+}
+
+.nq-button-s.green {
+    color: var(--nimiq-green);
+    background: rgba(33, 188, 165, 0.1); /* Based on Nimiq Green */
+}
+
+.nq-button-s.green:hover,
+.nq-button-s.green:active,
+.nq-button-s.green:focus {
+    color: var(--nimiq-green-darkened);
+    background: rgba(33, 188, 165, 0.2); /* Based on Nimiq Green */
+}
+
+.nq-button-s.green[disabled]:hover {
+    color: var(--nimiq-green);
+    background: rgba(33, 188, 165, 0.1); /* Based on Nimiq Green */
+}
+
+.nq-button-pill.green {
+    background: var(--nimiq-green);
+    background-image: var(--nimiq-green-bg);
+}
+
+.nq-button-pill.green:hover,
+.nq-button-pill.green:active,
+.nq-button-pill.green:focus {
+    background: var(--nimiq-green-darkened);
+    background-image: var(--nimiq-green-bg-darkened);
+}
+
+/* orange */
+.nq-button.orange {
+    background: var(--nimiq-orange);
+    background-image: var(--nimiq-orange-bg);
+}
+
+.nq-button.orange::before {
+    background-image: var(--nimiq-orange-bg-darkened);
+}
+
+.nq-button.orange.inverse {
+    color: var(--nimiq-orange);
+}
+
+.nq-button.orange.inverse:hover,
+.nq-button.orange.inverse:active,
+.nq-button.orange.inverse:focus {
+    color: var(--nimiq-orange-darkened);
+}
+
+.nq-button-s.orange {
+    color: var(--nimiq-orange);
+    background: rgba(252, 135, 2, 0.1); /* Based on Nimiq Orange */
+}
+
+.nq-button-s.orange:hover,
+.nq-button-s.orange:active,
+.nq-button-s.orange:focus {
+    color: var(--nimiq-orange-darkened);
+    background: rgba(252, 135, 2, 0.2); /* Based on Nimiq Orange */
+}
+
+.nq-button-s.orange[disabled]:hover {
+    color: var(--nimiq-orange);
+    background: rgba(252, 135, 2, 0.1); /* Based on Nimiq Orange */
+}
+
+.nq-button-pill.orange {
+    background: var(--nimiq-orange);
+    background-image: var(--nimiq-orange-bg);
+}
+
+.nq-button-pill.orange:hover,
+.nq-button-pill.orange:active,
+.nq-button-pill.orange:focus {
+    background: var(--nimiq-orange-darkened);
+    background-image: var(--nimiq-orange-bg-darkened);
+}
+
+/* red */
+.nq-button.red {
+    background: var(--nimiq-red);
+    background-image: var(--nimiq-red-bg);
+}
+
+.nq-button.red::before {
+    background: var(--nimiq-red-bg-darkened);
+}
+
+.nq-button.red.inverse {
+    color: var(--nimiq-red);
+}
+
+.nq-button.red.inverse:hover,
+.nq-button.red.inverse:active,
+.nq-button.red.inverse:focus {
+    color: var(--nimiq-red-darkened);
+}
+
+.nq-button-s.red {
+    color: var(--nimiq-red);
+    background: rgba(216, 65, 51, 0.1); /* Based on Nimiq Red */
+}
+
+.nq-button-s.red:hover,
+.nq-button-s.red:active,
+.nq-button-s.red:focus {
+    color: var(--nimiq-red-darkened);
+    background: rgba(216, 65, 51, 0.2); /* Based on Nimiq Red */
+}
+
+.nq-button-s.red[disabled]:hover {
+    color: var(--nimiq-red);
+    background: rgba(216, 65, 51, 0.1); /* Based on Nimiq Red */
+}
+
+.nq-button-pill.red {
+    background: var(--nimiq-red);
+    background-image: var(--nimiq-red-bg);
+}
+
+.nq-button-pill.red:hover,
+.nq-button-pill.red:active,
+.nq-button-pill.red:focus {
+    background: var(--nimiq-red-darkened);
+    background-image: var(--nimiq-red-bg-darkened);
+}
+
+
+/* gold */
+.nq-button.gold {
+    background: var(--nimiq-gold);
+    background-image: var(--nimiq-gold-bg);
+}
+
+.nq-button.gold:before {
+    background: var(--nimiq-gold-bg-darkened);
+}
+
+.nq-button.gold.inverse {
+    color: var(--nimiq-gold);
+}
+
+.nq-button.gold.inverse:hover,
+.nq-button.gold.inverse:active,
+.nq-button.gold.inverse:focus {
+    color: var(--nimiq-gold-darkened);
+}
+
+.nq-button-pill.gold {
+    background: var(--nimiq-gold);
+    background-image: var(--nimiq-gold-bg);
+}
+
+.nq-button-pill.gold:hover,
+.nq-button-pill.gold:active,
+.nq-button-pill.gold:focus {
+    background: var(--nimiq-gold-darkened);
+    background-image: var(--nimiq-gold-bg-darkened);
+}
+
+/* Special styles */
+
+.nq-button.inverse {
+    background: var(--nimiq-white);
+    color: var(--nimiq-blue);
+    transition: transform 450ms var(--nimiq-ease), box-shadow 450ms var(--nimiq-ease), color 300ms var(--nimiq-ease);
+}
+
+.nq-button.inverse::before {
+    background: #EFF0F2; /* Indigo 7% */
+}
+
+.nq-button-s.inverse {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--nimiq-white);
+}
+
+.nq-button-s.inverse:hover,
+.nq-button-s.inverse:focus,
+.nq-button-s.inverse:active {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.nq-button[disabled] {
+    background: rgba(31, 35, 72, 0.07);
+    color: rgba(31, 35, 72, 0.3);
+    box-shadow: none !important;
+    transform: none;
+    cursor: not-allowed;
+}
+
+.nq-button[disabled]:hover,
+.nq-button[disabled]:active {
+    transform: none;
+}
+
+.nq-button.inverse[disabled],
+.nq-button.inverse[disabled]:hover,
+.nq-button.inverse[disabled]:active {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Focus Ring for Tabs – can be optimized in the future with better :focus-visible support */
+
+.nq-button::after,
+.nq-button-s::after,
+.nq-button-pill::after {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid rgba(5, 130, 202, 0.5); /* Based on Nimiq Light Blue */
+    border-radius: 500px;
+    opacity: 0;
+}
+
+.nq-button.inverse::after,
+.nq-button-s.inverse::after,
+.nq-button-pill.inverse::after {
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.nq-button:focus,
+.nq-button-s:focus,
+.nq-button-pill:focus {
+    outline: none;
+}
+
+.nq-button:focus::after,
+.nq-button-s:focus::after,
+.nq-button-pill:focus::after {
+    opacity: 1;
+}
+
+/* === card === */
+/* Card — no extra CSS needed. All styling comes from nimiq-style (legacy):
+ * css/legacy/nimiq-style.min.css. The relevant framework rules are, for reference:
+ *
+ * .nq-card {
+ *     max-width: 75rem;
+ *     background: var(--nimiq-card-bg);
+ *     border-radius: 1.25rem;
+ *     box-shadow: 0 .5rem 3.5rem rgba(0, 0, 0, .111158);
+ *     margin: 2rem 1rem;            (2rem at >=450px viewports)
+ *     color: var(--nimiq-blue);
+ *     --nimiq-light-blue: #0582CA;
+ *     --nimiq-red: #D94432;
+ * }
+ * .nq-card-header { padding: 3rem; text-align: center; }   (4rem at >=450px)
+ * .nq-card-header .nq-h1, .nq-card-header .nq-h2 { margin: 0; }
+ * .nq-card-header .nq-notice { margin: 3rem 0 0; text-align: center; }
+ * .nq-card-body { padding: 3rem; }                          (4rem at >=450px)
+ * .nq-card-header + .nq-card-body { padding-top: 1rem; }
+ * .nq-card-body > :first-child { margin-top: 0; }
+ * .nq-card-body > :last-child { margin-bottom: 0; }
+ * .nq-card-footer { padding: 1rem; }
+ * .nq-card-body + .nq-card-footer { padding-top: 0; }
+ */
+
+/* === small-page === */
+/* SmallPage — requires nimiq-style (legacy) for .nq-card, .nq-card-header, .nq-card-body */
+.small-page {
+    width: 100%;
+    max-width: 52.5rem; /* 420px */
+    height: 70.5rem; /* 564px */
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    margin: 0 1.25rem;
+}
+
+/* === page-header === */
+/* Nimiq PageHeader (requires nimiq-style: .nq-card, .nq-card-header, .nq-h1, .nq-icon) */
+.page-header {
+    position: relative;
+}
+
+.page-header-back-button {
+    font-size: 3rem;
+    position: absolute;
+    left: 4rem;
+    padding-top: .25rem;
+    opacity: 0.4;
+    transition: opacity .3s var(--nimiq-ease), transform .3s var(--nimiq-ease);
+    color: inherit;
+}
+
+.page-header-back-button svg {
+    display: block;
+}
+
+.page-header-back-button:hover,
+.page-header-back-button:focus {
+    opacity: 1;
+    transform: translate3D(-0.375rem, 0, 0);
+    outline: none;
+}
+
+@media (max-width: 450px) {
+    .page-header-back-button,
+    /* Don't move button left on mobile */
+    .page-header-back-button:hover,
+    .page-header-back-button:focus {
+        left: 3rem;
+        transform: none;
+    }
+}
+
+/* Enlarged hit area for the back button */
+.page-header-back-button::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: -1.5rem;
+    top: -1.5rem;
+    right: -1.5rem;
+    bottom: -1.5rem;
+}
+
+.progress-indicator {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    padding: 0.5rem;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.progress-indicator .indicator {
+    flex-grow: 1;
+    height: 0.5rem;
+    border-radius: 0.25rem;
+    background: #e5e5e5;
+    margin: 0.5rem;
+}
+
+.progress-indicator .indicator.active {
+    background: #24bdb6;
+}
+
+.page-header.has-progress-indicator h1,
+.page-header.has-progress-indicator .page-header-back-button {
+    margin-top: 1rem;
+}
+
+/* === page-body === */
+/* page-body — scrollable content area of a card page.
+   Requires the legacy framework stylesheet (nimiq-style.min.css) for the
+   .nq-card-body padding rules, and a flex-column parent (e.g. .small-page). */
+.page-body {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* === page-footer === */
+/* PageFooter — bottom action area of a Nimiq page/card.
+   Requires nimiq-style (nq-card-footer, nq-button). */
+.page-footer {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.page-footer .nq-button {
+    margin: 2rem 4.75rem 3rem;
+}
+
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 18" height="28" aria-label="Nimiq">
+    <g fill="none">
+      <path fill="url(#hdr-grad)" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+      <path fill="#fff" d="M34.91 3.656h1.829v10.688H35.33L29.582 6.89v7.453H27.76V3.656h1.403l5.748 7.453zm5.47 10.688V3.656h1.962v10.688zM54.82 3.656h1.543v10.688H54.68v-6.61l-2.874 6.61h-1.262l-2.874-6.61v6.61h-1.683V3.656h1.542l3.646 8.368zm5.189 10.688V3.656h1.962v10.688zm15.075-2.436c-.572 1.14-1.461 1.809-2.25 2.135.093.214.528.81.856 1.153s.673.692 1.11 1.046l-1.332 1.055c-.49-.343-.917-.754-1.351-1.232a9 9 0 01-1.142-1.595 9 9 0 01-.451.014c-1.085 0-1.991-.222-2.773-.663a4.4 4.4 0 01-1.792-1.913c-.379-.756-.623-1.766-.623-2.908s.21-2.076.628-2.908a4.44 4.44 0 011.8-1.913c.783-.444 1.697-.663 2.76-.663s1.991.222 2.773.663a4.4 4.4 0 011.792 1.913c.415.832.623 1.766.623 2.908s-.25 2.154-.628 2.908m-6.935.009q.849 1.02 2.375 1.02 1.528 0 2.375-1.02c.567-.684.85-1.646.85-2.917 0-1.263-.283-2.247-.85-2.922q-.849-1.014-2.375-1.016-1.528 0-2.375 1.007c-.567.673-.85 1.66-.85 2.931s.283 2.233.85 2.917"/>
+      <defs><radialGradient id="hdr-grad" cx="0" cy="0" r="1" gradientTransform="matrix(20.1956 0 0 20.2552 15.188 17.766)" gradientUnits="userSpaceOnUse"><stop stop-color="#ec991c"/><stop offset="1" stop-color="#e9b213"/></radialGradient></defs>
+    </g>
+  </svg>
+  <h1>Component Registry Showcase</h1>
+  <p>Every piece below is scaffolded by the <code>nq</code> CLI and pixel-diffed against the real
+  Nimiq component source before it ships — 20 components, 19 matching upstream at 0.000%.</p>
+  <div class="pill">nq add &lt;component&gt; — Vue 3 or plain HTML</div>
+</div>
+
+<h2 class="section-title">The app page anatomy</h2>
+<p class="section-sub">Four layout components composed the way every Wallet, Hub and Keyguard flow composes them.</p>
+<div class="composite-wrap">
+  
+  <div class="small-page nq-card">
+    <div class="page-header nq-card-header has-progress-indicator">
+      <div class="progress-indicator">
+        <div class="indicator active"></div><div class="indicator active"></div><div class="indicator active"></div>
+        <div class="indicator"></div><div class="indicator"></div><div class="indicator"></div>
+      </div>
+      <a class="page-header-back-button nq-icon" href="javascript:void(0)" title="Go back">
+        <svg class="nq-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 4.5 6 12l7.5 7.5M6.75 12H18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <h1 class="nq-h1">Send Transaction</h1>
+    </div>
+    <div class="page-body nq-card-body composite-body">
+      <div class="identicon" data-address="NQ87 0000 0000 0000 0000 0000 0000 0000 0001" style="width:72px"><img alt=""></div>
+      <div class="address-display format-nimiq">
+        <span class="chunk">NQ87<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0001<span class="space">&nbsp;</span></span>
+      </div>
+      <p class="nq-text" style="text-align:center">You are sending <span class="amount">12&#8239;345.67 <span class="currency nim">NIM</span></span></p>
+    </div>
+    <div class="page-footer nq-card-footer">
+      <button class="nq-button light-blue">Send</button>
+    </div>
+  </div>
+  <ul class="composite-notes">
+    <li><b>small-page</b> — the canonical 420×564&nbsp;px white card. Every screen in the Nimiq Wallet, Hub and Keyguard renders inside this exact frame; it never grows to fill the viewport.</li>
+    <li><b>page-header</b> — centered title with optional back arrow and step dots (teal = completed). The Keyguard uses the dots for its 6-step onboarding.</li>
+    <li><b>page-body</b> — the scrollable middle; flex-grows to push the footer down. Shown here holding an <b>identicon</b>, an <b>address-display</b> and an <b>amount</b>.</li>
+    <li><b>page-footer</b> — pins the primary action. Light-blue is the wallet&rsquo;s &ldquo;prominent action&rdquo; button color.</li>
+  </ul>
+</div>
+
+<h2 class="section-title">The pieces</h2>
+<p class="section-sub">Each tile is the registry snippet rendered as-is. The purpose line comes from the component&rsquo;s meta.json; install any of them with <code>nq add &lt;name&gt;</code>.</p>
+<div class="grid">
+
+    <div class="tile" id="identicon">
+      <div class="tile-stage "><!-- Nimiq Identicon snippet.
+     The img starts on the hexagon placeholder and is swapped to the generated
+     iqon by the script below. Size via the .identicon container. -->
+<div class="identicon" data-address="NQ07 0000 0000 0000 0000 0000 0000 0000 0000">
+    <img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>' alt="Nimiq identicon">
+</div>
+
+<script type="module">
+    import Iqons from 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.js';
+    Iqons.svgPath = 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.svg';
+
+    for (const el of document.querySelectorAll('.identicon[data-address]')) {
+        el.querySelector('img').src = await Iqons.toDataUrl(el.dataset.address);
+    }
+</script>
+</div>
+      <div class="tile-info">
+        <h3>identicon <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Nimiq identicon avatar — a deterministic hexagonal avatar generated from a Nimiq address via @nimiq/iqons; shows a hexagon placeholder for missing/invalid addresses.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> Every address gets a deterministic hexagon avatar generated from the address itself — account lists, contact book, transaction rows. No profile pictures anywhere in the wallet.</p>
+      </div>
+    </div>
+    <div class="tile" id="address-display">
+      <div class="tile-stage "><!-- AddressDisplay — Nimiq format. One .chunk per 4-char block (9 blocks).
+     The .space span keeps a real space in the text for copy/paste while
+     rendering at font-size:0. Requires Fira Mono (Google Fonts). -->
+<div class="address-display format-nimiq">
+    <span class="chunk">NQ07<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span>
+</div>
+</div>
+      <div class="tile-info">
+        <h3>address-display <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Displays a Nimiq (or Ethereum) address as a grid of monospace chunks — 9 four-char blocks in 3 columns for Nimiq format — optionally copyable.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The receive modal and account details render addresses as 9 four-character chunks in Fira Mono, so two addresses can be compared at a glance.</p>
+      </div>
+    </div>
+    <div class="tile" id="copyable">
+      <div class="tile-stage "><!-- Copyable (resting state). Add class "copied" for ~800ms after a copy to show the tooltip. -->
+<div class="copyable" tabindex="0" onclick="copyableCopy(this)">
+    <div class="background"></div>
+    NQ07 0000 ...
+    <div class="tooltip">Copied</div>
+</div>
+
+<script>
+// Minimal copy behavior matching upstream Copyable (slot text minus tooltip label).
+function copyableCopy(el) {
+    var label = el.querySelector('.tooltip').textContent;
+    var text = el.innerText.replace(new RegExp('\\s*' + label + '$'), '');
+    navigator.clipboard && navigator.clipboard.writeText(text);
+    el.classList.add('copied');
+    clearTimeout(el._copiedResetTimeout);
+    el._copiedResetTimeout = setTimeout(function () { el.classList.remove('copied'); }, 800);
+}
+</script>
+</div>
+      <div class="tile-info">
+        <h3>copyable <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Wrapper that makes a click on its content copy it (or a provided text) to the clipboard, with a light-blue hover/focus tint and an animated 'Copied' tooltip as feedback.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> Wraps addresses and hashes everywhere — click anywhere on it to copy, with a light-blue tint on hover and an animated “Copied” bubble as feedback.</p>
+      </div>
+    </div>
+    <div class="tile" id="address-input">
+      <div class="tile-stage "><!-- AddressInput (static): empty, NIM-only -> placeholder "NQ", 3x3 block grid -->
+<div class="address-input display-as-nim-address">
+    <textarea spellcheck="false" autocomplete="off" placeholder="NQ"></textarea>
+    <svg width="210" height="99" viewBox="0 0 210 99" stroke-width="1.5"
+        stroke-linecap="round" fill="none" xmlns="http://www.w3.org/2000/svg" class="grid">
+        <line x1="0.75" y1="30.25" x2="209.25" y2="30.25"/>
+        <line x1="0.75" y1="68.25" x2="209.25" y2="68.25"/>
+        <g>
+            <line x1="67.75" y1="0.75" x2="67.75" y2="22.25"/>
+            <line x1="143.75" y1="0.75" x2="143.75" y2="22.25"/>
+            <line x1="67.75" y1="37.75" x2="67.75" y2="60.25"/>
+            <line x1="143.75" y1="37.75" x2="143.75" y2="60.25"/>
+            <line x1="67.75" y1="75.75" x2="67.75" y2="98.25"/>
+            <line x1="143.75" y1="75.75" x2="143.75" y2="98.25"/>
+        </g>
+    </svg>
+</div>
+</div>
+      <div class="tile-info">
+        <h3>address-input <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">A 3x3 block grid textarea for typing Nimiq addresses (optionally Ethereum addresses and domains), with live formatting into 4-char blocks, validation, and per-block focus coloring.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> Recipient entry in the send flow: a 3×3 block grid that auto-formats while you type and validates the checksum live. Shakes on invalid paste.</p>
+      </div>
+    </div>
+    <div class="tile" id="label-input">
+      <div class="tile-stage "><!-- Nimiq label-input: a self-sizing nq-input. The hidden .width-finder spans mirror the
+     placeholder and the current value; fit the input's width with the script below. -->
+<form class="label-input">
+    <span class="width-finder width-placeholder">Name your address</span>
+    <span class="width-finder width-value">Savings Account</span>
+    <input type="text" class="nq-input"
+        placeholder="Name your address"
+        style="width: 50px;"
+        value="Savings Account">
+</form>
+
+<script>
+    // Fits the input's width to its content (value if present, placeholder otherwise),
+    // plus a third of the font-size as padding against flicker while typing.
+    (() => {
+        const form = document.querySelector('.label-input');
+        const widthPlaceholder = form.querySelector('.width-placeholder');
+        const widthValue = form.querySelector('.width-value');
+        const input = form.querySelector('input');
+
+        const updateWidth = () => {
+            widthValue.textContent = input.value;
+            const placeholderWidth = widthPlaceholder.offsetWidth;
+            const valueWidth = widthValue.offsetWidth;
+            const fontSize = parseFloat(window.getComputedStyle(input, null).getPropertyValue('font-size'));
+            input.style.width = ((input.value.length ? valueWidth : placeholderWidth) + fontSize / 3) + 'px';
+        };
+
+        input.addEventListener('input', updateWidth);
+        document.fonts.ready.then(updateWidth);
+    })();
+</script>
+</div>
+      <div class="tile-info">
+        <h3>label-input <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">A self-sizing text input for naming things (addresses, accounts), styled as an nq-input whose width grows and shrinks with its content.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> Naming accounts and addresses during onboarding and in settings; the input grows and shrinks with its content.</p>
+      </div>
+    </div>
+    <div class="tile" id="amount">
+      <div class="tile-stage "><!-- Nimiq Amount: amount in smallest unit, formatted with thin-space (U+202F) digit
+     grouping and a currency ticker. Example: 1234567890 luna = 12,345.6789 NIM.
+     Group integer digits in threes with &#8239; only when there are more than 4 of them.
+     Add the "approx" class to .amount when the value shown was rounded. -->
+<span class="amount">
+    12&#8239;345.6789
+    <span class="currency nim">NIM</span>
+</span>
+</div>
+      <div class="tile-info">
+        <h3>amount <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Formats a crypto amount given in its smallest unit (luna, satoshi, ...) as a human-readable number with thin-space digit grouping, configurable decimals and a currency ticker.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> Every NIM value in the wallet — balances, transaction rows — formatted from the smallest unit (luna) with thin-space digit grouping.</p>
+      </div>
+    </div>
+    <div class="tile" id="fiat-amount">
+      <div class="tile-stage "><!-- FiatAmount: a fiat value with optimized currency symbol.
+     The component ships no CSS of its own — it inherits font/color from its context.
+     Format server-side or with Intl: style:'currency', then swap the ISO code for the
+     narrow symbol (e.g. "USD 1234.56" -> "$1234.56"). -->
+<span class="fiat-amount">$1234.56</span>
+</div>
+      <div class="tile-info">
+        <h3>fiat-amount <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Displays a fiat amount with an optimized currency symbol (e.g. $1234.56 instead of USD 1234.56) and adaptive decimal precision: decimals are extended until the rounded display deviates from the true amount by at most maxRelativeDeviation.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> Transaction history and the send flow show the fiat equivalent with an optimized currency symbol ($, not USD) and only as many decimals as needed.</p>
+      </div>
+    </div>
+    <div class="tile" id="amount-input">
+      <div class="tile-stage "><!-- Nimiq AmountInput snippet (include amount-input.css + @nimiq/style).
+     Classes on the root: add "has-value" when a value is entered, "focussed" while focused.
+     The hidden .width-finder spans mirror the placeholder and the current value so the
+     fit script can size the input. Keep .width-value's text in sync with the input. -->
+<div class="amount-input has-value">
+    <form class="label-input">
+        <span class="width-finder width-placeholder">0</span>
+        <div class="full-width">Width</div>
+        <span class="width-finder width-value">100.00</span>
+        <input type="text" inputmode="decimal" class="nq-input"
+            placeholder="0"
+            style="width: 50px; font-size: 8rem;"
+            value="100.00">
+    </form>
+    <span class="nim nim">NIM</span>
+</div>
+
+<script>
+    // Fits the input's width to its content and shrinks the font when the
+    // value would overflow the available space (max font size: 8rem).
+    // Re-run this after every input event, updating .width-value's text first.
+    (async () => {
+        await new Promise((r) => window.addEventListener('load', r, { once: true }));
+        await document.fonts.ready;
+
+        const maxFontSize = 8;
+        const form = document.querySelector('.amount-input .label-input');
+        const fullWidthDiv = form.querySelector('.full-width');
+        const widthPlaceholder = form.querySelector('.width-placeholder');
+        const widthValue = form.querySelector('.width-value');
+        const input = form.querySelector('input');
+
+        // Measure available width while .full-width is still in flow
+        const maxWidth = form.offsetWidth;
+        fullWidthDiv.classList.add('width-finder');
+
+        const placeholderWidth = widthPlaceholder.offsetWidth;
+        const valueWidth = widthValue.offsetWidth;
+        const fontSizeFactor = Math.min(1.0, Math.max(maxWidth / valueWidth, 1 / maxFontSize));
+        const fontSize = fontSizeFactor * maxFontSize;
+        const width = input.value
+            ? (fontSizeFactor === 1 ? valueWidth : maxWidth)
+            : placeholderWidth;
+        input.style.width = width + 'px';
+        input.style.fontSize = fontSize + 'rem';
+    })();
+</script>
+</div>
+      <div class="tile-info">
+        <h3>amount-input <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Large centered amount entry field that auto-fits its width and shrinks its font to the available space, with the currency ticker (NIM, BTC, ...) rendered beside the value.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The big send-amount field: width auto-fits the number and the font shrinks as the value grows, ticker rendered beside it.</p>
+      </div>
+    </div>
+    <div class="tile" id="amount-with-fee">
+      <div class="tile-stage "><!-- amount-with-fee: large amount entry + fee/fiat/error line.
+     States:
+       .amount-input.has-value  — a value is entered (full Nimiq blue)
+       .amount-input.focussed   — input focussed (light blue)
+       .amount-input.invalid    — amount + fee exceeds balance (red); then put
+                                  <div class="nq-red">Insufficient balance</div> in .fee-section
+     Fee/fiat line examples (inside .fee-section):
+       <span class="fiat">~€1.23</span> <span class="fee">+ 0.001 NIM fee</span> -->
+<div class="amount-with-fee">
+    <div class="amount-input has-value">
+        <div class="amount-field">
+            <span class="width-finder">100</span>
+            <input type="text" inputmode="decimal" class="nq-input"
+                placeholder="0" value="100" style="width: 50px;">
+        </div>
+        <span class="ticker">NIM</span>
+    </div>
+    <div class="fee-section nq-text-s"></div>
+</div>
+<script>
+    // Auto-size the input to its content (text width + 1.25rem padding each side).
+    (function () {
+        var input = document.querySelector('.amount-with-fee input');
+        var finder = document.querySelector('.amount-with-fee .width-finder');
+        function sizeInput() {
+            finder.textContent = input.value || input.placeholder;
+            input.style.width = finder.offsetWidth + 'px';
+        }
+        input.addEventListener('input', sizeInput);
+        sizeInput();
+        document.fonts.ready.then(sizeInput);
+    })();
+</script>
+</div>
+      <div class="tile-info">
+        <h3>amount-with-fee <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Large centered amount entry field (auto-sizing AmountInput with currency ticker) plus a secondary line that shows either an 'Insufficient balance' error, an approximate fiat value and/or the network fee. Used in send-transaction flows.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The complete send-flow amount widget: the input above plus a secondary line for fee, approximate fiat value, or an “Insufficient balance” error.</p>
+      </div>
+    </div>
+    <div class="tile" id="select-bar">
+      <div class="tile-stage "><!-- SelectBar snippet — fee selector with "standard" selected.
+     Pair with select-bar.css + nimiq-style. Selection coloring rule:
+     every label at or below the checked option gets the checked option's
+     color class (here nq-green-bg); labels above it get nq-highlight-bg.
+     Other option colors used upstream: nq-light-blue-bg, nq-gold-bg. -->
+<div class="select-bar">
+    <div>
+        <input type="radio" name="fee" id="fee-free">
+        <label for="fee-free" class="nq-label nq-green-bg">free</label>
+    </div>
+    <div>
+        <input type="radio" name="fee" id="fee-standard" checked>
+        <label for="fee-standard" class="nq-label nq-green-bg">standard</label>
+    </div>
+    <div>
+        <input type="radio" name="fee" id="fee-express">
+        <label for="fee-express" class="nq-label nq-highlight-bg">express</label>
+    </div>
+</div>
+</div>
+      <div class="tile-info">
+        <h3>select-bar <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Segmented radio bar (pill-shaped) for choosing one of several ordered options, e.g. a transaction fee level. All options up to and including the selected one are tinted with the selected option's color; later options stay on the neutral highlight background.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The fee selector in the wallet’s BTC send modal — free / standard / express. Everything up to the selection takes the selected color.</p>
+      </div>
+    </div>
+    <div class="tile" id="slider-toggle">
+      <div class="tile-stage "><!-- Nimiq slider toggle (requires slider-toggle.css + nimiq-style.css).
+     Types: type-currency (compact) or type-default (large).
+     Add/remove <label> blocks for more options; the checked radio gets the white pill. -->
+<div class="slider-toggle type-currency">
+    <label>
+        <input type="radio" name="currency" value="nim" checked>
+        <span>NIM</span>
+    </label>
+    <label>
+        <input type="radio" name="currency" value="btc">
+        <span>BTC</span>
+    </label>
+</div>
+</div>
+      <div class="tile-info">
+        <h3>slider-toggle <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Pill-shaped radio toggle with a white 'active box' that slides under the selected option. Used in the Nimiq Wallet as a currency switcher (NIM/BTC) and for filter/sort selection.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The NIM/BTC currency switcher and list filters in the wallet — a white pill slides under the active option.</p>
+      </div>
+    </div>
+    <div class="tile" id="qr-code">
+      <div class="tile-stage "><!-- Nimiq QR code. Requires qr-creator (pinned 1.0.0):
+     <script src="https://cdn.jsdelivr.net/npm/qr-creator@1.0.0/dist/qr-creator.min.js"></script>
+     Render with the Nimiq default fill:
+
+     QrCreator.render({
+         text: canvas.dataset.qr,
+         radius: 0.5,
+         ecLevel: 'M',
+         fill: {
+             type: 'radial-gradient',
+             position: [1, 1, 0, 1, 1, Math.sqrt(2)],
+             colorStops: [[0, '#265DD7'], [1, '#0582CA']],
+         },
+         background: null,
+         size: Number(canvas.dataset.size || 240),
+     }, canvas);
+-->
+<canvas class="qr-code"
+        data-qr="nimiq:NQ07000000000000000000000000000000000000"
+        data-size="240"></canvas>
+</div>
+      <div class="tile-info">
+        <h3>qr-code <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Nimiq QR code — renders arbitrary data (typically a nimiq: payment URI) as a rounded-module QR code on a canvas, filled by default with the Nimiq light-blue radial gradient (#265DD7 → #0582CA) on a transparent background.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The receive modal and payment requests. The light-blue radial gradient fill on rounded modules is a Nimiq brand signature.</p>
+      </div>
+    </div>
+    <div class="tile" id="tooltip">
+      <div class="tile-stage stage-tall-top"><!-- Nimiq Tooltip (shown above an info-circle trigger, "top right" position).
+     Include tooltip.css. The box is absolutely positioned relative to .tooltip:
+       left = triggerWidth/2 - 25px (here 18/2 - 25 = -16px)
+       top  = -boxHeight           (here -66px for two lines at width 25rem)
+     Remove the "shown" class (and optionally the .tooltip-box element) to hide it.
+     Other placements: change the position-* class and recompute top/left per tooltip.css notes. -->
+<span class="tooltip position-top-right shown">
+    <a href="javascript:void(0);" tabindex="0" class="trigger">
+        <svg class="nq-icon" width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><line x1="8" y1="7.83301" x2="8" y2="11.333" stroke="currentColor" fill="none" stroke-linecap="round"/><circle cx="8" cy="4.75" r="0.5" fill="currentColor" stroke="currentColor" stroke-width="0.5"/><circle cx="8" cy="8" r="7.5" stroke="currentColor" fill="none"/></svg>
+    </a>
+    <div class="tooltip-box" style="top: -66px; left: -16px; width: 25rem;">
+        Transactions are free on Nimiq.
+    </div>
+</span>
+</div>
+      <div class="tile-info">
+        <h3>tooltip <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Hover/focus/click tooltip with a positioned arrow box. Wraps a trigger element (icon by default) and shows a dark Nimiq-blue gradient box with an arrow, positioned via a preferred '[primary] [secondary]' position (e.g. 'top right'), optionally constrained to a container.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> Explains fees, balances and validator scores throughout the wallet — dark navy gradient box with a positioned arrow.</p>
+      </div>
+    </div>
+    <div class="tile" id="status-alert">
+      <div class="tile-stage "><!-- Nimiq status alerts — requires status-alert.css. Variants: info | success | warning | error. -->
+
+<div class="alert info">
+  <div class="icon">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="8" r="0.5" fill="currentColor"/></svg>
+  </div>
+  <span>Your transaction is being processed. This usually takes 1-2 minutes.</span>
+</div>
+
+<div class="alert success">
+  <div class="icon">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <span>Payment confirmed! 450 NIM sent successfully.</span>
+</div>
+
+<div class="alert warning">
+  <div class="icon">
+    <svg viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <span>Network congestion detected. Transactions may take longer than usual.</span>
+</div>
+
+<div class="alert error">
+  <div class="icon">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </div>
+  <span>Transaction failed. Insufficient balance for this transfer.</span>
+</div>
+</div>
+      <div class="tile-info">
+        <h3>status-alert <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Inline status alert block (info/success/warning/error) in Nimiq style: tinted background + border, circular icon chip, and message text. Used for transaction status, network notices and error feedback.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> Transaction status, network notices and error feedback. Green strictly means success, red strictly means error.</p>
+      </div>
+    </div>
+    <div class="tile" id="buttons">
+      <div class="tile-stage "><!-- Nimiq primary buttons (.nq-button) — requires nimiq-style CSS (legacy/nimiq-style.min.css).
+     Color variants: default (nimiq blue), light-blue, green, orange, red, gold.
+     States: disabled attribute; `inverse` class = white button for colored backgrounds.
+     Works on <button> and <a> elements alike. -->
+<button class="nq-button">Regular button</button>
+<button class="nq-button light-blue">Light-blue button</button>
+<button class="nq-button green">Green button</button>
+<button class="nq-button orange">Orange button</button>
+<button class="nq-button red">Red button</button>
+<button class="nq-button" disabled>Disabled button</button>
+</div>
+      <div class="tile-info">
+        <h3>buttons <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Primary Nimiq buttons (.nq-button) from the nimiq-style CSS framework: pill-shaped gradient buttons in blue (default), light-blue, green, orange, red, gold, plus disabled and inverse states.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The @nimiq/style button system: uppercase pills with radial-gradient fills. Navy/light-blue for CTAs, green only to confirm success, red only for destructive actions.</p>
+      </div>
+    </div>
+    <div class="tile" id="card">
+      <div class="tile-stage "><!-- Card: standard Nimiq content card. Requires nimiq-style (legacy) for all styling.
+     Header and footer are optional; .nq-card-header supports an extra
+     <p class="nq-notice warning"> line under the headline (see @nimiq/style demo). -->
+<div class="nq-card">
+    <div class="nq-card-header">
+        <h1 class="nq-h1">Card Title</h1>
+    </div>
+    <div class="nq-card-body">
+        <p class="nq-text">This is the card body. Cards group related content with a header, body and footer.</p>
+    </div>
+    <div class="nq-card-footer">
+        <button class="nq-button">Continue</button>
+    </div>
+</div>
+</div>
+      <div class="tile-info">
+        <h3>card <span class="verified-badge">pixel-verified</span></h3>
+        <p class="purpose">Standard Nimiq card container (.nq-card) with header, body and footer sections; the base layout block of @nimiq/style used for grouping content.</p>
+        <p class="usage"><strong>How Nimiq uses it:</strong> The base nq-card container — header, body, footer — used across the hub and marketing sites for any grouped content.</p>
+      </div>
+    </div>
+</div>
+
+<div class="page-footer-band">
+  Built from <a href="https://github.com/Andjroo111/nimiq-branding-cli">nimiq-branding-cli</a> · sources: nimiq/vue-components · @nimiq/style · nimiq/wallet
+</div>
+
+</body>
+</html>
