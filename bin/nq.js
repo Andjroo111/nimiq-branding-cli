@@ -261,6 +261,9 @@ const CHECKLIST = [
 
 async function cmdNew(name, flags) {
   if (!name || !/^[a-z][a-z0-9-]*$/.test(name)) throw new Error('nq new <kebab-case-name>');
+  if (ROOT.includes('node_modules') || ROOT.includes('_npx')) {
+    throw new Error('nq new scaffolds a component INTO the registry repo — clone it first:\n  git clone https://github.com/Andjroo111/nimiq-branding-cli\nthen run nq new from that checkout.');
+  }
   const dir = join(ROOT, 'registry', 'components', name);
   if (existsSync(dir)) throw new Error(`component "${name}" already exists`);
   const pascal = name.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('');
