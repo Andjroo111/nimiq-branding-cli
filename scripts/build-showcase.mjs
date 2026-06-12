@@ -200,6 +200,7 @@ ${styles}
   pixel-diffed against the real Nimiq component source before they ship; the marketing elements
   are screenshot-referenced recreations of nimiq.com.</p>
   <div class="pill">nq add &lt;component&gt; — Vue 3 or plain HTML</div>
+  <p style="margin-top:18px"><a href="supporting-elements.html" style="color:#E9B213;font-weight:700;text-decoration:none">→ See the wallet + marketing supporting elements demo</a></p>
 </div>
 
 <h2 class="section-title">The app page anatomy</h2>

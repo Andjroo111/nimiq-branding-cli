@@ -192,6 +192,7 @@ ${styles}
 <h2 class="section-title">Wallet elements</h2>
 <p class="section-sub">wallet.nimiq.com, logged in, light mode — the account overview, transaction history,
 swap distribution bar, and the navy sidebar widgets.</p>
+  <p style="text-align:center;margin:6px 0 0"><a href="showcase.html" style="color:#0582CA;font-weight:700;text-decoration:none">→ Full component gallery (all 39, incl. cards, toasts, buttons)</a></p>
 
 <div class="wallet-col">
   ${walletExhibits.join('\n')}
