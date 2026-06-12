@@ -68,7 +68,26 @@
 
 @supports (mix-blend-mode: screen) {
     .address-input.display-as-nim-address textarea {
-        color: black; /* upstream colors the text via mix-blend-mode overlays */
+        color: black; /* the actual color is applied per block via the .color-overlay mix-blend-mode */
+    }
+
+    .address-input.display-as-nim-address textarea::selection {
+        color: white;
+        background: #561a51; /* with mix-blend-mode yields a color close to the default */
+    }
+
+    .address-input.display-as-nim-address textarea::-moz-selection {
+        background: #411d68; /* with mix-blend-mode yields a color close to the default */
+    }
+
+    .address-input .color-overlay {
+        contain: size layout paint style;
+        position: absolute;
+        width: calc(var(--block-width) - .5rem);
+        height: calc(var(--block-height) - .5rem);
+        mix-blend-mode: screen;
+        z-index: 1;
+        pointer-events: none;
     }
 }
 

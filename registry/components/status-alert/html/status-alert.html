@@ -1,29 +1,24 @@
-<!-- Nimiq status alerts — requires status-alert.css. Variants: info | success | warning | error. -->
+<!-- Status Alert — requires status-alert.css. The real Nimiq alert/callout pattern
+     (nimiq-ui github-callouts.css). Variants: note (info) | tip (success) |
+     warning | caution (error) | important. Title labels follow upstream:
+     Note / Tip / Warning / Caution / Important (CSS uppercases them). -->
 
-<div class="alert info">
-  <div class="icon">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="8" r="0.5" fill="currentColor"/></svg>
-  </div>
-  <span>Your transaction is being processed. This usually takes 1-2 minutes.</span>
+<div class="nq-status-alert note">
+  <p class="alert-title">Note</p>
+  <p>Your wallet is syncing with the network.</p>
 </div>
 
-<div class="alert success">
-  <div class="icon">
-    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </div>
-  <span>Payment confirmed! 450 NIM sent successfully.</span>
+<div class="nq-status-alert tip">
+  <p class="alert-title">Tip</p>
+  <p>Payment confirmed! 450 NIM sent successfully.</p>
 </div>
 
-<div class="alert warning">
-  <div class="icon">
-    <svg viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </div>
-  <span>Network congestion detected. Transactions may take longer than usual.</span>
+<div class="nq-status-alert warning">
+  <p class="alert-title">Warning</p>
+  <p>Network congestion detected. Transactions may take longer than usual.</p>
 </div>
 
-<div class="alert error">
-  <div class="icon">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-  </div>
-  <span>Transaction failed. Insufficient balance for this transfer.</span>
+<div class="nq-status-alert caution">
+  <p class="alert-title">Caution</p>
+  <p>Transaction failed. Insufficient balance for this transfer.</p>
 </div>

@@ -26,7 +26,16 @@ const TILES = [
   ['slider-toggle', 'The NIM/BTC currency switcher and list filters in the wallet — a white pill slides under the active option.'],
   ['qr-code', 'The receive modal and payment requests. The light-blue radial gradient fill on rounded modules is a Nimiq brand signature.'],
   ['tooltip', 'Explains fees, balances and validator scores throughout the wallet — dark navy gradient box with a positioned arrow.'],
-  ['status-alert', 'Transaction status, network notices and error feedback. Green strictly means success, red strictly means error.'],
+  ['status-alert', 'Nimiq’s callout pattern (from the nimiq-ui docs theme): tinted background, tonal outline, uppercase icon title. note/tip/warning/caution map to info/success/warning/error.'],
+  ['loading-spinner', 'The hexagon spinner — shown while the wallet syncs consensus, loads transactions, or waits on a swap. Two dashed hexagon strokes chase each other.'],
+  ['close-button', 'The circled × in the corner of every modal and overlay in the wallet and hub.'],
+  ['consensus-icon', 'The network indicator in the wallet sidebar — globe with a green check once consensus is established, animated sync globe while connecting.'],
+  ['timer', 'The circular countdown from Hub checkout — how long the payment window or quoted rate is still valid.'],
+  ['toast-notification', 'The wallet’s bottom-right toasts (from the swap flow): blue while a swap is running (“don’t close your wallet!”), green on success, orange on error.', { wide: true, contain: true }],
+  ['account-list', 'The account chooser in Hub flows — identicon, label and NIM balance per row. Tap a row to pick the account that pays.', { wide: true }],
+  ['account-ring', 'The ring of identicons representing your logged-in accounts — used by the Hub as the “all my accounts” glyph.'],
+  ['payment-info-line', 'The header line of Hub checkout: amount being paid, the merchant’s name, and the countdown until the rate expires.', { wide: true }],
+  ['status-screen', 'The Hub’s full-card status overlay — every checkout and signing flow ends on this green success (or red error) screen inside the standard card.', { wrapSmallPage: true }],
   ['buttons', 'The @nimiq/style button system: uppercase pills with radial-gradient fills. Navy/light-blue for CTAs, green only to confirm success, red only for destructive actions.'],
   ['card', 'The base nq-card container — header, body, footer — used across the hub and marketing sites for any grouped content.'],
 ];
@@ -35,15 +44,17 @@ const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
 let styles = '';
 let tiles = '';
-for (const [name, usage] of TILES) {
+for (const [name, usage, opts = {}] of TILES) {
   const htmlPath = join(C, name, 'html', `${name}.html`);
   const cssPath = join(C, name, 'html', `${name}.css`);
+  if (!existsSync(htmlPath)) { console.warn(`skip tile ${name}: no snippet`); continue; }
   const meta = JSON.parse(await readFile(join(C, name, 'meta.json'), 'utf8'));
-  const snippet = await readFile(htmlPath, 'utf8');
+  let snippet = await readFile(htmlPath, 'utf8');
+  if (opts.wrapSmallPage) snippet = `<div class="small-page nq-card" style="position:relative;margin:0">${snippet}</div>`;
   if (existsSync(cssPath)) styles += `\n/* === ${name} === */\n` + await readFile(cssPath, 'utf8');
   tiles += `
-    <div class="tile" id="${name}">
-      <div class="tile-stage ${name === 'tooltip' ? 'stage-tall-top' : ''}">${snippet}</div>
+    <div class="tile ${opts.wide ? 'wide' : ''}" id="${name}">
+      <div class="tile-stage ${name === 'tooltip' ? 'stage-tall-top' : ''} ${opts.contain ? 'stage-contain' : ''}">${snippet}</div>
       <div class="tile-info">
         <h3>${esc(meta.name)} <span class="verified-badge">pixel-verified</span></h3>
         <p class="purpose">${esc(meta.purpose)}</p>
@@ -133,6 +144,17 @@ body { font-family: 'Mulish', 'Muli', system-ui, sans-serif !important; backgrou
 
 /* keep snippet buttons from stretching the buttons tile too tall */
 #buttons .tile-stage .nq-button { margin: 8px auto; }
+
+/* wide tiles span two grid columns where the grid is wide enough */
+.tile.wide { grid-column: span 2; }
+@media (max-width: 870px) { .tile.wide { grid-column: auto; } }
+
+/* contain fixed-position snippets (toasts) inside their tile for display */
+.stage-contain { position: relative; gap: 12px; }
+.stage-contain .nq-toast { position: static !important; margin: 6px 0; }
+
+/* status-screen sits inside a SmallPage; shrink it a touch to fit the tile */
+#status-screen .small-page { transform: scale(0.82); transform-origin: top center; margin-bottom: -100px !important; }
 
 /* component snippet styles (verbatim from the registry) */
 ${styles}

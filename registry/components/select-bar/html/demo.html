@@ -12,21 +12,36 @@
 </head>
 <body>
     <!-- Fee selector: free / standard / express, "standard" selected.
-         Options at or below the selected one carry the selected option's
-         color class (nq-green-bg); options above it use nq-highlight-bg. -->
+         Interactive: clicking an option re-colors via the scoped script below
+         (upstream getColor(): options at or below the selected one carry the
+         selected option's color class; options above it use nq-highlight-bg). -->
     <div class="select-bar">
         <div>
-            <input type="radio" name="fee" id="fee-free">
-            <label for="fee-free" class="nq-label nq-green-bg">free</label>
+            <input type="radio" name="fee" id="fee-free" value="0">
+            <label for="fee-free" class="nq-label nq-green-bg" data-color="nq-light-blue-bg">free</label>
         </div>
         <div>
-            <input type="radio" name="fee" id="fee-standard" checked>
-            <label for="fee-standard" class="nq-label nq-green-bg">standard</label>
+            <input type="radio" name="fee" id="fee-standard" value="1" checked>
+            <label for="fee-standard" class="nq-label nq-green-bg" data-color="nq-green-bg">standard</label>
         </div>
         <div>
-            <input type="radio" name="fee" id="fee-express">
-            <label for="fee-express" class="nq-label nq-highlight-bg">express</label>
+            <input type="radio" name="fee" id="fee-express" value="2">
+            <label for="fee-express" class="nq-label nq-highlight-bg" data-color="nq-gold-bg">express</label>
         </div>
     </div>
+    <script>
+    (() => {
+        const bar = document.currentScript.previousElementSibling;
+        const rows = Array.from(bar.children);
+        bar.addEventListener('change', () => {
+            const selected = rows.findIndex((row) => row.querySelector('input').checked);
+            const color = rows[selected].querySelector('label').dataset.color;
+            rows.forEach((row, i) => {
+                row.querySelector('label').className =
+                    'nq-label ' + (i <= selected ? color : 'nq-highlight-bg');
+            });
+        });
+    })();
+    </script>
 </body>
 </html>

@@ -1,0 +1,30 @@
+{
+  "name": "payment-info-line",
+  "purpose": "Checkout header line: crypto amount (with optional fiat value + price-breakdown tooltip) on the left, an animated arrow runway, the recipient (shop logo or identicon + origin domain) and an expiry countdown timer on the right. Used at the top of the Nimiq Hub checkout.",
+  "category": "payment",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "cryptoAmount", "type": "{ amount: number | bigint | BigInteger, currency: string, decimals: number }", "required": true, "description": "Amount to pay in the currency's smallest unit, with the currency code and its decimals (e.g. 5 for NIM)." },
+    { "name": "fiatAmount", "type": "{ amount: number, currency: string }", "description": "Optional fiat value (base unit, e.g. Euro). When set, a fiat line is shown under the crypto amount with a price-breakdown tooltip on hover/click." },
+    { "name": "fiatApiProvider", "type": "'CoinGecko' | 'CryptoCompare'", "default": "CoinGecko", "description": "Fiat API used to fetch the reference exchange rate for rate-deviation warnings." },
+    { "name": "vendorMarkup", "type": "number", "description": "Vendor crypto markup (>= -1) as a fraction, e.g. .05 for +5%; shown in the price-breakdown tooltip." },
+    { "name": "networkFee", "type": "number | bigint | BigInteger", "description": "Suggested network fee in the smallest unit; shown in the price-breakdown tooltip." },
+    { "name": "origin", "type": "string", "required": true, "description": "Origin URL of the shop; the part after '://' is shown as the recipient label." },
+    { "name": "address", "type": "string", "description": "Recipient address; renders an Identicon when it is a valid Nimiq address and no shopLogoUrl is given." },
+    { "name": "shopLogoUrl", "type": "string", "description": "Shop logo image; takes precedence over the identicon." },
+    { "name": "startTime", "type": "number", "description": "Timestamp when the payment request was created; together with endTime enables the countdown timer." },
+    { "name": "endTime", "type": "number", "description": "Timestamp when the payment request expires." },
+    { "name": "theme", "type": "'normal' | 'inverse'", "default": "normal", "description": "'inverse' renders white text/icons for dark backgrounds." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": ["amount", "fiat-amount", "tooltip", "identicon"],
+  "npmDeps": ["@nimiq/utils", "@nimiq/iqons"],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 600, "height": 300 },
+    "selector": ".payment-info-line",
+    "maxDiffPct": 0.5,
+    "settleMs": 400
+  },
+  "notes": "Sample state: 199.6 NIM (19960000 luna) / 2.99 EUR to shop.nimiq.com (identicon for burn address NQ07 0000..., pinned @nimiq/iqons@1.6.0 CDN), timer frozen at 10 of 15 minutes left (progress 1/3, countdown '10', circle dash values hand-computed for radius 12, fullCircleLength 2π·12). Tooltips closed; arrow-runway arrow rests at opacity 0 (screenshots disable the infinite animation). The .payment-info-line wrapper is the 420px SmallPage width; upstream root class is .info-line. Cascade quirk reproduced from upstream: Account's '.row .label:not(.editable)' (specificity 0,4,0) beats PaymentInfoLine's deep '.account .label' padding-left .75rem, so the label padding is effectively 1rem; ties (font-weight/mask-image/identicon size) go to PaymentInfoLine via injection order — the snippet CSS preserves this rule order, don't reorder. Vue port ships PaymentInfoLine.vue + minimal inline Account.vue (no editable/cashlink) and Timer.vue (radius snaps instead of tweening, simplified update interval); Amount.vue, FiatAmount.vue, Tooltip.vue, Identicon.vue come from sibling registry components (see dependsOn). getExchangeRates (rate-deviation warning) uses the real @nimiq/utils npm package; failures just suppress the warning. $t stubbed as identity; upstream's :container=\"$parent\" became a container prop."
+}

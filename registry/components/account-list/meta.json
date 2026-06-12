@@ -1,0 +1,28 @@
+{
+  "name": "account-list",
+  "purpose": "Selectable list of accounts — identicon + label + balance rows with hover caret — used as the account chooser in Hub flows (inside AccountSelector).",
+  "category": "identity",
+  "variants": ["vue", "html"],
+  "props": [
+    { "name": "accounts", "type": "AccountInfo[]", "required": true, "description": "Accounts to list: { userFriendlyAddress, label, balance (luna), walletId?, defaultLabel? }." },
+    { "name": "disabledAddresses", "type": "string[]", "default": [], "description": "Addresses rendered disabled with an explanatory tooltip." },
+    { "name": "walletId", "type": "string", "description": "Fallback wallet id emitted with account-selected when the account has none." },
+    { "name": "editable", "type": "boolean", "description": "Render labels as LabelInput fields instead of selectable rows." },
+    { "name": "decimals", "type": "number", "description": "Exact decimals for the balance Amount (else min 2 / max 5)." },
+    { "name": "minBalance", "type": "number", "description": "Balances render only when set; accounts below it are disabled (insufficient balance)." },
+    { "name": "disableContracts", "type": "boolean", "description": "Disable contract entries (no path) with a tooltip." },
+    { "name": "disabled", "type": "boolean", "description": "Disable the whole list." },
+    { "name": "tooltipProps", "type": "object", "description": "Props forwarded to the disabled-row Tooltip." }
+  ],
+  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "dependsOn": ["identicon", "amount", "tooltip", "label-input"],
+  "npmDeps": ["@nimiq/iqons"],
+  "verified": true,
+  "verify": {
+    "viewport": { "width": 600, "height": 400 },
+    "selector": ".account-list",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Sample state: 3 enabled rows (Main Account 12 345.6789 NIM / Savings 2500.00 NIM / Pocket Money 49.92 NIM), minBalance set so balances render, list at 420px (SmallPage width). Addresses are synthetic but checksum-valid (IBAN mod-97). Identicons via @nimiq/iqons@1.6.0 pinned on jsdelivr with Iqons.svgPath pointed at iqons.min.svg (same recipe as the identicon component). Static state: identicon scale(0.9), label/balance opacity 0.7, caret hidden (appears on hover with green balance + row highlight). Amount formatting: U+202F narrow no-break space grouping above 4 integer digits. The row content is upstream's Account.vue (layout 'row'); its markup/styles are inlined in the Vue port since Account has no own registry entry. Tooltip/LabelInput only appear for disabled/editable rows (not in sample)."
+}
