@@ -1,0 +1,717 @@
+[
+ {
+  "source": "nimiq.com website (/, /staking-calculator/, /apps, /albatross, /buy-and-sell, /nimiq-pay, /wallet, /cryptopaymentlink, /staking) \u2014 HTML img/srcset, _nuxt CSS url() refs, inline base64, ipx originals",
+  "savedTo": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/assets/nimiq-com/ (SOURCES.txt inside documents provenance; 252 files, 5.3MB)",
+  "assets": [
+   {
+    "name": "home-hero/map.svg",
+    "kind": "illustration",
+    "description": "THE hero world map: 977x362 dotted-continent world map, #1F2348 fill at 0.2 opacity, 484KB of tiny ellipse paths \u2014 the asset we had been redrawing by hand",
+    "url": "https://www.nimiq.com/_ipx/_/assets/images/home-hero/map.svg",
+    "value": "high",
+    "coveredByUs": "hand-recreated in hero-section (marketing) \u2014 now have the real file"
+   },
+   {
+    "name": "gods-light.webp",
+    "kind": "background",
+    "description": "CONFIRMED the hero sky: alt='Nimiq Gods Rays Background', 1600x900 webp (server max; s_3200x1800 returns same), rendered absolute inset-0 with blur-60 brightness-80 behind the home hero. Only 30KB",
+    "url": "https://www.nimiq.com/_ipx/s_1600x900/assets/images/gods-light.webp",
+    "value": "high",
+    "coveredByUs": "hand-recreated in hero-section as CSS gradient approximation"
+   },
+   {
+    "name": "css-inline/ (165 SVGs)",
+    "kind": "icon-set",
+    "description": "Entire UnoCSS data-URI icon inventory decoded from /_nuxt/entry.DNS3Ce9T.css, named by class: ~100 i-nimiq icons (chevrons, triangles, duotone-* spot icons, logos-* incl. nimiq horizontal + white wordmark, nimiq-pay, wallet, CPL, cryptocity, usdc/usdt/bitcoin, social monos), 41 nimiq-flags--*-hexagon hexagonal country flags, 6 continents--* dotted continent cutouts (same dot style as hero map), 3 oasis-regions--* maps, roadmap--{js,rust,wasm}",
+    "url": "https://www.nimiq.com/_nuxt/entry.DNS3Ce9T.css (data URIs)",
+    "value": "high",
+    "coveredByUs": "not covered \u2014 vendored nimiq-css subset (assets/css/modern) has no icon set; legacy nimiq-style.icons.svg only covers the old icon generation; hexagon flags/continents/duotones not covered at all"
+   },
+   {
+    "name": "css-inline/custom--bg-hexagons.svg",
+    "kind": "background",
+    "description": "2795x544 fading honeycomb band (hexagons at varying opacity .01-.04+), currentColor \u2014 the real source of the honeycomb section background",
+    "url": "https://www.nimiq.com/_nuxt/entry.DNS3Ce9T.css (i-custom:bg-hexagons)",
+    "value": "high",
+    "coveredByUs": "hand-recreated in honeycomb-band component"
+   },
+   {
+    "name": "css-inline/custom--buy-and-sell-bg.svg",
+    "kind": "background",
+    "description": "1734x1374 blurred multi-blob glow (filter feGaussianBlur) used behind the buy-and-sell wallet preview",
+    "url": "https://www.nimiq.com/_nuxt/entry.DNS3Ce9T.css (i-custom:buy-and-sell-bg)",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "home/card.svg + home/email.svg + home/stats.svg",
+    "kind": "illustration",
+    "description": "Three 132x80 gradient feature-card illustrations on the homepage (payment card, paper-plane/email burst, green stats bars)",
+    "url": "https://www.nimiq.com/_ipx/_/assets/images/home/{card,email,stats}.svg",
+    "value": "high",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "prismic/Zt7oXhoQrfVKl2hB_NimiqWalletPreview.webp",
+    "kind": "device-mock",
+    "description": "1734x1164 Nimiq Wallet desktop UI screenshot used in the homepage product strip (119KB)",
+    "url": "https://www.nimiq.com/assets/images/prismic/Zt7oXhoQrfVKl2hB_NimiqWalletPreview.webp",
+    "value": "high",
+    "coveredByUs": "hand-recreated piecewise via wallet components (account-header, transaction-list, etc.) \u2014 real reference now on disk"
+   },
+   {
+    "name": "prismic/Zt7oXRoQrfVKl2hA_NimiqPayPreview.webp + Zt7oXRoQrfVKl2g_CPLPreview.webp",
+    "kind": "device-mock",
+    "description": "490x916 Nimiq Pay phone screenshot and 910x1268 CryptoPayment Link phone screenshot from homepage app cards",
+    "url": "https://www.nimiq.com/assets/images/prismic/",
+    "value": "medium",
+    "coveredByUs": "hand-recreated in app-showcase-card (card chrome only; screenshots not covered)"
+   },
+   {
+    "name": "prismic/aPdOyLpReVYa3gOo_multisig-preview.svg",
+    "kind": "device-mock",
+    "description": "673x422 vector mock of the Multisig wallet UI (139KB SVG, fully vector \u2014 recolorable)",
+    "url": "https://www.nimiq.com/assets/images/prismic/aPdOyLpReVYa3gOo_multisig-preview.svg",
+    "value": "high",
+    "coveredByUs": "not covered (a copy also exists in references/assets/brand/awesome-apps/)"
+   },
+   {
+    "name": "prismic partner logos (cryptopayment-link-logo-white 220x32, btc-lightning-logo-white 43x31, naka-logo-white 84x20, polygon-logo 32x32)",
+    "kind": "logo",
+    "description": "White partner/integration wordmarks from the homepage 'works with' row",
+    "url": "https://www.nimiq.com/assets/images/prismic/",
+    "value": "high",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "prismic/9a318235..._Cryptopayment_link_hero_2_1.svg",
+    "kind": "illustration",
+    "description": "209KB full vector hero illustration of the /cryptopaymentlink page (payment link UI scene)",
+    "url": "https://www.nimiq.com/_ipx/_/assets/images/prismic/9a318235-c463-4504-b00e-bac54dc5d3b9_Cryptopayment_link_hero_2_1.svg",
+    "value": "high",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "prismic CPL feature icons (peer-to-peer, dashboard, for-employees, charge-in-your-store, send-invoice, who-is-it-for, what-is-it-about, image-1-)",
+    "kind": "icon-set",
+    "description": "64x64 duotone blue/gold feature icons on /cryptopaymentlink",
+    "url": "https://www.nimiq.com/assets/images/prismic/",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "prismic nimiq-pay set (nimiq-pay-hero.webp 617KB, zig-zag-map.png, cryptocities-logos.png, bluecode-logo/white, naka-logo pngs, cashback/fast-transaction/bltc-white/cpl-white/icon_have-five svgs, 6 how-to-* 630x859 app screenshots, wallet-preview.png, 2 unnamed UI pngs)",
+    "kind": "misc",
+    "description": "Full /nimiq-pay page asset set: hero render, partner logos, white 150x150 feature icons, step-by-step app screenshots",
+    "url": "https://www.nimiq.com/assets/images/prismic/",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "prismic buy-and-sell exchange logos (20: moonpay, simplex, mexc, kucoin, gateio, changelly, coinex, swapzone, swapspace, stealthex, hitbtc, coinspot, changehero, simpleswap, ascendex, coinswitch, kryptomat, coinpay, cryptocompare, Wallet.webp 2519x1644)",
+    "kind": "logo",
+    "description": "Third-party exchange logos + black-frame wallet screenshot from /buy-and-sell",
+    "url": "https://www.nimiq.com/assets/images/prismic/",
+    "value": "medium",
+    "coveredByUs": "overlaps references/assets/brand/awesome-exchanges (different upstream, prismic versions now also vendored)"
+   },
+   {
+    "name": "prismic staking images (ZzpTPq8jQArT08s8_wallet-black-white.webp 1800x838, ZzpazK8jQArT08uI_Frame48104392.webp 840x1128)",
+    "kind": "device-mock",
+    "description": "/staking page: greyscale wallet staking UI screenshot and phone-in-hand staking shot",
+    "url": "https://www.nimiq.com/assets/images/prismic/",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "staking-inline/ (13 logos)",
+    "kind": "logo",
+    "description": "Validator/staking-pool logos base64-embedded in /staking HTML: AceStaking, NimiqHub Fun, NIM re-staking, Garuda, Marketing Pool, Pocket, Whalidator, French Validator by Ju, NimiqCafe, Chipmunk, Nova, Keyring",
+    "url": "inline in https://www.nimiq.com/staking HTML",
+    "value": "low",
+    "coveredByUs": "not covered (third-party logos used in the pool-selector cards)"
+   },
+   {
+    "name": "staking-calculator/piggy.svg + triangle.svg",
+    "kind": "illustration",
+    "description": "The /staking-calculator Vue app's piggy-bank illustration (7KB) and tooltip triangle; the hexagon-rain background is canvas-drawn (no asset)",
+    "url": "https://www.nimiq.com/staking-calculator/css/app.6aacaace.css url() refs",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "alert.gif",
+    "kind": "misc",
+    "description": "Animated megaphone gif from the orange announcement banner shown on /staking and /wallet (61KB)",
+    "url": "https://www.nimiq.com/assets/announcement-banner/alert.gif",
+    "value": "low",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "apple-store-badge.png + google-play-badge.svg",
+    "kind": "misc",
+    "description": "Official App Store / Google Play store badges used on /nimiq-pay",
+    "url": "https://www.nimiq.com/_ipx/_/assets/images/",
+    "value": "low",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "css-inline/custom--{10-million-nim,cloud,curly,apps,cli-docs}.svg",
+    "kind": "illustration",
+    "description": "Misc CSS spot art: '10 million NIM' gradient wordmark lockup (420x68 white + 40x40 gradient tiles), cartoon cloud (60x32), curly doodle with dots (228x177), apps grid, CLI docs art",
+    "url": "https://www.nimiq.com/_nuxt/entry.DNS3Ce9T.css",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "albatross block diagrams (macro-block, micro-block, batch-and-epoch, skip-block webps)",
+    "kind": "illustration",
+    "description": "NOT SAVED \u2014 all four /albatross consensus-diagram webps 404 on the live site via every path variant (broken images on nimiq.com itself)",
+    "url": "https://www.nimiq.com/assets/images/prismic/ZvvnQ7VsGrYSwN8O_macro-block.webp (dead)",
+    "value": "medium",
+    "coveredByUs": "n/a \u2014 upstream is broken; would need Prismic CDN or wayback to recover"
+   },
+   {
+    "name": "favicon.ico + og.png + nimiq/awesome app artwork",
+    "kind": "misc",
+    "description": "Found again in this sweep but intentionally NOT re-saved: already vendored by the brand sweep",
+    "url": "https://www.nimiq.com/favicon.ico, /__og-image__/static/og.png, raw.githubusercontent.com/nimiq/awesome",
+    "value": "medium",
+    "coveredByUs": "vendored already in references/assets/brand/ (nimiq-com-meta/, awesome-apps/)"
+   },
+   {
+    "name": "woff2 webfonts (Mulish + Fira Code instances, ~40 files in /_nuxt/_fonts/)",
+    "kind": "font",
+    "description": "Hash-named self-hosted subsets referenced from entry CSS \u2014 skipped: fonts already shipped via vendored @nimiq/style fonts.css",
+    "url": "https://www.nimiq.com/_nuxt/_fonts/",
+    "value": "low",
+    "coveredByUs": "vendored already (assets/css/modern/fonts.css)"
+   }
+  ],
+  "notes": "Key mechanics learned: (1) ipx originals at /_ipx/_/<path>, but several prismic files ONLY resolve at the bare /assets/images/prismic/ path and vice versa \u2014 my downloader tried both and verified with file(1) since nimiq.com 404s return 200-sized 5030-byte HTML shells that masquerade as images. (2) The richest haul was NOT <img> tags but data-URI SVGs in /_nuxt/entry.DNS3Ce9T.css: 165 UnoCSS icons including the full i-nimiq set, 41 hexagonal country flags, dotted continent cutouts matching the hero map style, and the honeycomb band source. (3) /staking-calculator/ is a separate legacy Vue app with its own assets. (4) /albatross block diagrams are 404 in production \u2014 nimiq.com ships broken images there. (5) gods-light.webp confirmed as the literal hero sky (alt='Nimiq Gods Rays Background', blur-60 overlay). Duplicates with the parallel brand sweep (favicon, og.png, github awesome artwork) were detected via references/assets/brand/SOURCES.txt and removed. Nothing exceeded 3MB; no videos encountered."
+ },
+ {
+  "source": "Local wallet clone (upstream/wallet) + https://wallet.nimiq.com runtime (HTML, 3 CSS bundles, 2 JS bundles)",
+  "savedTo": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/assets/wallet/ (79 files, 1.7MB, structure mirrors upstream: top-level src/assets files + exchanges/ slides/ staking/ languages/ fonts/ img/)",
+  "assets": [
+   {
+    "name": "consensus-sprite.svg",
+    "kind": "sprite",
+    "description": "Wallet consensus-state animation sprite: 220x66 SVG, 10 frames x 3 rows of white-stroke globe/wifi arcs used by ConsensusIcon. Confirmed runtime-loaded on wallet.nimiq.com via url(/img/consensus-sprite.775a4b0d.svg) in chunk-common CSS.",
+    "url": "upstream/wallet/src/assets/consensus-sprite.svg",
+    "value": "high",
+    "coveredByUs": "hand-recreated in consensus-icon (sprite inlined as data URI per component notes) \u2014 original now vendored"
+   },
+   {
+    "name": "account-ring.png",
+    "kind": "illustration",
+    "description": "28KB raster of the multi-identicon account ring (used in menus/slides). Also confirmed in live JS bundle as img/account-ring.60435b7d.png.",
+    "url": "upstream/wallet/src/assets/account-ring.png",
+    "value": "medium",
+    "coveredByUs": "hand-recreated in account-ring component (vector/identicon version); raster original now vendored"
+   },
+   {
+    "name": "staking-preview-icon.svg",
+    "kind": "icon-set",
+    "description": "70x70 gradient sparkle/plus staking teaser icon shown in the sidebar staking preview; in live bundle as img/staking-preview-icon.1b153b9d.svg.",
+    "url": "upstream/wallet/src/assets/staking-preview-icon.svg",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "staking/ (staking.svg, staking-graph.svg, three-leaf-staking.svg, vertical-line.svg)",
+    "kind": "illustration",
+    "description": "Staking modal art: staking-graph.svg is the 508x181 navy-gridline rewards-projection chart illustration; plus leaf staking marks. Companion public/img/staking/estimated-rewards-projection.svg (240x140 masked chart) + arrow-right.svg saved under img/staking/.",
+    "url": "upstream/wallet/src/assets/staking/",
+    "value": "high",
+    "coveredByUs": "not covered (no staking-modal component yet; account-header only references the green Stake pill)"
+   },
+   {
+    "name": "oasis-bg-desktop.svg / oasis-bg-mobile.svg / oasis-launch-background.svg",
+    "kind": "background",
+    "description": "OASIS (EUR<->crypto) modal background art \u2014 faint outlined bank/building shapes (182x227 desktop variant) and the larger launch-announcement background.",
+    "url": "upstream/wallet/src/assets/",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "buy-welcome-background.svg / sell-welcome-background.svg / buy-crypto-modal-background.png / activation-modal-background.png",
+    "kind": "background",
+    "description": "Modal hero backgrounds: buy/sell welcome SVG backdrops (BuyCryptoModal/SellCryptoModal) and the shared PNG backdrop used by BtcActivationModal + PolygonActivationModal.",
+    "url": "upstream/wallet/src/assets/",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "swap-change-background.svg + horizontal-double-arrow.svg",
+    "kind": "background",
+    "description": "Diagonal-hatch fill SVG laid over the BTC side of the swap balance bar + the white drag-handle double arrow.",
+    "url": "upstream/wallet/src/assets/",
+    "value": "high",
+    "coveredByUs": "hand-recreated in swap-balance-bar (meta.json cites these exact files as source) \u2014 originals now vendored"
+   },
+   {
+    "name": "slides/ (account-ring-half.svg, login-file-half.svg, old-account-menu-half.svg, browser-network-half.png)",
+    "kind": "illustration",
+    "description": "Onboarding/welcome-modal slide art halves: account ring, blue Login File card, legacy account menu, browser-network world illustration (plus full browser-network.png at top level).",
+    "url": "upstream/wallet/src/assets/slides/",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "multisig-logo.svg + multisig-announcement.webp",
+    "kind": "logo",
+    "description": "Nimiq Multisig app logo (32x32 gradient hexagon variant with clip-path) and the 96KB multisig announcement promo image (MultisigAnnouncementModal).",
+    "url": "upstream/wallet/src/assets/",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "ten31.svg",
+    "kind": "logo",
+    "description": "White TEN31 Bank wordmark, 63x12 SVG (OASIS banking partner credit).",
+    "url": "upstream/wallet/src/assets/ten31.svg",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "exchanges/ (18 files)",
+    "kind": "logo",
+    "description": "Third-party exchange/on-ramp logo set used in Buy NIM flow: moonpay-full/mono.svg, coinify-full/mono.png, simplex-full.png, kucoin, gateio, mexc, coinex, coindcx, coinspot, changehero, swapspace, swapzone, bitladon, bitmax, ascendex, bitpanda.",
+    "url": "upstream/wallet/src/assets/exchanges/",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "fonts/ (Muli-Regular/SemiBold/Bold.woff, FiraMono-Regular/Medium.woff, fonts.css)",
+    "kind": "font",
+    "description": "The wallet's actual self-hosted brand fonts: Muli 3 weights + Fira Mono 2 weights as woff, with the @font-face css. These are the exact files wallet.nimiq.com serves from /fonts/.",
+    "url": "upstream/wallet/public/fonts/",
+    "value": "high",
+    "coveredByUs": "partially \u2014 registry assets/css vendors @nimiq/style which declares Muli/Fira Mono, but no local woff files existed in the repo before this"
+   },
+   {
+    "name": "img/icons/ favicon set (9 files) + favicon.ico + icon-gradient-on-blue.svg + sharing-banner.jpg",
+    "kind": "logo",
+    "description": "Complete wallet PWA icon set: android-chrome 128/192/196, apple-touch-icon 152/167/default, favicon 16/32, safari-pinned-tab.svg (21x21 black hexagon mask icon), favicon.ico, the 8KB white-hexagon-on-blue-gradient app icon, and the 128KB og/sharing banner JPG (og:image on wallet.nimiq.com).",
+    "url": "upstream/wallet/public/img/",
+    "value": "high",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "img/screenshots/ (6 PNGs, 560KB)",
+    "kind": "photo",
+    "description": "PWA manifest store screenshots: 01-Send-and-receive, 02-More-than-NIM, 03-Buy-and-sell, 04-Your-keys-your-coins, 05-Security-first, 06-Stake-NIM \u2014 official full-app reference renders, useful as pixel-recreation ground truth.",
+    "url": "upstream/wallet/public/img/screenshots/",
+    "value": "high",
+    "coveredByUs": "not covered (great verification references for the 39 wallet components)"
+   },
+   {
+    "name": "green-plus.svg / mini-arrow-down.svg",
+    "kind": "icon-set",
+    "description": "Small UI glyphs: green plus (add address) and mini chevron-down.",
+    "url": "upstream/wallet/src/assets/",
+    "value": "low",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "languages/ (9 SVGs)",
+    "kind": "icon-set",
+    "description": "Language-picker flag icons: de, en, es, fr, nl, pt, ru, uk, zh (square flag style).",
+    "url": "upstream/wallet/src/assets/languages/",
+    "value": "low",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "flags/square/ (~250 country flag SVGs, 932KB) \u2014 CATALOGED, NOT COPIED",
+    "kind": "icon-set",
+    "description": "Full square-country-simple-flags set (flag-AD.svg ... flag-ZW.svg) used for bank-country display in OASIS/KYC flows; generic third-party set, not Nimiq-drawn. The bundled square-country-simple-flags.zip is 11.6MB (>3MB, skipped).",
+    "url": "upstream/wallet/src/assets/flags/square/",
+    "value": "low",
+    "coveredByUs": "not covered; n/a (third-party)"
+   },
+   {
+    "name": "src/components/icons/ Vue icon inventory (70 components) \u2014 CATALOGED, NOT COPIED",
+    "kind": "icon-set",
+    "description": "Inline-SVG Vue icons: top level (AddIcon, ArrowDown, Bank, Bitcoin, BoxedArrowUp, Brackets, CaretRight, CircledQuestionMark, DoubleArrow, Fastspot, Flag, Flame, Forbidden, GroundedArrowDown/Up, HighFive, HistoricValue, Kyc, Ledger, Lightning, Limit, LinkedDoubleArrow, LoginFile, Maintenance, Maximize, Menu, Messages, MiniAdd, Minimize, OverflowingCup, PrivacyOn/Off, Refresh, Shield, Star, StopSign, Streetcone, Swap/Medium/Small, Trash, TriangleDown, UnclaimedCashlink, Usdc, Usdt, UsdtPadded, Vesting, Words, WorldAlert/Check/World) + AccountMenu/ (Backup, ChangePassword, LoginFileDownload, LogoutArrow, Rename) + Staking/ (AnimatedLeaf, CircleArrowDown, CircleExclamationMark, FatSearch, One/Two/ThreeLeafStaking, RoundStaking, Staking, Star, VerticalLine, XClose) + SwapBalanceBar/ (CurvedLine, SlideHint). These supplement @nimiq/vue-components icons.",
+    "url": "upstream/wallet/src/components/icons/",
+    "value": "medium",
+    "coveredByUs": "partially \u2014 swap-balance-bar recreates CurvedLine; rest not covered (registry mostly uses nimiq-css/@nimiq/style icons)"
+   },
+   {
+    "name": "blocking.css + img/staking/arrow-right.svg + horizontal-double-arrow.svg",
+    "kind": "misc",
+    "description": "blocking.css is the geo-block page stylesheet (not copied, trivial); arrow-right.svg copied under img/staking/.",
+    "url": "upstream/wallet/public/",
+    "value": "low",
+    "coveredByUs": "not covered"
+   }
+  ],
+  "notes": "Runtime check of wallet.nimiq.com confirmed the deployed app serves exactly the clone's assets (consensus-sprite, account-ring.png, staking-preview-icon, sharing-banner og:image, favicon set, self-hosted fonts) \u2014 no extra runtime-only assets found in the entry CSS/JS bundles; lazy-route chunk assets all exist in the local clone. Wallet does NOT use ipx; assets are webpack-hashed under /img/. Biggest registry wins: (1) original consensus-sprite.svg \u2014 consensus-icon currently inlines a recreation; (2) original swap-change-background.svg + horizontal-double-arrow.svg for swap-balance-bar; (3) the 6 official PWA screenshots as ground-truth references for pixel verification; (4) the exact self-hosted Muli/FiraMono woff files; (5) staking modal art (staking-graph, estimated-rewards-projection) for any future staking-modal component. Skipped: square-country-simple-flags.zip (11.6MB) and the ~250 individual flag SVGs (generic third-party), 70 Vue icon components (cataloged, inline SVG in .vue files). Duplicate favicon.ico kept only at img/favicon.ico."
+ },
+ {
+  "assets": [
+   {
+    "name": "iqons.min.svg",
+    "kind": "sprite",
+    "url": "https://hub.nimiq.com/img/iqons.min.a593173e.svg (upstream: @nimiq/iqons/dist/iqons.min.svg)",
+    "description": "Complete Iqons identicon part catalog as SVG symbol sprite: 84 symbols (face_01-21, side_01-21, top_01-21, bottom_01-21), 88KB. This is THE asset that makes Nimiq identicons render; runtime-hashed filename stripped back to original.",
+    "value": "high",
+    "coveredByUs": "identicon component exists but loads this via jsdelivr CDN (Iqons.svgPath comment in registry/components/identicon/vue/Identicon.vue) \u2014 now vendored locally"
+   },
+   {
+    "name": "swap-change-background.svg",
+    "kind": "background",
+    "url": "https://hub.nimiq.com/swap-change-background.svg (upstream/hub/public)",
+    "description": "9x36 white diagonal-stripe repeat-x hatch tile used for the 'change' segment in hub SetupSwapLedger swap balance bar (1.5px square-cap strokes).",
+    "value": "medium",
+    "coveredByUs": "vendored already \u2014 registry/components/swap-balance-bar embeds this exact SVG as an inline data URI in its CSS"
+   },
+   {
+    "name": "cashlink-themes/generic.svg (+ generic-mobile, christmas, christmas-mobile, lunar-new-year, lunar-new-year-mobile, easter, birthday \u2014 8 files)",
+    "kind": "illustration",
+    "url": "https://hub.nimiq.com/img/cashlink-themes/*.svg (upstream/hub/public/img/cashlink-themes)",
+    "description": "Full-viewport seasonal background illustrations for the CashlinkReceive page (confetti, christmas, lunar new year, easter, birthday motifs; desktop + mobile crops), 5-33KB each. Selected at runtime by cashlink theme.",
+    "value": "medium",
+    "coveredByUs": "not covered \u2014 no cashlink component in the 39-component registry"
+   },
+   {
+    "name": "icon-btc.svg",
+    "kind": "icon-set",
+    "url": "https://hub.nimiq.com/icon-btc.svg",
+    "description": "34x34 Bitcoin coin icon (circle + B glyph, fill via currentColor/orange) used by hub CheckoutCardBitcoin payment-method selector.",
+    "value": "medium",
+    "coveredByUs": "not covered \u2014 registry has no checkout-card components"
+   },
+   {
+    "name": "icon-eth.svg",
+    "kind": "icon-set",
+    "url": "https://hub.nimiq.com/icon-eth.svg",
+    "description": "25x40 faceted Ethereum diamond built from opacity-layered (.7/.5/.45) black paths, used by hub CheckoutCardEthereum.",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "icon-bank.svg",
+    "kind": "icon-set",
+    "url": "https://hub.nimiq.com/icon-bank.svg",
+    "description": "66x66 solid blue (#0582CA) circle with white bank/columns glyph, used for OASIS bank-transfer checkout option.",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "cashlink-icon.png",
+    "kind": "icon-set",
+    "url": "https://hub.nimiq.com/cashlink-icon.png",
+    "description": "280x280 PNG: dark indigo (#1F2348-ish) circle with white dollar-sign glyph surrounded by multicolor confetti dot burst \u2014 cashlink share/preview icon.",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "nimiq.png",
+    "kind": "logo",
+    "url": "https://hub.nimiq.com/nimiq.png",
+    "description": "146x146 PNG of the gold radial-gradient Nimiq hexagon (no wordmark), used as hub app/window icon.",
+    "value": "low",
+    "coveredByUs": "n/a \u2014 hexagon logo already available as SVG via vendored @nimiq/style; PNG raster kept for fidelity reference"
+   },
+   {
+    "name": "favicon.ico",
+    "kind": "icon-set",
+    "url": "https://hub.nimiq.com/favicon.ico",
+    "description": "Multi-size ICO (48/32/16px, 32-bit) of the gold Nimiq hexagon \u2014 hub.nimiq.com favicon.",
+    "value": "low",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "blocking.css",
+    "kind": "misc",
+    "url": "https://hub.nimiq.com/blocking.css",
+    "description": "Hub render-blocking boot CSS: inline data-URI 27x24 radial-gradient gold hexagon logo SVG, Muli font @font-face set loaded from fonts.gstatic.com (woff/woff2), and the dual-hexagon loading-spinner keyframes/markup styles.",
+    "value": "medium",
+    "coveredByUs": "loading-spinner hand-recreated in registry/components/loading-spinner; hexagon logo + Muli covered by vendored @nimiq/style"
+   },
+   {
+    "name": "checkout-demo.mp4 (NOT downloaded)",
+    "kind": "misc",
+    "url": "upstream/hub/public/checkout-demo.mp4",
+    "description": "1.7MB MP4 demo of the Nimiq checkout flow, served from hub public root. Skipped per rules (video).",
+    "value": "low",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "Muli woff2 fonts (NOT downloaded)",
+    "kind": "font",
+    "url": "https://fonts.gstatic.com/s/muli/v12/... (referenced from blocking.css)",
+    "description": "Muli regular/semibold/bold woff+woff2 loaded straight from Google Fonts gstatic in hub's blocking.css \u2014 Nimiq's brand typeface at hub-era version v12.",
+    "value": "low",
+    "coveredByUs": "vendored already \u2014 @nimiq/style ships Muli/Mulish in registry assets/css"
+   },
+   {
+    "name": "vue-components Icons.ts icon set (NOT downloaded \u2014 source refs only)",
+    "kind": "icon-set",
+    "url": "upstream/vue-components/src/components/Icons.ts",
+    "description": "~50 Vue icon components (alert-circle, arrows, cashlink x3 sizes, checkmark, copy, etc.) \u2014 all import directly from @nimiq/style/src/icons/*.svg; no binary assets live in vue-components itself. QrCode.vue uses qr-creator lib (procedural), QrScanner uses qr-scanner worker (no images).",
+    "value": "low",
+    "coveredByUs": "vendored already \u2014 @nimiq/style icons in registry assets/css"
+   }
+  ],
+  "notes": "Big find: the runtime Iqons sprite. hub's vue config inlines it via file-loader as /img/iqons.min.a593173e.svg (NOT at site root \u2014 root path returns the SPA fallback HTML with a fake 200; Content-Type check required). Saved hash-stripped as iqons.min.svg so registry/components/identicon can point Iqons.svgPath at a local file instead of jsdelivr. Second confirmation of good prior work: swap-change-background.svg is already byte-equivalent inline in our swap-balance-bar component. hub has no src/assets dir \u2014 everything lives in public/; the only runtime-only asset (not in the repo's public/) is the iqons sprite, which webpack copies out of node_modules/@nimiq/iqons at build time. vue-components contains zero image files (icons all come from @nimiq/style, which we already vendor). Skipped checkout-demo.mp4 (video) and gstatic Muli fonts (already vendored via @nimiq/style).",
+  "savedTo": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/assets/hub/",
+  "source": "upstream/hub + upstream/vue-components local clones + https://hub.nimiq.com runtime (HTML, CSS, JS bundles probed for hashed assets)"
+ },
+ {
+  "source": "LOCAL upstream/nimiq-style + upstream/nimiq-ui (packages/nimiq-icons, nimiq-css, nimiq-maplibre-styles, docs/public)",
+  "assets": [
+   {
+    "name": "nimiq-style-icons/ (39 svgs + _FORMAT.md)",
+    "kind": "icon-set",
+    "url": "upstream/nimiq-style/src/icons/*.svg",
+    "description": "Legacy @nimiq/style icon set as individual stroke/fill SVGs (arrow-left, hexagon, qr-code, ledger, cashlink, view/view-off, etc.) plus the _FORMAT.md authoring spec (24x24 grid rules). Verified identical coverage to the sprite: symbol ids in nimiq-style.icons.svg == filenames, 39/39.",
+    "value": "medium",
+    "coveredByUs": "vendored already as sprite at assets/css/legacy/nimiq-style.icons.svg; individual files were NOT in assets/ until now"
+   },
+   {
+    "name": "nimiq-icons/icons.json (+info,metadata,chars)",
+    "kind": "icon-set",
+    "url": "upstream/nimiq-ui/packages/nimiq-icons/src/icons/icons.json",
+    "description": "THE modern Nimiq icon distribution: Iconify JSON set, prefix 'nimiq', 323 icons = 186 plain UI icons (12x12 stroke, 2px round caps) + 48 'duotone-*' marketing illustrations + 89 'logos-*'. Built from Figma via @iconify/tools (scripts/index.ts); published as npm 'nimiq-icons' v1.0.0-beta.162; consumed through nimiq-css unocss preset as i-nimiq:* classes. No spritesheet/loose-SVG distribution exists upstream.",
+    "value": "high",
+    "coveredByUs": "not covered \u2014 registry components hand-inline a handful of icon paths (e.g. payment-info-line, hero-section); the set itself was never vendored"
+   },
+   {
+    "name": "extracted-logos/ (89 standalone svgs)",
+    "kind": "logo",
+    "url": "extracted from nimiq-icons icons.json (logos-* entries)",
+    "description": "Official logo family extracted to standalone SVGs with gradient defs intact: logos-nimiq{,-horizontal,-vertical,-white-*,-mono} radial-gradient hexagon + wordmark (76x18 horizontal), Nimiq Pay, Nimiq Wallet, CryptoPayment Link (cpl-horizontal/tag/white), Crypto Map, Cryptocity, Developer Center, Nimiq Forum, Frankenmint (fm-*), Super Simple Swap, shiny-nim coin, multisig, gmaps-pin, currency coins (bitcoin, lightning-bitcoin, ethereum, usdc, usdt, euro/usd/colones outline) and social marks (discord, github, twitter, telegram, instagram, facebook, reddit, youtube) \u2014 each in color + mono variants.",
+    "value": "high",
+    "coveredByUs": "hand-recreated in hero-section \u2014 its meta.json literally says the CPL / coin / ring logos are 'simplified placeholder marks'; real marks now available"
+   },
+   {
+    "name": "extracted-duotone/ (48 standalone svgs)",
+    "kind": "illustration",
+    "url": "extracted from nimiq-icons icons.json (duotone-* entries)",
+    "description": "Two-tone marketing illustration icons used across nimiq.com feature sections: duotone-cash-register, btc-invoice, htlc-box, high-five, handshake, incognito, globe, fiat-exchange, crypto-currencies-btc-eth/usdc, cryptos-pizza, block-stairs, gamepad, dashboard, etc.",
+    "value": "high",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "nimiq-flags/icons.json (+info,metadata,chars)",
+    "kind": "icon-set",
+    "url": "upstream/nimiq-ui/packages/nimiq-icons/src/flags/icons.json",
+    "description": "Iconify JSON set 'nimiq-flags': 422 hexagon-cropped country/region flags (32x32, e.g. de-hexagon, us-hexagon, au-nsw-hexagon), npm package 'nimiq-flags'. Used by Crypto Map / wallet country pickers.",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "docs-assets/favicon.svg (+ico, 16/32 png)",
+    "kind": "logo",
+    "url": "upstream/nimiq-ui/docs/public/favicon.svg",
+    "description": "Official Nimiq hexagon logo mark as gradient SVG, 295x263 viewBox with radial-gradient gold fill \u2014 clean standalone source of the hexagon mark, plus rendered ico/png favicon set.",
+    "value": "high",
+    "coveredByUs": "hand-recreated in hero-section/app-showcase-card hexagon chips"
+   },
+   {
+    "name": "docs-assets/nimiq-css.svg, nimiq-vitepress.svg, frankenstein.svg, modal.svg",
+    "kind": "logo",
+    "url": "upstream/nimiq-ui/docs/public/assets/icons/",
+    "description": "Package logos for the nimiq-ui docs: nimiq-css hexagon variant, nimiq-vitepress mark, 'frankenstein' (legacy-css migration mascot) and modal package icons; each 1-3KB svg.",
+    "value": "low",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "docs-assets/scripto.webp",
+    "kind": "illustration",
+    "url": "upstream/nimiq-ui/docs/public/assets/images/scripto.webp",
+    "description": "'Scripto' mascot illustration from the nimiq-ui docs, 375KB webp raster.",
+    "value": "low",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "docs-assets/nimiq-style-favicon.ico",
+    "kind": "logo",
+    "url": "upstream/nimiq-style/favicon.ico",
+    "description": "Legacy @nimiq/style demo favicon (15KB ico, hexagon mark, 2018-era).",
+    "value": "low",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "fonts/mulish-*.woff2 (10 files)",
+    "kind": "font",
+    "url": "upstream/nimiq-ui/docs/public/assets/fonts/mulish-*.woff2",
+    "description": "Mulish brand-font woff2 unicode-range subsets (hashed vitepress build copies, ~25-50KB each). Relevant gap: our assets/css/modern/fonts.css declares Mulish + Fira Mono @font-face pointing at /assets/fonts/*.ttf which we never vendored \u2014 these are the only real font binaries in either upstream.",
+    "value": "medium",
+    "coveredByUs": "not covered \u2014 fonts.css references missing /assets/fonts/Mulish-VariableFont_wght.ttf"
+   },
+   {
+    "name": "maplibre/nimiq-maplibre-light.json",
+    "kind": "misc",
+    "url": "upstream/nimiq-ui/packages/nimiq-maplibre-styles/nimiq-maplibre-light.json",
+    "description": "Nimiq-branded MapLibre GL style JSON (88KB, light theme) \u2014 the official map styling used by Crypto Map; directly relevant to the hero world-map work that triggered this sweep.",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "FiraMono-400.ttf / Mulish-VariableFont_wght.ttf (NOT present upstream)",
+    "kind": "font",
+    "url": "referenced by nimiq-css src/css/fonts.css as /assets/fonts/*.ttf",
+    "description": "Canonical font binaries that nimiq-css fonts.css expects consumers to ship; not included in either upstream repo \u2014 would need to be fetched from a live nimiq site or Google Fonts. Cataloged as a known gap, nothing downloaded.",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "firacode-*.woff2 (skipped)",
+    "kind": "font",
+    "url": "upstream/nimiq-ui/docs/public/assets/fonts/",
+    "description": "Fira Code subsets used only by the vitepress docs code blocks (brand monospace is Fira Mono, not Fira Code) \u2014 skipped as non-brand.",
+    "value": "low",
+    "coveredByUs": "n/a"
+   },
+   {
+    "name": "claude.svg / openai.svg (skipped)",
+    "kind": "icon-set",
+    "url": "upstream/nimiq-ui/packages/nimiq-vitepress-theme/src/assets/icons/",
+    "description": "Third-party AI-vendor marks in the vitepress theme's copy-as-markdown widget; not Nimiq brand assets \u2014 skipped.",
+    "value": "low",
+    "coveredByUs": "n/a"
+   }
+  ],
+  "savedTo": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/assets/style-ui/",
+  "notes": "Key answers: (1) modern nimiq-icons is distributed ONLY as Iconify JSON npm packages ('nimiq-icons' prefix nimiq, 'nimiq-flags' prefix nimiq-flags), generated from Figma frames icons/duotone/logos/flags by scripts/index.ts \u2014 no spritesheet or loose SVGs upstream, so I copied the JSON sets AND extracted logos-* (89) + duotone-* (48) into standalone SVGs with gradient defs verified intact. (2) The 'logos' subcategory inside icons.json is the highest-value find \u2014 real CryptoPayment Link / Nimiq Pay / coin / social marks that hero-section currently fakes with placeholder paths. (3) nimiq-style individual icons == our vendored sprite exactly (diffed symbol ids vs filenames), so that gap is only about per-file convenience. (4) Gap flagged: assets/css/modern/fonts.css @font-faces point to /assets/fonts/*.ttf we do not ship; Mulish woff2 subsets copied as interim. Total saved: 206 files, 2.5MB, all under 3MB each."
+ },
+ {
+  "source": "Nimiq brand/media resources beyond the main site: github.com/nimiq/designs (official logo pack), github.com/nimiq/awesome (app/exchange icons hotlinked by nimiq.com), github.com/nimiq/identicons, nimiq.com favicon/og-image. nimiq.com/brand, /press, /media-kit, /media, /presskit all 404 (no public media-kit page exists). github.com/nimiq/website is private (404).",
+  "savedTo": "/Users/andrjoo/Projects/nimiq/nimiq-branding-cli/references/assets/brand/ (159 files, 2.8MB; provenance in SOURCES.txt)",
+  "assets": [
+   {
+    "name": "logo-pack/ (25 SVGs, incl. nimiq-logo.min.svg)",
+    "kind": "logo",
+    "url": "https://github.com/nimiq/designs (logo/RGB/*/svg/)",
+    "description": "THE official Nimiq logo pack: horizontal + vertical wordmark and hexagon signet (16/32/64/base optical sizes) in colored (radial gold gradient #ec991c->#e9b213), white-text-colored-signet, all-black, all-white. Flattened to logo-pack/{colored,black,white}/. This repo ('Nimiq Designs and Assets') is the canonical brand source nobody had found.",
+    "value": "high",
+    "coveredByUs": "not covered \u2014 no nimiq_logo*.svg anywhere in repo; upstream/ vendors nimiq-style icons but NOT the logo pack"
+   },
+   {
+    "name": "logo-pack/colored/_extended/{nimiq_keyguard,nimiq_miner,nimiq_safe,nimiq_shop}.svg",
+    "kind": "logo",
+    "url": "https://github.com/nimiq/designs",
+    "description": "Official 'extended' product logos: hexagon signet variants for Keyguard (key cutout), Miner, Safe, Shop \u2014 legacy product identity set.",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "identicons/src-svg/ (84 SVGs in bottom/face/side/top)",
+    "kind": "icon-set",
+    "url": "https://github.com/nimiq/identicons/tree/master/src/svg",
+    "description": "The named identicon PART SOURCES (face/unicorn.svg, bottom/robot.svg, side/wings.svg, top/crown.svg, ...) that compile into the iqons sprite \u2014 lets us render/debug identicons offline and by part name instead of treating the CDN sprite as a black box.",
+    "value": "high",
+    "coveredByUs": "hand-recreated in identicon component via @nimiq/iqons@1.6.0 jsdelivr CDN at runtime; sources not vendored"
+   },
+   {
+    "name": "identicons/identicons.min.svg",
+    "kind": "sprite",
+    "url": "https://github.com/nimiq/identicons/blob/master/dist/identicons.min.svg",
+    "description": "Compiled 88KB symbol sprite (face_01..., side_..., bottom_..., top_...) \u2014 same content the @nimiq/iqons CDN bundle ships; drop-in for offline identicon rendering.",
+    "value": "high",
+    "coveredByUs": "identicon component fetches the equivalent from CDN; now vendored"
+   },
+   {
+    "name": "awesome-apps/nim-world.svg",
+    "kind": "illustration",
+    "url": "https://raw.githubusercontent.com/nimiq/awesome/main/src/data/assets/nim-world.svg",
+    "description": "218x218 'NIM World' globe illustration \u2014 white landmasses on blue circle with gold NIM hexagons; hotlinked directly by nimiq.com's apps section (confirmed in homepage HTML).",
+    "value": "high",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "awesome-apps/nimiq-hexagon.svg",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/nimiq/awesome/main/src/data/assets/nimiq-hexagon.svg",
+    "description": "325-byte canonical gold-gradient Nimiq hexagon signet, the exact file nimiq.com hotlinks as a generic app icon.",
+    "value": "high",
+    "coveredByUs": "hand-recreated in app-showcase-card (gold hexagon chip) and honeycomb-band"
+   },
+   {
+    "name": "awesome-apps/ (25 more: crypto-payment-logo.svg, nimiq-wallet.svg, staking-calculator.svg, nimiq-pay.webp, crypto-map.webp, multisig-preview.svg, nimiq-2048.svg, nimiq-sunset-cyberspace.svg, nimiq-tip-bot.svg, trust-wallet.svg, nimtris.svg, nimiq-gift-card.svg, nimiq-shop.svg, nimiq-fm.svg, nimiq-watch.svg, nim-stalker.svg, nimiq-game-store.svg, nimiq-multisig-wallet.svg, paynim-telegram-bot.svg, accept-donations.svg, staking ... + nimiqscan.png 834KB, nimiq-cafe.png, pixels_logo.png, re-nim.png, twini-app.svg)",
+    "kind": "icon-set",
+    "url": "https://github.com/nimiq/awesome/tree/main/src/data/assets",
+    "description": "Full ecosystem app-icon set that nimiq.com's 'THE APPS' grid hotlinks from raw.githubusercontent.com (6 confirmed in live homepage HTML: nim-world, nimiq-2048, nimiq-hexagon, nimiq-sunset-cyberspace, nimiq-tip-bot, trust-wallet). multisig-preview.svg (158KB) is the same multisig promo art nimiq.com serves via ipx prismic.",
+    "value": "high",
+    "coveredByUs": "not covered \u2014 app-showcase-card fakes icons with CSS"
+   },
+   {
+    "name": "awesome-exchanges/ (16 logos)",
+    "kind": "icon-set",
+    "url": "https://github.com/nimiq/awesome/tree/main/src/data/assets/exchanges",
+    "description": "Exchange logo set used on the Buy-NIM/exchanges page: ascendex, changehero, changelly, coinex, coinspot, coinswitch, gate.io, hitbtc, kriptomat, kucoin, mexc, simpleswap, stealthex, swapspace, swapzone (SVG) + coinpay.png.",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "awesome-mini-apps/ (3 SVGs)",
+    "kind": "icon-set",
+    "url": "https://github.com/nimiq/awesome/tree/main/src/data/assets/mini-apps",
+    "description": "Mini-app icons: albermonte-evm-mini-wallet, eligioo-nimtris, onmax-hex-hopper.",
+    "value": "low",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "awesome-data-nimiq-apps.json",
+    "kind": "misc",
+    "url": "https://raw.githubusercontent.com/nimiq/awesome/main/src/data/dist/nimiq-apps.json",
+    "description": "Machine-readable app index (name/description/logo URL/link) that drives nimiq.com's apps grid \u2014 maps every icon above to its app. Sibling dist files exist (nimiq-exchanges.json, nimiq-explorers.json, nimiq-mini-apps.json, nimiq-resources.json, rpc-servers.json) \u2014 not downloaded.",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "nimiq-com-meta/og.png",
+    "kind": "misc",
+    "url": "https://www.nimiq.com/__og-image__/static/og.png",
+    "description": "nimiq.com Open Graph share card, 1200x600 PNG RGBA (824KB). Note: bare nimiq.com URL 301s \u2014 must fetch www with -L.",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "nimiq-com-meta/favicon.ico",
+    "kind": "icon-set",
+    "url": "https://www.nimiq.com/favicon.ico",
+    "description": "nimiq.com favicon, multi-size ICO (48/32/16, 32-bit). This is the ONLY favicon convention the site has \u2014 apple-touch-icon.png, favicon.svg, favicon-{16,32}.png, site.webmanifest, manifest.json, android-chrome-* all 404.",
+    "value": "medium",
+    "coveredByUs": "not covered"
+   },
+   {
+    "name": "logo CMYK print files (SKIPPED)",
+    "kind": "misc",
+    "url": "https://github.com/nimiq/designs/tree/master/logo/CMYK",
+    "description": "Print-grade EPS + JPEG of every logo variant, ~600KB each (~20MB total) \u2014 skipped as print-only; RGB SVGs cover all design use. RGB PNG @1x/2x/3x rasters also skipped (redundant with SVGs).",
+    "value": "low",
+    "coveredByUs": "n/a"
+   },
+   {
+    "name": "nimiq-style.icons.svg + src/icons/*.svg (NOT re-downloaded)",
+    "kind": "icon-set",
+    "url": "https://github.com/nimiq/nimiq-style",
+    "description": "40-icon UI sprite (arrows, cashlink, checkmark, hexagon, qr-code, ledger, ...).",
+    "value": "high",
+    "coveredByUs": "vendored already \u2014 upstream/nimiq-style/ and assets/css/legacy/nimiq-style.icons.svg"
+   },
+   {
+    "name": "prismic partner wordmarks on nimiq.com (NOT downloaded \u2014 main-site sweep scope)",
+    "kind": "logo",
+    "url": "https://www.nimiq.com/_ipx/_/assets/images/prismic/...",
+    "description": "Seen in homepage HTML, originals via /_ipx/_/: aUQvvnNY..._cryptopayment-link-logo-white.svg (white CryptoPayment Link wordmark, 220x32), aUQv83NY..._polygon-logo.svg (32x32), aUQv2XNY..._btc-lightning-logo-white.svg (43x31), aUQvvHNY..._naka-logo-white.svg (84x20), plus product shots NimiqWalletPreview.webp (1734x1164), NimiqPayPreview.webp (490x916), CPLPreview.webp (910x1268), multisig-preview.svg (673x422, duplicate of awesome copy), gods-light.webp (1600x900 hero bg).",
+    "value": "medium",
+    "coveredByUs": "not covered \u2014 flagged for the nimiq-com sweep agent (references/assets/nimiq-com/ was empty)"
+   },
+   {
+    "name": "identicons demo/catalog pages (SKIPPED)",
+    "kind": "misc",
+    "url": "https://github.com/nimiq/identicons (catalog.html, builder.html, example1/2.png, src/svg.archive/)",
+    "description": "Part-catalog and builder demo pages plus an svg.archive/ of retired identicon parts (balloon, kraken, dracula, panda, ...) \u2014 archive parts never render in current identicons, skipped; src-svg active set captured instead.",
+    "value": "low",
+    "coveredByUs": "n/a"
+   }
+  ],
+  "notes": "Headline find: github.com/nimiq/designs is the canonical 'Nimiq Designs and Assets' repo containing the full official logo pack (wordmark + signet, 3 colorways, 4 optical sizes, SVG/PNG/EPS) \u2014 this repo had zero copies of the official logo. Second find: nimiq.com hotlinks its apps-section icons LIVE from raw.githubusercontent.com/nimiq/awesome (same pattern as the map.svg discovery \u2014 real shipped art, not site-local), so the awesome repo IS a nimiq.com asset source. Third: nimiq/identicons src/svg gives the 84 named part sources behind the iqons CDN sprite our identicon component depends on; we now have an offline sprite + parts. Confirmed there is NO public brand/press/media-kit page on nimiq.com (all 404) and nimiq/website is private. All downloads verified (file magic checked); total 159 files / 2.8MB in references/assets/brand/ with provenance in SOURCES.txt. Gotchas for future sweeps: bare nimiq.com 301s (use www + -L for og.png); zsh chokes on unquoted '===' echo args."
+ }
+]
