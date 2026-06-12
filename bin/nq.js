@@ -24,6 +24,9 @@ Usage:
   nq assets search <term>       Search assets incl. the 323 nimiq-icons + 422 hexagon flags
   nq assets add <name...>       Copy official asset(s) into ./nimiq/assets/
                                 (icon:<name> extracts from nimiq-icons, flag:<cc> from nimiq-flags)
+  nq principles                 Print the Nimiq design principles — the soul of this tool
+  nq new <name>                 Scaffold a new registry component with the principles
+                                checklist + verification contract embedded
   nq verify <component|all>     Render the html variant and diff against the reference PNG
   nq help                       This message
 
@@ -239,6 +242,88 @@ async function cmdTokens() {
   console.log(await readFile(join(ROOT, 'assets', 'tokens.md'), 'utf8'));
 }
 
+async function cmdPrinciples() {
+  console.log(await readFile(join(ROOT, 'PRINCIPLES.md'), 'utf8'));
+}
+
+const CHECKLIST = [
+  'remove-everything-unnecessary: could anything be removed without the layout failing?',
+  'light-stage: white/#F8F8F8 base, structure via white space + nuanced grays, not boxes/lines',
+  'color-rules: main colors w/ gradient spin | light grays | semantic highlights on interaction only',
+  'gradients: color areas use the bottom-right radial gradient, never flat fills',
+  'form: warm and round yet straight and tangible; every element anchored, related to the whole',
+  'type: Mulish for UI, Fira Mono for technical values, nothing else',
+  'one-break: at most ONE calculated surprise, defensible on a content level',
+  'learned-patterns: basics follow common patterns; surprise lives in details only',
+  'real-assets: team-shipped files via nq assets — no redrawn logos/icons/art',
+  'reproducible: plain HTML/CSS or standard Vue, passes nq verify',
+];
+
+async function cmdNew(name, flags) {
+  if (!name || !/^[a-z][a-z0-9-]*$/.test(name)) throw new Error('nq new <kebab-case-name>');
+  const dir = join(ROOT, 'registry', 'components', name);
+  if (existsSync(dir)) throw new Error(`component "${name}" already exists`);
+  const pascal = name.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('');
+  await mkdir(join(dir, 'html'), { recursive: true });
+  await mkdir(join(dir, 'truth'), { recursive: true });
+  await mkdir(join(dir, 'vue'), { recursive: true });
+
+  const meta = {
+    name,
+    purpose: 'TODO: one sentence — what it is and where Nimiq uses it',
+    category: 'misc',
+    variants: ['vue', 'html'],
+    props: [],
+    cssFiles: ['css/legacy/nimiq-style.min.css'],
+    assetFiles: [],
+    dependsOn: [],
+    npmDeps: [],
+    verified: false,
+    verify: { viewport: { width: 600, height: 400 }, selector: `.${name}`, maxDiffPct: 0.5, settleMs: 250 },
+    principles: Object.fromEntries(CHECKLIST.map(c => [c.split(':')[0], false])),
+    notes: 'Scaffolded by nq new. Cite the source (upstream file, real asset, or screenshot reference) here. A component is DONE when every principles flag is true AND nq verify passes.',
+  };
+  await writeFile(join(dir, 'meta.json'), JSON.stringify(meta, null, 2) + '\n');
+
+  const pageChrome = (title, cssHref) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>${title}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link rel="stylesheet" href="${cssHref}">
+<style>
+    html, body { margin: 0; padding: 0; background: #fff; }
+    body { font-family: 'Mulish', 'Muli', system-ui, sans-serif; }
+</style>
+</head>
+<body>
+<div class="${name}">
+    <!-- TODO: same markup as html/${name}.html — keep truth/demo/snippet identical -->
+</div>
+</body>
+</html>
+`;
+  await writeFile(join(dir, 'truth', 'truth.html'), pageChrome(`${name} — truth (cite your source!)`, `../html/${name}.css`));
+  await writeFile(join(dir, 'html', 'demo.html'), pageChrome(name, `${name}.css`));
+  await writeFile(join(dir, 'html', `${name}.html`), `<!-- ${name} — TODO describe. Requires ${name}.css + nimiq-style.min.css.\n     Source: TODO (upstream file / real asset / reference screenshot). -->\n<div class="${name}">\n    <!-- TODO -->\n</div>\n`);
+  await writeFile(join(dir, 'html', `${name}.css`), `/* ${name} — all selectors namespaced under .${name}.\n   Principles: light stage, white-space structure, bottom-right radial gradients,\n   Mulish/Fira Mono, one calculated break max. Run: nq principles */\n.${name} {\n    font-family: 'Mulish', sans-serif;\n}\n`);
+  await writeFile(join(dir, 'vue', `${pascal}.vue`), `<script setup lang="ts">\n// ${pascal} — port faithfully; inline small helpers; record npm deps in meta.json\n</script>\n\n<template>\n    <div class="${name}">\n        <!-- TODO -->\n    </div>\n</template>\n\n<style scoped>\n.${name} {\n    font-family: 'Mulish', sans-serif;\n}\n</style>\n`);
+
+  console.log(`+ registry/components/${name}/ scaffolded\n`);
+  console.log('The principles gate (all must become true in meta.json):');
+  for (const c of CHECKLIST) console.log('  [ ] ' + c);
+  console.log(`\nWorkflow:
+  1. Build truth/truth.html from a REAL source (upstream code, real asset, or live screenshot) — cite it in meta.notes.
+  2. node scripts/snap.mjs ${name}     (truth -> reference.png; eyeball it)
+  3. Build html/${name}.html + demo.html + vue/${pascal}.vue with identical markup.
+  4. node scripts/verify.mjs ${name}   (must pass at <= 0.5% diff)
+  5. Flip the principles flags + verified:true, then: node scripts/build-index.mjs
+Read the soul of the tool first: nq principles`);
+}
+
 async function cmdVerify(target) {
   const { verify } = await import(join(ROOT, 'scripts', 'verify.mjs'));
   const names = target === 'all' || !target
@@ -264,6 +349,8 @@ try {
     case 'add': await cmdAdd(rest, flags); break;
     case 'init': await cmdInit(flags); break;
     case 'tokens': await cmdTokens(); break;
+    case 'principles': await cmdPrinciples(); break;
+    case 'new': await cmdNew(rest[0], flags); break;
     case 'assets': await cmdAssets(rest[0], rest.slice(1), flags); break;
     case 'verify': await cmdVerify(rest[0]); break;
     default: console.log(HELP);
