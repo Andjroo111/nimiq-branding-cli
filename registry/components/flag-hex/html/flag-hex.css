@@ -1,0 +1,21 @@
+/* flag-hex — a country flag clipped into the Nimiq rounded hexagon.
+   Requires nimiq-style.min.css only for the page font; the component is
+   self-contained SVG. Namespaced under .flag-hex. */
+
+.flag-hex {
+  display: block;
+  width: 56px; /* size to taste; aspect stays 20:18 (height = width * 0.9) */
+  height: 50.4px;
+  /* let the gray edge stroke reach past the viewBox at the tips (not clipped) */
+  overflow: visible;
+}
+
+/* The flag image fills the box; the box is sized to the flag's aspect (see the
+   x/y/width/height on each <image> in the markup) so it covers with no
+   letterbox. The gray edge path defines the hexagon shape + the tips. */
+.flag-hex .fh-edge {
+  fill: none;
+  stroke: rgba(31, 35, 72, 0.22);
+  stroke-width: 0.4;
+  stroke-linejoin: round;
+}

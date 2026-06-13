@@ -381,6 +381,16 @@
       "verified": true
     },
     {
+      "name": "flag-hex",
+      "purpose": "A country flag clipped into the Nimiq rounded hexagon (the same shape as the identicon) — for language / country pickers. Handles the overscan, per-flag pan/zoom, aspect-correct fill (no letterbox), and one consistent gray edge so every flag reads cleanly including the pointed left/right tips.",
+      "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
+    },
+    {
       "name": "transaction-list",
       "purpose": "Wallet transaction history list — month header + per-transaction rows: stacked day/month date, peer identicon, Fira Mono address with time underneath, and right-aligned amount (outgoing plain at 60%, incoming in the green tinted pill) over a loading fiat placeholder bar.",
       "category": "payment",

@@ -1,0 +1,38 @@
+<!-- flag-hex — a flag clipped into the Nimiq rounded hexagon. Requires flag-hex.css.
+
+  Real use: point the <image> at a flag-icons file (MIT; flags are public domain):
+      <image href="/flags/fr.svg" x=".." y=".." width=".." height=".."
+             preserveAspectRatio="xMidYMid slice" clip-path="url(#fh-clip)"/>
+
+  The x/y/width/height define the IMAGE BOX. Size the box to the flag's OWN
+  aspect ratio and to COVER the 20x18 hexagon, so it fills with no white
+  letterbox (browsers letterbox slice on referenced SVGs). For a square (1:1)
+  flag the box below is ~ -1,-1.8 21.6x21.6. For a 4:3 flag use ~ -3,-0.7
+  25.9x19.4. Pan/zoom by shifting/scaling the box (keep scale >= (10+|pan|)/11
+  or the opposite edge uncovers).
+
+  Each example inlines a simple flag (rects) so the file is self-contained;
+  swap the <g> for an <image href> in real use. clipPath ids must be unique. -->
+
+<!-- Germany (horizontal tricolor) — fills cleanly, gray edge defines the shape -->
+<svg class="flag-hex" viewBox="0 0 20 18" role="img" aria-label="German">
+  <defs><clipPath id="fh-de"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+  <g clip-path="url(#fh-de)">
+    <rect x="-1" y="-1.8" width="21.6" height="7.2" fill="#000"/>
+    <rect x="-1" y="5.4" width="21.6" height="7.2" fill="#d00"/>
+    <rect x="-1" y="12.6" width="21.6" height="7.2" fill="#ffce00"/>
+  </g>
+  <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+</svg>
+
+<!-- France (vertical tricolor) — the pointed L/R tips pinch the side stripes;
+     the overscan + edge keep it reading. A near-square 1:1 source is used. -->
+<svg class="flag-hex" viewBox="0 0 20 18" role="img" aria-label="French">
+  <defs><clipPath id="fh-fr"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+  <g clip-path="url(#fh-fr)">
+    <rect x="-1" y="-1.8" width="7.2" height="21.6" fill="#002395"/>
+    <rect x="6.2" y="-1.8" width="7.2" height="21.6" fill="#fff"/>
+    <rect x="13.4" y="-1.8" width="7.2" height="21.6" fill="#ed2939"/>
+  </g>
+  <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+</svg>
