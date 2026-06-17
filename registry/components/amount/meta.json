@@ -2,25 +2,74 @@
   "name": "amount",
   "purpose": "Formats a crypto amount given in its smallest unit (luna, satoshi, ...) as a human-readable number with thin-space digit grouping, configurable decimals and a currency ticker.",
   "category": "payment",
-  "variants": ["vue", "html"],
-  "props": [
-    { "name": "amount", "type": "number | bigint | BigInteger", "required": true, "description": "Amount in the currency's smallest unit (e.g. luna for NIM)." },
-    { "name": "decimals", "type": "number", "description": "Exact decimals to show; takes precedence over minDecimals/maxDecimals." },
-    { "name": "minDecimals", "type": "number", "default": 2, "description": "Minimum decimals to show (pads with zeros)." },
-    { "name": "maxDecimals", "type": "number", "default": 5, "description": "Maximum decimals to show (rounds)." },
-    { "name": "showApprox", "type": "boolean", "default": false, "description": "Prefix '~ ' when rounding made the displayed value inexact." },
-    { "name": "currency", "type": "string", "default": "nim", "description": "Currency code; rendered uppercase as the ticker (special-cased: tnim→tNIM, mbtc→mBTC, tbtc→tBTC, usdc.e→USDC.e)." },
-    { "name": "currencyDecimals", "type": "number", "default": 5, "description": "Decimals of the currency's smallest unit (5 for NIM/luna, 8 for BTC/sat)." }
+  "variants": [
+    "vue",
+    "html"
   ],
-  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "props": [
+    {
+      "name": "amount",
+      "type": "number | bigint | BigInteger",
+      "required": true,
+      "description": "Amount in the currency's smallest unit (e.g. luna for NIM)."
+    },
+    {
+      "name": "decimals",
+      "type": "number",
+      "description": "Exact decimals to show; takes precedence over minDecimals/maxDecimals."
+    },
+    {
+      "name": "minDecimals",
+      "type": "number",
+      "default": 2,
+      "description": "Minimum decimals to show (pads with zeros)."
+    },
+    {
+      "name": "maxDecimals",
+      "type": "number",
+      "default": 5,
+      "description": "Maximum decimals to show (rounds)."
+    },
+    {
+      "name": "showApprox",
+      "type": "boolean",
+      "default": false,
+      "description": "Prefix '~ ' when rounding made the displayed value inexact."
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "nim",
+      "description": "Currency code; rendered uppercase as the ticker (special-cased: tnim→tNIM, mbtc→mBTC, tbtc→tBTC, usdc.e→USDC.e)."
+    },
+    {
+      "name": "currencyDecimals",
+      "type": "number",
+      "default": 5,
+      "description": "Decimals of the currency's smallest unit (5 for NIM/luna, 8 for BTC/sat)."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
   "dependsOn": [],
   "npmDeps": [],
   "verified": true,
   "verify": {
-    "viewport": { "width": 600, "height": 400 },
+    "viewport": {
+      "width": 600,
+      "height": 400
+    },
     "selector": ".amount",
     "maxDiffPct": 0.5,
     "settleMs": 250
   },
-  "notes": "Sample state: 1234567890 luna = 12,345.6789 NIM, minDecimals 2, maxDecimals 5, currency nim. FormattableNumber from @nimiq/utils is inlined as a faithful mini-port in the Vue variant (string-based, precision-loss-free: moveDecimalSeparator, half-up rounding, U+202F narrow no-break space grouping applied only when there are more than 4 integer digits). No npm deps. The .currency span carries the currency code as a class for host styling; upstream itself styles only .amount (nowrap) and .approx::before."
+  "notes": "Sample state: 1234567890 luna = 12,345.6789 NIM, minDecimals 2, maxDecimals 5, currency nim. FormattableNumber from @nimiq/utils is inlined as a faithful mini-port in the Vue variant (string-based, precision-loss-free: moveDecimalSeparator, half-up rounding, U+202F narrow no-break space grouping applied only when there are more than 4 integer digits). No npm deps. The .currency span carries the currency code as a class for host styling; upstream itself styles only .amount (nowrap) and .approx::before.",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/Amount.vue"
+    ]
+  }
 }

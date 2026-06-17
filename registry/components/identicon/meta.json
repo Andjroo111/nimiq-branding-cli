@@ -34,5 +34,12 @@
   "notes": "Renders via @nimiq/iqons@1.6.0 pinned on jsdelivr in both truth and demo; Iqons.svgPath must point at iqons.min.svg (the component normally resolves it via webpack file-loader). The generated data URL embeds a random clip-path id but is pixel-identical across runs. Upstream fixes width:10rem; sample state overrides to 128px at page level. ValidationUtils.normalizeAddress/isValidAddress from @nimiq/utils@0.11.1 are inlined in the Vue port. Identicon sprite is the REAL team-shipped iqons.min.svg (84-symbol part catalog, 88KB) vendored at assets/img/iqons.min.svg — byte-identical to the Hub-deployed sprite captured in references/assets/hub/iqons.min.svg and to @nimiq/iqons@1.6.0 dist; the snippet probes the local copy and falls back to the same CDN sprite, while the iqons JS library itself stays pinned on jsdelivr (code, not artwork).",
   "assetFiles": [
     "img/iqons.min.svg"
-  ]
+  ],
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/Identicon.vue"
+    ]
+  }
 }

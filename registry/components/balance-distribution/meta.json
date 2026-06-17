@@ -2,19 +2,39 @@
   "name": "balance-distribution",
   "purpose": "Sidebar balance-distribution donut from the Nimiq wallet: a ring made of one rounded SVG arc per currency (gold NIM, orange BTC, blue USDC, teal USDT), sized by each currency's share of the account's total fiat value, next to a bold white CURRENCY / percentage legend. Empty currencies get no arc and a dimmed legend row; hovering a row or arc highlights that currency. Lives on the navy wallet sidebar.",
   "category": "data-display",
-  "variants": ["vue", "html"],
-  "props": [
-    { "name": "balances", "type": "Partial<Record<'nim' | 'btc' | 'usdc' | 'usdt', number>>", "default": "{ nim: 1, btc: 0 }", "description": "Fiat value per currency; each arc's length is the currency's share of the total. The keys decide which currencies appear (legend order: nim, btc, usdc, usdt; zero balances sort last). Upstream computes this from the Address/BtcAddress/PolygonAddress/Staking stores and Fiat exchange rates — the port exposes it as a prop." }
+  "variants": [
+    "vue",
+    "html"
   ],
-  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "props": [
+    {
+      "name": "balances",
+      "type": "Partial<Record<'nim' | 'btc' | 'usdc' | 'usdt', number>>",
+      "default": "{ nim: 1, btc: 0 }",
+      "description": "Fiat value per currency; each arc's length is the currency's share of the total. The keys decide which currencies appear (legend order: nim, btc, usdc, usdt; zero balances sort last). Upstream computes this from the Address/BtcAddress/PolygonAddress/Staking stores and Fiat exchange rates — the port exposes it as a prop."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
   "dependsOn": [],
   "npmDeps": [],
   "verified": true,
   "verify": {
-    "viewport": { "width": 240, "height": 110 },
+    "viewport": {
+      "width": 240,
+      "height": 110
+    },
     "selector": ".balance-distribution",
     "maxDiffPct": 0.5,
     "settleMs": 250
   },
-  "notes": "Source: upstream/wallet/src/components/BalanceDistribution.vue (scoped styles verbatim) + layouts/Sidebar.vue for context (navy --bg-secondary: var(--nimiq-blue) background, 2.5rem vertical margin, Swap pill rendered below it by the sidebar — the pill is a sibling Tooltip/button, not part of this component). Sample state per brief item 6: NIM 100% / BTC 0% — BTC has no balance so only the gold NIM arc renders, as a full circle without gap or line caps (SVG_SIZE 51, STROKE_WIDTH 4, RADIUS 23.5, dasharray '147.655 0', dashoffset = circleStart = 32.914); the BTC legend row is .inactive (children at opacity .3). Currency colors: --nimiq-gold from the legacy framework; --bitcoin-orange #F7931A / --usdc-blue #2775CA / --usdt-green #009393 from wallet themes.scss, defined on the component root in the snippet. The upstream enter/leave arc transitions (transition-group hooks) are ported in the Vue variant; the html snippet is the static render."
+  "notes": "Source: upstream/wallet/src/components/BalanceDistribution.vue (scoped styles verbatim) + layouts/Sidebar.vue for context (navy --bg-secondary: var(--nimiq-blue) background, 2.5rem vertical margin, Swap pill rendered below it by the sidebar — the pill is a sibling Tooltip/button, not part of this component). Sample state per brief item 6: NIM 100% / BTC 0% — BTC has no balance so only the gold NIM arc renders, as a full circle without gap or line caps (SVG_SIZE 51, STROKE_WIDTH 4, RADIUS 23.5, dasharray '147.655 0', dashoffset = circleStart = 32.914); the BTC legend row is .inactive (children at opacity .3). Currency colors: --nimiq-gold from the legacy framework; --bitcoin-orange #F7931A / --usdc-blue #2775CA / --usdt-green #009393 from wallet themes.scss, defined on the component root in the snippet. The upstream enter/leave arc transitions (transition-group hooks) are ported in the Vue variant; the html snippet is the static render.",
+  "source": {
+    "repo": "wallet",
+    "ref": "656ed56",
+    "files": [
+      "wallet:src/components/BalanceDistribution.vue"
+    ]
+  }
 }
