@@ -45,7 +45,11 @@ jobs:
       - name: Snap references from truth renders
         run: |
           for d in registry/components/*/; do
-            node scripts/snap.mjs "$(basename "$d")" || exit 1
+            name=$(basename "$d")
+            # Only re-snap components with a committed reference.png (skips unverified
+            # originals like flag-hex whose demo renders multiple elements).
+            [ -f "$d/reference.png" ] || { echo "skip $name (no reference.png)"; continue; }
+            node scripts/snap.mjs "$name" || exit 1
           done
 
       - name: Run nq audit
