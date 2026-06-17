@@ -2,26 +2,83 @@
   "name": "status-screen",
   "purpose": "Full-card overlay status screen from the Nimiq Hub: loading (navy/light-blue gradient + hexagon spinner + status line), success (green gradient + animated checkmark), warning (orange + neutral face) and error (red + sad face) states, with optional action button/link. Covers the whole SmallPage while a request is processed and resolves into the iconic green checkmark end screen.",
   "category": "feedback",
-  "variants": ["vue", "html"],
-  "props": [
-    { "name": "title", "type": "string", "default": "''", "description": "Headline; shown under the icon for result states and at the top for the loading state." },
-    { "name": "state", "type": "'loading' | 'success' | 'warning' | 'error'", "default": "'loading'", "description": "Which screen to show; success adds the exit-transition slide-up animation." },
-    { "name": "status", "type": "string", "default": "''", "description": "Loading state only: current step text, animates upward on change." },
-    { "name": "lightBlue", "type": "boolean", "default": false, "description": "Use the light-blue gradient instead of navy for the loading background." },
-    { "name": "message", "type": "string", "default": "''", "description": "Body text for warning and error states." },
-    { "name": "mainAction", "type": "string", "default": "''", "description": "Label of the inverse action button on warning/error screens; emits 'main-action'." },
-    { "name": "alternativeAction", "type": "string", "default": "''", "description": "Label of the secondary text link on warning/error screens; emits 'alternative-action'." },
-    { "name": "small", "type": "boolean", "default": false, "description": "Compact layout (smaller title, tighter status spacing)." }
+  "variants": [
+    "vue",
+    "html"
   ],
-  "cssFiles": ["css/legacy/nimiq-style.min.css"],
-  "dependsOn": ["small-page"],
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "''",
+      "description": "Headline; shown under the icon for result states and at the top for the loading state."
+    },
+    {
+      "name": "state",
+      "type": "'loading' | 'success' | 'warning' | 'error'",
+      "default": "'loading'",
+      "description": "Which screen to show; success adds the exit-transition slide-up animation."
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "default": "''",
+      "description": "Loading state only: current step text, animates upward on change."
+    },
+    {
+      "name": "lightBlue",
+      "type": "boolean",
+      "default": false,
+      "description": "Use the light-blue gradient instead of navy for the loading background."
+    },
+    {
+      "name": "message",
+      "type": "string",
+      "default": "''",
+      "description": "Body text for warning and error states."
+    },
+    {
+      "name": "mainAction",
+      "type": "string",
+      "default": "''",
+      "description": "Label of the inverse action button on warning/error screens; emits 'main-action'."
+    },
+    {
+      "name": "alternativeAction",
+      "type": "string",
+      "default": "''",
+      "description": "Label of the secondary text link on warning/error screens; emits 'alternative-action'."
+    },
+    {
+      "name": "small",
+      "type": "boolean",
+      "default": false,
+      "description": "Compact layout (smaller title, tighter status spacing)."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "dependsOn": [
+    "small-page"
+  ],
   "npmDeps": [],
   "verified": true,
   "verify": {
-    "viewport": { "width": 500, "height": 700 },
+    "viewport": {
+      "width": 500,
+      "height": 700
+    },
     "selector": ".small-page",
     "maxDiffPct": 0.5,
     "settleMs": 250
   },
-  "notes": "Source: upstream/hub/src/components/StatusScreen.vue (Hub-internal component, not in @nimiq/vue-components — but it imports LoadingSpinner/CheckmarkIcon/FaceNeutralIcon/FaceSadIcon from there). Sample state: SUCCESS inside a SmallPage, mirroring hub CheckoutTransmission.vue ('Payment successful.'), static end-frame of the success-title-slide animation (Playwright animations:'disabled' fast-forwards it; root has .exit-transition but no .nq-blue-bg since showLoadingBackground is false in result states). Visuals come from .nq-green-bg gradient + white text rules in legacy nimiq-style; checkmark is checkmark.svg from @nimiq/style at font-size 9rem via .nq-icon{width:1em}. Snippet CSS namespaces every scoped selector under .status-screen; keyframe names kept upstream-verbatim (success-title-slide, exit-transition, status-screen-grow-from-bottom-button). Vue port: full Vue 3 script-setup rewrite of the class component — all 4 states, status-line crossfade timers, showLoadingBackground corner-pixel fix, Vue 3 transition class names (-enter-from), icons inlined."
+  "notes": "Source: upstream/hub/src/components/StatusScreen.vue (Hub-internal component, not in @nimiq/vue-components — but it imports LoadingSpinner/CheckmarkIcon/FaceNeutralIcon/FaceSadIcon from there). Sample state: SUCCESS inside a SmallPage, mirroring hub CheckoutTransmission.vue ('Payment successful.'), static end-frame of the success-title-slide animation (Playwright animations:'disabled' fast-forwards it; root has .exit-transition but no .nq-blue-bg since showLoadingBackground is false in result states). Visuals come from .nq-green-bg gradient + white text rules in legacy nimiq-style; checkmark is checkmark.svg from @nimiq/style at font-size 9rem via .nq-icon{width:1em}. Snippet CSS namespaces every scoped selector under .status-screen; keyframe names kept upstream-verbatim (success-title-slide, exit-transition, status-screen-grow-from-bottom-button). Vue port: full Vue 3 script-setup rewrite of the class component — all 4 states, status-line crossfade timers, showLoadingBackground corner-pixel fix, Vue 3 transition class names (-enter-from), icons inlined.",
+  "source": {
+    "repo": "hub",
+    "ref": "cf2ea41",
+    "files": [
+      "hub:src/components/StatusScreen.vue"
+    ]
+  }
 }

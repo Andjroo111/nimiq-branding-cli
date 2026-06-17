@@ -93,5 +93,12 @@
   "notes": "Source: upstream/wallet/src/components/swap/SwapBalanceBar.vue (+ icons/SwapBalanceBar/CurvedLine.vue, assets/swap-change-background.svg, assets/horizontal-double-arrow.svg; container width from swap/SwapModal.vue .small-page 63.5rem - 2*4rem page padding = 444px). Sample state per supporting-elements brief item 4: NIM 'Indigo Address' (NQ87 JY9X...) 519 NIM solid navy (.nq-blue via getColorClass: indigo identicon -> nq-blue) at 46%, BTC 0.00 -> +0.00000476 BTC at 54% rendered as full-width .change diagonal hatch over bitcoin orange, white round drag handle with double-arrow on the light-blue separator hairline, 46%/54% tick scale, CurvedLine connectors (widths 82/98px hand-computed from the upstream rAF formulas for a 444px root). Static frozen render; drag/touch logic lives in the Vue port only. Identicon via pinned @nimiq/iqons@1.6.0 jsdelivr recipe (module script iterates .swap-balance-bar .identicon[data-address], namespaced under the component root like the account-ring snippet). Vue port translates the upstream Pinia stores into props (nimAddresses/btcBalance/exchangeRates). Identicon sprite is the REAL team-shipped iqons.min.svg (84-symbol part catalog, 88KB) vendored at assets/img/iqons.min.svg — byte-identical to the Hub-deployed sprite captured in references/assets/hub/iqons.min.svg and to @nimiq/iqons@1.6.0 dist; the snippet probes the local copy and falls back to the same CDN sprite, while the iqons JS library itself stays pinned on jsdelivr (code, not artwork).",
   "assetFiles": [
     "img/iqons.min.svg"
-  ]
+  ],
+  "source": {
+    "repo": "wallet",
+    "ref": "656ed56",
+    "files": [
+      "wallet:src/components/swap/SwapBalanceBar.vue"
+    ]
+  }
 }

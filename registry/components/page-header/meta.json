@@ -2,22 +2,57 @@
   "name": "page-header",
   "purpose": "Card header for Nimiq page flows: centered title, optional back arrow, optional step progress indicator. Used at the top of a SmallPage.",
   "category": "layout",
-  "variants": ["vue", "html"],
-  "props": [
-    { "name": "backArrow", "type": "boolean", "default": false, "description": "Show a back arrow on the left; emits 'back' on click" },
-    { "name": "progressIndicator", "type": "boolean", "default": false, "description": "Show the step progress bar across the top of the card" },
-    { "name": "numberSteps", "type": "number", "default": 6, "description": "Total number of steps in the progress indicator" },
-    { "name": "step", "type": "number", "default": 1, "description": "Current step (1-based); steps <= step are highlighted" }
+  "variants": [
+    "vue",
+    "html"
   ],
-  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "props": [
+    {
+      "name": "backArrow",
+      "type": "boolean",
+      "default": false,
+      "description": "Show a back arrow on the left; emits 'back' on click"
+    },
+    {
+      "name": "progressIndicator",
+      "type": "boolean",
+      "default": false,
+      "description": "Show the step progress bar across the top of the card"
+    },
+    {
+      "name": "numberSteps",
+      "type": "number",
+      "default": 6,
+      "description": "Total number of steps in the progress indicator"
+    },
+    {
+      "name": "step",
+      "type": "number",
+      "default": 1,
+      "description": "Current step (1-based); steps <= step are highlighted"
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
   "dependsOn": [],
   "npmDeps": [],
   "verified": true,
   "verify": {
-    "viewport": { "width": 500, "height": 700 },
+    "viewport": {
+      "width": 500,
+      "height": 700
+    },
     "selector": ".small-page",
     "maxDiffPct": 0.5,
     "settleMs": 250
   },
-  "notes": "Sample state: inside a SmallPage, title 'Send Transaction', backArrow=true, progressIndicator=true, 6 steps, step 3. ArrowLeftIcon (arrow-left.svg from @nimiq/style) is inlined. $t stubbed to identity ('Go back')."
+  "notes": "Sample state: inside a SmallPage, title 'Send Transaction', backArrow=true, progressIndicator=true, 6 steps, step 3. ArrowLeftIcon (arrow-left.svg from @nimiq/style) is inlined. $t stubbed to identity ('Go back').",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/PageHeader.vue"
+    ]
+  }
 }

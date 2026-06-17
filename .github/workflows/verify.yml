@@ -31,6 +31,10 @@ jobs:
         run: |
           for d in registry/components/*/; do
             name=$(basename "$d")
+            # Only re-snap components that ship a committed reference.png. Unverified
+            # originals (e.g. flag-hex, whose demo shows multiple flags) have none and
+            # are skipped by nq verify too.
+            [ -f "$d/reference.png" ] || { echo "skip $name (no reference.png)"; continue; }
             node scripts/snap.mjs "$name" || exit 1
           done
 

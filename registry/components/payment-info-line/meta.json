@@ -93,5 +93,14 @@
   "notes": "Sample state: 199.6 NIM (19960000 luna) / 2.99 EUR to shop.nimiq.com (identicon for burn address NQ07 0000..., pinned @nimiq/iqons@1.6.0 CDN), timer frozen at 10 of 15 minutes left (progress 1/3, countdown '10', circle dash values hand-computed for radius 12, fullCircleLength 2π·12). Tooltips closed; arrow-runway arrow rests at opacity 0 (screenshots disable the infinite animation). The .payment-info-line wrapper is the 420px SmallPage width; upstream root class is .info-line. Cascade quirk reproduced from upstream: Account's '.row .label:not(.editable)' (specificity 0,4,0) beats PaymentInfoLine's deep '.account .label' padding-left .75rem, so the label padding is effectively 1rem; ties (font-weight/mask-image/identicon size) go to PaymentInfoLine via injection order — the snippet CSS preserves this rule order, don't reorder. Vue port ships PaymentInfoLine.vue + minimal inline Account.vue (no editable/cashlink) and Timer.vue (radius snaps instead of tweening, simplified update interval); Amount.vue, FiatAmount.vue, Tooltip.vue, Identicon.vue come from sibling registry components (see dependsOn). getExchangeRates (rate-deviation warning) uses the real @nimiq/utils npm package; failures just suppress the warning. $t stubbed as identity; upstream's :container=\"$parent\" became a container prop. Identicon sprite is the REAL team-shipped iqons.min.svg (84-symbol part catalog, 88KB) vendored at assets/img/iqons.min.svg — byte-identical to the Hub-deployed sprite captured in references/assets/hub/iqons.min.svg and to @nimiq/iqons@1.6.0 dist; the snippet probes the local copy and falls back to the same CDN sprite, while the iqons JS library itself stays pinned on jsdelivr (code, not artwork).",
   "assetFiles": [
     "img/iqons.min.svg"
-  ]
+  ],
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/PaymentInfoLine.vue",
+      "vue-components:src/components/Timer.vue",
+      "vue-components:src/components/Identicon.vue"
+    ]
+  }
 }

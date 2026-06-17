@@ -44,5 +44,13 @@
   "notes": "Wraps the identicon component (same @nimiq/iqons@1.6.0 jsdelivr pin in truth and demo). Sample state: 3 fixed valid addresses (NQ07 0000…, NQ21 1111…, NQ35 2222…) → 3 iqons + 3 faint placeholder hexagons. Default size 11.25rem = 90px under nimiq-style's 8px root. Bottom slot (nth-child 3) intentionally overflows the square container by ~0.45rem upstream; element screenshots crop to the .account-ring box identically in truth and demo. Identicon sprite is the REAL team-shipped iqons.min.svg (84-symbol part catalog, 88KB) vendored at assets/img/iqons.min.svg — byte-identical to the Hub-deployed sprite captured in references/assets/hub/iqons.min.svg and to @nimiq/iqons@1.6.0 dist; the snippet probes the local copy and falls back to the same CDN sprite, while the iqons JS library itself stays pinned on jsdelivr (code, not artwork).",
   "assetFiles": [
     "img/iqons.min.svg"
-  ]
+  ],
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/AccountRing.vue",
+      "vue-components:src/components/Identicon.vue"
+    ]
+  }
 }

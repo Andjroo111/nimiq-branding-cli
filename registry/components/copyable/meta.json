@@ -2,19 +2,39 @@
   "name": "copyable",
   "purpose": "Wrapper that makes a click on its content copy it (or a provided text) to the clipboard, with a light-blue hover/focus tint and an animated 'Copied' tooltip as feedback.",
   "category": "data-display",
-  "variants": ["vue", "html"],
-  "props": [
-    { "name": "text", "type": "string", "required": false, "description": "A specific text to copy to the clipboard on click. Defaults to the element's own innerText (minus the tooltip label)." }
+  "variants": [
+    "vue",
+    "html"
   ],
-  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "props": [
+    {
+      "name": "text",
+      "type": "string",
+      "required": false,
+      "description": "A specific text to copy to the clipboard on click. Defaults to the element's own innerText (minus the tooltip label)."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
   "dependsOn": [],
   "npmDeps": [],
   "verified": true,
   "verify": {
-    "viewport": { "width": 600, "height": 400 },
+    "viewport": {
+      "width": 600,
+      "height": 400
+    },
     "selector": ".copyable",
     "maxDiffPct": 0.5,
     "settleMs": 250
   },
-  "notes": "Sample state: slot text 'NQ07 0000 ...' in resting (uncopied) state. The .background tint and .tooltip are opacity:0 at rest and only show on hover/focus/.copied. Tooltip label 'Copied' is the en-US i18n string. Clipboard.copy from @nimiq/utils is inlined verbatim in the Vue port (textarea + execCommand with selection restore). Upstream copies 800ms feedback (DISPLAY_TIME); keydown Space/Enter also triggers copy."
+  "notes": "Sample state: slot text 'NQ07 0000 ...' in resting (uncopied) state. The .background tint and .tooltip are opacity:0 at rest and only show on hover/focus/.copied. Tooltip label 'Copied' is the en-US i18n string. Clipboard.copy from @nimiq/utils is inlined verbatim in the Vue port (textarea + execCommand with selection restore). Upstream copies 800ms feedback (DISPLAY_TIME); keydown Space/Enter also triggers copy.",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/Copyable.vue"
+    ]
+  }
 }
