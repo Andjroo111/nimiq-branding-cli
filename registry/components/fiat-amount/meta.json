@@ -2,23 +2,63 @@
   "name": "fiat-amount",
   "purpose": "Displays a fiat amount with an optimized currency symbol (e.g. $1234.56 instead of USD 1234.56) and adaptive decimal precision: decimals are extended until the rounded display deviates from the true amount by at most maxRelativeDeviation.",
   "category": "payment",
-  "variants": ["vue", "html"],
-  "props": [
-    { "name": "amount", "type": "number", "required": true, "description": "The fiat amount to display." },
-    { "name": "currency", "type": "string", "required": true, "description": "ISO 4217 currency code, e.g. 'USD', 'EUR'." },
-    { "name": "maxRelativeDeviation", "type": "number", "default": 0.1, "description": "Max allowed relative deviation of the rounded display value; decimals extend until met." },
-    { "name": "locale", "type": "string", "required": false, "description": "Formatting locale, e.g. 'en-US'. Defaults to a locale typical for the currency." },
-    { "name": "hideDecimals", "type": "boolean", "default": false, "description": "Render without decimals. Takes precedence over maxRelativeDeviation." }
+  "variants": [
+    "vue",
+    "html"
   ],
-  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "props": [
+    {
+      "name": "amount",
+      "type": "number",
+      "required": true,
+      "description": "The fiat amount to display."
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "required": true,
+      "description": "ISO 4217 currency code, e.g. 'USD', 'EUR'."
+    },
+    {
+      "name": "maxRelativeDeviation",
+      "type": "number",
+      "default": 0.1,
+      "description": "Max allowed relative deviation of the rounded display value; decimals extend until met."
+    },
+    {
+      "name": "locale",
+      "type": "string",
+      "required": false,
+      "description": "Formatting locale, e.g. 'en-US'. Defaults to a locale typical for the currency."
+    },
+    {
+      "name": "hideDecimals",
+      "type": "boolean",
+      "default": false,
+      "description": "Render without decimals. Takes precedence over maxRelativeDeviation."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
   "dependsOn": [],
   "npmDeps": [],
   "verified": true,
   "verify": {
-    "viewport": { "width": 600, "height": 400 },
+    "viewport": {
+      "width": 600,
+      "height": 400
+    },
     "selector": ".fiat-amount",
     "maxDiffPct": 0.5,
     "settleMs": 250
   },
-  "notes": "Sample state: amount=1234.56, currency='USD', locale='en-US' (hardcoded so the render is machine-independent) -> '$1234.56'. The upstream component has NO <style> block; the span inherits font/color from the page (nimiq-style body text). CurrencyInfo and FormattableNumber from @nimiq/utils are inlined in the Vue port (symbol + decimals resolution incl. EXTRA_SYMBOLS/decimal-less lists, and integer grouping with narrow no-break space for >4 integer digits)."
+  "notes": "Sample state: amount=1234.56, currency='USD', locale='en-US' (hardcoded so the render is machine-independent) -> '$1234.56'. The upstream component has NO <style> block; the span inherits font/color from the page (nimiq-style body text). CurrencyInfo and FormattableNumber from @nimiq/utils are inlined in the Vue port (symbol + decimals resolution incl. EXTRA_SYMBOLS/decimal-less lists, and integer grouping with narrow no-break space for >4 integer digits).",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/FiatAmount.vue"
+    ]
+  }
 }

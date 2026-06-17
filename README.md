@@ -1,8 +1,10 @@
 # nimiq-branding-cli
 
 Scaffold **pixel-accurate Nimiq-branded UI components** into any project — Vue 3 SFCs or plain
-HTML/CSS — from a registry of 39 components where every one is pixel-diffed against the real
-Nimiq apps before it ships, plus the team's real asset library (logos, icons, flags, imagery).
+HTML/CSS — from a registry of 40 components (39 pixel-diffed against the real Nimiq apps before
+they ship, plus 1 original brand composition), plus the team's real asset library (logos, icons,
+flags, imagery). A weekly self-learning audit keeps it current with live Nimiq design — see
+[AUDIT.md](AUDIT.md).
 
 > Unofficial community project — see [NOTICE.md](NOTICE.md). All visuals are the Nimiq team's
 > real shipped files or faithful ports of their open-source components, never hand-drawn
@@ -29,13 +31,15 @@ ln -s "$PWD/bin/nq.js" ~/.local/bin/nq   # or: npm link
 ## Use
 
 ```
-nq list                     # browse the 39-component registry
+nq list                     # browse the 40-component registry
 nq init --style modern      # drop Nimiq design tokens into your project
 nq add amount-input         # copy a component (+ deps + CSS + real assets) into src/components
 nq add account-header --html   # plain HTML/CSS variant instead of Vue
 nq assets search wallet     # search 182 vendored files + 323 nimiq-icons + 422 hexagon flags
 nq assets add icon:logos-nimiq-horizontal flag:cr-hexagon world-map
 nq verify all               # (repo dev) re-run pixel verification against references
+nq audit                    # (repo dev) check the LIVE Nimiq upstreams for branding drift
+nq sync-skill               # (repo dev) regenerate the nimiq-ui skill block from index.json
 ```
 
 Open `showcase.html` for the full component gallery and `supporting-elements.html` for the
@@ -65,7 +69,10 @@ disabled) and diffs it against `reference.png` with pixelmatch. Components whose
 | `onmax/nimiq-ui` | modern `nimiq-css` (oklch tokens, auto dark mode) |
 | `references/screenshots/` | captured reference screenshots of live Nimiq properties |
 
-Upstream clones live in `upstream/` (gitignored — re-clone with `git clone --depth 1`).
+Upstream clones live in `upstream/` (gitignored — re-clone with `git clone --depth 1`). The exact
+commits the registry was verified against are recorded in [`upstream-pins.json`](upstream-pins.json) —
+the committed source of truth for "what we are current with". `nq audit` watches the live tips against
+these pins; see [AUDIT.md](AUDIT.md).
 
 ## Repo layout
 
@@ -79,5 +86,9 @@ assets/
   css/legacy/          vendored @nimiq/style (nq-* classes)
   tokens.md            design-token quick reference
 scripts/verify.mjs     pixel-diff harness (playwright + pixelmatch)
+scripts/audit.mjs      live-upstream branding-drift engine (nq audit)
+scripts/sync-skill.mjs regenerates the nimiq-ui skill block from index.json
+upstream-pins.json     the upstream commits the registry is verified against
+audit/learnings.json   self-learning store: which upstream churn is benign vs branding
 references/screenshots side-by-side reference captures of live Nimiq UIs
 ```

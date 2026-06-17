@@ -28,6 +28,9 @@ Usage:
   nq new <name>                 Scaffold a new registry component with the principles
                                 checklist + verification contract embedded
   nq verify <component|all>     Render the html variant and diff against the reference PNG
+  nq audit [--skip-verify]      Check the LIVE Nimiq upstreams for branding drift vs our
+                                pinned registry; attribute drift to components; write a report
+  nq sync-skill                 Regenerate the nimiq-ui skill's registry block from index.json
   nq help                       This message
 
 All visual assets are the team's real shipped files (nimiq.com, wallet, hub,
@@ -356,6 +359,8 @@ try {
     case 'new': await cmdNew(rest[0], flags); break;
     case 'assets': await cmdAssets(rest[0], rest.slice(1), flags); break;
     case 'verify': await cmdVerify(rest[0]); break;
+    case 'audit': await import(join(ROOT, 'scripts', 'audit.mjs')); break;
+    case 'sync-skill': await import(join(ROOT, 'scripts', 'sync-skill.mjs')); break;
     default: console.log(HELP);
   }
 } catch (err) {
