@@ -2,17 +2,32 @@
   "name": "loading-spinner",
   "purpose": "Animated hexagon loading indicator: two dashed hexagon outlines (one at 40% opacity) whose dash offsets rotate around the hexagon in a 4s stepped ease cycle. Inherits its color via currentColor.",
   "category": "feedback",
-  "variants": ["vue", "html"],
+  "variants": [
+    "vue",
+    "html"
+  ],
   "props": [],
-  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
   "dependsOn": [],
   "npmDeps": [],
   "verified": true,
   "verify": {
-    "viewport": { "width": 200, "height": 160 },
+    "viewport": {
+      "width": 200,
+      "height": 160
+    },
     "selector": ".loading-spinner",
     "maxDiffPct": 0.5,
     "settleMs": 250
   },
-  "notes": "Sample state: default size (54x48 viewBox '0 0 54 48') on white, color inherited from body (nimiq-blue). Animation is infinite; the verify harness disables animations, which freezes both paths at their CSS-specified stroke-dashoffset (-40.5 big / 13 small — identical to the 0% keyframes). Upstream uses #big-hex/#small-hex ids; the HTML snippet uses classes and prefixed keyframe names (loading-spinner-big-hex/-small-hex) so multiple instances and showcase embedding stay valid. Size via the height/width attributes or CSS; color via the color property."
+  "notes": "Sample state: default size (54x48 viewBox '0 0 54 48') on white, color inherited from body (nimiq-blue). Animation is infinite; the verify harness disables animations, which freezes both paths at their CSS-specified stroke-dashoffset (-40.5 big / 13 small — identical to the 0% keyframes). Upstream uses #big-hex/#small-hex ids; the HTML snippet uses classes and prefixed keyframe names (loading-spinner-big-hex/-small-hex) so multiple instances and showcase embedding stay valid. Size via the height/width attributes or CSS; color via the color property.",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/LoadingSpinner.vue"
+    ]
+  }
 }

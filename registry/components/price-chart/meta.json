@@ -2,20 +2,76 @@
   "name": "price-chart",
   "purpose": "The wallet sidebar's crypto price sparkline — '24H' badge over a smoothed white line chart, with the currency ticker, fiat price and 24h percentage change below, on the navy sidebar background.",
   "category": "data-display",
-  "variants": ["vue", "html"],
-  "props": [
-    { "name": "currency", "type": "string", "default": "'nim'", "description": "Crypto ticker shown bottom-left (rendered uppercase). Upstream: CryptoCurrency enum ('nim' | 'btc' | ...)." },
-    { "name": "price", "type": "number", "default": "0.000501", "description": "Current fiat price. Formatted like @nimiq/vue-components FiatAmount with maxRelativeDeviation 0.001 (decimals grow until the rounded value is within 0.1%)." },
-    { "name": "fiatCurrency", "type": "string", "default": "'usd'", "description": "Fiat currency code for price formatting." },
-    { "name": "change", "type": "number", "default": "0.001", "description": "Relative price change over the time range (0.001 = +0.1%). Positive renders green with a CSS '+' prefix; upstream styles only .positive (negative stays 60% white)." },
-    { "name": "points", "type": "{ x: number, y: number }[]", "default": "18-point sample NIM series", "description": "History points, normalized to the box by the upstream LineChart algorithm (cubic smoothing, factor 0.2). Upstream samples 18 points from the fiat history API." },
-    { "name": "showTimespanLabel", "type": "boolean", "default": "true", "description": "Show the '24H' pill (upstream: true for the first sidebar chart, false for the BTC one below it). Click emits 'timespan'." },
-    { "name": "timeRange", "type": "'24h' | '7d'", "default": "'24h'", "description": "Label text for the timespan pill." }
+  "variants": [
+    "vue",
+    "html"
   ],
-  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "props": [
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "'nim'",
+      "description": "Crypto ticker shown bottom-left (rendered uppercase). Upstream: CryptoCurrency enum ('nim' | 'btc' | ...)."
+    },
+    {
+      "name": "price",
+      "type": "number",
+      "default": "0.000501",
+      "description": "Current fiat price. Formatted like @nimiq/vue-components FiatAmount with maxRelativeDeviation 0.001 (decimals grow until the rounded value is within 0.1%)."
+    },
+    {
+      "name": "fiatCurrency",
+      "type": "string",
+      "default": "'usd'",
+      "description": "Fiat currency code for price formatting."
+    },
+    {
+      "name": "change",
+      "type": "number",
+      "default": "0.001",
+      "description": "Relative price change over the time range (0.001 = +0.1%). Positive renders green with a CSS '+' prefix; upstream styles only .positive (negative stays 60% white)."
+    },
+    {
+      "name": "points",
+      "type": "{ x: number, y: number }[]",
+      "default": "18-point sample NIM series",
+      "description": "History points, normalized to the box by the upstream LineChart algorithm (cubic smoothing, factor 0.2). Upstream samples 18 points from the fiat history API."
+    },
+    {
+      "name": "showTimespanLabel",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the '24H' pill (upstream: true for the first sidebar chart, false for the BTC one below it). Click emits 'timespan'."
+    },
+    {
+      "name": "timeRange",
+      "type": "'24h' | '7d'",
+      "default": "'24h'",
+      "description": "Label text for the timespan pill."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
   "dependsOn": [],
   "npmDeps": [],
   "verified": true,
-  "verify": { "viewport": { "width": 280, "height": 220 }, "selector": ".price-chart-widget", "maxDiffPct": 0.5, "settleMs": 250 },
-  "notes": "Source: upstream/wallet/src/components/PriceChart.vue + LineChart.vue (scoped CSS verbatim, Vue scoping emulated with data-v attrs in truth), rendered in the wallet sidebar context: Sidebar.vue .price-chart-wrapper/.price-chart rules (height 15rem, padding 1.5rem, timespan moved to 1.5rem/1.5rem — Sidebar's ::v-deep override wins by injection order) on a 24rem-wide navy excerpt (--bg-secondary: var(--nimiq-blue), color white, --padding-sides 1.5rem from App.vue/Sidebar.vue). The .price-chart-widget root stands in for the sidebar; the wrapper's 3rem scroll-fade mask is omitted (it belongs to the full-height scrolling sidebar and would fade the meta row in this exact-height excerpt). Sample state: NIM, $0.000501, +0.1% (green), fixed deterministic 18-point 24h series; path precomputed with LineChart's exact calculatePath (smoothing 0.2, strokeWidth 2.5, viewBox padding 5) for the 144x52 svg box. White line is white at 0.5 stroke-opacity (currentColor), as upstream. Upstream pairs it with a second chart (currency='btc', showTimespanLabel=false) in the same wrapper. Wallet theme vars (--body-size, --small-size, --tiny-label-size) defined on the snippet root."
+  "verify": {
+    "viewport": {
+      "width": 280,
+      "height": 220
+    },
+    "selector": ".price-chart-widget",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "notes": "Source: upstream/wallet/src/components/PriceChart.vue + LineChart.vue (scoped CSS verbatim, Vue scoping emulated with data-v attrs in truth), rendered in the wallet sidebar context: Sidebar.vue .price-chart-wrapper/.price-chart rules (height 15rem, padding 1.5rem, timespan moved to 1.5rem/1.5rem — Sidebar's ::v-deep override wins by injection order) on a 24rem-wide navy excerpt (--bg-secondary: var(--nimiq-blue), color white, --padding-sides 1.5rem from App.vue/Sidebar.vue). The .price-chart-widget root stands in for the sidebar; the wrapper's 3rem scroll-fade mask is omitted (it belongs to the full-height scrolling sidebar and would fade the meta row in this exact-height excerpt). Sample state: NIM, $0.000501, +0.1% (green), fixed deterministic 18-point 24h series; path precomputed with LineChart's exact calculatePath (smoothing 0.2, strokeWidth 2.5, viewBox padding 5) for the 144x52 svg box. White line is white at 0.5 stroke-opacity (currentColor), as upstream. Upstream pairs it with a second chart (currency='btc', showTimespanLabel=false) in the same wrapper. Wallet theme vars (--body-size, --small-size, --tiny-label-size) defined on the snippet root.",
+  "source": {
+    "repo": "wallet",
+    "ref": "656ed56",
+    "files": [
+      "wallet:src/components/PriceChart.vue",
+      "wallet:src/components/LineChart.vue"
+    ]
+  }
 }

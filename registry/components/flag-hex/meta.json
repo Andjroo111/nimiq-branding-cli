@@ -26,10 +26,18 @@
   "npmDeps": [],
   "verified": false,
   "verify": {
-    "viewport": { "width": 300, "height": 200 },
+    "viewport": {
+      "width": 300,
+      "height": 200
+    },
     "selector": ".flag-hex",
     "maxDiffPct": 0.5,
     "settleMs": 200
   },
-  "notes": "ORIGINAL Nimiq-brand composition (not an upstream port), so `verified:false` — it reuses the VERBATIM Nimiq hexagon path (M19.964 8.156...). Hard-won rules baked in: (1) The hexagon is POINTED left/right — a naive clip crops vertical-stripe flags (France, Mexico) into slivers and leaves white at the tips; the image box overscans past the viewBox and overflow:visible lets the edge stroke reach the points. (2) preserveAspectRatio='slice' on a REFERENCED SVG <image> is letterboxed by browsers -> white line above/below; the fix is to size the image box to the flag's OWN aspect ratio (fit.aspect) so it covers with no letterbox. (3) flag-icons 1x1 (square) files STRETCH wide flags — e.g. the US canton becomes ~76% width; use the 4x3 source + fit.aspect=4/3 for the US. (4) Panning needs a matching zoom: scale >= (10+|pan|)/11 or the opposite edge uncovers. (5) Per-flag fit examples that took real tuning: US {aspect:4/3}, China {scale:1.2,dx:2.2,dy:2.8} (nudge the 5 stars into view), Korea {scale:0.84} (white margin around the taeguk/trigrams). (6) Every flag gets ONE faint gray edge rgba(31,35,72,0.22) stroke-width 0.4 so the shape + tips always read against a white page — uniform reads cleaner than per-flag colors. Flags are public-domain artwork; this snippet inlines simple tricolors (drawn as rects) so it is self-contained — swap the <g> for an <image href> pointing at your vendored flag file in real use. Pairs with the `identicon` component (same hexagon)."
+  "notes": "ORIGINAL Nimiq-brand composition (not an upstream port), so `verified:false` — it reuses the VERBATIM Nimiq hexagon path (M19.964 8.156...). Hard-won rules baked in: (1) The hexagon is POINTED left/right — a naive clip crops vertical-stripe flags (France, Mexico) into slivers and leaves white at the tips; the image box overscans past the viewBox and overflow:visible lets the edge stroke reach the points. (2) preserveAspectRatio='slice' on a REFERENCED SVG <image> is letterboxed by browsers -> white line above/below; the fix is to size the image box to the flag's OWN aspect ratio (fit.aspect) so it covers with no letterbox. (3) flag-icons 1x1 (square) files STRETCH wide flags — e.g. the US canton becomes ~76% width; use the 4x3 source + fit.aspect=4/3 for the US. (4) Panning needs a matching zoom: scale >= (10+|pan|)/11 or the opposite edge uncovers. (5) Per-flag fit examples that took real tuning: US {aspect:4/3}, China {scale:1.2,dx:2.2,dy:2.8} (nudge the 5 stars into view), Korea {scale:0.84} (white margin around the taeguk/trigrams). (6) Every flag gets ONE faint gray edge rgba(31,35,72,0.22) stroke-width 0.4 so the shape + tips always read against a white page — uniform reads cleaner than per-flag colors. Flags are public-domain artwork; this snippet inlines simple tricolors (drawn as rects) so it is self-contained — swap the <g> for an <image href> pointing at your vendored flag file in real use. Pairs with the `identicon` component (same hexagon).",
+  "source": {
+    "repo": "original",
+    "ref": null,
+    "files": []
+  }
 }

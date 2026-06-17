@@ -2,23 +2,66 @@
   "name": "address-input",
   "purpose": "A 3x3 block grid textarea for typing Nimiq addresses (optionally Ethereum addresses and domains), with live formatting into 4-char blocks, validation, and per-block focus coloring.",
   "category": "form",
-  "variants": ["vue", "html"],
-  "props": [
-    { "name": "value", "type": "string", "default": "", "description": "The address value, bindable via v-model." },
-    { "name": "autofocus", "type": "boolean", "default": false, "description": "Focus the input on mount." },
-    { "name": "allowNimAddresses", "type": "boolean", "default": true, "description": "Accept Nimiq NQ... addresses." },
-    { "name": "allowEthAddresses", "type": "boolean", "default": false, "description": "Accept Ethereum 0x... addresses (checksummed via js-sha3 keccak_256)." },
-    { "name": "allowDomains", "type": "boolean", "default": false, "description": "Accept domain names (collapses to a single-row input)." }
+  "variants": [
+    "vue",
+    "html"
   ],
-  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "props": [
+    {
+      "name": "value",
+      "type": "string",
+      "default": "",
+      "description": "The address value, bindable via v-model."
+    },
+    {
+      "name": "autofocus",
+      "type": "boolean",
+      "default": false,
+      "description": "Focus the input on mount."
+    },
+    {
+      "name": "allowNimAddresses",
+      "type": "boolean",
+      "default": true,
+      "description": "Accept Nimiq NQ... addresses."
+    },
+    {
+      "name": "allowEthAddresses",
+      "type": "boolean",
+      "default": false,
+      "description": "Accept Ethereum 0x... addresses (checksummed via js-sha3 keccak_256)."
+    },
+    {
+      "name": "allowDomains",
+      "type": "boolean",
+      "default": false,
+      "description": "Accept domain names (collapses to a single-row input)."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
   "dependsOn": [],
-  "npmDeps": ["input-format", "js-sha3"],
+  "npmDeps": [
+    "input-format",
+    "js-sha3"
+  ],
   "verified": true,
   "verify": {
-    "viewport": { "width": 600, "height": 400 },
+    "viewport": {
+      "width": 600,
+      "height": 400
+    },
     "selector": ".address-input",
     "maxDiffPct": 0.5,
     "settleMs": 250
   },
-  "notes": "Sample state: filled with valid address 'NQ48 8CKH BA24 2VR3 N249 N8MN J5XX 74DB 5XJ8', unfocused, default props (NIM only) -> 3x3 grid of 4-char blocks (matches the wallet send modal); textarea text is black and each block is colored via a .color-overlay with mix-blend-mode:screen (var(--nimiq-blue) idle, light blue for the selected block in the live component). The live component formats the value as 3 lines ('wwww wwww wwww\\n' template). Empty state (previous sample): no value -> placeholder 'NQ' at 60% opacity in block 1, color overlays rendered but visibility:hidden, grid + vertical block separators unchanged. Fira Mono loaded from Google Fonts (upstream assumes host app provides it). html variant is static visual only (no input-format behavior). Vue port keeps full behavior: input-format and lazy js-sha3 are real npm deps; Clipboard.copy and ValidationUtils.isValidAddress from @nimiq/utils are inlined."
+  "notes": "Sample state: filled with valid address 'NQ48 8CKH BA24 2VR3 N249 N8MN J5XX 74DB 5XJ8', unfocused, default props (NIM only) -> 3x3 grid of 4-char blocks (matches the wallet send modal); textarea text is black and each block is colored via a .color-overlay with mix-blend-mode:screen (var(--nimiq-blue) idle, light blue for the selected block in the live component). The live component formats the value as 3 lines ('wwww wwww wwww\\n' template). Empty state (previous sample): no value -> placeholder 'NQ' at 60% opacity in block 1, color overlays rendered but visibility:hidden, grid + vertical block separators unchanged. Fira Mono loaded from Google Fonts (upstream assumes host app provides it). html variant is static visual only (no input-format behavior). Vue port keeps full behavior: input-format and lazy js-sha3 are real npm deps; Clipboard.copy and ValidationUtils.isValidAddress from @nimiq/utils are inlined.",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/AddressInput.vue"
+    ]
+  }
 }

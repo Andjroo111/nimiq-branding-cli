@@ -2,17 +2,32 @@
   "name": "close-button",
   "purpose": "Circled X dismiss button used on modals and overlays. A .nq-button-s stripped of its pill background, showing the Nimiq close icon at 20% opacity (40% on hover/focus/active), with a round hover halo and enlarged hit area.",
   "category": "form",
-  "variants": ["vue", "html"],
+  "variants": [
+    "vue",
+    "html"
+  ],
   "props": [],
-  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
   "dependsOn": [],
   "npmDeps": [],
   "verified": true,
   "verify": {
-    "viewport": { "width": 200, "height": 200 },
+    "viewport": {
+      "width": 200,
+      "height": 200
+    },
     "selector": ".close-button",
     "maxDiffPct": 0.5,
     "settleMs": 250
   },
-  "notes": "Sample state: default resting state (icon at opacity .2, no .top-right positioning). Upstream scoped CSS targets the bare `button` element; the html snippet namespaces it under .close-button. CloseIcon (@nimiq/style close.svg, 24x24) is inlined with class nq-icon. Add class .top-right to absolutely pin it 2rem from the top-right of a positioned parent. Upstream emits a re-emitted 'click' (MouseEvent) and prevents mousedown default to avoid focus-stealing; no props. Requires nimiq-style for .nq-button-s, .nq-icon and --nimiq-ease."
+  "notes": "Sample state: default resting state (icon at opacity .2, no .top-right positioning). Upstream scoped CSS targets the bare `button` element; the html snippet namespaces it under .close-button. CloseIcon (@nimiq/style close.svg, 24x24) is inlined with class nq-icon. Add class .top-right to absolutely pin it 2rem from the top-right of a positioned parent. Upstream emits a re-emitted 'click' (MouseEvent) and prevents mousedown default to avoid focus-stealing; no props. Requires nimiq-style for .nq-button-s, .nq-icon and --nimiq-ease.",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/CloseButton.vue"
+    ]
+  }
 }

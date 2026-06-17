@@ -1,0 +1,107 @@
+name: branding-audit
+
+# Weekly self-learning branding-drift audit. Checks the LIVE Nimiq upstreams against
+# our pinned registry (upstream-pins.json), attributes drift to components via each
+# meta.json `source` block, classifies churn through audit/learnings.json, and runs the
+# pixel verify. Verdict drives the action: safe drift → auto-PR a pin bump; risky drift
+# (a real component/token source moved, an unknown path, or a verify failure) → rolling issue.
+on:
+  schedule:
+    - cron: '0 9 * * 1' # Mondays 09:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: branding-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      # The runner has no upstream/ clones (gitignored). nq audit reads live tips via
+      # git ls-remote and changed files via the GitHub compare API. Pixel verify needs
+      # platform-consistent references, so re-snap them from the committed truth renders
+      # on THIS runner first (same invariant as verify.yml).
+      - name: Snap references from truth renders
+        run: |
+          for d in registry/components/*/; do
+            node scripts/snap.mjs "$(basename "$d")" || exit 1
+          done
+
+      - name: Run nq audit
+        id: audit
+        run: |
+          node bin/nq.js audit || true   # exits 2 on risky; verdict is read from JSON below
+          verdict=$(node -e "console.log(require('./.audit/report.json').verdict)")
+          echo "verdict=$verdict" >> "$GITHUB_OUTPUT"
+          {
+            echo "### nq audit verdict: \`$verdict\`"
+            echo
+            cat .audit/report.md
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-report
+          path: .audit/
+          if-no-files-found: ignore
+
+      # ---- SAFE: upstream moved but nothing visual changed → auto-PR a pin bump ----
+      - name: Auto-PR safe pin bump
+        if: steps.audit.outputs.verdict == 'safe'
+        run: |
+          node scripts/apply-safe-bump.mjs
+          node bin/nq.js sync-skill
+          git config user.name  "nimiq-audit-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          branch="audit/auto-pin-bump"
+          git checkout -B "$branch"
+          git add upstream-pins.json registry/SKILL-BLOCK.md
+          if git diff --cached --quiet; then
+            echo "Nothing to commit — pins already current."
+            exit 0
+          fi
+          git commit -m "audit: fast-forward upstream pins (safe drift, pixel-verify green)"
+          git push -f origin "$branch"
+          if [ "$(gh pr list --head "$branch" --state open --json number --jq 'length')" = "0" ]; then
+            gh pr create --head "$branch" --base main \
+              --title "audit: auto pin bump (safe upstream drift)" \
+              --body-file .audit/report.md
+          else
+            echo "PR already open for $branch — pushed the update."
+          fi
+
+      # ---- RISKY: a component/token source moved, an unknown path, or verify failed ----
+      - name: Open/update branding-drift issue
+        if: steps.audit.outputs.verdict == 'risky'
+        run: |
+          gh label create branding-drift --color FFA500 \
+            --description "live Nimiq design drifted from the registry" 2>/dev/null || true
+          existing=$(gh issue list --state open --label branding-drift --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file .audit/report.md
+          else
+            gh issue create --title "🎨 Nimiq branding drift needs review" \
+              --label branding-drift --body-file .audit/report.md
+          fi

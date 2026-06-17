@@ -1,0 +1,35 @@
+{
+  "description": "The exact upstream Nimiq commits this registry's truth renders + tokens were verified against. The vendored upstream/ checkouts are gitignored, so THIS file is the committed source of truth for 'what we are current with'. `nq audit` compares each `pinned` commit to the live branch tip; the weekly workflow auto-PRs a bump here when the drift is provably safe. Updating a pin here is the canonical way to record 'we re-synced to upstream X'.",
+  "repos": {
+    "hub": {
+      "url": "https://github.com/nimiq/hub.git",
+      "branch": "master",
+      "pinned": "cf2ea41941e433fa8e28ff4fe3d60870005c2115",
+      "pinnedDate": "2026-06-15"
+    },
+    "wallet": {
+      "url": "https://github.com/nimiq/wallet.git",
+      "branch": "master",
+      "pinned": "656ed569dac0e20ff61bba95a4fef14fce3541d6",
+      "pinnedDate": "2026-06-15"
+    },
+    "nimiq-ui": {
+      "url": "https://github.com/onmax/nimiq-ui.git",
+      "branch": "main",
+      "pinned": "68e96cdeb1104bd5cd1556f5cd2619b8509c4529",
+      "pinnedDate": "2026-01-02"
+    },
+    "nimiq-style": {
+      "url": "https://github.com/nimiq/nimiq-style.git",
+      "branch": "master",
+      "pinned": "21c10a14b324a133ddb78f906015765bf6cb13ec",
+      "pinnedDate": "2023-02-21"
+    },
+    "vue-components": {
+      "url": "https://github.com/nimiq/vue-components.git",
+      "branch": "master",
+      "pinned": "3c5b97247e68a8bdcba5e904ff8ac29482995759",
+      "pinnedDate": "2025-10-23"
+    }
+  }
+}

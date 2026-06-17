@@ -2,7 +2,10 @@
   "name": "qr-code",
   "purpose": "Nimiq QR code — renders arbitrary data (typically a nimiq: payment URI) as a rounded-module QR code on a canvas, filled by default with the Nimiq light-blue radial gradient (#265DD7 → #0582CA) on a transparent background.",
   "category": "data-display",
-  "variants": ["vue", "html"],
+  "variants": [
+    "vue",
+    "html"
+  ],
   "props": [
     {
       "name": "data",
@@ -46,15 +49,29 @@
       "description": "Width and height of the QR code in pixels (canvas pixels; the canvas has no devicePixelRatio scaling)."
     }
   ],
-  "cssFiles": ["css/legacy/nimiq-style.min.css"],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
   "dependsOn": [],
-  "npmDeps": ["qr-creator"],
+  "npmDeps": [
+    "qr-creator"
+  ],
   "verified": true,
   "verify": {
-    "viewport": { "width": 600, "height": 400 },
+    "viewport": {
+      "width": 600,
+      "height": 400
+    },
     "selector": "canvas",
     "maxDiffPct": 0.5,
     "settleMs": 250
   },
-  "notes": "Upstream QrCode.vue has no <style> block — the component is a bare <canvas class=\"qr-code\">, all rendering done by qr-creator (pinned qr-creator@1.0.0, the only published version). Sample state: data 'nimiq:NQ07000000000000000000000000000000000000', size 240, all other props at upstream defaults. qr-creator sets canvas.width/height = size with no devicePixelRatio handling, so the QR renders at CSS-pixel resolution. The Vue port keeps the upstream toDataUrl() helper as an exposed method."
+  "notes": "Upstream QrCode.vue has no <style> block — the component is a bare <canvas class=\"qr-code\">, all rendering done by qr-creator (pinned qr-creator@1.0.0, the only published version). Sample state: data 'nimiq:NQ07000000000000000000000000000000000000', size 240, all other props at upstream defaults. qr-creator sets canvas.width/height = size with no devicePixelRatio handling, so the QR renders at CSS-pixel resolution. The Vue port keeps the upstream toDataUrl() helper as an exposed method.",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/QrCode.vue"
+    ]
+  }
 }
