@@ -28,6 +28,10 @@ Usage:
   nq new <name>                 Scaffold a new registry component with the principles
                                 checklist + verification contract embedded
   nq verify <component|all>     Render the html variant and diff against the reference PNG
+  nq lint <file.html|url>       Render a page and enforce the brand rules + breathability.
+      --fix                     Auto-fix the safe text violations in a local file (dashes, title periods)
+      --json                    Machine-readable output
+                                ERRORS (off-brand slop) fail; WARNINGS (density) advise. See LINT.md
   nq audit [--skip-verify]      Check the LIVE Nimiq upstreams for branding drift vs our
                                 pinned registry; attribute drift to components; write a report
   nq sync-skill                 Regenerate the nimiq-ui skill's registry block from index.json
@@ -55,6 +59,8 @@ function parseFlags(args) {
     if (a === '--vue' || a === '--html') flags.variant = a.slice(2);
     else if (a === '--out') flags.out = args[++i];
     else if (a === '--style') flags.style = args[++i];
+    else if (a === '--fix') flags.fix = true;
+    else if (a === '--json') flags.json = true;
     else rest.push(a);
   }
   return { flags, rest };
@@ -359,6 +365,12 @@ try {
     case 'new': await cmdNew(rest[0], flags); break;
     case 'assets': await cmdAssets(rest[0], rest.slice(1), flags); break;
     case 'verify': await cmdVerify(rest[0]); break;
+    case 'lint': {
+      const { lint } = await import(join(ROOT, 'scripts', 'lint.mjs'));
+      const r = await lint(rest[0], { fix: flags.fix, json: flags.json });
+      if (r.errorCount) process.exitCode = 1;
+      break;
+    }
     case 'audit': await import(join(ROOT, 'scripts', 'audit.mjs')); break;
     case 'sync-skill': await import(join(ROOT, 'scripts', 'sync-skill.mjs')); break;
     default: console.log(HELP);
