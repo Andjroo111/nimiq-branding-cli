@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# nq align pre-commit gate — installed by `nq hooks install`.
+# Blocks a commit that introduces the broken @nimiq/core light-client path
+# (Client.create / @nimiq/core/web / waitForConsensusEstablished) or off-brand styling.
+set -euo pipefail
+if command -v nq >/dev/null 2>&1; then
+  nq align --fail-on=settlement,styling
+else
+  npx -y github:Andjroo111/nimiq-branding-cli align --fail-on=settlement,styling
+fi
