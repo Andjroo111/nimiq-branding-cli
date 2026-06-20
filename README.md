@@ -45,6 +45,37 @@ nq sync-skill               # (repo dev) regenerate the nimiq-ui skill block fro
 Open `showcase.html` for the full component gallery and `supporting-elements.html` for the
 wallet + marketing element demos.
 
+## Fleet stack alignment (`nq align` / `nq new` / `nq hooks`)
+
+Branding accuracy (`nq audit`/`nq verify`) keeps the UI matching Nimiq's design. `nq align`
+keeps a whole **app** on the canonical Nimiq fleet stack — same verdict vocabulary
+(`clean` / `safe-drift` / `risky-fail`).
+
+```
+nq new my-app               # scaffold a CANONICAL app: Bun+Hono+bun:sqlite+vanilla PWA+
+                            # @nimiq/style + inline rpc-block-scan settlement + Fly deploy
+                            # kit + ci.yml + a stamped nimiq-stack.json + /health. Aligns clean.
+nq new readonly --no-chain  # informational app (chainApp:false → skip settlement/styling parity)
+nq new pay --settlement rpc --deploy fly
+
+nq align                    # grade the app in cwd against the canonical fleet baseline
+nq align --all ~/Projects   # grade every app dir under a folder
+nq align --fix              # safe autofixes only (write/repair nimiq-stack.json)
+nq align --fail-on=settlement,styling   # nonzero exit for the pre-commit / CI gate
+
+nq hooks install            # git pre-commit gate + SessionStart banner + weekly GH Action
+```
+
+**The load-bearing axis is SETTLEMENT.** The `@nimiq/core` light client never reaches
+consensus on our hosts, so any `@nimiq/core/web` import or `Client.create(` /
+`waitForConsensusEstablished(` in `src/` is a **HARD FAIL**. Chain reads must use the
+rpc-block-scan path (the `nimiq-settlement` package). `@nimiq/core` is offline-crypto-only.
+
+Each app declares a root `nimiq-stack.json` (schema: `schemas/nimiq-stack.v1.json`); the
+canonical fleet baseline `nq align` grades against lives in `align/canonical.json`. Apps
+that are intentionally off-stack (e.g. nimiq.tech, nimiq-ads, gateflo) set `"exempt": true`
+and are reported but never failed.
+
 ## How pixel accuracy is enforced
 
 Every registry component carries:

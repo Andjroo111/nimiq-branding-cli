@@ -1,0 +1,44 @@
+{
+  "description": "The CANONICAL Nimiq fleet baseline that `nq align` grades every app's nimiq-stack.json against. Derived from the proven shipping stack (SnapPOS RPC-settlement, nimiq-split reference manifest, TipJar/Beelink deploy kit). This file is the single committed source of truth for 'what a canonical chain app looks like'. Drift off these values is graded with the same vocabulary as nq audit: clean (matches), safe-drift (different but defensible — warn), risky-fail (load-bearing axis violated — fail).",
+  "canonicalVersion": "0.1.0",
+  "schemaVersion": 1,
+  "stack": {
+    "framework": "vanilla-pwa",
+    "server": "hono",
+    "runtime": "bun",
+    "build": "none",
+    "packageManager": "bun"
+  },
+  "styling": {
+    "source": "nimiq-ui"
+  },
+  "settlement": {
+    "pattern": "rpc-block-scan",
+    "lib": "nimiq-settlement",
+    "coreRole": "offline-crypto-only",
+    "acceptedPatterns": ["rpc-block-scan", "mock", "noop"],
+    "acceptedLibs": ["nimiq-settlement", "inline"],
+    "forbiddenPatterns": ["light-client"]
+  },
+  "deploy": {
+    "target": "fly",
+    "region": "ord",
+    "storage": "fly-volume",
+    "edge": {
+      "provider": "cloudflare",
+      "proxied": true
+    }
+  },
+  "config": {
+    "tsconfig": "local-strict",
+    "lint": "none",
+    "fileSizeGuard": 800,
+    "ci": true
+  },
+  "settlementPackage": "nimiq-settlement",
+  "lightClient": {
+    "forbiddenImports": ["@nimiq/core/web"],
+    "forbiddenCalls": ["Client.create(", "waitForConsensusEstablished("],
+    "reason": "The @nimiq/core light client never reaches consensus on our hosts (WASM addEventListener bug, hangs in Bun/Node through 2.7.0). Chain reads MUST use the rpc-block-scan path via the nimiq-settlement package; @nimiq/core is offline-crypto-only (key/tx signing)."
+  }
+}

@@ -25,8 +25,23 @@ Usage:
   nq assets add <name...>       Copy official asset(s) into ./nimiq/assets/
                                 (icon:<name> extracts from nimiq-icons, flag:<cc> from nimiq-flags)
   nq principles                 Print the Nimiq design principles — the soul of this tool
-  nq new <name>                 Scaffold a new registry component with the principles
-                                checklist + verification contract embedded
+  nq new <name>                 Scaffold a CANONICAL Nimiq fleet app (Bun+Hono+bun:sqlite+
+                                vanilla PWA + @nimiq/style + nimiq-settlement + Fly kit +
+                                a stamped nimiq-stack.json + /health). Starts clean on align.
+      --no-chain                chainApp:false (skip settlement + styling parity)
+      --settlement mock|rpc|noop    settlement client (default mock)
+      --deploy fly|none         deploy kit (default fly)
+  nq new-component <name>       Scaffold a new REGISTRY component (the old \`nq new\`):
+                                principles checklist + verification contract embedded
+  nq align [path]               Grade an app's stack vs the canonical fleet baseline.
+      --all <dir>               Grade every app dir under <dir>
+      --fix                     Safe autofixes only (write/repair nimiq-stack.json)
+      --fail-on settlement,styling   Nonzero exit if a listed axis is risky-fail (the gate)
+      --quiet                   One-line drift banner (SessionStart)  --json  machine output
+                                SETTLEMENT is load-bearing: any @nimiq/core/web import or
+                                Client.create( / waitForConsensusEstablished( in src HARD FAILS.
+  nq hooks install [repo]       Install the drift hooks: git pre-commit (align --fail-on),
+                                SessionStart banner, weekly GH Action (--write drops the workflow)
   nq verify <component|all>     Render the html variant and diff against the reference PNG
   nq lint <file.html|url>       Render a page and enforce the brand rules + breathability.
       --fix                     Auto-fix the safe text violations in a local file (dashes, title periods)
@@ -61,6 +76,17 @@ function parseFlags(args) {
     else if (a === '--style') flags.style = args[++i];
     else if (a === '--fix') flags.fix = true;
     else if (a === '--json') flags.json = true;
+    else if (a === '--quiet') flags.quiet = true;
+    else if (a === '--all') flags.all = (args[i + 1] && !args[i + 1].startsWith('--')) ? args[++i] : true;
+    else if (a === '--no-chain') flags.noChain = true;
+    else if (a.startsWith('--settlement=')) flags.settlement = a.slice('--settlement='.length);
+    else if (a === '--settlement') flags.settlement = args[++i];
+    else if (a.startsWith('--deploy=')) flags.deploy = a.slice('--deploy='.length);
+    else if (a === '--deploy') flags.deploy = args[++i];
+    else if (a.startsWith('--fail-on=')) flags.failOn = a.slice('--fail-on='.length);
+    else if (a === '--fail-on') flags.failOn = args[++i];
+    else if (a === '--check') flags.check = true;
+    else if (a === '--write') flags.write = true;
     else rest.push(a);
   }
   return { flags, rest };
@@ -268,10 +294,10 @@ const CHECKLIST = [
   'reproducible: plain HTML/CSS or standard Vue, passes nq verify',
 ];
 
-async function cmdNew(name, flags) {
-  if (!name || !/^[a-z][a-z0-9-]*$/.test(name)) throw new Error('nq new <kebab-case-name>');
+async function cmdNewComponent(name, flags) {
+  if (!name || !/^[a-z][a-z0-9-]*$/.test(name)) throw new Error('nq new-component <kebab-case-name>');
   if (ROOT.includes('node_modules') || ROOT.includes('_npx')) {
-    throw new Error('nq new scaffolds a component INTO the registry repo — clone it first:\n  git clone https://github.com/Andjroo111/nimiq-branding-cli\nthen run nq new from that checkout.');
+    throw new Error('nq new-component scaffolds a component INTO the registry repo — clone it first:\n  git clone https://github.com/Andjroo111/nimiq-branding-cli\nthen run nq new-component from that checkout.');
   }
   const dir = join(ROOT, 'registry', 'components', name);
   if (existsSync(dir)) throw new Error(`component "${name}" already exists`);
@@ -336,6 +362,37 @@ async function cmdNew(name, flags) {
 Read the soul of the tool first: nq principles`);
 }
 
+async function cmdNew(name, flags) {
+  const { scaffoldApp } = await import(join(ROOT, 'scripts', 'scaffold.mjs'));
+  const r = await scaffoldApp(name, { noChain: flags.noChain, settlement: flags.settlement, deploy: flags.deploy });
+  console.log(`+ scaffolded canonical Nimiq app → ${r.dir}`);
+  console.log(`  ${r.files.length} files · chainApp=${r.chain}${r.chain ? ` · settlement=${r.settlement}` : ''} · deploy=${r.deploy}`);
+  console.log(`\nNext:\n  cd ${name}\n  bun install\n  bun run dev      # http://localhost:3000  (try GET /health)\n  nq align         # should be clean on every axis\n  nq hooks install # add the pre-commit settlement/styling gate`);
+}
+
+async function cmdHooks(sub, flags) {
+  const { installHooks, SESSION_START, WEEKLY_WORKFLOW } = await import(join(ROOT, 'scripts', 'hooks.mjs'));
+  if (sub === 'install') {
+    const r = await installHooks(rest[1], { write: !!flags.write });
+    for (const p of r.wrote) console.log(`+ ${p}`);
+    for (const p of r.printed) console.log(`  ${p}`);
+    console.log(`\nSessionStart advisory — add to .claude/settings.json hooks.SessionStart:\n  ${SESSION_START.trim().split('\n').pop()}`);
+    console.log(`\nWeekly GH Action: copy hooks/stack-align.yml into .github/workflows/ (or re-run with --write).`);
+    return;
+  }
+  if (sub === 'show' || !sub) {
+    console.log('# git pre-commit (.git/hooks/pre-commit):\n');
+    const { PRE_COMMIT } = await import(join(ROOT, 'scripts', 'hooks.mjs'));
+    console.log(PRE_COMMIT);
+    console.log('# SessionStart advisory:\n');
+    console.log(SESSION_START);
+    console.log('# weekly GH Action (.github/workflows/stack-align.yml):\n');
+    console.log(WEEKLY_WORKFLOW);
+    return;
+  }
+  throw new Error(`nq hooks ${sub} — unknown (install | show)`);
+}
+
 async function cmdVerify(target) {
   const { verify } = await import(join(ROOT, 'scripts', 'verify.mjs'));
   const names = target === 'all' || !target
@@ -363,6 +420,13 @@ try {
     case 'tokens': await cmdTokens(); break;
     case 'principles': await cmdPrinciples(); break;
     case 'new': await cmdNew(rest[0], flags); break;
+    case 'new-component': await cmdNewComponent(rest[0], flags); break;
+    case 'align': {
+      const { run } = await import(join(ROOT, 'scripts', 'align.mjs'));
+      await run(rest, flags);
+      break;
+    }
+    case 'hooks': await cmdHooks(rest[0], flags); break;
     case 'assets': await cmdAssets(rest[0], rest.slice(1), flags); break;
     case 'verify': await cmdVerify(rest[0]); break;
     case 'lint': {
