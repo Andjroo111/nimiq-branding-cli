@@ -81,9 +81,9 @@ async function scanLightClient(appDir, canonical) {
         // without being a real usage — skip those to avoid false positives.
         const isComment = trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*');
         for (const imp of forbiddenImports) {
-          // imports are unambiguous even on a "comment" line if they're an actual import stmt
-          const realImport = /(^|[^\w])(import|from|require)\b/.test(line) && line.includes(imp);
-          if (line.includes(imp) && (realImport || !isComment)) {
+          // a comment can quote the forbidden import without being a real usage; only a
+          // non-comment line that contains it is a real import (imports never start with //).
+          if (!isComment && line.includes(imp)) {
             hits.push({ file: rel, line: i + 1, kind: 'import', match: imp, text: trimmed.slice(0, 100) });
           }
         }

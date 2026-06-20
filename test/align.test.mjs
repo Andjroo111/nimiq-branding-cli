@@ -86,6 +86,19 @@ test('a pure comment mentioning Client.create() does NOT hard-fail', async () =>
   await rm(dir, { recursive: true, force: true });
 });
 
+test('a comment quoting the forbidden import (with import/from words) does NOT hard-fail', async () => {
+  const dir = await tmpApp({
+    'nimiq-stack.json': canonicalManifest(),
+    'Dockerfile': 'x', 'fly.toml': 'x', '.github/workflows/ci.yml': 'x',
+    // The bug: this comment contains "import"/"from" AND "@nimiq/core/web", which used to
+    // trip the import detector even though it is plainly a comment, not a real import.
+    'src/notes.ts': '// reminder: never import from "@nimiq/core/web"; reads go via nimiq-settlement\nexport const x = 1;\n',
+  });
+  const r = await alignApp(dir);
+  assert.notEqual(r.axes.settlement.verdict, RISKY, 'a comment quoting the import must not trip the hard fail');
+  await rm(dir, { recursive: true, force: true });
+});
+
 test('declared settlement.pattern light-client → risky-fail even without src hit', async () => {
   const dir = await tmpApp({
     'nimiq-stack.json': canonicalManifest({ settlement: { pattern: 'light-client', lib: 'inline', coreRole: 'none' } }),

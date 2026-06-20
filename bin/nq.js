@@ -25,14 +25,14 @@ Usage:
   nq assets add <name...>       Copy official asset(s) into ./nimiq/assets/
                                 (icon:<name> extracts from nimiq-icons, flag:<cc> from nimiq-flags)
   nq principles                 Print the Nimiq design principles — the soul of this tool
-  nq new <name>                 Scaffold a CANONICAL Nimiq fleet app (Bun+Hono+bun:sqlite+
+  nq new <name>                 Scaffold a new REGISTRY component (principles checklist +
+                                verification contract embedded)
+  nq new-app <name>             Scaffold a CANONICAL Nimiq fleet app (Bun+Hono+bun:sqlite+
                                 vanilla PWA + @nimiq/style + nimiq-settlement + Fly kit +
                                 a stamped nimiq-stack.json + /health). Starts clean on align.
       --no-chain                chainApp:false (skip settlement + styling parity)
       --settlement mock|rpc|noop    settlement client (default mock)
       --deploy fly|none         deploy kit (default fly)
-  nq new-component <name>       Scaffold a new REGISTRY component (the old \`nq new\`):
-                                principles checklist + verification contract embedded
   nq align [path]               Grade an app's stack vs the canonical fleet baseline.
       --all <dir>               Grade every app dir under <dir>
       --fix                     Safe autofixes only (write/repair nimiq-stack.json)
@@ -419,8 +419,9 @@ try {
     case 'init': await cmdInit(flags); break;
     case 'tokens': await cmdTokens(); break;
     case 'principles': await cmdPrinciples(); break;
-    case 'new': await cmdNew(rest[0], flags); break;
+    case 'new':
     case 'new-component': await cmdNewComponent(rest[0], flags); break;
+    case 'new-app': await cmdNew(rest[0], flags); break;
     case 'align': {
       const { run } = await import(join(ROOT, 'scripts', 'align.mjs'));
       await run(rest, flags);

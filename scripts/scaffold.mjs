@@ -1,4 +1,4 @@
-// nq new <name> — scaffold a CANONICAL Nimiq fleet app.
+// nq new-app <name> — scaffold a CANONICAL Nimiq fleet app.
 //
 // Bun + Hono + bun:sqlite + vanilla PWA + @nimiq/style/nq + the nimiq-settlement dep
 // (mock client by default) + the Fly deploy kit (Dockerfile/fly.toml/.dockerignore/
@@ -19,7 +19,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '..');
 
 export async function scaffoldApp(name, opts = {}) {
-  if (!name || !/^[a-z][a-z0-9-]*$/.test(name)) throw new Error('nq new <kebab-case-name>');
+  if (!name || !/^[a-z][a-z0-9-]*$/.test(name)) throw new Error('nq new-app <kebab-case-name>');
   const dir = resolve(name);
   if (existsSync(dir)) throw new Error(`directory "${name}" already exists`);
 

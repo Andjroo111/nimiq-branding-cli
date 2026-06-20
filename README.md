@@ -45,18 +45,19 @@ nq sync-skill               # (repo dev) regenerate the nimiq-ui skill block fro
 Open `showcase.html` for the full component gallery and `supporting-elements.html` for the
 wallet + marketing element demos.
 
-## Fleet stack alignment (`nq align` / `nq new` / `nq hooks`)
+## Fleet stack alignment (`nq align` / `nq new-app` / `nq hooks`)
 
 Branding accuracy (`nq audit`/`nq verify`) keeps the UI matching Nimiq's design. `nq align`
 keeps a whole **app** on the canonical Nimiq fleet stack — same verdict vocabulary
 (`clean` / `safe-drift` / `risky-fail`).
 
 ```
-nq new my-app               # scaffold a CANONICAL app: Bun+Hono+bun:sqlite+vanilla PWA+
+nq new-app my-app           # scaffold a CANONICAL app: Bun+Hono+bun:sqlite+vanilla PWA+
                             # @nimiq/style + inline rpc-block-scan settlement + Fly deploy
                             # kit + ci.yml + a stamped nimiq-stack.json + /health. Aligns clean.
-nq new readonly --no-chain  # informational app (chainApp:false → skip settlement/styling parity)
-nq new pay --settlement rpc --deploy fly
+nq new-app readonly --no-chain  # informational app (chainApp:false → skip settlement/styling parity)
+nq new-app pay --settlement rpc --deploy fly
+# (nq new <name> still scaffolds a UI registry component, unchanged)
 
 nq align                    # grade the app in cwd against the canonical fleet baseline
 nq align --all ~/Projects   # grade every app dir under a folder
