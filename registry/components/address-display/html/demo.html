@@ -9,22 +9,25 @@
 <style>
     body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; }
 
-    /* address-display */
+    /* address-display — hardened grid build (locks the 3 columns; can't reflow) */
     .address-display {
+        display: grid;
+        justify-items: center;
         width: 100%;
         box-sizing: content-box;
         color: rgba(31, 35, 72, .5); /* nimiq-blue with .5 opacity */
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
         font-size: 3rem;
+        font-family: 'Fira Mono', monospace;
     }
 
     .format-nimiq {
+        grid-template-columns: repeat(3, 33%);
+        justify-content: space-between;
         max-width: 28.25rem;
     }
 
     .format-ethereum {
+        grid-template-columns: 1fr;
         max-width: 27rem;
     }
 
@@ -35,20 +38,15 @@
     }
 
     .chunk {
-        font-family: 'Fira Mono', monospace;
         margin: 0.875rem 0;
         line-height: 1.11;
         text-align: center;
         box-sizing: border-box;
+        white-space: nowrap;
     }
 
     .format-nimiq .chunk {
-        width: 33%;
         text-transform: uppercase;
-    }
-
-    .format-ethereum .chunk {
-        width: 100%;
     }
 
     .space {

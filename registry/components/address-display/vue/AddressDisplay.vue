@@ -62,21 +62,28 @@ defineExpose({ text });
 </script>
 
 <style scoped>
+    /* Hardened grid build: locks the 3 columns (can't reflow) and self-imports
+       Fira Mono so a missing font link can't make the 3×3 drift. */
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500&display=swap');
+
     .address-display {
+        display: grid;
+        justify-items: center;
         width: 100%;
         box-sizing: content-box;
         color: rgba(31, 35, 72, .5); /* nimiq-blue with .5 opacity */
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
         font-size: 3rem;
+        font-family: 'Fira Mono', monospace;
     }
 
     .format-nimiq {
+        grid-template-columns: repeat(3, 33%);
+        justify-content: space-between;
         max-width: 28.25rem;
     }
 
     .format-ethereum {
+        grid-template-columns: 1fr;
         max-width: 27rem;
     }
 
@@ -87,20 +94,15 @@ defineExpose({ text });
     }
 
     .chunk {
-        font-family: 'Fira Mono', monospace;
         margin: 0.875rem 0;
         line-height: 1.11;
         text-align: center;
         box-sizing: border-box;
+        white-space: nowrap;
     }
 
     .format-nimiq .chunk {
-        width: 33%;
         text-transform: uppercase;
-    }
-
-    .format-ethereum .chunk {
-        width: 100%;
     }
 
     .space {

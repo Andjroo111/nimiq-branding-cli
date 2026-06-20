@@ -41,7 +41,7 @@
     "maxDiffPct": 0.5,
     "settleMs": 250
   },
-  "notes": "Sample state: NQ07 0000... burn address, nimiq format, copyable=false. Fira Mono loaded from Google Fonts (upstream assumes the host app provides it). copyable=true depends on the Copyable component (not ported here); the html/vue variants render the plain div form. ValidationUtils.normalizeAddress from @nimiq/utils is inlined in the Vue port.",
+  "notes": "Sample state: NQ07 0000... burn address, nimiq format, copyable=false. HARDENED 2026-06-20: the 3×3 is now CSS Grid (grid-template-columns: repeat(3,33%) + justify-content:space-between) instead of flex width:33% — grid pins the column count so a wide fallback glyph can never reflow/wrap; the CSS self-imports Fira Mono so a missing font link can't make it drift; .chunk has white-space:nowrap. Pixel-verified 0% diff vs the original flex render, so the look is identical. GOTCHA still live: font-size:3rem + max-width:28.25rem assume the legacy 8px root; on a 16px-root modern page set them in px or 2× the rem. copyable=true depends on the Copyable component (not ported here). ValidationUtils.normalizeAddress from @nimiq/utils is inlined in the Vue port.",
   "source": {
     "repo": "vue-components",
     "ref": "3c5b972",
