@@ -18,7 +18,7 @@ export async function verify(name) {
   if (!existsSync(demo)) return { status: 'skip', reason: 'no html/demo.html' };
   if (!existsSync(ref)) return { status: 'skip', reason: 'no reference.png' };
 
-  const { chromium } = await import('playwright');
+  const { launchChromium } = await import('./_browser.mjs');
   const { PNG } = await import('pngjs');
   const pixelmatch = (await import('pixelmatch')).default;
 
@@ -26,7 +26,7 @@ export async function verify(name) {
   const viewport = v.viewport ?? { width: 800, height: 600 };
   const threshold = v.maxDiffPct ?? 1.0; // percent of pixels allowed to differ
 
-  const browser = await chromium.launch();
+  const browser = await launchChromium('nq verify');
   try {
     const page = await browser.newPage({ viewport, deviceScaleFactor: v.scale ?? 2 });
     await page.goto('file://' + demo);

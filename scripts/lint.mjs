@@ -247,8 +247,8 @@ export async function lint(target, opts = {}) {
   if (!isUrl && !existsSync(filePath)) throw new Error(`no such file: ${target}`);
   const url = isUrl ? target : pathToFileURL(filePath).href;
 
-  const { chromium } = await import('playwright');
-  const browser = await chromium.launch();
+  const { launchChromium } = await import('./_browser.mjs');
+  const browser = await launchChromium('nq lint');
   const out = (s = '') => console.log(s);
   let errorCount = 0, warnCount = 0;
   try {
