@@ -1,7 +1,7 @@
 {
   "name": "nimiq-branding-cli",
-  "version": "1.1.1",
-  "description": "nq \u2014 pixel-verified Nimiq UI component registry + CLI. 39 components (Vue 3 + plain HTML) diffed against the real Nimiq apps, plus the team's real asset library. Unofficial community tool.",
+  "version": "1.2.0",
+  "description": "nq — pixel-verified Nimiq UI component registry + CLI. 39 components (Vue 3 + plain HTML) diffed against the real Nimiq apps, plus the team's real asset library. Unofficial community tool.",
   "type": "module",
   "bin": {
     "nq": "./bin/nq.js"
