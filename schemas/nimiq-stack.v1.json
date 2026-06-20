@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nimiq.tech/schemas/nimiq-stack.v1.json",
+  "title": "nimiq-stack manifest (v1)",
+  "description": "One per Nimiq fleet app at repo root. Declares the app's stack, styling, on-chain settlement path, deploy target, and config posture so `nq align` can grade each axis against the canonical fleet baseline using the same clean / safe-drift / risky-fail vocabulary as `nq audit`. The load-bearing axis is SETTLEMENT: the @nimiq/core light client (Client.create / @nimiq/core/web) is broken on our hosts, so chain reads must go through the rpc-block-scan pattern and core must be offline-crypto-only.",
+  "type": "object",
+  "required": ["schemaVersion", "name", "chainApp", "stack", "styling", "settlement", "deploy", "config", "canonicalVersion"],
+  "additionalProperties": true,
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": 1 },
+    "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "chainApp": {
+      "type": "boolean",
+      "description": "True if the app settles real NIM on-chain (subject to settlement + styling parity). False for read-only / informational apps (use --no-chain)."
+    },
+    "exempt": {
+      "type": "boolean",
+      "default": false,
+      "description": "True for apps intentionally off the canonical stack (e.g. nimiq.tech, nimiq-ads, gateflo). Exempt apps are REPORTED by nq align but never failed."
+    },
+    "exemptReason": { "type": ["string", "null"] },
+    "stack": {
+      "type": "object",
+      "required": ["framework", "server", "runtime", "build", "packageManager"],
+      "properties": {
+        "framework": { "type": "string", "description": "e.g. vanilla-pwa, next, nuxt, vue" },
+        "server": { "type": "string", "description": "e.g. hono@^4.7, next, none" },
+        "runtime": { "type": "string", "description": "bun | node | edge" },
+        "build": { "type": "string", "description": "none | vite | next | esbuild" },
+        "packageManager": { "type": "string", "description": "bun | npm | pnpm | yarn" }
+      },
+      "additionalProperties": true
+    },
+    "styling": {
+      "type": "object",
+      "required": ["source"],
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "nimiq-ui = @nimiq/style + nq-* component classes (canonical). Anything else fails for a non-exempt chainApp."
+        },
+        "components": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "settlement": {
+      "type": "object",
+      "required": ["pattern", "lib", "coreRole"],
+      "properties": {
+        "pattern": {
+          "type": "string",
+          "description": "rpc-block-scan (canonical) | mock | noop | light-client (FORBIDDEN — broken on our hosts)"
+        },
+        "lib": {
+          "type": "string",
+          "description": "nimiq-settlement (shared pkg) | inline (src/lib/chain.ts, migrating to the shared pkg) | none"
+        },
+        "coreRole": {
+          "type": "string",
+          "description": "offline-crypto-only (canonical: @nimiq/core used only for key/tx signing, never Client.create) | none"
+        },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "deploy": {
+      "type": "object",
+      "required": ["target"],
+      "properties": {
+        "target": { "type": "string", "description": "fly | netlify | cloudflare-pages | beelink | unknown" },
+        "region": { "type": ["string", "null"] },
+        "storage": { "type": ["string", "null"] },
+        "volumeMount": { "type": ["string", "null"] },
+        "autoDeploy": { "type": ["string", "null"] },
+        "edge": {
+          "type": "object",
+          "properties": {
+            "provider": { "type": ["string", "null"] },
+            "proxied": { "type": ["boolean", "null"] },
+            "access": { "type": ["boolean", "null"] },
+            "notes": { "type": "string" }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "config": {
+      "type": "object",
+      "required": ["tsconfig", "lint", "fileSizeGuard", "ci"],
+      "properties": {
+        "tsconfig": { "type": "string", "description": "local-strict | shared | none" },
+        "lint": { "type": "string", "description": "none | eslint | biome" },
+        "fileSizeGuard": { "type": ["number", "boolean"], "description": "max source-file line count enforced in CI, or false" },
+        "ci": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "canonicalVersion": { "type": "string", "description": "semver of the canonical fleet baseline this app last aligned to" }
+  }
+}
