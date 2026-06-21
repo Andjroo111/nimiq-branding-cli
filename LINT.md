@@ -115,6 +115,18 @@ to flag *"this is getting busy, is it justified?"* — the deterministic half of
 | distorted image | an `<img>` whose displayed aspect ratio differs from its natural ratio by > 8% without `object-fit: cover/contain`, scoped to non-hero images (< 70% viewport wide) so full-bleed `fill` backgrounds aren't flagged |
 | content image missing alt | a **raster** (`jpg/png/webp/gif/avif`) `<img>` with no `alt` attribute (SVG illustrations + `alt=""` decoratives are exempt) |
 
+**Layout integrity** (catches the "things are shifted" regression class — content overlapped or cut off)
+
+These came from a real app regression `nq lint` initially missed: fixed footers/bars overlapping
+content, cards clipping their own rows, square steppers. All three are calibrated to nimiq.com = 0
+and were proven to fire on the real buggy screens.
+
+| Check | Threshold |
+|---|---|
+| interactive element hidden behind a bar | a labelled control (or any form input) ≥ 2 of 5 sample points covered, via `elementFromPoint`, by a **positioned** (fixed/sticky/absolute) non-dialog element — i.e. a footer/bar you then can't click. Unlabelled `<a>`/`<button>` (stretched click-layers) and modals/cookie/overlays are exempt |
+| container clips its own content | an `overflow: hidden/clip` box where a **text-bearing descendant** is pushed past the clip edge (visible text actually cut off). Decorative (non-text) overflow + `ellipsis`/`line-clamp` truncation are exempt, so nimiq's hero-bleed / hover-card clips don't fire |
+| small square button | a small (24–80px), roughly-square interactive button **with a visible surface** (fill/border) whose radius isn't a circle/pill — a stepper/icon button that should be round. Bare text links (no surface) are exempt |
+
 > **Deliberately not built:** adjacent tap-target spacing — nimiq.com's own layout has 12–14 closely-spaced controls (incl. non-nav) that can't be cleanly separated from real crowding, so it would be noise, not signal. Beyond this batch the remaining gaps are either niche, un-calibratable against the reference, or genuinely judgment (the optional vision pass).
 
 **Headline typography & line breaks** (closes the "lint passes ≠ brand-correct" gap)
