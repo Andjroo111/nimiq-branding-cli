@@ -105,6 +105,18 @@ to flag *"this is getting busy, is it justified?"* — the deterministic half of
 | address not uppercase / flat | a display NIM address (≥20px) rendered lowercase or as one flat string instead of the uppercase 3×3 grid |
 | pulsing "live" dot animation | a small (≤28px) round element on an `infinite` animation that isn't a spinner/loader — the fake-"live" glow the slop blacklist names |
 
+**Media & page-quality** (the deterministic asymptote — last verifiable batch)
+
+| Check | Threshold |
+|---|---|
+| no `prefers-reduced-motion` | an `infinite` animation is present but **no** `@media (prefers-reduced-motion: reduce)` rule anywhere (nimiq.com ships the rule, so it's clean) |
+| missing viewport meta | a full page (has `<head><title>`) without `<meta name="viewport">` — silently breaks all mobile |
+| clipped / truncated text | a text element ellipsis/overflow-truncated (`scrollWidth > clientWidth`) with **no** `title` fallback to read it |
+| distorted image | an `<img>` whose displayed aspect ratio differs from its natural ratio by > 8% without `object-fit: cover/contain`, scoped to non-hero images (< 70% viewport wide) so full-bleed `fill` backgrounds aren't flagged |
+| content image missing alt | a **raster** (`jpg/png/webp/gif/avif`) `<img>` with no `alt` attribute (SVG illustrations + `alt=""` decoratives are exempt) |
+
+> **Deliberately not built:** adjacent tap-target spacing — nimiq.com's own layout has 12–14 closely-spaced controls (incl. non-nav) that can't be cleanly separated from real crowding, so it would be noise, not signal. Beyond this batch the remaining gaps are either niche, un-calibratable against the reference, or genuinely judgment (the optional vision pass).
+
 **Headline typography & line breaks** (closes the "lint passes ≠ brand-correct" gap)
 
 The deterministic checks above read color, spacing and shape — but a heading can satisfy all of
