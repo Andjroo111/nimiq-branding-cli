@@ -483,10 +483,20 @@ export async function lint(target, opts = {}) {
     try { const en = page.locator('button.flag-btn', { hasText: 'English' }).first(); if (await en.count()) { await en.click({ timeout: 3000 }); await page.waitForLoadState('networkidle', { timeout: 12000 }).catch(() => {}); await page.waitForTimeout(1000); } } catch {}
     await page.evaluate(async () => { const s = innerHeight * 0.8; for (let y = 0; y < document.body.scrollHeight; y += s) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 200)); } scrollTo(0, 0); await new Promise((r) => setTimeout(r, 350)); });
     const r = await page.evaluate(pageProbe, { SPACING_SCALE, ANCHORS, RADIUS_SCALE });
-    // second pass at mobile width (no reload — resize + re-measure)
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.waitForTimeout(500);
-    const mob = await page.evaluate(mobileProbe);
+    // responsive sweep — overflow / tap-targets / tiny-text across standard breakpoints. The 1440
+    // desktop pass above already covered the wide end; overflow at ANY intermediate width is the
+    // "no-man's-land" bug a fixed 390+1440 check misses. nimiq.com is overflow-clean at every width.
+    const SWEEP = [360, 414, 768, 1024, 1280];
+    const sweep = [];
+    for (const w of SWEEP) {
+      await page.setViewportSize({ width: w, height: 900 });
+      await page.waitForTimeout(350);
+      await page.evaluate(async () => { const s = innerHeight * 0.8; for (let y = 0; y < document.body.scrollHeight; y += s) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 80)); } scrollTo(0, 0); await new Promise((r) => setTimeout(r, 120)); });
+      sweep.push({ w, ...(await page.evaluate(mobileProbe)) });
+    }
+    const overflowAt = sweep.filter((s) => s.overflowPx > 4);
+    const tapWorst = sweep.reduce((a, s) => (s.smallTargetN > a.smallTargetN ? s : a), sweep[0]);
+    const tinyWorst = sweep.reduce((a, s) => (s.tinyText > a.tinyText ? s : a), sweep[0]);
 
     // social-icon exemption (run in Node — SOCIAL anchors aren't in the page context)
     const socialName = (rgb) => { let best = Infinity, name = null; for (const [k, v] of Object.entries(SOCIAL)) { const d = Math.hypot(rgb[0] - v[0], rgb[1] - v[1], rgb[2] - v[2]); if (d < best) { best = d; name = k; } } return best <= SOCIAL_DELTA ? name : null; };
@@ -550,13 +560,13 @@ export async function lint(target, opts = {}) {
       ['flat-fill navy/colored section (use radial)', r.flatNavySection.length, r.flatNavySection[0]],
       ['focus outline removed w/o :focus-visible', r.noFocusRing ? 1 : 0, r.noFocusRing ? 'add a :focus-visible ring' : ''],
       ['Mulish not loaded (system-font fallback)', r.fontsNotLoaded ? 1 : 0, r.fontsNotLoaded ? 'load Mulish' : ''],
-      ['mobile horizontal overflow @390px', mob.overflowPx > 4 ? 1 : 0, `${mob.overflowPx}px`],
-      ['mobile tap targets < 36px', mob.smallTargetN, mob.smallTargets[0]],
-      ['text smaller than 12px @390px', mob.tinyText, `${mob.tinyText} element type(s)`],
+      ['horizontal overflow at a breakpoint', overflowAt.length, overflowAt.map((s) => `${s.w}px:${s.overflowPx}px`).join(' ')],
+      ['tap targets < 36px (any breakpoint)', tapWorst.smallTargetN, tapWorst.smallTargetN ? `@${tapWorst.w}px ${tapWorst.smallTargets[0] || ''}` : ''],
+      ['text smaller than 12px (any breakpoint)', tinyWorst.tinyText, tinyWorst.tinyText ? `@${tinyWorst.w}px, ${tinyWorst.tinyText} type(s)` : ''],
     ];
     warnCount = warns.reduce((n, w) => n + (w[1] ? 1 : 0), 0);
 
-    if (opts.json) { out(JSON.stringify({ url, errorCount, warnCount, raw: r, mobile: mob, exemptSocial: exemptSocial.map(([c, v]) => ({ color: c, icon: v.social })) }, null, 2)); return { errorCount, warnCount }; }
+    if (opts.json) { out(JSON.stringify({ url, errorCount, warnCount, raw: r, responsive: sweep, exemptSocial: exemptSocial.map(([c, v]) => ({ color: c, icon: v.social })) }, null, 2)); return { errorCount, warnCount }; }
 
     out(`\n══════ nq lint — ${target} ══════\n`);
     out('ERRORS  (off-brand / a11y — must fix to pass)');
