@@ -132,6 +132,7 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE }) {
     blackBg: [], accentStripe: [], greenAction: [], dupGradIds: [], genericIcon: [], featherIcon: [],
     bakedIcon: [], duotoneBlack: [], modalBlack: [], flatNavySection: [], glowShadow: [], fontsNotLoaded: false, noFocusRing: false,
     lowContrast: [], h1Count: 0, unconstrained: [], amountColor: [], addrStructure: [], pulseDot: [],
+    noReducedMotion: false, hasInfiniteAnim: false, noViewport: false, clippedText: [], distortedImg: [], noAltImg: [],
   };
 
   for (const el of document.querySelectorAll('body *')) {
@@ -246,6 +247,13 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE }) {
       else if (el.children.length === 0) o.addrStructure.push('address as one flat string (use the 3×3 grid)');
     }
 
+    // any infinite animation on the page → feeds the reduced-motion check at the end of the probe
+    if (cs.animationName && cs.animationName !== 'none' && /(^|,)\s*infinite\s*(,|$)/.test(cs.animationIterationCount)) o.hasInfiniteAnim = true;
+    // clipped / truncated text — ellipsis (or overflow:hidden + nowrap) cutting text off, no title fallback
+    if (txt && el.children.length === 0) {
+      const ell = cs.textOverflow === 'ellipsis' || (cs.overflowX !== 'visible' && cs.whiteSpace === 'nowrap');
+      if (ell && el.scrollWidth > el.clientWidth + 2 && !el.title) o.clippedText.push(`<${tag}> "${txt.slice(0, 24)}" cut off (no title)`);
+    }
     // pulsing "live" dot (slop): a small round element on an infinite animation that isn't a spinner.
     if (cs.animationName && cs.animationName !== 'none' && /(^|,)\s*infinite\s*(,|$)/.test(cs.animationIterationCount) && r.width <= 28 && r.height <= 28) {
       const round = cs.borderRadius.includes('50%') || px(cs.borderRadius) >= Math.min(r.width, r.height) / 2 - 1;
@@ -393,6 +401,22 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE }) {
   // jumps h1→h4 for styling, so a no-skip rule would flag the reference.)
   o.h1Count = [...document.querySelectorAll('h1')].filter((e) => visible(e)).length;
 
+  // images — distortion (displayed ratio ≠ natural, not object-fit-preserved, not a full-bleed hero)
+  // and missing alt on raster CONTENT images (SVG illustrations + alt="" decoratives are exempt).
+  for (const img of document.querySelectorAll('img')) {
+    if (!visible(img)) continue;
+    const ir = img.getBoundingClientRect();
+    const src = img.currentSrc || img.getAttribute('src') || '';
+    if (img.naturalWidth && img.naturalHeight && ir.width < innerWidth * 0.7) {
+      const of = getComputedStyle(img).objectFit;
+      if (!/cover|contain|scale-down/.test(of)) {
+        const skew = Math.abs((ir.width / ir.height) - (img.naturalWidth / img.naturalHeight)) / (img.naturalWidth / img.naturalHeight);
+        if (skew > 0.08) o.distortedImg.push(`${src.split('/').pop().slice(0, 20)} ${Math.round(skew * 100)}% skew (${of})`);
+      }
+    }
+    if (!img.hasAttribute('alt') && /\.(jpe?g|png|webp|gif|avif)(\?|$)/i.test(src)) o.noAltImg.push(`${src.split('/').pop().slice(0, 24)} ${Math.round(ir.width)}×${Math.round(ir.height)}`);
+  }
+
   // per-section text-ink ratio (full-width bands)
   const vw = innerWidth;
   const leaves = [...document.querySelectorAll('body *')].filter((el) => !matchAny(el, 'svg') && visible(el) && el.children.length === 0 && directText(el)).map((el) => el.getBoundingClientRect());
@@ -424,6 +448,19 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE }) {
     }
   }
   o.noFocusRing = killsOutline && !restoresFocus;
+
+  // reduced-motion: infinite animation present but NO @media (prefers-reduced-motion) rule anywhere
+  // (cross-origin sheets throw on .cssRules and are skipped). nimiq.com ships the rule → not flagged.
+  let reducedMotionRule = false;
+  for (const sheet of document.styleSheets) {
+    let rules; try { rules = sheet.cssRules; } catch { continue; }
+    if (!rules) continue;
+    for (const rule of rules) { if (/prefers-reduced-motion/i.test(rule.cssText || '')) { reducedMotionRule = true; break; } }
+    if (reducedMotionRule) break;
+  }
+  o.noReducedMotion = o.hasInfiniteAnim && !reducedMotionRule;
+  // viewport meta — only on a full page (has a <head><title>), so component fragments aren't flagged
+  o.noViewport = !!document.querySelector('head > title') && !document.querySelector('meta[name="viewport"]');
   return o;
 }
 
@@ -563,6 +600,11 @@ export async function lint(target, opts = {}) {
       ['horizontal overflow at a breakpoint', overflowAt.length, overflowAt.map((s) => `${s.w}px:${s.overflowPx}px`).join(' ')],
       ['tap targets < 36px (any breakpoint)', tapWorst.smallTargetN, tapWorst.smallTargetN ? `@${tapWorst.w}px ${tapWorst.smallTargets[0] || ''}` : ''],
       ['text smaller than 12px (any breakpoint)', tinyWorst.tinyText, tinyWorst.tinyText ? `@${tinyWorst.w}px, ${tinyWorst.tinyText} type(s)` : ''],
+      ['no prefers-reduced-motion (infinite anim)', r.noReducedMotion ? 1 : 0, r.noReducedMotion ? 'add @media (prefers-reduced-motion: reduce)' : ''],
+      ['missing viewport meta tag', r.noViewport ? 1 : 0, r.noViewport ? 'add <meta name="viewport" content="width=device-width…">' : ''],
+      ['clipped / truncated text (no title)', r.clippedText.length, r.clippedText[0]],
+      ['distorted image (wrong aspect ratio)', r.distortedImg.length, r.distortedImg[0]],
+      ['content image missing alt (raster)', r.noAltImg.length, r.noAltImg[0]],
     ];
     warnCount = warns.reduce((n, w) => n + (w[1] ? 1 : 0), 0);
 
