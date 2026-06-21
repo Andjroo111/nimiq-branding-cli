@@ -36,6 +36,24 @@
     "ci": true
   },
   "settlementPackage": "nimiq-settlement",
+  "identity": {
+    "note": "The fleet was renamed to dotted `nimiq.<seg>` repo names, but code/env/manifests kept stale codenames (splitlink/tipjar/snappos/goalvault/gateflo…). The identity axis fails a repo whose internal name (package.json/nimiq-stack.json) or load-bearing identity files drift from the repo name. ONLY enforced when the canonical repo name matches /^nimiq\\.[a-z0-9-]+$/ — a real fleet repo. Non-fleet dirs and test fixtures stay clean (not-applicable).",
+    "oldCodenames": [
+      "splitlink", "tipjar", "snappos", "chorecoin", "stampr", "goalvault",
+      "nimpot", "meterpay", "bounti", "sendhome", "streamline", "drip",
+      "givechange", "gateflo", "baobab", "mynah", "video-studio", "treasure-hunt",
+      "nimiq-stealth", "art-drops", "nimiq-cashlink", "nimiq-dex", "nimiq-split",
+      "nimiq-tips", "nimiq-pos", "nimiq-allowance", "nimiq-loyalty", "nimiq-savings",
+      "nimiq-prize-pool", "nimiq-metering", "nimiq-bounties", "nimiq-remittance",
+      "nimiq-superchat", "nimiq-paywall", "nimiq-donate", "nimiq-website-builder",
+      "nimiq-casino", "nimiq-vote"
+    ],
+    "sharedDeps": ["nimiq-settlement", "nimiq-app-shell", "nimiq-branding-cli"],
+    "neutralEnv": [
+      "NIMIQ_RPC_URL", "NIMIQ_NETWORK", "NIMIQ_NETWORK_ID", "NIMIQ_SIM",
+      "PORT", "NODE_ENV", "CONFIRMATIONS", "DB_PATH", "HOST", "TZ", "PATH"
+    ]
+  },
   "lightClient": {
     "forbiddenImports": ["@nimiq/core/web"],
     "forbiddenCalls": ["Client.create("],

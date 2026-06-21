@@ -24,6 +24,7 @@ import { readFile, writeFile, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname, join, resolve, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '..');
@@ -36,7 +37,7 @@ const RANK = { [CLEAN]: 0, [SAFE]: 1, [RISKY]: 2 };
 const worst = (a, b) => (RANK[a] >= RANK[b] ? a : b);
 
 // axes that may be named in --fail-on
-const AXES = ['settlement', 'styling', 'stack', 'deploy', 'config'];
+const AXES = ['settlement', 'styling', 'identity', 'stack', 'deploy', 'config'];
 
 const MANIFEST = 'nimiq-stack.json';
 
@@ -46,6 +47,26 @@ export async function loadCanonical() {
 
 async function readJson(path) {
   try { return JSON.parse(await readFile(path, 'utf8')); } catch { return null; }
+}
+
+// ---- canonical repo-name resolution (for the identity axis) ----
+// The CANONICAL name is the repo name from the git origin remote (after the last '/',
+// '.git' stripped). With no git/remote we fall back to basename(dir). An explicit
+// opts.repoName override wins (used by tests, since tmp dirs have no remote).
+const FLEET_NAME = /^nimiq\.[a-z0-9-]+$/;
+
+function resolveRepoName(appDir) {
+  try {
+    const url = execSync('git remote get-url origin', {
+      cwd: appDir, stdio: ['ignore', 'pipe', 'ignore'], encoding: 'utf8',
+    }).trim();
+    if (url) {
+      const last = url.split('/').pop() ?? '';
+      const name = last.replace(/\.git$/, '').trim();
+      if (name) return name;
+    }
+  } catch { /* no git, no remote, or git not installed — fall back */ }
+  return basename(appDir);
 }
 
 // ---- source scan for the broken light-client path ----
@@ -106,6 +127,92 @@ async function scanLightClient(appDir, canonical) {
     if (existsSync(p)) await walk(p);
   }
   return { hits, coreImports };
+}
+
+// ---- identity scan ----
+// Scoped ONLY to load-bearing identity surfaces — NOT docs/CHANGELOG/comments (those
+// are append-only history and would false-positive on every past rename). The surfaces:
+//   - package.json  "name" + "description"
+//   - nimiq-stack.json  "name"
+//   - fly.toml  app = "..."  and  [[mounts]] source = "..."
+//   - env-var NAMES referenced as process.env.<NAME> in src/ files
+// Returns { stale: [{where, token}], envPrefixes: Set<string> }.
+const IDENTITY_SRC_DIRS = ['src'];
+
+function findStaleTokens(text, oldCodenames, allow) {
+  const hits = [];
+  const lower = String(text ?? '').toLowerCase();
+  for (const code of oldCodenames) {
+    const c = code.toLowerCase();
+    if (allow.has(c)) continue;
+    // word/hyphen-bounded so "split" inside "splitter" or the legit "nimiq-settlement"
+    // never trips; matches splitlink, nimiq-split, etc. as standalone identity tokens.
+    const re = new RegExp(`(^|[^a-z0-9])${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^a-z0-9]|$)`, 'i');
+    if (re.test(lower)) hits.push(c);
+  }
+  return [...new Set(hits)];
+}
+
+async function scanIdentity(appDir, canonical, repoName) {
+  const idc = canonical.identity ?? {};
+  const oldCodenames = idc.oldCodenames ?? [];
+  // never flag the repo's OWN canonical name, nor the legit shared deps.
+  const allow = new Set([
+    repoName.toLowerCase(),
+    ...(idc.sharedDeps ?? []).map(s => s.toLowerCase()),
+  ]);
+  const stale = [];
+
+  // package.json name + description
+  const pkg = await readJson(join(appDir, 'package.json'));
+  if (pkg) {
+    const pkgName = String(pkg.name ?? '').replace(/^@[^/]+\//, '');
+    for (const t of findStaleTokens(pkgName, oldCodenames, allow)) stale.push({ where: 'package.json name', token: t });
+    for (const t of findStaleTokens(pkg.description ?? '', oldCodenames, allow)) stale.push({ where: 'package.json description', token: t });
+  }
+  // nimiq-stack.json name
+  const stack = await readJson(join(appDir, MANIFEST));
+  if (stack) {
+    for (const t of findStaleTokens(stack.name ?? '', oldCodenames, allow)) stale.push({ where: 'nimiq-stack.json name', token: t });
+  }
+  // fly.toml app + [[mounts]] source
+  const flyPath = join(appDir, 'fly.toml');
+  if (existsSync(flyPath)) {
+    let fly = '';
+    try { fly = await readFile(flyPath, 'utf8'); } catch { /* unreadable */ }
+    for (const line of fly.split('\n')) {
+      const m = line.match(/^\s*(app|source)\s*=\s*["']([^"']+)["']/);
+      if (m) for (const t of findStaleTokens(m[2], oldCodenames, allow)) stale.push({ where: `fly.toml ${m[1]}`, token: t });
+    }
+  }
+
+  // env-var NAMES (process.env.<NAME>) referenced in src/ — both for stale-codename
+  // detection and for the advisory env-prefix note.
+  const envNames = new Set();
+  async function walk(dir) {
+    let entries;
+    try { entries = await readdir(dir, { withFileTypes: true }); } catch { return; }
+    for (const e of entries) {
+      if (e.name.startsWith('.')) continue;
+      if (SKIP_DIRS.has(e.name)) continue;
+      const full = join(dir, e.name);
+      if (e.isDirectory()) { await walk(full); continue; }
+      if (!CODE_EXT.test(e.name)) continue;
+      if (/\.(test|spec)\./.test(e.name)) continue;
+      let text;
+      try { text = await readFile(full, 'utf8'); } catch { continue; }
+      for (const m of text.matchAll(/process\.env\.([A-Z0-9_]+)/g)) envNames.add(m[1]);
+    }
+  }
+  for (const d of IDENTITY_SRC_DIRS) {
+    const p = join(appDir, d);
+    if (existsSync(p)) await walk(p);
+  }
+  for (const name of envNames) {
+    for (const t of findStaleTokens(name, oldCodenames, allow)) stale.push({ where: `env var ${name}`, token: t });
+  }
+
+  return { stale, envNames: [...envNames] };
 }
 
 // ---- manifest inference (when absent) ----
@@ -283,6 +390,54 @@ function gradeConfig(m, canonical) {
   return { verdict: v, lines };
 }
 
+// ---- identity axis ----
+// Make it impossible for a fleet repo's internal identity to silently drift from its
+// repo name. ONLY enforced for real fleet repos (canonical name /^nimiq\.<seg>$/);
+// everything else is CLEAN/not-applicable so non-fleet dirs + test fixtures stay clean.
+function gradeIdentity(canonical, repoName, { pkgName, stackName }, idScan) {
+  if (!FLEET_NAME.test(repoName)) {
+    return { verdict: CLEAN, lines: [`repo "${repoName}" is not a fleet name (nimiq.<seg>) — identity not enforced`] };
+  }
+  const lines = [];
+  let v = CLEAN;
+  const seg = repoName.slice(repoName.indexOf('.') + 1);
+  const envSeg = seg.toUpperCase().replace(/-/g, '_');
+  const neutral = new Set(canonical.identity?.neutralEnv ?? []);
+
+  // (1) package.json name must === the canonical dotted name
+  if (pkgName !== undefined && pkgName !== null && pkgName !== repoName) {
+    v = RISKY;
+    lines.push(`package.json name "${pkgName}" != repo "${repoName}"`);
+  }
+  // (2) nimiq-stack.json name must === canonical
+  if (stackName !== undefined && stackName !== null && stackName !== repoName) {
+    v = RISKY;
+    lines.push(`nimiq-stack.json name "${stackName}" != repo "${repoName}"`);
+  }
+  // (3) STALE-CODENAME scan over load-bearing identity files
+  if (idScan.stale.length) {
+    v = RISKY;
+    const grouped = {};
+    for (const s of idScan.stale) (grouped[s.where] ??= new Set()).add(s.token);
+    for (const [where, toks] of Object.entries(grouped)) {
+      lines.push(`stale codename in ${where}: ${[...toks].join(', ')} — rename to "${repoName}"`);
+    }
+  }
+  // (4) ADVISORY (safe-drift, never fail): env-var prefix that is neither
+  //     NIMIQ_<envSeg>_ nor in the neutral allowlist (shared NIMIQ_ settlement vars OK).
+  const oddEnv = idScan.envNames.filter(name =>
+    !neutral.has(name)
+    && !name.startsWith(`NIMIQ_${envSeg}_`)
+    && !name.startsWith('NIMIQ_'));
+  if (oddEnv.length) {
+    v = worst(v, SAFE);
+    lines.push(`env var(s) not NIMIQ_${envSeg}_* nor neutral: ${oddEnv.slice(0, 6).join(', ')}${oddEnv.length > 6 ? ` (+${oddEnv.length - 6})` : ''} (advisory)`);
+  }
+
+  if (v === CLEAN && !lines.length) lines.push(`identity matches repo "${repoName}" — no stale codenames`);
+  return { verdict: v, lines };
+}
+
 // ---- grade one app ----
 export async function alignApp(appDir, opts = {}) {
   const canonical = await loadCanonical();
@@ -307,9 +462,18 @@ export async function alignApp(appDir, opts = {}) {
 
   const scan = await scanLightClient(appDir, canonical);
 
+  // identity axis inputs: canonical repo name + the REAL on-disk names (not the inferred
+  // manifest's, so an inferred app isn't double-graded against its own fallback name).
+  const repoName = opts.repoName ?? resolveRepoName(appDir);
+  const pkg = await readJson(join(appDir, 'package.json'));
+  const pkgName = pkg?.name != null ? String(pkg.name).replace(/^@[^/]+\//, '') : null;
+  const stackName = inferred ? null : (m.name ?? null);
+  const idScan = await scanIdentity(appDir, canonical, repoName);
+
   const axes = {
     settlement: m.chainApp ? gradeSettlement(m, canonical, scan) : { verdict: CLEAN, lines: ['--no-chain: settlement parity skipped'] },
     styling: gradeStyling(m, canonical),
+    identity: gradeIdentity(canonical, repoName, { pkgName, stackName }, idScan),
     stack: gradeStack(m, canonical, scan),
     deploy: gradeDeploy(m, canonical, appDir),
     config: gradeConfig(m, canonical),

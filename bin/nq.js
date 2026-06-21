@@ -34,7 +34,7 @@ Usage:
       --settlement mock|rpc|noop    settlement client (default mock)
       --deploy fly|none         deploy kit (default fly)
   nq check [path]               Run the FULL per-project alignment gate in one shot:
-                                align (--fail-on=settlement,styling) + 800-line file
+                                align (--fail-on=settlement,styling,identity) + 800-line file
                                 guard + bun test (if present) + nq lint (if Playwright).
                                 Prints a PASS/FAIL/SKIP summary; exits nonzero on any
                                 FAIL (SKIP is fine). --json for machine output. This is
@@ -46,6 +46,9 @@ Usage:
       --quiet                   One-line drift banner (SessionStart)  --json  machine output
                                 SETTLEMENT is load-bearing: any @nimiq/core/web import or
                                 Client.create( / waitForConsensusEstablished( in src HARD FAILS.
+                                IDENTITY is load-bearing for fleet repos (nimiq.<seg>): a
+                                package/stack name or load-bearing file that drifts from the
+                                repo name (stale codename like splitlink/tipjar) HARD FAILS.
   nq hooks install [repo]       Install the drift hooks: git pre-commit (align --fail-on),
                                 git pre-push (the fuller nq check gate), SessionStart banner,
                                 weekly GH Action (--write drops the workflow)
