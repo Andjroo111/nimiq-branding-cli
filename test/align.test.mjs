@@ -188,3 +188,115 @@ test('--fix repairs canonicalVersion + backfills config on an existing manifest'
   assert.equal(m.config.fileSizeGuard, 800);
   await rm(dir, { recursive: true, force: true });
 });
+
+// ---- identity axis ----
+
+test('IDENTITY: a fleet repo whose package+stack names match the repo grades clean', async () => {
+  const dir = await tmpApp({
+    'nimiq-stack.json': canonicalManifest({ name: 'nimiq.party' }),
+    'package.json': { name: 'nimiq.party' },
+    'Dockerfile': 'x', 'fly.toml': 'x', '.github/workflows/ci.yml': 'x',
+  });
+  const r = await alignApp(dir, { repoName: 'nimiq.party' });
+  assert.equal(r.axes.identity.verdict, CLEAN, JSON.stringify(r.axes.identity, null, 2));
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('IDENTITY: package.json name != repo name → risky-fail (drives overall risky)', async () => {
+  const dir = await tmpApp({
+    'nimiq-stack.json': canonicalManifest({ name: 'nimiq.party' }),
+    'package.json': { name: 'splitlink' },
+    'Dockerfile': 'x', 'fly.toml': 'x', '.github/workflows/ci.yml': 'x',
+  });
+  const r = await alignApp(dir, { repoName: 'nimiq.party' });
+  assert.equal(r.axes.identity.verdict, RISKY);
+  assert.equal(r.overall, RISKY);
+  assert.ok(r.axes.identity.lines.some(l => l.includes('package.json name')));
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('IDENTITY: a stale codename in nimiq-stack.json name → risky-fail', async () => {
+  const dir = await tmpApp({
+    'nimiq-stack.json': canonicalManifest({ name: 'splitlink' }),
+    'package.json': { name: 'nimiq.party' },
+    'Dockerfile': 'x', 'fly.toml': 'x', '.github/workflows/ci.yml': 'x',
+  });
+  const r = await alignApp(dir, { repoName: 'nimiq.party' });
+  assert.equal(r.axes.identity.verdict, RISKY);
+  // the name-mismatch line fires AND the stale-codename scan flags it
+  assert.ok(r.axes.identity.lines.some(l => l.includes('splitlink')));
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('IDENTITY: stale codename in fly.toml app + a stale env var name → risky-fail', async () => {
+  const dir = await tmpApp({
+    'nimiq-stack.json': canonicalManifest({ name: 'nimiq.party' }),
+    'package.json': { name: 'nimiq.party' },
+    'Dockerfile': 'x',
+    'fly.toml': 'app = "tipjar"\n[[mounts]]\n  source = "tipjar_data"\n',
+    'src/db.ts': 'const t = process.env.TIPJAR_DB_PATH;\n',
+    '.github/workflows/ci.yml': 'x',
+  });
+  const r = await alignApp(dir, { repoName: 'nimiq.party' });
+  assert.equal(r.axes.identity.verdict, RISKY);
+  assert.ok(r.axes.identity.lines.some(l => l.includes('fly.toml')));
+  assert.ok(r.axes.identity.lines.some(l => l.toLowerCase().includes('tipjar')));
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('IDENTITY: a non-fleet repo name is not-applicable → identity clean', async () => {
+  const dir = await tmpApp({
+    'nimiq-stack.json': canonicalManifest({ name: 'splitlink' }),
+    'package.json': { name: 'splitlink' },
+    'Dockerfile': 'x', 'fly.toml': 'x', '.github/workflows/ci.yml': 'x',
+  });
+  // basename of a tmp dir is not a fleet name, and we pass no override → not enforced
+  const r = await alignApp(dir);
+  assert.equal(r.axes.identity.verdict, CLEAN);
+  assert.notEqual(r.overall, RISKY);
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('IDENTITY: shared deps + own canonical name are never flagged as stale', async () => {
+  const dir = await tmpApp({
+    'nimiq-stack.json': canonicalManifest({ name: 'nimiq.party' }),
+    'package.json': {
+      name: 'nimiq.party',
+      description: 'A nimiq.party app built on nimiq-settlement and nimiq-app-shell',
+      dependencies: { 'nimiq-settlement': '*', 'nimiq-app-shell': '*' },
+    },
+    'Dockerfile': 'x', 'fly.toml': 'x', '.github/workflows/ci.yml': 'x',
+  });
+  const r = await alignApp(dir, { repoName: 'nimiq.party' });
+  assert.equal(r.axes.identity.verdict, CLEAN, JSON.stringify(r.axes.identity, null, 2));
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('IDENTITY: an odd env-var prefix is advisory (safe-drift), not a fail', async () => {
+  const dir = await tmpApp({
+    'nimiq-stack.json': canonicalManifest({ name: 'nimiq.party' }),
+    'package.json': { name: 'nimiq.party' },
+    'Dockerfile': 'x', 'fly.toml': 'x', '.github/workflows/ci.yml': 'x',
+    // not NIMIQ_PARTY_*, not NIMIQ_*, not neutral → advisory only
+    'src/cfg.ts': 'const k = process.env.SOME_CUSTOM_KEY;\nconst rpc = process.env.NIMIQ_RPC_URL;\n',
+  });
+  const r = await alignApp(dir, { repoName: 'nimiq.party' });
+  assert.equal(r.axes.identity.verdict, SAFE);
+  assert.notEqual(r.overall, RISKY);
+  assert.ok(r.axes.identity.lines.some(l => l.includes('SOME_CUSTOM_KEY')));
+  // NIMIQ_RPC_URL is neutral → must not be listed
+  assert.ok(!r.axes.identity.lines.some(l => l.includes('NIMIQ_RPC_URL')));
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('IDENTITY: existing fixtures (name "app", tmp basename) stay not-applicable / clean', async () => {
+  const dir = await tmpApp({
+    'nimiq-stack.json': canonicalManifest(),
+    'Dockerfile': 'FROM oven/bun:1\n', 'fly.toml': 'app="x"\n',
+    '.github/workflows/ci.yml': 'name: ci\n',
+  });
+  const r = await alignApp(dir);
+  assert.equal(r.axes.identity.verdict, CLEAN);
+  assert.equal(r.overall, CLEAN, JSON.stringify(r.axes, null, 2));
+  await rm(dir, { recursive: true, force: true });
+});
