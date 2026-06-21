@@ -129,13 +129,18 @@ Weight/tracking are heading-scoped (buttons and bold body labels are legitimatel
 orphan check is general (it caught a body banner, not a heading) but gated at ≥ 20px so calibrated
 fine-print under 20px — which wasn't measured on the reference — is never flagged.
 
-**Mobile (a second pass at 390px)**
+**Responsive sweep (360 · 414 · 768 · 1024 · 1280px)**
+
+The desktop pass renders at 1440; this sweep re-measures at five more widths so a layout that's
+clean at phone *and* desktop but **breaks in the tablet / small-laptop no-man's-land** is caught —
+the single most common responsive bug a fixed 390+1440 check misses. Measured: nimiq.com has **zero
+horizontal overflow at every width** 320→1440, so overflow-at-a-breakpoint is calibrated to 0.
 
 | Check | Threshold |
 |---|---|
-| horizontal overflow | `scrollWidth > viewport` by > 4px |
-| tap targets too small | a button / input / link-button under 30px (inline text links are exempt) |
-| text smaller than 12px | any text element below 12px at mobile width |
+| horizontal overflow at a breakpoint | `scrollWidth > viewport` by > 4px at **any** swept width (reports which widths and by how much) |
+| tap targets too small | a button / input / link-button under 30px at any width (reports the worst breakpoint) |
+| text smaller than 12px | any text element below 12px at any width (reports the worst breakpoint) |
 
 The curated spacing scale (from `assets/css/modern/spacing.css`, desktop max of each step):
 `8 · 12 · 16 · 24 · 32 · 40 · 48 · 72 · 80 · 96 · 144 · 200`. Sub-8px is treated as optical
