@@ -62,7 +62,7 @@ test('HARD FAIL: @nimiq/core/web import in src → settlement risky-fail', async
   await rm(dir, { recursive: true, force: true });
 });
 
-test('HARD FAIL: Client.create( and waitForConsensusEstablished( in src', async () => {
+test('HARD FAIL: Client.create( in src → settlement risky-fail (Client.create is the light-client tell)', async () => {
   const dir = await tmpApp({
     'nimiq-stack.json': canonicalManifest(),
     'Dockerfile': 'x', 'fly.toml': 'x', '.github/workflows/ci.yml': 'x',
@@ -71,7 +71,31 @@ test('HARD FAIL: Client.create( and waitForConsensusEstablished( in src', async 
   const r = await alignApp(dir);
   assert.equal(r.axes.settlement.verdict, RISKY);
   assert.ok(r.axes.settlement.lines.some(l => l.includes('Client.create(')));
-  assert.ok(r.axes.settlement.lines.some(l => l.includes('waitForConsensusEstablished(')));
+  // waitForConsensusEstablished( is a legit NimiqClientLike interface / rpc-client method — NOT forbidden.
+  assert.ok(!r.axes.settlement.lines.some(l => l.includes('waitForConsensusEstablished(')), 'waitForConsensusEstablished must not be flagged');
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('the canonical rpc-block-scan client (implements waitForConsensusEstablished) is NOT flagged', async () => {
+  const dir = await tmpApp({
+    'nimiq-stack.json': canonicalManifest(),
+    'Dockerfile': 'x', 'fly.toml': 'x', '.github/workflows/ci.yml': 'x',
+    'src/payments/nimiq-rpc-client.ts': 'export class RpcNimiqClient {\n  async waitForConsensusEstablished() { /* RPC poll of isConsensusEstablished */ }\n}\n',
+    'src/payments/nimiq-provider.ts': 'export interface NimiqClientLike {\n  waitForConsensusEstablished(): Promise<void>;\n}\n',
+  });
+  const r = await alignApp(dir);
+  assert.notEqual(r.axes.settlement.verdict, RISKY, 'the canonical rpc client + interface must stay clean');
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('forbidden light-client strings inside a *.test.* file are ignored', async () => {
+  const dir = await tmpApp({
+    'nimiq-stack.json': canonicalManifest(),
+    'Dockerfile': 'x', 'fly.toml': 'x', '.github/workflows/ci.yml': 'x',
+    'src/chain.test.ts': "import x from '@nimiq/core/web';\nconst c = Client.create(cfg);\n",
+  });
+  const r = await alignApp(dir);
+  assert.notEqual(r.axes.settlement.verdict, RISKY, 'test/spec files are excluded from the light-client scan');
   await rm(dir, { recursive: true, force: true });
 });
 
