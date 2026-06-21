@@ -33,6 +33,12 @@ Usage:
       --no-chain                chainApp:false (skip settlement + styling parity)
       --settlement mock|rpc|noop    settlement client (default mock)
       --deploy fly|none         deploy kit (default fly)
+  nq check [path]               Run the FULL per-project alignment gate in one shot:
+                                align (--fail-on=settlement,styling) + 800-line file
+                                guard + bun test (if present) + nq lint (if Playwright).
+                                Prints a PASS/FAIL/SKIP summary; exits nonzero on any
+                                FAIL (SKIP is fine). --json for machine output. This is
+                                what a nightly loop / pre-push hook should run.
   nq align [path]               Grade an app's stack vs the canonical fleet baseline.
       --all <dir>               Grade every app dir under <dir>
       --fix                     Safe autofixes only (write/repair nimiq-stack.json)
@@ -41,7 +47,8 @@ Usage:
                                 SETTLEMENT is load-bearing: any @nimiq/core/web import or
                                 Client.create( / waitForConsensusEstablished( in src HARD FAILS.
   nq hooks install [repo]       Install the drift hooks: git pre-commit (align --fail-on),
-                                SessionStart banner, weekly GH Action (--write drops the workflow)
+                                git pre-push (the fuller nq check gate), SessionStart banner,
+                                weekly GH Action (--write drops the workflow)
   nq verify <component|all>     Render the html variant and diff against the reference PNG
   nq lint <file.html|url>       Render a page and enforce the brand rules + breathability.
       --fix                     Auto-fix the safe text violations in a local file (dashes, title periods)
@@ -382,8 +389,10 @@ async function cmdHooks(sub, flags) {
   }
   if (sub === 'show' || !sub) {
     console.log('# git pre-commit (.git/hooks/pre-commit):\n');
-    const { PRE_COMMIT } = await import(join(ROOT, 'scripts', 'hooks.mjs'));
+    const { PRE_COMMIT, PRE_PUSH } = await import(join(ROOT, 'scripts', 'hooks.mjs'));
     console.log(PRE_COMMIT);
+    console.log('# git pre-push (.git/hooks/pre-push):\n');
+    console.log(PRE_PUSH);
     console.log('# SessionStart advisory:\n');
     console.log(SESSION_START);
     console.log('# weekly GH Action (.github/workflows/stack-align.yml):\n');
@@ -422,6 +431,11 @@ try {
     case 'new':
     case 'new-component': await cmdNewComponent(rest[0], flags); break;
     case 'new-app': await cmdNew(rest[0], flags); break;
+    case 'check': {
+      const { run } = await import(join(ROOT, 'scripts', 'check.mjs'));
+      await run(rest, flags);
+      break;
+    }
     case 'align': {
       const { run } = await import(join(ROOT, 'scripts', 'align.mjs'));
       await run(rest, flags);
