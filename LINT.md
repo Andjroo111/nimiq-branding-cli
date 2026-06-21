@@ -36,6 +36,12 @@ These are the "make us not do AI things" set.
 | borders on inputs | skill rule 1 | manual (inset box-shadow) |
 | off-palette colors | skill rule 13 | manual |
 | low-contrast blue/navy text on dark | skill rule 20 | manual → `#0CA6FE` / white |
+| generic icon set (Lucide / Font Awesome / Material / Feather / Bootstrap…) | skill Icons | manual → `nq-icon` SVGs |
+| duplicate gradient id with **differing** stops | skill rule 3 | manual → unique ids |
+| pure-black surface (all channels ≤12, ≥4000px²) | skill rule 6 | manual → navy `#1F2348` |
+| one-sided accent stripe on a card | skill rule 19 | manual → uniform border |
+
+**Generic icon set** is a class-signature match (`lucide-`, `fa-solid`, `material-icons`, `bi-`, `ph-`, `data-lucide`, a `material-icons` ligature span, …) — verified zero hits in Nimiq's own components, so any hit is someone dropping in a foreign icon library. **Duplicate gradient id** only fires when two `<linearGradient>`/`<radialGradient>` defs share an id but have **different stops** — the real "later SVG paints the wrong fill" bug. nimiq.com repeats *identical* icon gradients under one id (Figma export) and renders fine, so raw id-collision is deliberately not flagged.
 
 **Blue/navy on dark (rule 20)** is the headline a11y+brand check. A blue-family foreground (hue
 195–245°) sitting on a dark surface (luminance < 0.12) below the AA floor — **4.5:1 normal, 3.0:1
@@ -73,6 +79,44 @@ to flag *"this is getting busy, is it justified?"* — the deterministic half of
 | underlined links | a body `<a>` with `text-decoration: underline` (links are bold, no underline) |
 | NIM address not in Fira Mono | a 4-char-grouped address rendered in a proportional font |
 | gold-tinted UI icon | a non-logo icon tinted gold (gold = brand mark only) |
+| feather/lucide-style stroke icon | an inlined SVG with `viewBox 0 0 24 24` + every path `stroke-width: 2` + `fill: none` (the generic-set default Nimiq never ships — its 24×24 `close` is a *filled* path) |
+| green action/retry button | a button labelled retry/continue/submit/get-started filled green (green = success only, rule 5) |
+| baked-color icon | an icon-role SVG (small, square, not identicon/flag/chart/logo, no gradient def) with a literal hex `fill`/`stroke` instead of `currentColor` |
+| black-outline duotone icon | an icon-role SVG with a near-black layer *and* a colored layer (duotone = the same color at `opacity: 0.4`, never a black outline) |
+| colored glow shadow | a `box-shadow`/`drop-shadow` whose color is saturated and bright (lum > 0.15) — Nimiq elevation is dark navy/black, so its real shadows are excluded |
+| black modal overlay | a full-viewport `position: fixed` translucent scrim that's near-neutral black (navy `b≫r` excluded) — rule 11 |
+| flat-fill navy/colored section | a full-width band (≥0.7vw, ≥220px) solid-filled in a brand color with **no** gradient — colored bands use the bottom-right radial (rule 7) |
+
+**Accessibility**
+
+| Check | Threshold |
+|---|---|
+| focus outline removed w/o `:focus-visible` | a stylesheet rule kills `outline` on a focusable/global selector and **no** `:focus-visible` rule anywhere restores a ring (cross-origin sheets are skipped, never guessed) |
+| Mulish not loaded | a declared `Mulish` `@font-face` that didn't load (`document.fonts.check` false) → the page silently falls back to a system font |
+
+**Headline typography & line breaks** (closes the "lint passes ≠ brand-correct" gap)
+
+The deterministic checks above read color, spacing and shape — but a heading can satisfy all of
+them and still read as generic SaaS through *weight* and *tracking*, the exact "faux-weight or
+tightly-tracked black headlines" the skill blacklist names. These read the rendered type instead.
+Measured on nimiq.com: every heading renders at weight **600/700**, `letter-spacing: 0`, and
+`text-wrap: balance`; nothing on the page strands a single word. So:
+
+| Check | Threshold | Why |
+|---|---|---|
+| faux-black headline weight | heading ≥ 24px at `font-weight ≥ 800` | nimiq.com tops out at 700; 800+ "black" is the generic tell |
+| tight negative heading tracking | heading ≥ 24px with `letter-spacing ≤ -0.01em` | nimiq.com headings are `0`; negative tracking cramps the headline |
+| wrapping heading w/o `text-wrap: balance` | a heading ≥ 20px that wraps to ≥ 2 lines without `balance`/`pretty` | how nimiq.com keeps every headline evenly split |
+| orphaned last word | any text ≥ 20px that wraps with a **single word alone** on the last line | nimiq.com has **zero**; a stranded word (the circled "verified") is the defect |
+| heading line-height off | heading ≥ 24px with `line-height/font-size ≤ 1.05` or `≥ 1.5` | nimiq.com headings render **1.25–1.3**; 1.0 cramps, 1.6 floats |
+| cramped body line-height | body copy with `line-height/font-size < 1.35` | nimiq.com body is **1.5–1.56**; tighter hurts readability |
+| non-brand font on text | a text element whose first font family isn't Mulish/Muli/Fira (≥3 uses) | nimiq.com is **Mulish** + Fira Mono for data; an Inter/Roboto headline reads instantly off |
+
+`--fix` also **injects the `text-wrap` rule** (`h1–h4 { balance } p,li { pretty }`) once, before `</head>` — the mechanical cure for orphaned titles, applying the exact technique nimiq.com uses on every heading.
+
+Weight/tracking are heading-scoped (buttons and bold body labels are legitimately heavy). The
+orphan check is general (it caught a body banner, not a heading) but gated at ≥ 20px so calibrated
+fine-print under 20px — which wasn't measured on the reference — is never flagged.
 
 **Mobile (a second pass at 390px)**
 
@@ -122,7 +166,8 @@ same "measure reality" method that proved the no-em-dash rule. Verified outcome:
 
 | Page | ERRORS | Note |
 |---|---|---|
-| nimiq.com home (reference) | **0** | the gate must never flag the brand's own site, even with the rule-20 contrast + depth/motion checks |
+| nimiq.com home (reference) | **0** | the gate must never flag the brand's own site, even with the rule-20 contrast, depth/motion + headline-typography checks |
+| nimiq.com headline type | **0** | measured directly: weights 600/700, `letter-spacing: 0`, every heading `text-wrap: balance`, zero stranded words |
 | nimiq.com/about | 0 | — |
 | nimiq.tech | real findings | catches genuine em-dashes + a "Phase 2 · preview" colored eyebrow + 3 dense bands |
 | positive control | **2** | a deliberate `#0582CA`/`#265DD7`-on-navy page errors at 3.63/2.61:1; `#0CA6FE` + white pass |
