@@ -2,6 +2,8 @@
 //
 //   git pre-commit   → `nq align --fail-on=settlement,styling`  (blocks a commit that
 //                       introduces the broken light-client path or off-brand styling)
+//   git pre-push     → `nq check --fail-on=settlement,styling`  (the fuller gate — align
+//                       + 800-line guard + bun test + lint — run before code leaves the box)
 //   SessionStart     → `nq align --quiet` advisory drift banner (one line)
 //   weekly GH Action → `nq align --all` → PR safe fixes / file a rolling drift issue,
 //                       reusing the existing nq audit weekly machinery.
@@ -26,6 +28,19 @@ if command -v nq >/dev/null 2>&1; then
   nq align --fail-on=settlement,styling
 else
   npx -y github:Andjroo111/nimiq-branding-cli align --fail-on=settlement,styling
+fi
+`;
+
+export const PRE_PUSH = `#!/usr/bin/env bash
+# nq check pre-push gate — installed by \`nq hooks install\`.
+# Runs the FULL per-project gate before code leaves the box: align
+# (settlement/styling) + the 800-line file guard + bun test + nq lint.
+# Blocks the push on any FAIL (SKIPs — e.g. no Playwright — are fine).
+set -euo pipefail
+if command -v nq >/dev/null 2>&1; then
+  nq check --fail-on=settlement,styling
+else
+  npx -y github:Andjroo111/nimiq-branding-cli check --fail-on=settlement,styling
 fi
 `;
 
@@ -124,8 +139,14 @@ export async function installHooks(target, opts = {}) {
     await writeFile(hookPath, PRE_COMMIT);
     await chmod(hookPath, 0o755);
     out.wrote.push(hookPath);
+
+    // pre-push: the fuller `nq check` gate before code leaves the box
+    const pushPath = join(hookDir, 'pre-push');
+    await writeFile(pushPath, PRE_PUSH);
+    await chmod(pushPath, 0o755);
+    out.wrote.push(pushPath);
   } else {
-    out.printed.push(`(no .git in ${repo} — skipped pre-commit; init git then re-run)`);
+    out.printed.push(`(no .git in ${repo} — skipped pre-commit + pre-push; init git then re-run)`);
   }
 
   // 2) weekly workflow (write only with --write)
@@ -146,6 +167,8 @@ export async function emitArtifacts() {
   await mkdir(dir, { recursive: true });
   await writeFile(join(dir, 'pre-commit'), PRE_COMMIT);
   await chmod(join(dir, 'pre-commit'), 0o755);
+  await writeFile(join(dir, 'pre-push'), PRE_PUSH);
+  await chmod(join(dir, 'pre-push'), 0o755);
   await writeFile(join(dir, 'session-start.sh'), SESSION_START);
   await writeFile(join(dir, 'stack-align.yml'), WEEKLY_WORKFLOW);
   return dir;
