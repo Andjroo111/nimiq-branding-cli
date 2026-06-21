@@ -82,6 +82,23 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE }) {
     }
     return [255, 255, 255];
   };
+  // like effBg but reports whether a real background was actually found. Heroes paint their
+  // gradient on a separate absolutely-positioned layer, so the text's ancestors are transparent
+  // and we'd wrongly default to white — `found:false` lets the contrast check skip those.
+  const effBgF = (el) => {
+    let e = el;
+    while (e && e.nodeType === 1) {
+      const cs = getComputedStyle(e);
+      const bc = toRGBA(cs.backgroundColor);
+      if (bc && bc[3] >= 0.5) return { rgb: bc.slice(0, 3), found: true };
+      if (cs.backgroundImage && cs.backgroundImage !== 'none') {
+        const cols = (cs.backgroundImage.match(/rgba?\([^)]+\)|#[0-9a-fA-F]{3,8}/g) || []).map(toRGB).filter(Boolean);
+        if (cols.length) return { rgb: cols.reduce((d, c) => relLum(c) < relLum(d) ? c : d), found: true };
+      }
+      e = e.parentElement;
+    }
+    return { rgb: [255, 255, 255], found: false };
+  };
   const visible = (el) => { const cs = getComputedStyle(el); if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity === 0) return false; const r = el.getBoundingClientRect(); return r.width > 1 && r.height > 1; };
   const directText = (el) => [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join('').trim();
   const matchAny = (el, sel) => { try { return el.closest(sel); } catch { return null; } };
@@ -114,6 +131,7 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE }) {
     tightLeadingH: [], tightLeadingBody: [], offFont: {},
     blackBg: [], accentStripe: [], greenAction: [], dupGradIds: [], genericIcon: [], featherIcon: [],
     bakedIcon: [], duotoneBlack: [], modalBlack: [], flatNavySection: [], glowShadow: [], fontsNotLoaded: false, noFocusRing: false,
+    lowContrast: [], h1Count: 0, unconstrained: [], amountColor: [], addrStructure: [], pulseDot: [],
   };
 
   for (const el of document.querySelectorAll('body *')) {
@@ -195,6 +213,45 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE }) {
       }
     }
 
+    // GENERAL TEXT CONTRAST (WARNING, WCAG AA) — only where the background is actually determinable
+    // (effBgF.found), skipping ratio<1.6 = an undetectable layered-hero bg, not a real defect.
+    // NOTE: nimiq.com itself ships sub-AA secondary grey (≈2.37:1), so this WARNS, never gates.
+    if (txt && !inCode && fg && el.children.length === 0 && (toRGBA(cs.color)?.[3] ?? 1) > 0.3) {
+      const cb = effBgF(el);
+      if (cb.found) {
+        const fsc = px(cs.fontSize), large = fsc >= 24 || (fsc >= 18.66 && +cs.fontWeight >= 700);
+        const ratio = contrast(fg, cb.rgb);
+        if (ratio >= 1.6 && ratio < (large ? 3.0 : 4.5)) o.lowContrast.push({ ratio, fg: `rgb(${fg.join(',')})`, bg: `rgb(${cb.rgb.map((x) => Math.round(x)).join(',')})`, fs: fsc, snippet: txt.slice(0, 26) });
+      }
+    }
+
+    // NIM amount / %-change semantic color (WARNING): incoming +N green; outgoing −N NIM navy;
+    // %-change green up / red down (skill Addresses). Only fires on wallet/POS surfaces.
+    if (txt && !inCode && fg) {
+      const m = txt.trim().match(/^([+\-−])\s?[\d][\d.,  ]*\s?(NIM|%)$/i);
+      if (m) {
+        const up = m[1] === '+', pct = /%$/.test(txt.trim());
+        const greenish = dist(fg, ANCHORS.green) < 60 || (hue(fg) >= 140 && hue(fg) <= 178 && sat(fg) > 0.2);
+        const reddish = dist(fg, ANCHORS.red) < 70 || (hue(fg) <= 18 && sat(fg) > 0.35);
+        const navyish = gray(fg) || dist(fg, ANCHORS.navy) < 70;
+        const ok = up ? greenish : (pct ? reddish : (navyish || reddish));
+        if (!ok) o.amountColor.push(`"${txt.slice(0, 18)}" ${up ? 'increase not green' : pct ? 'decrease not red' : 'outgoing not navy/red'}`);
+      }
+    }
+
+    // live address structure (WARNING): a display NIM address (≥20px) must be uppercase + chunked
+    // into the 3×3 grid, not one flat lowercased string (skill Addresses).
+    if (txt && /^NQ[0-9A-Z]{2}(\s?[0-9A-Z]{4}){8}$/i.test(txt.replace(/\s+/g, ' ').trim()) && px(cs.fontSize) >= 20) {
+      if (txt !== txt.toUpperCase()) o.addrStructure.push(`address not uppercase "${txt.slice(0, 22)}…"`);
+      else if (el.children.length === 0) o.addrStructure.push('address as one flat string (use the 3×3 grid)');
+    }
+
+    // pulsing "live" dot (slop): a small round element on an infinite animation that isn't a spinner.
+    if (cs.animationName && cs.animationName !== 'none' && /(^|,)\s*infinite\s*(,|$)/.test(cs.animationIterationCount) && r.width <= 28 && r.height <= 28) {
+      const round = cs.borderRadius.includes('50%') || px(cs.borderRadius) >= Math.min(r.width, r.height) / 2 - 1;
+      if (round && !matchAny(el, '[class*="spin" i],[class*="load" i],[class*="progress" i],[class*="skeleton" i]')) o.pulseDot.push(`<${tag}> infinite pulse on a ${Math.round(r.width)}×${Math.round(r.height)} dot`);
+    }
+
     // BUTTON shape + fill + gradient anchor
     if (isBtn && txt && r.width >= 80 && r.height >= 26 && !el.matches('.nq-button-s')) {
       const rad = px(cs.borderRadius);
@@ -265,6 +322,8 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE }) {
       const fs = px(cs.fontSize) || 16; const ch = Math.round(r.width / (fs * 0.5));
       if (ch > 88) o.wideText.push({ ch, snippet: txt.slice(0, 50) });
       if (cs.lineHeight !== 'normal' && px(cs.lineHeight) / fs < 1.35) o.tightLeadingBody.push(`${(px(cs.lineHeight) / fs).toFixed(2)} @ ${fs}px "${txt.slice(0, 38)}"`);
+      // unconstrained text column (rule: cap the measure) — nimiq's wide copy always sets a max-width
+      if (cs.maxWidth === 'none' && r.width > 760) o.unconstrained.push({ w: Math.round(r.width), ch, snippet: txt.slice(0, 40) });
     }
     if (txt) { const fs = px(cs.fontSize); if (fs) o.fontSizes[fs] = (o.fontSizes[fs] || 0) + 1; }
     // font-family — Nimiq text is Mulish (+ Fira Mono for data). A named third-party face is off-brand.
@@ -329,6 +388,10 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE }) {
     (gradById[g.id] ??= new Set()).add(sig);
   }
   o.dupGradIds = Object.entries(gradById).filter(([, sigs]) => sigs.size > 1).map(([id, sigs]) => `#${id} (${sigs.size} differing defs)`);
+
+  // heading hierarchy — exactly one <h1> per page. (Level SKIPS are NOT checked: nimiq.com/about
+  // jumps h1→h4 for styling, so a no-skip rule would flag the reference.)
+  o.h1Count = [...document.querySelectorAll('h1')].filter((e) => visible(e)).length;
 
   // per-section text-ink ratio (full-width bands)
   const vw = innerWidth;
@@ -462,6 +525,12 @@ export async function lint(target, opts = {}) {
       ['heading line-height off (nimiq 1.25–1.3)', r.tightLeadingH.length, r.tightLeadingH[0]],
       ['cramped body line-height (<1.35; nimiq 1.5)', r.tightLeadingBody.length, r.tightLeadingBody[0]],
       ['non-brand font on text (Mulish / Fira only)', offFont.length, offFont.map(([f, n]) => `${f}×${n}`).join(' ')],
+      ['text contrast below WCAG AA', r.lowContrast.length, r.lowContrast.length && `worst ${Math.min(...r.lowContrast.map((c) => c.ratio))}:1 — ${r.lowContrast[0].fg} on ${r.lowContrast[0].bg} @ ${r.lowContrast[0].fs}px`],
+      ['multiple <h1> on the page', r.h1Count > 1 ? r.h1Count : 0, r.h1Count > 1 ? `${r.h1Count} h1 elements` : ''],
+      ['unconstrained text column (set max-width)', r.unconstrained.length, r.unconstrained[0] && `${r.unconstrained[0].w}px (${r.unconstrained[0].ch}ch)`],
+      ['NIM amount wrong semantic color', r.amountColor.length, r.amountColor[0]],
+      ['address not uppercase / flat (use 3×3 grid)', r.addrStructure.length, r.addrStructure[0]],
+      ['pulsing "live" dot animation', r.pulseDot.length, r.pulseDot[0]],
       ['uppercase eyebrow (colored / long / pill)', r.uppercase.length, r.uppercase[0]],
       ['non-pill action buttons', r.nonPill.length, r.nonPill[0]],
       ['flat-fill colored button (needs gradient)', r.flatColorBtn.length, r.flatColorBtn[0]],
