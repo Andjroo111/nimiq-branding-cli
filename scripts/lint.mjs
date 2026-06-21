@@ -133,6 +133,7 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE }) {
     bakedIcon: [], duotoneBlack: [], modalBlack: [], flatNavySection: [], glowShadow: [], fontsNotLoaded: false, noFocusRing: false,
     lowContrast: [], h1Count: 0, unconstrained: [], amountColor: [], addrStructure: [], pulseDot: [],
     noReducedMotion: false, hasInfiniteAnim: false, noViewport: false, clippedText: [], distortedImg: [], noAltImg: [],
+    occluded: [], clippedBox: [], squareBtn: [],
   };
 
   for (const el of document.querySelectorAll('body *')) {
@@ -417,6 +418,58 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE }) {
     if (!img.hasAttribute('alt') && /\.(jpe?g|png|webp|gif|avif)(\?|$)/i.test(src)) o.noAltImg.push(`${src.split('/').pop().slice(0, 24)} ${Math.round(ir.width)}×${Math.round(ir.height)}`);
   }
 
+  // OCCLUSION — an interactive element whose own area is covered by a positioned (fixed/sticky/
+  // absolute) non-dialog element: a footer/bar overlapping a field or button you then can't click.
+  // (Modals/cookie/overlays are exempt — they're meant to sit on top until dismissed.)
+  const inDialog = (el) => !!matchAny(el, '[role="dialog"],[aria-modal="true"],[class*="modal" i],[class*="overlay" i],[class*="dialog" i],[class*="cookie" i],[class*="consent" i],[class*="popup" i],[class*="drawer" i],[class*="toast" i],[class*="menu" i]');
+  const positioned = (el) => { let e = el; for (let i = 0; e && i < 6; i++) { const p = getComputedStyle(e).position; if (p === 'fixed' || p === 'sticky' || p === 'absolute') return e; e = e.parentElement; } return null; };
+  for (const el of document.querySelectorAll('button,[role="button"],a[href],input,select,textarea,label.nq-button')) {
+    if (!visible(el) || inDialog(el)) continue;
+    const oTag = el.tagName.toLowerCase();
+    const isFormCtrl = oTag === 'input' || oTag === 'select' || oTag === 'textarea';
+    const oLabel = (el.textContent || '').trim() || el.getAttribute('aria-label') || el.getAttribute('title') || el.getAttribute('placeholder') || '';
+    if (!isFormCtrl && !oLabel) continue; // a bare unlabeled <a>/<button> is a stretched click-layer, not a control
+    const r = el.getBoundingClientRect();
+    if (r.width < 24 || r.height < 16 || r.bottom < 0 || r.top > innerHeight) continue;
+    const pts = [[0.5, 0.5], [0.25, 0.4], [0.75, 0.4], [0.25, 0.72], [0.75, 0.72]].map(([fx, fy]) => [Math.min(innerWidth - 1, r.left + r.width * fx), Math.min(innerHeight - 1, Math.max(0, r.top + r.height * fy))]);
+    let occ = 0, by = null;
+    for (const [x, y] of pts) { const hit = document.elementFromPoint(x, y); if (hit && hit !== el && !el.contains(hit) && !hit.contains(el) && positioned(hit) && !inDialog(hit)) { occ++; by = hit; } }
+    if (occ >= 2 && by) o.occluded.push(`<${oTag}> "${oLabel.slice(0, 18)}" hidden behind <${by.tagName.toLowerCase()}.${(by.className || '').toString().trim().split(/\s+/)[0]?.slice(0, 14) || ''}>`);
+  }
+
+  // CONTAINER CLIPPING — overflow:hidden/clip where a TEXT-bearing descendant is pushed past the
+  // clip edge (so visible text is actually cut off). Decorative (non-text) overflow + ellipsis/
+  // line-clamp truncation are exempt, so nimiq's hero-bleed / hover-card clips don't false-positive.
+  for (const el of document.querySelectorAll('body *')) {
+    if (!visible(el)) continue;
+    const cs = getComputedStyle(el);
+    const clipsY = cs.overflowY === 'hidden' || cs.overflowY === 'clip';
+    const clipsX = cs.overflowX === 'hidden' || cs.overflowX === 'clip';
+    if ((!clipsY && !clipsX) || cs.textOverflow === 'ellipsis' || (cs.webkitLineClamp && cs.webkitLineClamp !== 'none')) continue;
+    const box = el.getBoundingClientRect(); if (box.height < 10) continue;
+    let cut = null;
+    for (const d of el.querySelectorAll('*')) {
+      if (![...d.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim().length > 1)) continue;
+      const dr = d.getBoundingClientRect(); if (dr.width < 2 || dr.height < 2) continue;
+      if (clipsY && (dr.top >= box.bottom + 1 || (dr.bottom > box.bottom + 10 && dr.top < box.bottom - 4))) { cut = d; break; }
+      if (clipsX && (dr.left >= box.right + 1 || (dr.right > box.right + 10 && dr.left < box.right - 4))) { cut = d; break; }
+    }
+    if (cut) o.clippedBox.push(`<${el.tagName.toLowerCase()}.${(el.className || '').toString().trim().split(/\s+/)[0]?.slice(0, 16) || ''}> cuts off "${cut.textContent.trim().replace(/\s+/g, ' ').slice(0, 22)}"`);
+  }
+
+  // SMALL SQUARE INTERACTIVE BUTTON — a stepper/icon button should be a circle/pill, not a square.
+  // (The non-pill check above only catches wide text buttons; this catches the small square ones.)
+  for (const el of document.querySelectorAll('button,[role="button"],a.nq-button,.nq-button-s')) {
+    if (!visible(el)) continue;
+    const r = el.getBoundingClientRect(); const mn = Math.min(r.width, r.height), mx = Math.max(r.width, r.height);
+    if (mn < 24 || mn > 80 || (mx - mn) > mn * 0.3) continue;
+    const cs = getComputedStyle(el);
+    // only a button with a visible SURFACE (fill / border) has a shape to round — a bare text link doesn't
+    if (!((toRGBA(cs.backgroundColor)?.[3] > 0.05) || (cs.borderStyle !== 'none' && px(cs.borderTopWidth) > 0) || cs.backgroundImage !== 'none')) continue;
+    const rad = px(cs.borderTopLeftRadius);
+    if (rad < 500 && rad < mn / 2 - 2) o.squareBtn.push(`<${el.tagName.toLowerCase()}> ${Math.round(r.width)}×${Math.round(r.height)} r=${rad}px "${(el.textContent || '').trim().slice(0, 12)}"`);
+  }
+
   // per-section text-ink ratio (full-width bands)
   const vw = innerWidth;
   const leaves = [...document.querySelectorAll('body *')].filter((el) => !matchAny(el, 'svg') && visible(el) && el.children.length === 0 && directText(el)).map((el) => el.getBoundingClientRect());
@@ -605,6 +658,9 @@ export async function lint(target, opts = {}) {
       ['clipped / truncated text (no title)', r.clippedText.length, r.clippedText[0]],
       ['distorted image (wrong aspect ratio)', r.distortedImg.length, r.distortedImg[0]],
       ['content image missing alt (raster)', r.noAltImg.length, r.noAltImg[0]],
+      ['interactive element hidden behind a bar', r.occluded.length, r.occluded[0]],
+      ['container clips its own content', r.clippedBox.length, r.clippedBox[0]],
+      ['small square button (use circle / pill)', r.squareBtn.length, r.squareBtn[0]],
     ];
     warnCount = warns.reduce((n, w) => n + (w[1] ? 1 : 0), 0);
 
