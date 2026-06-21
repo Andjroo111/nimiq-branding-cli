@@ -57,6 +57,15 @@ Usage:
   nq audit [--skip-verify]      Check the LIVE Nimiq upstreams for branding drift vs our
                                 pinned registry; attribute drift to components; write a report
   nq sync-skill                 Regenerate the nimiq-ui skill's registry block from index.json
+  nq reuse <query>              Search the fleet REUSE index so you import instead of rebuild.
+                                Fuzzy-matches packages (shared libs), components (nq add), and
+                                first-party modules; prints each match's import snippet.
+                                --json machine output  --dir <reposdir> point at a built index
+      --rebuild <reposdir>      (Re)build reuse-index.json + REUSE-CATALOG.md by scanning a
+                                directory of cloned fleet repos + this CLI's component registry.
+                                Indexes 3 kinds: package / component / module (curated seed:
+                                cashlink codec, QR, identicon, request-link, RPC rate, Fly kit,
+                                i18n).  --out <path> for the catalog (default <reposdir>/../REUSE-CATALOG.md)
   nq help                       This message
 
 All visual assets are the team's real shipped files (nimiq.com, wallet, hub,
@@ -94,6 +103,8 @@ function parseFlags(args) {
     else if (a === '--fail-on') flags.failOn = args[++i];
     else if (a === '--check') flags.check = true;
     else if (a === '--write') flags.write = true;
+    else if (a === '--rebuild') flags.rebuild = (args[i + 1] && !args[i + 1].startsWith('--')) ? args[++i] : true;
+    else if (a === '--dir') flags.dir = args[++i];
     else rest.push(a);
   }
   return { flags, rest };
@@ -452,6 +463,11 @@ try {
     }
     case 'audit': await import(join(ROOT, 'scripts', 'audit.mjs')); break;
     case 'sync-skill': await import(join(ROOT, 'scripts', 'sync-skill.mjs')); break;
+    case 'reuse': {
+      const { run } = await import(join(ROOT, 'scripts', 'reuse.mjs'));
+      await run(rest, flags);
+      break;
+    }
     default: console.log(HELP);
   }
 } catch (err) {
