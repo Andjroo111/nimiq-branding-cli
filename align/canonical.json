@@ -38,7 +38,8 @@
   "settlementPackage": "nimiq-settlement",
   "lightClient": {
     "forbiddenImports": ["@nimiq/core/web"],
-    "forbiddenCalls": ["Client.create(", "waitForConsensusEstablished("],
+    "forbiddenCalls": ["Client.create("],
+    "note": "forbiddenCalls is intentionally ONLY `Client.create(` (constructing the @nimiq/core light client). `waitForConsensusEstablished(` is NOT forbidden: the canonical rpc-block-scan client implements it as a NimiqClientLike interface method (RPC poll of isConsensusEstablished), so flagging it would punish the correct pattern.",
     "reason": "The @nimiq/core light client never reaches consensus on our hosts (WASM addEventListener bug, hangs in Bun/Node through 2.7.0). Chain reads MUST use the rpc-block-scan path via the nimiq-settlement package; @nimiq/core is offline-crypto-only (key/tx signing)."
   }
 }

@@ -70,6 +70,9 @@ async function scanLightClient(appDir, canonical) {
       const full = join(dir, e.name);
       if (e.isDirectory()) { await walk(full); continue; }
       if (!CODE_EXT.test(e.name)) continue;
+      // Test/spec files legitimately reference the forbidden strings (fixtures, mocks, the
+      // detector's own cases) and are not shipped runtime code — never grade them.
+      if (/\.(test|spec)\./.test(e.name)) continue;
       let text;
       try { text = await readFile(full, 'utf8'); } catch { continue; }
       const rel = full.slice(appDir.length + 1);
