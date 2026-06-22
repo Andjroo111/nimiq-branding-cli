@@ -28,8 +28,11 @@ Usage:
   nq new <name>                 Scaffold a new REGISTRY component (principles checklist +
                                 verification contract embedded)
   nq new-app <name>             Scaffold a CANONICAL Nimiq fleet app (Bun+Hono+bun:sqlite+
-                                vanilla PWA + @nimiq/style + nimiq-settlement + Fly kit +
-                                a stamped nimiq-stack.json + /health). Starts clean on align.
+                                vanilla PWA + @nimiq/style + nimiq-settlement + nimiq-app-shell
+                                [Nimiq Pay mini-app + runtime i18n via createWallet/createI18n,
+                                build:shell → public/vendor/app-shell.js, public/locales/*.json]
+                                + Fly kit + CF notes + a stamped nimiq-stack.json + /health).
+                                Starts clean on align (incl. the miniApp/i18n/deps axes).
       --no-chain                chainApp:false (skip settlement + styling parity)
       --settlement mock|rpc|noop    settlement client (default mock)
       --deploy fly|none         deploy kit (default fly)
@@ -49,6 +52,9 @@ Usage:
                                 IDENTITY is load-bearing for fleet repos (nimiq.<seg>): a
                                 package/stack name or load-bearing file that drifts from the
                                 repo name (stale codename like splitlink/tipjar) HARD FAILS.
+                                miniApp / i18n / deps are ADVISORY adoption axes (max
+                                safe-drift, never gate): Nimiq Pay mini-app wiring, runtime
+                                i18n, and shared-package (settlement/app-shell) git-tag drift.
   nq hooks install [repo]       Install the drift hooks: git pre-commit (align --fail-on),
                                 git pre-push (the fuller nq check gate), SessionStart banner,
                                 weekly GH Action (--write drops the workflow)
