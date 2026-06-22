@@ -82,6 +82,58 @@ test('scaffold rejects a bad name and an existing dir', async () => {
   });
 });
 
+test('nq new wires nimiq-app-shell: mini-app + i18n deps, build:shell, locales', async () => {
+  await inTmp(async () => {
+    const r = await scaffoldApp('shellapp');
+    // shared shell git deps pinned to tags
+    const pkg = JSON.parse(await readFile(join(r.dir, 'package.json'), 'utf8'));
+    assert.match(pkg.dependencies['nimiq-app-shell'], /nimiq-app-shell#v\d/);
+    assert.match(pkg.dependencies['nimiq-settlement'], /nimiq-settlement#v\d/);
+    // a build:shell step that bundles app-shell to public/vendor/app-shell.js
+    assert.ok(pkg.scripts['build:shell'], 'build:shell script present');
+    assert.match(pkg.scripts['build:shell'], /public\/vendor\/app-shell\.js/);
+    // locales (en + a 2nd language) for runtime switching
+    assert.ok(existsSync(join(r.dir, 'public/locales/en.json')), 'public/locales/en.json present');
+    assert.ok(existsSync(join(r.dir, 'public/locales/de.json')), '2nd locale present');
+    // app.js imports createWallet + createI18n from the vendored shell
+    const appjs = await readFile(join(r.dir, 'public/app.js'), 'utf8');
+    assert.match(appjs, /createWallet/);
+    assert.match(appjs, /createI18n/);
+    assert.match(appjs, /vendor\/app-shell/);
+  });
+});
+
+test('nq new app is CLEAN on the miniApp + i18n adoption axes', async () => {
+  await inTmp(async () => {
+    const r = await scaffoldApp('adoptedapp');
+    // stub ls-remote so the deps axis never touches the network and the pins are "latest"
+    const lsRemote = () => ['v0.1.0', 'v0.2.0'].map(t => `x\trefs/tags/${t}`).join('\n');
+    const graded = await alignApp(r.dir, { lsRemote });
+    assert.equal(graded.axes.miniApp.verdict, CLEAN, JSON.stringify(graded.axes.miniApp, null, 2));
+    assert.equal(graded.axes.i18n.verdict, CLEAN, JSON.stringify(graded.axes.i18n, null, 2));
+    assert.equal(graded.overall, CLEAN);
+  });
+});
+
+test('nq new README documents the Cloudflare-in-front-of-Fly deploy notes', async () => {
+  await inTmp(async () => {
+    const r = await scaffoldApp('cfapp');
+    const readme = await readFile(join(r.dir, 'README.md'), 'utf8');
+    assert.match(readme, /Cloudflare/);
+    assert.match(readme, /fly certs add/);
+    assert.match(readme, /Cloudflare Pages/);
+  });
+});
+
+test('--no-chain still gets the shell dep but no settlement dep', async () => {
+  await inTmp(async () => {
+    const r = await scaffoldApp('leanapp', { noChain: true });
+    const pkg = JSON.parse(await readFile(join(r.dir, 'package.json'), 'utf8'));
+    assert.ok(pkg.dependencies['nimiq-app-shell'], 'shell dep present even on --no-chain');
+    assert.ok(!pkg.dependencies['nimiq-settlement'], 'no settlement dep on --no-chain');
+  });
+});
+
 test('hook artifacts contain the pre-commit gate and weekly workflow', () => {
   assert.ok(hooks.PRE_COMMIT.includes('--fail-on=settlement,styling'));
   assert.ok(hooks.SESSION_START.includes('nq align --quiet'));

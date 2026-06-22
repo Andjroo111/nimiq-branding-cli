@@ -36,8 +36,13 @@ export const RISKY = 'risky-fail';
 const RANK = { [CLEAN]: 0, [SAFE]: 1, [RISKY]: 2 };
 const worst = (a, b) => (RANK[a] >= RANK[b] ? a : b);
 
-// axes that may be named in --fail-on
-const AXES = ['settlement', 'styling', 'identity', 'stack', 'deploy', 'config'];
+// axes that may be named in --fail-on.
+// miniApp / i18n / deps are ADVISORY adoption axes: they max out at safe-drift (never
+// risky), so they track fleet adoption (Nimiq Pay mini-app, runtime i18n, shared-package
+// freshness) without failing CI everywhere. They are NOT in nq check's gate set.
+const AXES = ['settlement', 'styling', 'identity', 'miniApp', 'i18n', 'deps', 'stack', 'deploy', 'config'];
+// advisory axes never move `overall` and never gate (they cap at safe-drift by design).
+const ADVISORY_AXES = new Set(['miniApp', 'i18n', 'deps']);
 
 const MANIFEST = 'nimiq-stack.json';
 
@@ -213,6 +218,164 @@ async function scanIdentity(appDir, canonical, repoName) {
   }
 
   return { stale, envNames: [...envNames] };
+}
+
+// ---- adoption scans (mini-app + i18n) ----
+// One walk over the app's code roots, collecting the signals both advisory axes need:
+//   - shellImports:  names imported FROM nimiq-app-shell / @nimiq/app-shell (createWallet,
+//                    createI18n, ...) — the canonical shared-shell integration.
+//   - sdkHits:       references to the real Nimiq Pay mini-app surface (@nimiq/mini-app-sdk,
+//                    window.nimiqPay, window.nimiq) outside comments.
+//   - createI18nHits / vueI18nHits: real runtime-i18n wiring.
+//   - stubProvider:  the integration is present but is plainly a STUB/MOCK (competition-era
+//                    placeholder) — keeps the axis honest (present-but-fake ≠ adopted).
+// the shared shell, imported either as the package OR as the vendored bundle the
+// scaffold's `build:shell` step emits at public/vendor/app-shell.js.
+const SHELL_PKG_RE = /from\s+['"](?:@nimiq\/app-shell|nimiq-app-shell|[^'"]*\/vendor\/app-shell(?:\.js)?)['"]/;
+const SHELL_REQUIRE_RE = /require\(\s*['"](?:@nimiq\/app-shell|nimiq-app-shell|[^'"]*\/vendor\/app-shell(?:\.js)?)['"]\s*\)/;
+
+async function scanAdoption(appDir, canonical) {
+  const sdkTokens = canonical.miniApp?.sdkTokens ?? ['@nimiq/mini-app-sdk', 'window.nimiqPay', 'window.nimiq'];
+  const stubMarkers = (canonical.miniApp?.stubMarkers ?? ['stub', 'mock', 'fake', 'placeholder', 'competition'])
+    .map(s => s.toLowerCase());
+
+  const shellImportNames = new Set(); // identifiers imported from the shell package
+  const sdkHits = [];                 // {file,line,token}
+  let createI18nHit = false;          // createI18n imported/used from the shell
+  let vueI18nHit = false;             // vue-i18n imported or createI18n()/useI18n() used
+  let stubProvider = false;          // a shell/mini-app wiring that is clearly a stub/mock
+
+  async function walk(dir) {
+    let entries;
+    try { entries = await readdir(dir, { withFileTypes: true }); } catch { return; }
+    for (const e of entries) {
+      if (e.name.startsWith('.') && e.name !== '.well-known') continue;
+      if (SKIP_DIRS.has(e.name)) continue;
+      const full = join(dir, e.name);
+      if (e.isDirectory()) { await walk(full); continue; }
+      if (!CODE_EXT.test(e.name)) continue;
+      if (/\.(test|spec)\./.test(e.name)) continue;
+      let text;
+      try { text = await readFile(full, 'utf8'); } catch { continue; }
+      const rel = full.slice(appDir.length + 1);
+      const lines = text.split('\n');
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmed = line.trim();
+        const isComment = trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*');
+        // imports FROM the shared shell — capture the named bindings (createWallet, createI18n).
+        if (!isComment && (SHELL_PKG_RE.test(line) || SHELL_REQUIRE_RE.test(line))) {
+          for (const m of line.matchAll(/[{,]\s*([A-Za-z_$][\w$]*)/g)) shellImportNames.add(m[1]);
+          if (/\bcreateI18n\b/.test(line)) createI18nHit = true;
+          // a shell wiring next to a stub marker on the same line is a stub
+          if (stubMarkers.some(s => line.toLowerCase().includes(s))) stubProvider = true;
+        }
+        // vue-i18n usage: an explicit vue-i18n import, or useI18n(). (A bare createI18n()
+        // call is attributed to the shell via createI18nHit, not double-counted here.)
+        if (!isComment) {
+          if (/from\s+['"]vue-i18n['"]/.test(line) || /require\(\s*['"]vue-i18n['"]/.test(line)) vueI18nHit = true;
+          if (/\buseI18n\s*\(/.test(line)) vueI18nHit = true;
+          if (/\bcreateWallet\b/.test(line) && shellImportNames.has('createWallet')) {
+            if (stubMarkers.some(s => line.toLowerCase().includes(s))) stubProvider = true;
+          }
+        }
+        // real mini-app SDK surface
+        if (!isComment) {
+          for (const tok of sdkTokens) {
+            if (line.includes(tok)) sdkHits.push({ file: rel, line: i + 1, token: tok });
+          }
+        }
+      }
+    }
+  }
+  for (const d of SRC_DIRS) {
+    const p = join(appDir, d);
+    if (existsSync(p)) await walk(p);
+  }
+  return { shellImportNames: [...shellImportNames], sdkHits, createI18nHit, vueI18nHit, stubProvider };
+}
+
+// locales-dir detection (>1 language file = real i18n) — independent of code scan.
+async function scanLocales(appDir, canonical) {
+  const dirs = canonical.i18n?.localesDirs ?? ['public/locales', 'locales', 'src/locales'];
+  const fileRe = new RegExp(canonical.i18n?.localeFile ?? '\\.(json|ya?ml|js|ts)$');
+  let best = 0, where = null;
+  for (const d of dirs) {
+    const p = join(appDir, d);
+    if (!existsSync(p)) continue;
+    let entries;
+    try { entries = await readdir(p, { withFileTypes: true }); } catch { continue; }
+    const files = entries.filter(e => e.isFile() && fileRe.test(e.name)
+      && !/^index\./i.test(e.name) && e.name.toLowerCase() !== 'config.json');
+    if (files.length > best) { best = files.length; where = d; }
+  }
+  return { localeFileCount: best, localesDir: where };
+}
+
+// ---- shared-package version drift (deps axis) ----
+// For each shared fleet package depended on as a git dep, resolve the git tag pinned in
+// package.json and compare to the latest tag from `git ls-remote --tags`. Older pin =
+// SAFE-DRIFT (advisory). Network/git failure = skip QUIETLY (offline → no drift).
+const SEMVER_RE = /v?(\d+)\.(\d+)\.(\d+)/;
+
+function parsePinnedTag(spec) {
+  // git dep specs:  github:owner/repo#v0.2.0  |  <url>.git#v0.2.0  |  ...#semver:^1.0.0
+  const s = String(spec ?? '');
+  const hashIdx = s.indexOf('#');
+  if (hashIdx < 0) return null;
+  let ref = s.slice(hashIdx + 1).trim();
+  if (ref.startsWith('semver:')) ref = ref.slice('semver:'.length).trim();
+  return ref || null;
+}
+
+function semverCmp(a, b) {
+  const ma = SEMVER_RE.exec(a ?? ''), mb = SEMVER_RE.exec(b ?? '');
+  if (!ma || !mb) return null; // not comparable
+  for (let i = 1; i <= 3; i++) {
+    const d = Number(ma[i]) - Number(mb[i]);
+    if (d !== 0) return d < 0 ? -1 : 1;
+  }
+  return 0;
+}
+
+function latestTagFromLsRemote(out) {
+  let best = null;
+  for (const line of String(out).split('\n')) {
+    const m = line.match(/refs\/tags\/(v?\d+\.\d+\.\d+)(\^\{\})?$/);
+    if (!m) continue;
+    const tag = m[1];
+    if (best === null || (semverCmp(best, tag) ?? -1) < 0) best = tag;
+  }
+  return best;
+}
+
+// injectable for tests via opts.lsRemote(url) → string | null (null = offline/failure)
+function defaultLsRemote(url) {
+  try {
+    return execSync(`git ls-remote --tags ${JSON.stringify(url)}`, {
+      stdio: ['ignore', 'pipe', 'ignore'], encoding: 'utf8', timeout: 8000,
+    });
+  } catch { return null; }
+}
+
+function scanDeps(appDir, canonical, pkg, lsRemote = defaultLsRemote) {
+  const shared = canonical.deps?.sharedPackages ?? {};
+  const deps = { ...pkg?.dependencies, ...pkg?.devDependencies };
+  const findings = []; // {pkg, pinned, latest}
+  let checked = 0, skipped = 0;
+  for (const [name, url] of Object.entries(shared)) {
+    if (!(name in deps)) continue;
+    const pinned = parsePinnedTag(deps[name]);
+    if (!pinned || !SEMVER_RE.test(pinned)) { skipped++; continue; } // not a git tag pin (e.g. file:, *) — nothing to compare
+    const out = lsRemote(url);
+    if (out == null) { skipped++; continue; } // offline / failure → skip quietly
+    const latest = latestTagFromLsRemote(out);
+    if (!latest) { skipped++; continue; }
+    checked++;
+    const cmp = semverCmp(pinned, latest);
+    if (cmp != null && cmp < 0) findings.push({ pkg: name, pinned, latest });
+  }
+  return { findings, checked, skipped };
 }
 
 // ---- manifest inference (when absent) ----
@@ -438,6 +601,70 @@ function gradeIdentity(canonical, repoName, { pkgName, stackName }, idScan) {
   return { verdict: v, lines };
 }
 
+// ---- miniApp axis (ADVISORY: max safe-drift, never risky) ----
+// Tracks Nimiq Pay mini-app adoption. CLEAN when the app is wired to the real surface
+// (shell createWallet, or @nimiq/mini-app-sdk / window.nimiqPay / window.nimiq). A
+// stub/mock provider — or nothing — is SAFE-DRIFT so we track adoption without failing CI.
+function gradeMiniApp(m, canonical, adopt) {
+  if (!m.chainApp) return { verdict: CLEAN, lines: ['not a chain app — mini-app integration not tracked'] };
+  const wantShell = new Set(canonical.miniApp?.shellImports ?? ['createWallet']);
+  const hasShellWallet = adopt.shellImportNames.some(n => wantShell.has(n));
+  const hasSdk = adopt.sdkHits.length > 0;
+
+  // a real (non-stub) integration via either path = CLEAN
+  if ((hasShellWallet || hasSdk) && !adopt.stubProvider) {
+    const via = [hasShellWallet && 'nimiq-app-shell createWallet', hasSdk && `mini-app SDK (${[...new Set(adopt.sdkHits.map(h => h.token))].join(', ')})`]
+      .filter(Boolean).join(' + ');
+    return { verdict: CLEAN, lines: [`Nimiq Pay mini-app wired via ${via}`] };
+  }
+  // present but a stub/mock → advisory (adoption in progress)
+  if (hasShellWallet || hasSdk) {
+    return { verdict: SAFE, lines: ['mini-app provider present but a STUB/MOCK — wire to the real Nimiq Pay SDK (createWallet / @nimiq/mini-app-sdk) and verify in-wallet (advisory)'] };
+  }
+  // nothing → advisory
+  return { verdict: SAFE, lines: ['no Nimiq Pay mini-app integration found — import createWallet from nimiq-app-shell or reference @nimiq/mini-app-sdk / window.nimiqPay (advisory)'] };
+}
+
+// ---- i18n axis (ADVISORY: max safe-drift, never risky) ----
+// Tracks runtime-language adoption. CLEAN when wired via nimiq-app-shell createI18n OR
+// vue-i18n OR a locales dir with >1 language file. Hardcoded-English = SAFE-DRIFT.
+function gradeI18n(m, canonical, adopt, locales) {
+  if (!m.chainApp) return { verdict: CLEAN, lines: ['not a chain app — i18n not tracked'] };
+  const wantShell = new Set(canonical.i18n?.shellImports ?? ['createI18n']);
+  const hasShellI18n = adopt.createI18nHit || adopt.shellImportNames.some(n => wantShell.has(n));
+  const hasVueI18n = adopt.vueI18nHit;
+  const hasLocales = locales.localeFileCount > 1;
+
+  if (hasShellI18n || hasVueI18n || hasLocales) {
+    const via = [
+      hasShellI18n && 'nimiq-app-shell createI18n',
+      hasVueI18n && 'vue-i18n',
+      hasLocales && `${locales.localeFileCount} locale files in ${locales.localesDir}`,
+    ].filter(Boolean).join(' + ');
+    return { verdict: CLEAN, lines: [`runtime i18n via ${via}`] };
+  }
+  const note = locales.localeFileCount === 1
+    ? `only one locale file in ${locales.localesDir} — add a 2nd language + createI18n for runtime switching (advisory)`
+    : 'hardcoded-English — adopt nimiq-app-shell createI18n (or vue-i18n) + public/locales/<lang>.json for runtime language switching (advisory)';
+  return { verdict: SAFE, lines: [note] };
+}
+
+// ---- deps axis (ADVISORY: max safe-drift, never risky) ----
+// Flags shared fleet packages pinned to an older git tag than the latest published tag.
+// Offline / no git-tag pin → CLEAN (skipped quietly).
+function gradeDeps(m, deps) {
+  if (deps.findings.length) {
+    return {
+      verdict: SAFE,
+      lines: deps.findings.map(f => `${f.pkg} pinned ${f.pinned} but latest tag is ${f.latest} — bump the git dep (advisory)`),
+    };
+  }
+  if (deps.checked === 0) {
+    return { verdict: CLEAN, lines: [deps.skipped ? 'shared-package tags not comparable (no git-tag pin / offline) — skipped' : 'no shared fleet packages depended on'] };
+  }
+  return { verdict: CLEAN, lines: [`${deps.checked} shared package(s) on the latest tag`] };
+}
+
 // ---- grade one app ----
 export async function alignApp(appDir, opts = {}) {
   const canonical = await loadCanonical();
@@ -470,10 +697,18 @@ export async function alignApp(appDir, opts = {}) {
   const stackName = inferred ? null : (m.name ?? null);
   const idScan = await scanIdentity(appDir, canonical, repoName);
 
+  // adoption scans (mini-app + i18n) + shared-package drift
+  const adopt = await scanAdoption(appDir, canonical);
+  const locales = await scanLocales(appDir, canonical);
+  const deps = scanDeps(appDir, canonical, pkg, opts.lsRemote);
+
   const axes = {
     settlement: m.chainApp ? gradeSettlement(m, canonical, scan) : { verdict: CLEAN, lines: ['--no-chain: settlement parity skipped'] },
     styling: gradeStyling(m, canonical),
     identity: gradeIdentity(canonical, repoName, { pkgName, stackName }, idScan),
+    miniApp: gradeMiniApp(m, canonical, adopt),
+    i18n: gradeI18n(m, canonical, adopt, locales),
+    deps: gradeDeps(m, deps),
     stack: gradeStack(m, canonical, scan),
     deploy: gradeDeploy(m, canonical, appDir),
     config: gradeConfig(m, canonical),
@@ -488,8 +723,13 @@ export async function alignApp(appDir, opts = {}) {
     }
   }
 
+  // ADVISORY axes (miniApp/i18n/deps) are informational only — they NEVER move `overall`
+  // (and never gate). overall rolls up the core stack axes; adoption is surfaced per-axis.
   let overall = CLEAN;
-  for (const a of Object.values(axes)) overall = worst(overall, a.verdict);
+  for (const name of Object.keys(axes)) {
+    if (ADVISORY_AXES.has(name)) continue;
+    overall = worst(overall, axes[name].verdict);
+  }
 
   return { app: m.name ?? basename(appDir), appDir, exempt: false, overall, axes, inferred, wrote, scanHits: scan.hits.length };
 }
@@ -598,5 +838,9 @@ export async function run(rest, flags) {
 function parseFailOn(flags) {
   if (!flags.failOn) return [];
   return String(flags.failOn).split(',').map(s => s.trim()).filter(Boolean)
-    .filter(a => { if (!AXES.includes(a)) throw new Error(`--fail-on: unknown axis "${a}" (axes: ${AXES.join(', ')})`); return true; });
+    .filter(a => {
+      if (!AXES.includes(a)) throw new Error(`--fail-on: unknown axis "${a}" (axes: ${AXES.join(', ')})`);
+      if (ADVISORY_AXES.has(a)) throw new Error(`--fail-on: "${a}" is an advisory axis (max safe-drift) — it can never gate. Gateable: ${AXES.filter(x => !ADVISORY_AXES.has(x)).join(', ')}`);
+      return true;
+    });
 }
