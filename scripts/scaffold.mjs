@@ -32,6 +32,11 @@ export async function scaffoldApp(name, opts = {}) {
   const canonical = JSON.parse(await readFile(join(ROOT, 'align', 'canonical.json'), 'utf8'));
   const files = {};
 
+  // shared fleet git deps, pinned to the latest tags the deps axis knows about (keeps a
+  // freshly-scaffolded app CLEAN on the deps axis).
+  const SHELL_DEP = 'github:Andjroo111/nimiq-app-shell#v0.1.0';
+  const SETTLEMENT_DEP = 'github:Andjroo111/nimiq-settlement#v0.2.0';
+
   // ---- package.json ----
   files['package.json'] = JSON.stringify({
     name,
@@ -43,12 +48,17 @@ export async function scaffoldApp(name, opts = {}) {
       start: 'bun run src/server.ts',
       test: 'bun test',
       align: 'nq align',
+      // bundle the shared app-shell (wallet-connect + profile + runtime i18n) to a vendor
+      // file the PWA loads. Run on install / before deploy. Esbuild via bunx — no devDep.
+      'build:shell': "bunx esbuild --bundle --format=esm --minify --outfile=public/vendor/app-shell.js node_modules/nimiq-app-shell/dist/index.js || echo 'build:shell: nimiq-app-shell not installed yet — run bun install first'",
+      postinstall: 'bun run build:shell',
     },
-    // NOTE: chain reads use the inline rpc-block-scan in src/chain.ts (migrates to the
-    // shared `nimiq-settlement` package once published). @nimiq/core is signing-only.
     dependencies: {
       hono: '^4.7.0',
-      ...(chain ? { '@nimiq/core': '^2.6.1' } : {}),
+      // shared shell: wallet-connect (Nimiq Pay mini-app), profile, runtime i18n.
+      'nimiq-app-shell': SHELL_DEP,
+      // chain reads via the shared rpc-block-scan settlement package; @nimiq/core signing-only.
+      ...(chain ? { 'nimiq-settlement': SETTLEMENT_DEP, '@nimiq/core': '^2.6.1' } : {}),
     },
   }, null, 2) + '\n';
 
@@ -60,16 +70,30 @@ export async function scaffoldApp(name, opts = {}) {
 
   // ---- vanilla PWA front end ----
   files['public/index.html'] = indexHtml(name, chain);
-  files['public/app.js'] = appJs(name);
+  files['public/app.js'] = appJs(name, chain);
   files['public/css/tokens.css'] = tokensCss();
   files['public/manifest.webmanifest'] = JSON.stringify({
     name, short_name: name, start_url: '/', display: 'standalone',
     background_color: '#ffffff', theme_color: '#1f2348',
   }, null, 2) + '\n';
 
+  // ---- i18n: locales the shell's createI18n loads + switches between at runtime ----
+  files['public/locales/en.json'] = JSON.stringify({
+    'app.title': name,
+    'app.tagline': 'Canonical Nimiq fleet app.',
+    'action.connect': 'Connect wallet',
+    'action.ping': 'Ping /health',
+  }, null, 2) + '\n';
+  files['public/locales/de.json'] = JSON.stringify({
+    'app.title': name,
+    'app.tagline': 'Kanonische Nimiq-Fleet-App.',
+    'action.connect': 'Wallet verbinden',
+    'action.ping': '/health anpingen',
+  }, null, 2) + '\n';
+
   // ---- config ----
   files['tsconfig.json'] = tsconfigJson();
-  files['.gitignore'] = ['node_modules/', 'data/', '.DS_Store', 'dist/', ''].join('\n');
+  files['.gitignore'] = ['node_modules/', 'data/', '.DS_Store', 'dist/', 'public/vendor/', ''].join('\n');
   files['README.md'] = readmeMd(name, chain, settlement, deploy);
 
   // ---- deploy kit ----
@@ -134,6 +158,9 @@ app.get('/', () => new Response(Bun.file('public/index.html')));
 app.get('/app.js', () => new Response(Bun.file('public/app.js')));
 app.get('/css/tokens.css', () => new Response(Bun.file('public/css/tokens.css')));
 app.get('/manifest.webmanifest', () => new Response(Bun.file('public/manifest.webmanifest')));
+// shared app-shell bundle (build:shell) + i18n locale files
+app.get('/vendor/:file', (c) => new Response(Bun.file('public/vendor/' + c.req.param('file'))));
+app.get('/locales/:file', (c) => new Response(Bun.file('public/locales/' + c.req.param('file'))));
 
 // health route — required by Fly checks + nq align deploy axis
 app.get('/health', (c) => c.json({ ok: true, app: '${name}', ts: Date.now() }));
@@ -240,9 +267,10 @@ function indexHtml(name, chain) {
 ${chain ? '  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@nimiq/style@0.8/nimiq-style.min.css">\n' : ''}</head>
 <body class="nq-style">
   <main class="app">
-    <h1 class="nq-h1">${name}</h1>
-    <p class="nq-text">Canonical Nimiq fleet app. Edit <code>public/app.js</code>.</p>
-    <button class="nq-button" id="ping">Ping /health</button>
+    <h1 class="nq-h1" data-i18n="app.title">${name}</h1>
+    <p class="nq-text" data-i18n="app.tagline">Canonical Nimiq fleet app. Edit <code>public/app.js</code>.</p>
+    <button class="nq-button" id="connect" data-i18n="action.connect">Connect wallet</button>
+    <button class="nq-button" id="ping" data-i18n="action.ping">Ping /health</button>
     <pre id="out"></pre>
   </main>
   <script src="/app.js" type="module"></script>
@@ -251,13 +279,36 @@ ${chain ? '  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@nimiq/st
 `;
 }
 
-function appJs() {
-  return `const out = document.getElementById('out');
+function appJs(name, chain) {
+  // wire the shared app-shell: Nimiq Pay wallet-connect (mini-app) + runtime i18n.
+  // The bundle is produced by `bun run build:shell` (esbuild → public/vendor/app-shell.js);
+  // app-shell runs dual-mode (real Nimiq Pay SDK in-wallet, fallback connect elsewhere).
+  return `// ${name} front end — wired to the shared nimiq-app-shell.
+import { createWallet, createI18n } from './vendor/app-shell.js';
+
+const out = document.getElementById('out');
+
+// runtime i18n: nimiq.life (umbrella) hands off the initial language via ?lang=; users
+// switch live with the flag picker. Strings live in public/locales/<lang>.json.
+const i18n = createI18n({
+  defaultLocale: new URLSearchParams(location.search).get('lang') || 'en',
+  load: (lang) => fetch('/locales/' + lang + '.json').then((r) => r.json()),
+});
+i18n.apply?.(document);
+
+// Nimiq Pay mini-app: createWallet runs as a mini-app inside the wallet, and falls back
+// to wallet-connect elsewhere. Verify in-wallet before shipping.
+const wallet = createWallet({ appName: '${name}' });
+document.getElementById('connect')?.addEventListener('click', () => wallet.connect());
+
 document.getElementById('ping')?.addEventListener('click', async () => {
   const r = await fetch('/health');
   out.textContent = JSON.stringify(await r.json(), null, 2);
 });
-`;
+${chain ? `
+// chain reads go through the shared nimiq-settlement package (rpc-block-scan), never the
+// light client. See src/chain.ts for the server-side adapter.
+` : ''}`;
 }
 
 function tokensCss() {
@@ -290,8 +341,11 @@ function dockerfile() {
   return `FROM oven/bun:1 AS base
 WORKDIR /app
 COPY package.json bun.lock* ./
+# install also runs postinstall → build:shell (bundles nimiq-app-shell → public/vendor)
 RUN bun install --frozen-lockfile || bun install
 COPY . .
+# ensure the vendored shell bundle exists in the image (idempotent)
+RUN bun run build:shell || true
 ENV DATA_DIR=/app/data
 EXPOSE 3000
 CMD ["bun", "run", "src/server.ts"]
@@ -377,15 +431,39 @@ function readmeMd(name, chain, settlement, deploy) {
 Canonical Nimiq fleet app — scaffolded by \`nq new\`.
 
 - **Stack:** Bun + Hono + bun:sqlite + vanilla PWA${chain ? ' + @nimiq/style' : ''}
-${chain ? `- **Settlement:** \`${settlement}\` client (\`src/chain.ts\`), via the \`nimiq-settlement\` contract. Chain reads use rpc-block-scan; \`@nimiq/core\` is signing-only — never the light client.\n` : '- **Chain:** none (`--no-chain`)\n'}- **Deploy:** ${deploy === 'fly' ? 'Fly.io (Dockerfile + fly.toml + persistent volume at /app/data)' : 'none yet — wire a target'}
+- **App shell:** \`nimiq-app-shell\` — Nimiq Pay wallet-connect (mini-app) + profile + runtime i18n. Bundled to \`public/vendor/app-shell.js\` by \`bun run build:shell\` (runs on \`postinstall\`).
+- **i18n:** \`createI18n\` loads \`public/locales/<lang>.json\` (en, de seeded). The umbrella \`nimiq.life\` hands off the initial language via \`?lang=\`; users switch live with the flag picker.
+${chain ? `- **Settlement:** \`${settlement}\` client (\`src/chain.ts\`), via the shared \`nimiq-settlement\` package. Chain reads use rpc-block-scan; \`@nimiq/core\` is signing-only — never the light client.\n` : '- **Chain:** none (`--no-chain`)\n'}- **Deploy:** ${deploy === 'fly' ? 'Fly.io (Dockerfile + fly.toml + persistent volume at /app/data)' : 'none yet — wire a target'}
 - **Health:** \`GET /health\`
 
 ## Dev
 \`\`\`
-bun install
+bun install      # also runs build:shell (bundles nimiq-app-shell → public/vendor)
 bun run dev      # http://localhost:3000
 bun test
-nq align         # should be clean on every axis
+nq align         # clean on the core axes; CLEAN on miniApp + i18n adoption axes too
 \`\`\`
-${deploy === 'fly' ? '\n## Deploy\n```\nfly launch --no-deploy   # once, to create the app + volume\nfly deploy\n```\n' : ''}`;
+
+> **Verify the mini-app in-wallet.** \`createWallet\` runs as a Nimiq Pay mini-app inside the
+> wallet and falls back to wallet-connect elsewhere. Test the real in-wallet flow before shipping.
+${deploy === 'fly' ? `
+## Deploy — Fly (stateful, this app)
+\`\`\`
+fly launch --no-deploy   # once, to create the app + volume
+fly deploy               # CI auto-deploys on green (.github/workflows/deploy.yml)
+\`\`\`
+
+### Cloudflare (edge in front of Fly)
+This app is **stateful** (bun:sqlite on a Fly volume), so it runs on Fly with Cloudflare
+proxying in front — NOT Cloudflare Pages (Pages can't host a Bun+disk app without a D1
+rewrite). Wire it up:
+
+1. Add a DNS record for your hostname pointing at the Fly app (CNAME → \`${name}.fly.dev\`),
+   **proxied** (orange cloud) in the Cloudflare dashboard.
+2. \`fly certs add <your-host>\` so Fly serves a valid cert behind the proxy.
+3. Keep SSL/TLS mode **Full (strict)**.
+
+A purely-static fleet app (no DB) deploys to **Cloudflare Pages** instead; this scaffold is
+stateful, so Fly + Cloudflare-proxy is the canonical 2-lane choice.
+` : ''}`;
 }

@@ -36,6 +36,26 @@
     "ci": true
   },
   "settlementPackage": "nimiq-settlement",
+  "miniApp": {
+    "note": "Every fleet chain app must run as a Nimiq Pay mini-app. CLEAN when the app imports nimiq-app-shell's createWallet OR references the real mini-app surface (@nimiq/mini-app-sdk, window.nimiq, window.nimiqPay). A competition-era STUB/MOCK provider (or nothing) is SAFE-DRIFT — advisory only, NEVER risky — so the axis tracks adoption without failing CI fleet-wide while apps wire to the real SDK. Only graded for chainApp / non-exempt repos.",
+    "shellImports": ["createWallet"],
+    "sdkTokens": ["@nimiq/mini-app-sdk", "window.nimiqPay", "window.nimiq"],
+    "stubMarkers": ["stub", "mock", "fake", "placeholder", "competition", "TODO"]
+  },
+  "i18n": {
+    "note": "Every fleet app ships runtime language switching from the shared shell. CLEAN when it uses nimiq-app-shell's createI18n OR vue-i18n OR carries a locales dir with >1 language file. Hardcoded-English is SAFE-DRIFT — advisory only, NEVER risky — so the axis tracks i18n adoption without failing CI. Only graded for chainApp.",
+    "shellImports": ["createI18n"],
+    "i18nPackages": ["vue-i18n", "@nimiq/app-shell", "nimiq-app-shell"],
+    "localesDirs": ["public/locales", "locales", "src/locales", "public/i18n", "src/i18n"],
+    "localeFile": "\\.(json|ya?ml|js|ts)$"
+  },
+  "deps": {
+    "note": "Shared fleet packages (nimiq-settlement, nimiq-app-shell) are consumed as pinned git deps. This axis flags (SAFE-DRIFT, advisory) a dependency pinned to an OLDER git tag than the latest published tag, resolved live via `git ls-remote --tags`. Network failures skip the check quietly (offline = clean). Never risky.",
+    "sharedPackages": {
+      "nimiq-settlement": "https://github.com/Andjroo111/nimiq-settlement.git",
+      "nimiq-app-shell": "https://github.com/Andjroo111/nimiq-app-shell.git"
+    }
+  },
   "identity": {
     "note": "The fleet was renamed to dotted `nimiq.<seg>` repo names, but code/env/manifests kept stale codenames (splitlink/tipjar/snappos/goalvault/gateflo…). The identity axis fails a repo whose internal name (package.json/nimiq-stack.json) or load-bearing identity files drift from the repo name. ONLY enforced when the canonical repo name matches /^nimiq\\.[a-z0-9-]+$/ — a real fleet repo. Non-fleet dirs and test fixtures stay clean (not-applicable).",
     "oldCodenames": [
