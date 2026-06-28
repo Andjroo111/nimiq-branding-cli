@@ -1,5 +1,8 @@
 # nimiq-branding-cli
 
+<!-- nimiq-north-star -->
+> 🧭 **North Star** · Every Nimiq project aligns to one shared set of values and a single mission. See the canonical [Nimiq Values & North Star](https://github.com/Andjroo111/nimiq.life/blob/main/NORTH-STAR.md).
+
 Scaffold **pixel-accurate Nimiq-branded UI components** into any project — Vue 3 SFCs or plain
 HTML/CSS — from a registry of 40 components (39 pixel-diffed against the real Nimiq apps before
 they ship, plus 1 original brand composition), plus the team's real asset library (logos, icons,
