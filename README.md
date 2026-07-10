@@ -45,6 +45,14 @@ nq sync-skill               # (repo dev) regenerate the nimiq-ui skill block fro
 Open `showcase.html` for the full component gallery and `supporting-elements.html` for the
 wallet + marketing element demos.
 
+## For agents and LLMs
+
+Two generated artifacts mirror the registry for machine readers: [llms.txt](llms.txt) is the
+discovery index, [llms-full.txt](llms-full.txt) is the whole registry in one flat file with
+every component's props, dependencies, source pins and verbatim porting notes. Both are
+emitted by `nq sync-skill` from `registry/index.json`, so they cannot drift from the CLI;
+`nq sync-skill --check` fails CI when they go stale.
+
 ## Fleet stack alignment (`nq align` / `nq new-app` / `nq hooks`)
 
 Branding accuracy (`nq audit`/`nq verify`) keeps the UI matching Nimiq's design. `nq align`
@@ -119,7 +127,9 @@ assets/
   tokens.md            design-token quick reference
 scripts/verify.mjs     pixel-diff harness (playwright + pixelmatch)
 scripts/audit.mjs      live-upstream branding-drift engine (nq audit)
-scripts/sync-skill.mjs regenerates the nimiq-ui skill block from index.json
+scripts/sync-skill.mjs regenerates the nimiq-ui skill block + llms artifacts from index.json
+scripts/build-llms.mjs  renders llms.txt + llms-full.txt (called by sync-skill)
+llms.txt               generated LLM discovery index (llms-full.txt = full registry export)
 upstream-pins.json     the upstream commits the registry is verified against
 audit/learnings.json   self-learning store: which upstream churn is benign vs branding
 references/screenshots side-by-side reference captures of live Nimiq UIs

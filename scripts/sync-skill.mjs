@@ -8,6 +8,9 @@
 //   <!-- nq:summary:start --> ... <!-- nq:summary:end -->
 //   <!-- nq:registry:start --> ... <!-- nq:registry:end -->
 //
+// Also regenerates the LLM-native artifacts at the repo root (llms.txt + llms-full.txt,
+// llmstxt.org format) via scripts/build-llms.mjs, so they ride the same --check cycle.
+//
 // Skill path: $NIMIQ_UI_SKILL or ~/.claude/skills/nimiq-ui/SKILL.md
 // Usage: node scripts/sync-skill.mjs [--check]   (--check: fail if anything is out of sync)
 import { readFile, writeFile } from 'node:fs/promises';
@@ -15,6 +18,7 @@ import { existsSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildLlmsArtifacts } from './build-llms.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CHECK = process.argv.includes('--check');
@@ -58,6 +62,16 @@ const prevArtifact = existsSync(artifactPath) ? await readFile(artifactPath, 'ut
 const artifactStale = prevArtifact !== artifact;
 if (!CHECK) await writeFile(artifactPath, artifact);
 
+// LLM-native artifacts at the repo root — generated from the same registry, checked the same way
+const llmsFiles = await buildLlmsArtifacts(ROOT);
+const llmsStale = [];
+for (const f of llmsFiles) {
+  const p = join(ROOT, f.rel);
+  const prev = existsSync(p) ? await readFile(p, 'utf8') : '';
+  if (prev !== f.content) llmsStale.push(f.rel);
+  if (!CHECK) await writeFile(p, f.content);
+}
+
 function replaceRegion(text, key, body) {
   const re = new RegExp(`(<!-- nq:${key}:start -->)[\\s\\S]*?(<!-- nq:${key}:end -->)`);
   if (!re.test(text)) return { text, found: false };
@@ -79,6 +93,7 @@ if (existsSync(SKILL)) {
 
 console.log(`nq sync-skill — ${total} components, ${verified} verified`);
 console.log(`  artifact: registry/SKILL-BLOCK.md ${CHECK ? (artifactStale ? 'OUT OF SYNC' : 'in sync') : 'written'}`);
+console.log(`  llms: ${llmsFiles.map(f => f.rel).join(' + ')} ${CHECK ? (llmsStale.length ? `OUT OF SYNC (${llmsStale.join(', ')})` : 'in sync') : 'written'}`);
 console.log(`  ${skillMsg}`);
 
-if (CHECK && (artifactStale || skillStale)) process.exitCode = 1;
+if (CHECK && (artifactStale || skillStale || llmsStale.length)) process.exitCode = 1;
