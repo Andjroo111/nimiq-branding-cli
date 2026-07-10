@@ -1,0 +1,152 @@
+{
+  "name": "swap-animation",
+  "purpose": "Performing Atomic Swap animation, the wallet's full-card swap progress screen on the navy gradient: two interlocking HTLC puzzle pieces (address-colored NIM piece carrying the account identicon, counterpart BTC/USDC/USDT piece carrying its asset logo) lock around a counter-rotating dashed spinner, with 1/5 to 5/5 step labels, the orange do-not-close notice and the green Atomic Swap successful end overlay.",
+  "category": "feedback",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "swapId",
+      "type": "String",
+      "required": true,
+      "default": "''",
+      "description": "Fastspot swap id, shown on the expired screen. Sample: unused (expired overlay not triggered)."
+    },
+    {
+      "name": "swapState",
+      "type": "Number (SwapState)",
+      "required": true,
+      "default": "SwapState.SIGN_SWAP",
+      "description": "Current swap state (SIGN_SWAP 0, AWAIT_INCOMING 1, CREATE_OUTGOING 2, AWAIT_SECRET 3, SETTLE_INCOMING 4, COMPLETE 5, EXPIRED 6). Changes are queued and replayed with the upstream per-step animation delays (1s zoom, 2.6s stroke change + fill, 1.6s pieces in, 1s success zoom). Sample: SETTLE_INCOMING."
+    },
+    {
+      "name": "fromAsset",
+      "type": "String",
+      "required": true,
+      "default": "'NIM'",
+      "description": "Funding asset ('NIM' | 'BTC' | 'USDC_MATIC' | 'USDT_MATIC'). Sample: 'NIM'."
+    },
+    {
+      "name": "fromAmount",
+      "type": "Number",
+      "required": true,
+      "default": "0",
+      "description": "Funding amount in smallest units (luna for NIM). Sample: 51_900_000 (519 NIM)."
+    },
+    {
+      "name": "fromAddress",
+      "type": "String",
+      "required": false,
+      "default": "''",
+      "description": "Funding HTLC address, shown in the piece tooltip with a block explorer link."
+    },
+    {
+      "name": "toAsset",
+      "type": "String",
+      "required": true,
+      "default": "'BTC'",
+      "description": "Receiving asset. Sample: 'BTC' (#f7931a piece with the upstream bitcoin.svg logo)."
+    },
+    {
+      "name": "toAmount",
+      "type": "Number",
+      "required": true,
+      "default": "0",
+      "description": "Receiving amount in smallest units (sat for BTC). Sample: 476 (0.00000476 BTC)."
+    },
+    {
+      "name": "toAddress",
+      "type": "String",
+      "required": false,
+      "default": "''",
+      "description": "Receiving HTLC address, shown in the piece tooltip."
+    },
+    {
+      "name": "nimAddress",
+      "type": "String",
+      "required": false,
+      "default": "undefined",
+      "description": "Active NIM address; drives the NIM piece color (upstream getColorClass via @nimiq/iqons) and its identicon. Sample: 'NQ00 NIMQ SW4P DEMO SW4P AT0M HTLC DEMO SW4P' (teal identicon, nq-green piece)."
+    },
+    {
+      "name": "error",
+      "type": "String",
+      "required": false,
+      "default": "undefined",
+      "description": "Error message; shows the orange retrying box over the card bottom."
+    },
+    {
+      "name": "switchSides",
+      "type": "Boolean",
+      "required": false,
+      "default": "false",
+      "description": "Render the swap right-to-left (buy direction): pieces, amounts and pulse direction mirror."
+    },
+    {
+      "name": "testnet",
+      "type": "Boolean",
+      "required": false,
+      "default": "false",
+      "description": "Point the tooltip block explorer links at the testnets (upstream useConfig().environment translated into a prop)."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [
+    "img/iqons.min.svg"
+  ],
+  "dependsOn": [
+    "identicon"
+  ],
+  "npmDeps": [
+    "@nimiq/iqons"
+  ],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 560,
+      "height": 640
+    },
+    "selector": ".small-page",
+    "maxDiffPct": 0.5,
+    "settleMs": 400
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Source: upstream/wallet@656ed56 src/components/swap/SwapAnimation.vue (scoped SCSS flattened verbatim), hosted like the SwapModal animation overlay (.small-page 63.5rem wide, Modal min-height 70.5rem rendered as fixed height, PageBody padding 0.75rem). Sample state: SETTLE_INCOMING, left-to-right NIM to BTC, 519 NIM to 0.00000476 BTC (mirrors the swap-balance-bar sample); nimAddress 'NQ00 NIMQ SW4P DEMO SW4P AT0M HTLC DEMO SW4P' hashes to a teal identicon so getColorClass() = nq-green and the NIM piece fills var(--nimiq-green); BTC piece #f7931a with the vendored upstream bitcoin.svg logo. In this frame the pieces are interlocked around the spinner parked at rotate(-32deg), both .fill paths opaque, swap amounts faded out, footer at '5/5 Finalizing swap' plus the orange notice. HARNESS TRAP that shapes the whole port: Playwright animations:'disabled' fast-forwards FINITE animations (truth reaches the interlocked frame via the upstream piece-left/right-in-out 1s forwards animations) and CANCELS INFINITE ones back to base styles. So the demo runs the full swap as one pure-CSS 18s infinite loop (.loop class, keyframes swap-animation-loop-*, step timings from upstream processStateChange: 0s sign-swap, 2s await-incoming, 6s create-outgoing, 8.6s await-secret, 11.2s settle-incoming, 14.2s complete/success, reset hidden under the overlay), with explicit base transforms translate3d(+-7.25rem) equal to the truth's fast-forwarded end frame; verify therefore passes (0.000 diff) while the demo loops live. prefers-reduced-motion freezes both loop and static variants on the interlocked frame. Step labels: upstream v-ifs a single .nq-h2; the html port stacks all five in a .steps grid cell (.current visible) so the loop can crossfade them, box metrics identical. Identicon via the pinned @nimiq/iqons@1.6.0 jsdelivr recipe writing toDataUrl() into the piece's SVG <image> (upstream copies it from a hidden <Identicon>); sprite is the vendored assets/img/iqons.min.svg with CDN fallback, same as swap-balance-bar. Vendored upstream-verbatim in html/: bitcoin.svg, usdc.svg, usdt.svg, bank.svg (bank unused, EUR flows not ported) plus swap-icons.html, the three wallet swap glyphs (SwapIcon 12x16, SwapSmallIcon 16x16, SwapMediumIcon 24x24) also shown under the demo card; paths never hand-modified. Vue port (Vue 3 script setup): full upstream state queue with per-step delays, all four piece SVG variants (NIM/crypto x left/right), switchSides, success + expired overlays, error box, 'finished'/'cancel' emits; store/service reads translated to props (swapState, from*/to*, nimAddress, testnet); @nimiq/vue-components Tooltip replaced by a CSS-only hover/focus tooltip with ShortAddress + explorer link, Amount by a plain formatter (FormattableNumber grouping not vendored, so demo amounts avoid group separators), MessageTransition static; asset logos embedded as URL-encoded data URIs of the vendored files. Omitted everywhere: EUR/OASIS (bank/oasis-limit/manual-funding/funding-delay timers) and KYC branches; the html snippet also omits the expired overlay (zero pixels in crypto swaps).",
+  "source": {
+    "repo": "wallet",
+    "ref": "656ed56",
+    "files": [
+      "wallet:src/components/swap/SwapAnimation.vue",
+      "wallet:src/components/swap/animation/bitcoin.svg",
+      "wallet:src/components/swap/animation/usdc.svg",
+      "wallet:src/components/swap/animation/usdt.svg",
+      "wallet:src/components/swap/animation/bank.svg",
+      "wallet:src/components/icons/SwapIcon.vue",
+      "wallet:src/components/icons/SwapSmallIcon.vue",
+      "wallet:src/components/icons/SwapMediumIcon.vue",
+      "wallet:src/components/icons/GroundedArrowUpIcon.vue",
+      "wallet:src/components/icons/GroundedArrowDownIcon.vue",
+      "wallet:src/components/ShortAddress.vue",
+      "wallet:src/components/MessageTransition.vue",
+      "wallet:src/stores/Swaps.ts",
+      "wallet:src/lib/AddressColor.ts",
+      "wallet:src/lib/swap/utils/Assets.ts",
+      "wallet:src/lib/ExplorerUtils.ts"
+    ]
+  }
+}
