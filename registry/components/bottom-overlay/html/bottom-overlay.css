@@ -1,0 +1,112 @@
+/* Nimiq BottomOverlay — dismissible notification bar pinned to the bottom
+   center of the viewport. Port of @nimiq/vue-components BottomOverlay.vue
+   (+ its CloseButton), all selectors namespaced under .bottom-overlay.
+   Requires the Nimiq legacy stylesheet (nimiq-style.min.css: --nimiq-blue,
+   --nimiq-green, --nimiq-ease, .nq-button-s, .nq-icon) and Mulish.
+   Themes: add .dark (default), .light or .green next to .bottom-overlay.
+   With a close button, also add .has-close-button (and .inverse on the
+   button for the dark/green themes).
+   NOTE: position:fixed anchors to the viewport. To anchor inside a box
+   instead (as the demo does for the pixel test), give that box a transform
+   (e.g. transform: translate(0, 0)) so it becomes the containing block. */
+
+.bottom-overlay {
+    position: fixed;
+    left: 50%;
+    bottom: 2rem;
+    max-width: 110rem;
+    padding: 1.5rem 2rem 1.75rem 2rem;
+    border-radius: 1.25rem;
+    box-shadow: 0 0 2.5rem rgba(0, 0, 0, 0.111158);
+    font-size: 2rem;
+    line-height: 1.3;
+    transform: translateX(-50%);
+}
+
+.bottom-overlay.dark {
+    background: var(--nimiq-blue);
+    color: white;
+}
+
+.bottom-overlay.light {
+    background: white;
+    color: var(--nimiq-blue);
+}
+
+.bottom-overlay.green {
+    background: var(--nimiq-green);
+    color: white;
+}
+
+.bottom-overlay.has-close-button {
+    padding-right: 6.5rem;
+}
+
+/* --- CloseButton (CloseButton.vue) --- */
+
+.bottom-overlay .close-button {
+    font-size: 3rem;
+    padding: 0;
+    background: none !important;
+    height: 3rem;
+}
+
+.bottom-overlay .close-button::before {
+    border-radius: 50%;
+}
+
+.bottom-overlay .close-button .nq-icon {
+    opacity: .2;
+    transition: opacity .3s var(--nimiq-ease);
+}
+
+.bottom-overlay .close-button:hover .nq-icon,
+.bottom-overlay .close-button:active .nq-icon,
+.bottom-overlay .close-button:focus .nq-icon {
+    opacity: .4;
+}
+
+/* --- BottomOverlay's own close button placement + green theme tweak --- */
+
+.bottom-overlay .close-button {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+}
+
+.bottom-overlay.green .close-button .nq-icon {
+    opacity: 0.4;
+}
+
+.bottom-overlay.green .close-button:hover .nq-icon,
+.bottom-overlay.green .close-button:focus .nq-icon {
+    opacity: 0.7;
+}
+
+@media (max-width: 912px) {
+    .bottom-overlay {
+        bottom: 1.5rem;
+        width: calc(100% - 3rem);
+    }
+}
+
+@media (max-width: 450px) {
+    .bottom-overlay {
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        padding: 2.5rem;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        transform: none;
+    }
+
+    .bottom-overlay.has-close-button {
+        padding-right: 7rem;
+    }
+
+    .bottom-overlay .close-button {
+        top: 2rem;
+        right: 2rem;
+    }
+}

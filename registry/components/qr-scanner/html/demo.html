@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nimiq QrScanner — demo</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="qr-scanner.css">
+<style>
+    body {
+        font-family: 'Mulish', sans-serif;
+        margin: 0;
+        padding: 32px;
+        background: white;
+    }
+
+    /* Demo sizing: scanner in a 300x300 box (the overlay inline numbers assume it) */
+    .qr-scanner {
+        width: 300px;
+        height: 300px;
+    }
+</style>
+</head>
+<body>
+
+<div class="qr-scanner nq-blue-bg">
+    <video muted autoplay playsinline width="600" height="600"></video>
+    <div class="overlay inactive" style="width: 200px; height: 200px; top: 50px; left: 50px;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 238 238">
+            <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M31.3 2H10a8 8 0 0 0-8 8v21.3M206.8 2H228a8 8 0 0 1 8 8v21.3m0 175.4V228a8 8 0 0 1-8 8h-21.3m-175.4 0H10a8 8 0 0 1-8-8v-21.3"/>
+        </svg>
+    </div>
+    <button class="nq-button-s inverse cancel-button">Cancel</button>
+
+    <div class="camera-access-failed">
+        <div class="camera-access-failed-warning">
+            Your device does not have an accessible camera.
+        </div>
+    </div>
+</div>
+</body>
+</html>

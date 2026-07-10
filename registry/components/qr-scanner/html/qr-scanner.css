@@ -1,0 +1,114 @@
+/* Nimiq QrScanner — visual shell of the camera QR scanner (full-bleed video
+   slot on the nq-blue gradient, corner-frame viewport overlay, cancel pill,
+   camera-failure message). Port of @nimiq/vue-components QrScanner.vue, all
+   selectors namespaced under .qr-scanner. Requires the Nimiq legacy stylesheet
+   (nimiq-style.min.css: .nq-blue-bg, .nq-button-s, --nimiq-gold, --nimiq-blue)
+   and Mulish.
+   STATIC SHELL: actual scanning needs the qr-scanner npm library on the video
+   element plus a camera, a user gesture and a secure context (HTTPS or
+   localhost) — see the Vue variant. Remove .inactive from .overlay for the
+   scanning look (gold corners + pulse animation); add .ready to the video once
+   it plays. The overlay size is JS-measured upstream: ceil(2/3 * min(w,h)),
+   centered — frozen inline in the markup for a 300x300 host. */
+
+.qr-scanner {
+    position: relative;
+    overflow: hidden;
+}
+
+.qr-scanner .fade-enter,
+.qr-scanner .fade-leave-to {
+    opacity: 0;
+    transition: .7s;
+}
+
+.qr-scanner .fade-leave,
+.qr-scanner .fade-enter-to {
+    opacity: 1;
+    transition: .7s;
+}
+
+.qr-scanner video {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
+    transition: opacity .3s;
+}
+
+.qr-scanner video.ready {
+    opacity: 1;
+}
+
+.qr-scanner .overlay {
+    position: absolute;
+}
+
+.qr-scanner .overlay:not(.inactive) {
+    animation: qr-scanner-overlay-animation 400ms infinite alternate ease-in-out;
+}
+
+@keyframes qr-scanner-overlay-animation {
+    from {
+        transform: scale(.98);
+    }
+    to {
+        transform: scale(1.01);
+    }
+}
+
+.qr-scanner .overlay svg {
+    width: 100%;
+    height: 100%;
+    stroke: var(--nimiq-gold);
+}
+
+.qr-scanner .overlay.inactive svg {
+    stroke: rgba(255, 255, 255, .4);
+}
+
+.qr-scanner .cancel-button {
+    background: white;
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--nimiq-blue);
+}
+
+.qr-scanner .cancel-button:hover,
+.qr-scanner .cancel-button:focus,
+.qr-scanner .cancel-button:active {
+    background: #EFF0F2; /* Indigo 7% */
+}
+
+.qr-scanner .camera-access-failed {
+    color: white;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.qr-scanner .camera-access-failed-warning {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30rem;
+    max-width: 80%;
+    font-weight: bold;
+}
+
+.qr-scanner .access-denied-instructions {
+    opacity: .7;
+    position: absolute;
+    left: 50%;
+    bottom: 9rem;
+    width: calc(100% - 4rem);
+    transform: translateX(-50%);
+    line-height: 1.7;
+    white-space: pre-line;
+}
