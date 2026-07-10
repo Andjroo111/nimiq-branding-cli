@@ -1,0 +1,78 @@
+{
+  "name": "login-file-animation",
+  "purpose": "Login File draw-in animation — Keyguard's line-art preview of the Login File that draws itself in while the user types their password: three dash-array border strokes, title and date lines, hexagon logo, key and QR fragments appear step by step (setStep 0-8), then the card floods with the account color (setColor). The frozen reference state is the fully drawn step-8 line art.",
+  "category": "feedback",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "step",
+      "type": "Number",
+      "required": false,
+      "default": 8,
+      "description": "Draw progress 0-8, like upstream setStep (Create.js advances one step per typed password character). Ignored while playing."
+    },
+    {
+      "name": "color",
+      "type": "String | Number | null",
+      "required": false,
+      "default": "null",
+      "description": "Account color for the colored end state, upstream LoginFileConfig index 0-9 or name ('orange' | 'red' | 'yellow' | 'indigo' | 'blue' | 'purple' | 'teal' | 'pink' | 'green' | 'brown'). null keeps the line-art state; setting it is upstream setColor."
+    },
+    {
+      "name": "playing",
+      "type": "Boolean",
+      "required": false,
+      "default": false,
+      "description": "Autoplay the whole sequence: steps 0-8, then the colored flood, then reset. Skipped entirely under prefers-reduced-motion — the component jumps to the colored end state."
+    },
+    {
+      "name": "loop",
+      "type": "Boolean",
+      "required": false,
+      "default": true,
+      "description": "Repeat the autoplay sequence. With loop false it plays once and emits 'finished', staying on the colored end state."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 360,
+      "height": 320
+    },
+    "selector": ".verify-frame",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Truth embeds upstream src/components/LoginFileAnimation.css verbatim and the exact innerHTML from LoginFileAnimation._createElement() (keyguard@02e7534): a 114x186 SVG with six security-wave strokes (hidden until colored), hexagon logo, key, three overlapping dashed border paths, title/date strokes and eight QR fragments. Frozen sample state = setStep(8), which upstream implements by adding every class step-0 through step-8; at step-8 the three border dash patterns (102 345 585 0 / 0 102 50 585 / 0 152 295 585) tile the complete 585-unit outline, the key and all eight QR fragments are visible — deterministic under the verify harness because the base border keyframe animations are set to 'animation: none' from step-1 on, so the crop needs no animation freezing at all. The colored phase (upstream setColor: .colored + a nq-*-bg background class from LoginFileConfig, border fades out, waves dash in with staggered delays, strokes turn white) is exercised by the live demo below the verified crop, not by the reference. The html snippet ships a small driver modeled on upstream usage (Create.js: one step per password character, setColor on submit): data-autoplay steps 0-8 at 280ms, floods with data-color, holds and resets; data-loop repeats; a Replay button (house .nq-button-s) restarts it. prefers-reduced-motion skips the sequence and shows the colored end state immediately, both in the snippet driver and the Vue port. No separate asset files: all artwork is the inline SVG markup upstream ships inside the component.",
+  "source": {
+    "repo": "keyguard",
+    "ref": "02e7534",
+    "files": [
+      "keyguard:src/components/LoginFileAnimation.js",
+      "keyguard:src/components/LoginFileAnimation.css",
+      "keyguard:src/lib/LoginFileConfig.js",
+      "keyguard:src/request/create/Create.js"
+    ]
+  }
+}
