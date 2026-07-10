@@ -1,0 +1,80 @@
+{
+  "name": "login-file",
+  "purpose": "Keyguard Login File — the downloadable account access card: white-framed card filled with the account color's bottom-right radial gradient, security-wave line pattern, key icon, NIMIQ wordmark, account label, rotated date line, rounded-module QR code of the encrypted secret and the 'Keep safe and confidential' footer. Drawn on canvas exactly like upstream, so the element doubles as the real, saveable Login File PNG.",
+  "category": "identity",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "secret",
+      "type": "String",
+      "required": true,
+      "description": "Base64 string encoded into the QR code. Upstream this is the encrypted entropy (56 bytes) plus an optional label suffix, base64-encoded (DownloadLoginFile.setEncryptedEntropy)."
+    },
+    {
+      "name": "label",
+      "type": "String",
+      "required": false,
+      "default": "'<Color> Account'",
+      "description": "Account label printed at the top of the card. Falls back to the upstream default '<Color> Account' for the active color. Truncated to 25 symbols with an ellipsis, like upstream."
+    },
+    {
+      "name": "color",
+      "type": "String | Number",
+      "required": false,
+      "default": "0 ('orange')",
+      "description": "Account color: upstream LoginFileConfig index 0-9 or name ('orange' | 'red' | 'yellow' | 'indigo' | 'blue' | 'purple' | 'teal' | 'pink' | 'green' | 'brown'). Upstream derives it from the first address via IqonHash.getBackgroundColorIndex."
+    },
+    {
+      "name": "date",
+      "type": "String",
+      "required": false,
+      "default": "today, YYYY-MM-DD",
+      "description": "Date string printed rotated along the right edge. Upstream prints the creation day; pass a fixed value for deterministic output."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [
+    "qr-creator"
+  ],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 780,
+      "height": 480
+    },
+    "selector": ".cards",
+    "maxDiffPct": 0.5,
+    "settleMs": 600
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Truth embeds upstream src/lib/LoginFile.js, LoginFileConfig.js and QrEncoder.js VERBATIM (keyguard@02e7534) and instantiates the class three times — the canonical color trio teal (index 6), blue (4), orange (0) — with deterministic sample secrets built exactly like DownloadLoginFile.setEncryptedEntropy (56 patterned bytes + label-length byte + utf8 label, base64). Card geometry all upstream: 630x1060 canvas, 24px outer white frame radius / 16px inner, 12px border, radial gradient anchored at the inner bottom-right corner with radius sqrt(606^2 + 1036^2) from corner to main color, waves at (12,12,606x576) with per-color opacity, key at (244,291,150x158), wordmark at (116,86,398x48), label centered at y 200 (600 36px, screen composite), rotated date at (606,725) with per-color opacity, footer at y 972, QR (radius 0.5, ecLevel M, white on transparent, 330px) at (150,548). Display size 40rem height mirrors DownloadLoginFile.css max-height. Two documented sample-state pins in the truth: Date is frozen to 2026-07-10 (upstream prints 'today', which would rot the committed reference.png) and LoginFile.FONT_FAMILY points at 'Mulish' (Google Fonts name of the same typeface keyguard self-hosts as legacy 'Muli'). The html variant re-renders the identical draw sequence with the published qr-creator@1.0.0 (same library keyguard vendors as lib/QrEncoder.js — the pixel diff doubles as proof of parity, same pin as the qr-code component). The three SVG artworks (waves, key, wordmark) are upstream's own data-URL strings copied byte-exact from LoginFile.js, not redrawn, so no separate assetFiles. The reserved signet+wordmark combination appears exactly as upstream ships it. Vue port exposes toDataUrl(), toObjectUrl() and filename() like upstream.",
+  "source": {
+    "repo": "keyguard",
+    "ref": "02e7534",
+    "files": [
+      "keyguard:src/lib/LoginFile.js",
+      "keyguard:src/lib/LoginFileConfig.js",
+      "keyguard:src/lib/QrEncoder.js",
+      "keyguard:src/components/DownloadLoginFile.css",
+      "keyguard:src/translations/en.json"
+    ]
+  }
+}

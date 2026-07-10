@@ -1,0 +1,11 @@
+/* Nimiq Login File.
+ * The card is drawn entirely onto the canvas (upstream keyguard
+ * src/lib/LoginFile.js paints a 630x1060 PNG) — this file only sizes the
+ * element the way keyguard displays it: DownloadLoginFile.css caps the
+ * card at max-height 40rem. The canvas keeps its native resolution, so
+ * it stays crisp and saveable at full size. */
+.login-file {
+    display: block;
+    height: 40rem;
+    width: auto;
+}
