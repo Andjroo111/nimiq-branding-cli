@@ -1,0 +1,97 @@
+<!-- LedgerUi: the Nimiq Hub's animated Ledger Nano connect illustration, shown in the
+     loading slot of a StatusScreen. Place inside a sized, positioned container that the
+     .ledger-ui can fill - typically a .small-page.nq-card with position: relative and
+     overflow: hidden (hub SignupLedger.vue hosts it exactly like that).
+     Requires ledger-ui.css + status-screen.css + nimiq-style.min.css.
+     Source: hub@cf2ea41 src/components/LedgerUi.vue.
+
+     This is the CONNECTING state at step 1 (plug in the cable). The script below loops
+     the full connect flow: 1. Connect your Ledger Device (cable slides in), 2. Enter
+     your PIN (device zooms, PIN dots fill), 3. Open the Nimiq App (dashboard, then app
+     screen), 3s per step as upstream, and skips looping under prefers-reduced-motion.
+
+     Other states - swap attributes on .ledger-device-container and the texts:
+       confirm-address / confirm-transaction / confirm-message: remove
+         connect-animation-step, set illustration="confirm-transaction" etc.; title
+         'Confirm Transaction', status 'Confirm using your Ledger' (static, no script)
+       bitcoin artwork: class="ledger-device-container bitcoin"
+       connect button flow: add .has-connect-button on .ledger-ui plus
+         <button class="nq-button-s inverse connect-button">Connect</button> after the
+         device container (step 4 pulsates it)
+       wrong app: add .is-wrong-app-connected on .ledger-ui (loop starts at step 3)
+       compact layout: add .small on .ledger-ui -->
+<div class="ledger-ui">
+    <div class="status-screen nq-blue-bg">
+        <div class="wrapper">
+            <h1 class="title nq-h1">Connect Ledger</h1>
+
+            <div class="icon-row">
+                <div class="ledger-device-container nimiq" illustration="connecting" connect-animation-step="1">
+                    <div class="ledger-screen-confirm-address ledger-screen"></div>
+                    <div class="ledger-screen-confirm-transaction ledger-screen"></div>
+                    <div class="ledger-screen-confirm-message ledger-screen"></div>
+                    <div class="ledger-screen-app ledger-screen"></div>
+                    <div class="ledger-screen-dashboard ledger-screen"></div>
+                    <div class="ledger-screen-pin ledger-screen">
+                        <div class="ledger-pin-dot"></div>
+                        <div class="ledger-pin-dot"></div>
+                        <div class="ledger-pin-dot"></div>
+                        <div class="ledger-pin-dot"></div>
+                        <div class="ledger-pin-dot"></div>
+                        <div class="ledger-pin-dot"></div>
+                        <div class="ledger-pin-dot"></div>
+                        <div class="ledger-pin-dot"></div>
+                    </div>
+                    <div class="ledger-opacity-container">
+                        <div class="ledger-cable"></div>
+                        <div class="ledger-device"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-row">
+                <div class="status current nq-h2">1. Connect your Ledger Device</div>
+                <div class="status next nq-h2">1. Connect your Ledger Device</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Connect-flow loop driver: the static port of upstream LedgerUi's
+    // _cycleConnectInstructions() (3s per step, CONNECT_ANIMATION_STEP_DURATION = 9000/3)
+    // plus StatusScreen's 500ms status-text swap. No-op under prefers-reduced-motion and
+    // for non-connecting illustrations.
+    (() => {
+        const STEP_MS = 3000;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const start = () => document.querySelectorAll('.ledger-ui').forEach((root) => {
+            const container = root.querySelector('.ledger-device-container');
+            if (!container || container.getAttribute('illustration') !== 'connecting') return;
+            const statusRow = root.querySelector('.status-row');
+            const current = root.querySelector('.status.current');
+            const next = root.querySelector('.status.next');
+            const connectButton = root.querySelector('.connect-button');
+            const app = container.classList.contains('bitcoin') ? 'Bitcoin' : 'Nimiq';
+            const wrongApp = root.classList.contains('is-wrong-app-connected');
+            let instructions = wrongApp ? [] : ['Connect your Ledger Device', 'Enter your PIN'];
+            instructions.push('Open the ' + app + ' App');
+            if (root.classList.contains('has-connect-button')) instructions.push('Click Connect');
+            if (instructions.length > 1) instructions = instructions.map((text, i) => (i + 1) + '. ' + text);
+            let index = 0;
+            setInterval(() => {
+                index = (index + 1) % instructions.length;
+                const step = (wrongApp ? 2 : 0) + index + 1;
+                container.setAttribute('connect-animation-step', step);
+                if (connectButton) connectButton.classList.toggle('pulsate', step === 4);
+                next.textContent = instructions[index];
+                statusRow.classList.add('transition');
+                setTimeout(() => {
+                    current.textContent = instructions[index];
+                    statusRow.classList.remove('transition');
+                }, 500);
+            }, STEP_MS);
+        });
+        if (document.readyState === 'complete') start();
+        else window.addEventListener('load', start, { once: true });
+    })();
+</script>

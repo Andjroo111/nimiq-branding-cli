@@ -1,0 +1,114 @@
+{
+  "name": "ledger-ui",
+  "purpose": "The Hub's animated Ledger connect illustration — a white line-art Ledger Nano on the navy loading StatusScreen that loops the connect flow: USB cable slides in (1. Connect your Ledger Device), device zooms and the PIN dots fill (2. Enter your PIN), dashboard then app screen light up (3. Open the Nimiq App); also renders the static confirm-address/transaction/message request screens. Shown whenever the Hub talks to a Ledger (signup, address derivation, transaction signing).",
+  "category": "feedback",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "illustration",
+      "type": "'loading' | 'connecting' | 'confirm-address' | 'confirm-transaction' | 'confirm-message'",
+      "required": false,
+      "default": "'connecting'",
+      "description": "Which illustration to show. Upstream derives this from @nimiq/ledger-api state events; the port exposes it as a prop. 'loading' shows the hexagon spinner, 'connecting' runs the looping connect animation, confirm-* show the static request screens on the zoomed, dimmed device."
+    },
+    {
+      "name": "coin",
+      "type": "'nimiq' | 'bitcoin'",
+      "required": false,
+      "default": "'nimiq'",
+      "description": "Artwork of the dashboard and open-app device screens (upstream: request.coin)."
+    },
+    {
+      "name": "appName",
+      "type": "String",
+      "required": false,
+      "default": "derived from coin ('Nimiq' | 'Bitcoin')",
+      "description": "App name in the 'Open the {app} App' instruction (upstream: request.requiredApp)."
+    },
+    {
+      "name": "small",
+      "type": "Boolean",
+      "required": false,
+      "default": "false",
+      "description": "Compact layout: no title, message only, smaller device (as when embedded in the checkout sign-transaction card)."
+    },
+    {
+      "name": "showConnectButton",
+      "type": "Boolean",
+      "required": false,
+      "default": "false",
+      "description": "Adds the 'Click Connect' step and the pulsating inverse Connect button (upstream: USER_INTERACTION_REQUIRED/CONNECTION_ABORTED errors); the button emits 'connect'."
+    },
+    {
+      "name": "wrongAppConnected",
+      "type": "Boolean",
+      "required": false,
+      "default": "false",
+      "description": "Wrong app open on the device: skips the cable/PIN steps and loops only the open-app screen (upstream: WRONG_APP error)."
+    },
+    {
+      "name": "title",
+      "type": "String",
+      "required": false,
+      "default": "derived from illustration",
+      "description": "Override the derived instructions title shown by the StatusScreen."
+    },
+    {
+      "name": "status",
+      "type": "String",
+      "required": false,
+      "default": "derived from illustration",
+      "description": "Override the derived instructions text (the animated status line)."
+    },
+    {
+      "name": "stepDuration",
+      "type": "Number",
+      "required": false,
+      "default": "3000",
+      "description": "Connect animation step duration in ms (upstream CONNECT_ANIMATION_STEP_DURATION = 9000 / 3); also drives the CSS keyframes via v-bind."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [
+    "status-screen"
+  ],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 500,
+      "height": 700
+    },
+    "selector": ".small-page",
+    "maxDiffPct": 0.5,
+    "settleMs": 300
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Source: upstream/hub src/components/LedgerUi.vue (illustration markup + all scoped CSS + connect-instruction logic), hosted per src/views/SignupLedger.vue (<SmallPage><LedgerUi/></SmallPage>; its scoped host rules are the demo/truth context styles) inside the loading state of StatusScreen.vue (dependsOn status-screen; nq-blue-bg navy gradient, title, animated status line). All device artwork is upstream's inline data-URI SVGs — no asset files. Sample state: CONNECTING at step 1 ('Connect Ledger' / '1. Connect your Ledger Device', nimiq coin). The verify snapshot is deterministic because Playwright's animations:'disabled' fast-forwards the finite fill-both step-1 keyframes (ledger-fade-in, ledger-connect-cable) to their end frame: cable plugged in, device at full opacity, scale 1 — and the JS loop's first step change only happens 3s after load, well past the settle window. Animation timings (per 3s step, CSS attr connect-animation-step on .ledger-device-container): step 1 cable slides in over 75% and the device fades in by 10%; step 2 ledger-scale zooms to --ledger-scale-factor 1.62 (small: 1.5) at --ledger-opacity .3 while the PIN screen slides in and 8 pin dots morph dash-to-dot, staggered by step/1.15/8 delays; step 3 dashboard shows during the first 25% of a double-duration keyframe, app screen 60-95%, device fades out at 95-100%; step 4 (only .has-connect-button) spans the app/dashboard keyframes over two steps and pulsates the Connect button at step/4. The instruction texts cycle via JS (upstream _cycleConnectInstructions; here a snippet <script> / the Vue port's interval) with StatusScreen's 500ms status swap. Traps: --ledger-y-offset needs an explicit 0rem unit; .ledger-screen-confirm-address's data URI is broken upstream at cf2ea41 (missing leading '<' of '<svg') — kept verbatim in truth, restored in the html/vue ports (invisible in the verified state); Vue deep selectors '>>>' were expanded (plain CSS) / rewritten to :deep() (Vue 3); keyframe names kept upstream-verbatim (ledger-*, connect-button-pulsate). Port addition, not upstream: a prefers-reduced-motion block freezes the connecting illustration on the plugged-in full-opacity device and the loop driver does not cycle. Vue port translates the @nimiq/ledger-api service into props (illustration/coin/appName/showConnectButton/wrongAppConnected), keeps upstream's small-layout _showInstructions behavior (title becomes the message) and re-emits information-shown/no-information-shown plus 'connect' from the button.",
+  "source": {
+    "repo": "hub",
+    "ref": "cf2ea41",
+    "files": [
+      "hub:src/components/LedgerUi.vue",
+      "hub:src/views/SignupLedger.vue",
+      "hub:src/components/StatusScreen.vue"
+    ]
+  }
+}
