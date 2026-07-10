@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AccountDetails — upstream truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; }
+</style>
+
+<!-- Identicon.vue <style scoped>, verbatim (img selector scoped to the component root) -->
+<style>
+    .identicon {
+        width: 10rem;
+    }
+
+    .identicon img {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<!-- Amount.vue <style scoped>, verbatim -->
+<style>
+    .amount {
+        white-space: nowrap;
+    }
+
+    .amount.approx::before {
+        content: '~ ';
+        opacity: 0.5;
+    }
+</style>
+
+<!-- Account.vue <style scoped>, verbatim (column layout used here; cashlink rules omitted,
+     never reachable from AccountDetails' sample state) -->
+<style>
+    .account {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.75rem 2rem;
+        box-sizing: border-box;
+        flex-shrink: 0;
+        font-size: 2rem;
+        line-height: 1.2;
+        overflow: hidden; /* hide chevron right on hover*/
+    }
+
+    .account.row {
+        width: 100%;
+        flex-direction: row;
+    }
+
+    .account.column {
+        flex-direction: column;
+    }
+
+    .identicon-and-label {
+        display: flex;
+        align-items: center;
+    }
+
+    .row .identicon-and-label {
+        flex-direction: row;
+        overflow: hidden;
+        min-width: 5.625rem;
+        flex-grow: 1;
+    }
+
+    .column .identicon-and-label {
+        flex-direction: column;
+    }
+
+    .identicon {
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    .row .identicon {
+        width: 5.625rem;
+        height: 5.625rem;
+        margin-right: 1.5rem;
+    }
+
+    .column .identicon {
+        width: 10rem;
+        height: 10rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .account-image {
+        border-radius: 1rem;
+    }
+
+    .wallet-label {
+        margin-bottom: 0;
+    }
+
+    .label,
+    .wallet-label {
+        overflow: hidden;
+    }
+
+    .row .label:not(.editable) {
+        opacity: 0.7;
+        padding-left: 1rem;
+    }
+
+    .row .label,
+    .row .wallet-label {
+        white-space: nowrap;
+        font-weight: 600;
+        mask-image: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+    }
+
+    .row .label {
+        flex-grow: 1;
+    }
+
+    .column .label,
+    .column .wallet-label {
+        max-width: 18.5rem; /* 148px, the width the automatic labels are designed for */
+        text-align: center;
+        line-height: 1.5;
+        /* TODO implement multi line ellipsis */
+        max-height: calc(2 * 1em * 1.5); /* #lines * font-size * line-height */
+    }
+
+    .label.address-font {
+        font-family: "Fira Mono", "Andale Mono", monospace;
+        font-weight: normal;
+        text-transform: uppercase;
+    }
+
+    .balance {
+        flex-shrink: 0;
+    }
+
+    .row .balance {
+        margin-left: 1rem;
+        font-weight: bold;
+        opacity: 0.7;
+    }
+
+    .column .balance {
+        margin-top: 1.5rem;
+    }
+</style>
+
+<!-- Copyable.vue <style scoped>, verbatim (AddressDisplay renders its root AS a Copyable
+     because AccountDetails passes `copyable`) -->
+<style>
+    .copyable {
+        position: relative;
+        padding: 1.5rem;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: color .3s var(--nimiq-ease);
+    }
+
+    .copyable:hover,
+    .copyable:focus,
+    .copyable.copied {
+        color: var(--nimiq-light-blue) !important;
+        outline: none;
+    }
+
+    .copyable .background {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-image: var(--nimiq-light-blue-bg);
+        border-radius: .5rem;
+        opacity: 0;
+        transition: opacity .3s var(--nimiq-ease);
+    }
+
+    .copyable:hover .background,
+    .copyable:focus .background,
+    .copyable.copied .background {
+        opacity: .07;
+    }
+
+    .copyable .tooltip {
+        pointer-events: none;
+        font-size: 1.75rem;
+        padding: 0.75rem 1rem;
+        background: var(--nimiq-light-blue-bg);
+        position: absolute;
+        top: -5rem;
+        left: 50%;
+        margin-left: -3.75rem; /* half width of tooltip */
+        border-radius: .5rem;
+        color: white;
+        font-weight: 600;
+        line-height: 1.1;
+        box-shadow:
+            0px 2px 2.5px rgba(31, 35, 72, 0.02),
+            0px 7px 8.5px rgba(31, 35, 72, 0.04),
+            0px 18px 38px rgba(31, 35, 72, 0.07);
+
+        /* Animated styles */
+        transform: translate3d(0, 1rem, 0);
+        opacity: 0;
+
+        transition: transform .3s var(--nimiq-ease), opacity .3s var(--nimiq-ease);
+        transition-delay: .2s;
+    }
+
+    .copyable .tooltip::after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 2.25rem;
+        height: 2rem;
+        left: calc(50% - 1.125rem);
+        mask-image: url('data:image/svg+xml,<svg viewBox="0 0 18 16" xmlns="http://www.w3.org/2000/svg"><path d="M9 7.12c-.47 0-.93.2-1.23.64L3.2 14.29A4 4 0 0 1 0 16h18a4 4 0 0 1-3.2-1.7l-4.57-6.54c-.3-.43-.76-.64-1.23-.64z" fill="white"/></svg>');
+        z-index: 1000; /* move above tooltip-box's box-shadow */
+        background: #1A6AD2;
+        transform: rotate(180deg) translateY(-0.75rem);
+    }
+
+    .copyable.copied .tooltip {
+        transition-delay: 0s;
+        pointer-events: all;
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+</style>
+
+<!-- AddressDisplay.vue <style scoped>, verbatim -->
+<style>
+    .address-display {
+        width: 100%;
+        box-sizing: content-box;
+        color: rgba(31, 35, 72, .5); /* nimiq-blue with .5 opacity */
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        font-size: 3rem;
+    }
+
+    .format-nimiq {
+        max-width: 28.25rem;
+    }
+
+    .format-ethereum {
+        max-width: 27rem;
+    }
+
+    .address-display.copyable:hover,
+    .address-display.copyable:focus,
+    .address-display.copyable.copied {
+        font-weight: 500;
+    }
+
+    .chunk {
+        font-family: 'Fira Mono', monospace;
+        margin: 0.875rem 0;
+        line-height: 1.11;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .format-nimiq .chunk {
+        width: 33%;
+        text-transform: uppercase;
+    }
+
+    .format-ethereum .chunk {
+        width: 100%;
+    }
+
+    .space {
+        font-size: 0;
+    }
+</style>
+
+<!-- CloseButton.vue <style scoped>, verbatim modulo the scope attribute: vue-loader
+     compiles `button` -> `button[data-v-x]`. The attribute selector is required — it
+     lifts specificity to (0,1,1) so these rules beat .nq-button-s (0,1,0), e.g. for
+     height 3rem vs 3.375rem. -->
+<style>
+    button[data-v-close] {
+        font-size: 3rem;
+        padding: 0;
+        background: none !important;
+        height: 3rem;
+    }
+
+    button[data-v-close]::before {
+        border-radius: 50%;
+    }
+
+    button .nq-icon[data-v-close] {
+        opacity: .2;
+        transition: opacity .3s var(--nimiq-ease);
+    }
+
+    button:hover .nq-icon[data-v-close],
+    button:active .nq-icon[data-v-close],
+    button:focus .nq-icon[data-v-close] {
+        opacity: .4;
+    }
+
+    button.top-right[data-v-close] {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+    }
+</style>
+
+<!-- AccountDetails.vue <style scoped>, verbatim ('>>>' deep combinator -> descendant).
+     MUST come after the Account/AddressDisplay styles: the overrides share specificity
+     (0,2,0) with the child rules and win by source order, exactly like the runtime
+     scoped-CSS injection order (children injected on import, parent last). -->
+<style>
+    .account-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1;
+        position: relative;
+        /* background: rgba(255, 255, 255, 0.95); */
+        padding: 4rem;
+        border-radius: 1rem;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        box-sizing: border-box;
+    }
+
+    .account {
+        padding: 0;
+        width: 100%;
+    }
+
+    .account .identicon-and-label {
+        width: 100%;
+    }
+
+    .account .identicon {
+        width: 18rem;
+        height: 18rem;
+        margin-bottom: 3rem;
+    }
+
+    .account .label {
+        font-size: 3rem;
+        font-weight: 600;
+        opacity: 1;
+    }
+
+    .account .wallet-label {
+        margin-top: .5rem;
+    }
+
+    .account .label,
+    .account .wallet-label {
+        max-width: unset;
+        max-height: unset;
+    }
+
+    .account .balance {
+        font-size: 3rem;
+        margin-top: 3rem;
+    }
+
+    .address-display {
+        margin-top: 3rem;
+        margin-bottom: 1.5rem;
+    }
+</style>
+
+<!-- Page/demo state: AccountDetails fills its host container (the storybook sample
+     mounts it inside a SmallPage-sized 420x560 box) -->
+<style>
+    body {
+        margin: 0;
+        padding: 32px;
+        background: white;
+    }
+    .account-details-host {
+        width: 420px;
+        height: 560px;
+    }
+</style>
+</head>
+<body>
+
+<!-- Upstream template expanded for the sample state:
+     address 'NQ33 DH76 PHUK J41Q LX3A U4E0 M0BM QJH9 QQL1' (checksum-valid story address),
+     label 'Savings Account', walletLabel 'Keyguard Wallet', balance 2712415141213 luna,
+     editable=false. Account renders layout 'column'; the balance goes through Amount with
+     Account's default decimals=2 -> '27 124 151.41' (U+202F narrow no-break space grouping
+     above 4 integer digits). AddressDisplay is rendered AS a Copyable (AccountDetails
+     hardcodes `copyable`), resting (uncopied) state. -->
+<div class="account-details-host">
+    <div class="account-details">
+        <button class="close-button nq-button-s top-right" data-v-close aria-label="Close"><svg data-v-close class="nq-icon" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.528 3.52c4.683-4.684 12.275-4.686 16.96-.005 4.678 4.69 4.678 12.28 0 16.97-4.685 4.68-12.277 4.678-16.96-.005-4.682-4.684-4.682-12.276 0-16.96zm13.145 13.133a1 1 0 0 0 .036-1.374l-3.11-3.11a.25.25 0 0 1 0-.352l3.11-3.11a1 1 0 1 0-1.414-1.415l-3.11 3.11a.25.25 0 0 1-.354 0l-3.11-3.11a1 1 0 0 0-1.41 1.415l3.11 3.11a.249.249 0 0 1 0 .353l-3.11 3.109a1 1 0 0 0 0 1.415c.396.38 1.021.38 1.416 0l3.109-3.11a.252.252 0 0 1 .354 0l3.11 3.11a1 1 0 0 0 1.373-.041z" fill="currentColor"/></svg></button>
+        <div class="account column">
+            <div class="identicon-and-label">
+                <div class="identicon" data-address="NQ33 DH76 PHUK J41Q LX3A U4E0 M0BM QJH9 QQL1">
+                    <img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>'>
+                </div>
+                <div class="label">Savings Account</div>
+                <div class="nq-label wallet-label">Keyguard Wallet</div>
+            </div>
+            <span class="amount balance">27&#8239;124&#8239;151.41 <span class="currency nim">NIM</span></span>
+        </div>
+        <div class="copyable address-display format-nimiq" tabindex="0">
+            <div class="background"></div>
+            <span class="chunk">NQ33<span class="space">&nbsp;</span></span><span class="chunk">DH76<span class="space">&nbsp;</span></span><span class="chunk">PHUK<span class="space">&nbsp;</span></span><span class="chunk">J41Q<span class="space">&nbsp;</span></span><span class="chunk">LX3A<span class="space">&nbsp;</span></span><span class="chunk">U4E0<span class="space">&nbsp;</span></span><span class="chunk">M0BM<span class="space">&nbsp;</span></span><span class="chunk">QJH9<span class="space">&nbsp;</span></span><span class="chunk">QQL1<span class="space">&nbsp;</span></span>
+            <div class="tooltip">Copied</div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import Iqons from 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.js';
+    // Equivalent of the Identicon component's svgPath setup (file-loader copy of iqons.min.svg)
+    // Identicon sprite: the REAL @nimiq/iqons@1.6.0 iqons.min.svg is vendored at ../../../../assets/img/iqons.min.svg
+    // (consumer projects: `nq add` copies it to ./nimiq/assets/img/iqons.min.svg). The iqons LIBRARY import
+    // above stays on the jsdelivr pin — it is code, not artwork. The CDN sprite (byte-identical content)
+    // is only the fallback when the local copy is unreachable (e.g. file:// contexts that block fetch).
+    const localIqonsSprite = '../../../../assets/img/iqons.min.svg';
+    const cdnIqonsSprite = 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.svg';
+    Iqons.svgPath = await fetch(localIqonsSprite, { method: 'HEAD' }).then((r) => (r.ok ? localIqonsSprite : cdnIqonsSprite)).catch(() => cdnIqonsSprite);
+
+    for (const el of document.querySelectorAll('.account-details .identicon[data-address]')) {
+        el.querySelector('img').src = await Iqons.toDataUrl(el.dataset.address);
+    }
+</script>
+</body>
+</html>
