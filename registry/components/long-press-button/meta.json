@@ -1,0 +1,61 @@
+{
+  "name": "long-press-button",
+  "purpose": "Hold-to-confirm button — a nq-button whose white progress pill fills over the hold duration, swapping the label to 'Keep pressing…' at 40% and firing 'long-press' at 100%; protects critical actions from accidental clicks.",
+  "category": "form",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "duration",
+      "type": "number",
+      "required": false,
+      "default": 3000,
+      "description": "How long the button must be held before 'long-press' fires, in milliseconds. Also drives the fill speed and the 40% 'Keep pressing…' prompt delay."
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "required": false,
+      "default": "light-blue",
+      "description": "A nimiq-style button color class (light-blue, green, orange, red, gold) or 'inverse' for colored backgrounds (requires the button to share the background's stacking context)."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 420,
+      "height": 180
+    },
+    "selector": ".long-press-button",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Sample state: rest (not pressed, no .indicator in the DOM), color light-blue (upstream default), slot label 'Hold to confirm', no subline; the frozen frame is exactly this rest state. Requires the nq-button base from nimiq-style.min.css (class='long-press-button nq-button light-blue'). Pressed behavior (interactive in the snippet/demo, not in the frozen frame): mousedown/touchstart/Enter/Space inserts the .indicator at width 0 which transitions to full width over duration ms; at duration*0.4 the labels cross-fade to 'Keep pressing…' (the ellipsis is the upstream \\u2026 i18n string); at duration a 'long-press' CustomEvent fires; releasing early (document mouseup, touchend, keyup, blur) rewinds the fill within min(.3s, duration). Click events are swallowed (preventDefault + stopImmediatePropagation), only 'long-press' confirms. Both labels always stay in the DOM so the button never resizes. The label color switch inside the fill is two nested mix-blend-modes (mask lighten, indicator difference), which is why labels transition color/margin instead of opacity/transform (a new stacking context would break the blend). Vue 3 port trap: upstream's Vue 2 '.transition-indicator-enter' class is renamed '-enter-from'.",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/LongPressButton.vue"
+    ]
+  }
+}

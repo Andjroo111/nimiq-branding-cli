@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>LanguageSelector</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="language-selector.css">
+<style>
+    /* Top headroom because the list opens UPWARD (anchored bottom: -2rem), like its
+       upstream placement at the bottom of a page. Does not affect the selector crop. */
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 240px 32px 32px; background: white; }
+</style>
+</head>
+<body>
+    <div class="language-selector" tabindex="0" data-languages="en,de,es,fr,nl,pt">
+        <div class="trigger has-arrow">en</div>
+    </div>
+
+    <script>
+    (function () {
+        var root = document.querySelector('.language-selector');
+        var trigger = root.querySelector('.trigger');
+        var languages = (root.dataset.languages || 'en').split(',').map(function (s) { return s.trim(); });
+        var selected = trigger.textContent.trim();
+        if (languages.indexOf(selected) === -1) selected = languages[0];
+        var closeTimeout = -1;
+        if (languages.length < 2) trigger.classList.remove('has-arrow');
+
+        function entries() { return Array.prototype.slice.call(root.querySelectorAll('.list-entry')); }
+
+        function select(language) {
+            if (selected !== language) {
+                selected = language;
+                trigger.textContent = language;
+                root.dispatchEvent(new CustomEvent('input', { detail: language }));
+            }
+        }
+
+        function showList() {
+            clearTimeout(closeTimeout);
+            if (root.querySelector('.list') || languages.length < 2) return;
+            var list = document.createElement('div');
+            list.className = 'list';
+            languages.forEach(function (language) {
+                var entry = document.createElement('div');
+                entry.className = 'list-entry';
+                entry.tabIndex = 0;
+                var label = document.createElement('span');
+                label.className = 'list-entry-label has-arrow';
+                label.textContent = language;
+                entry.appendChild(label);
+                entry.addEventListener('mouseenter', function () { entry.focus(); });
+                entry.addEventListener('click', function () { select(language); hideList(0); });
+                entry.addEventListener('keydown', function (event) {
+                    if (event.key === ' ' || event.key === 'Enter') { event.preventDefault(); select(language); hideList(0); }
+                    else if (event.key === 'ArrowDown') { event.preventDefault(); moveFocus(+1); }
+                    else if (event.key === 'ArrowUp') { event.preventDefault(); moveFocus(-1); }
+                    else if (event.key === 'ArrowLeft' || event.key === 'Escape') { event.preventDefault(); hideList(0); }
+                });
+                list.appendChild(entry);
+            });
+            root.appendChild(list);
+            root.removeAttribute('tabindex');
+            var current = entries()[languages.indexOf(selected)];
+            if (current) current.focus();
+        }
+
+        function hideList(delay) {
+            clearTimeout(closeTimeout);
+            closeTimeout = setTimeout(function () {
+                var list = root.querySelector('.list');
+                if (list) list.remove();
+                if (languages.length > 1) root.setAttribute('tabindex', '0');
+            }, delay);
+        }
+
+        function moveFocus(offset) {
+            var all = entries();
+            var currentIndex = all.indexOf(document.activeElement);
+            if (currentIndex === -1) return;
+            all[(all.length + currentIndex + offset) % all.length].focus();
+        }
+
+        root.addEventListener('focusin', showList);
+        root.addEventListener('focusout', function () { hideList(50); });
+    })();
+    </script>
+</body>
+</html>
