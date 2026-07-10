@@ -1,0 +1,137 @@
+/* Nimiq CopyableField — labeled click-to-copy field for dark surfaces.
+   Port of @nimiq/vue-components CopyableField.vue, selectors namespaced under
+   .copyable-field. Renders WHITE text on a translucent white field — place it
+   on a navy surface (.nq-blue-bg from nimiq-style.min.css), which also swaps
+   --nimiq-light-blue for its on-dark variant used by the 'Copied' notice.
+   Keyed values ({ hex: ..., base64: ... }) render .nq-button-s key switchers;
+   simple values get the fade-out mask on the right edge instead. */
+
+.copyable-field .copyable-field-content,
+.copyable-field .copy-notice,
+.copyable-field button,
+.copyable-field .simple-value .value-container {
+    transition-duration: .25s;
+    transition-timing-function: var(--nimiq-ease);
+}
+
+.copyable-field,
+.copyable-field .copyable-field-content {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.copyable-field {
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+}
+
+.copyable-field .copyable-field-content {
+    height: 6.25rem;
+    position: relative;
+    border-radius: 0.5rem;
+    line-height: 6.25rem;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    transition-property: background;
+}
+
+.copyable-field.small .copyable-field-content {
+    height: 5rem;
+    line-height: 5rem;
+}
+
+.copyable-field .copy-notice {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--nimiq-light-blue);
+    pointer-events: none;
+    opacity: 0;
+    transition-property: opacity;
+}
+
+.copyable-field .copyable-field-content,
+.copyable-field .copy-notice {
+    padding: 0 3rem;
+}
+
+.copyable-field .copyable-field-content:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.copyable-field .copied .copy-notice {
+    opacity: 1;
+}
+
+.copyable-field button {
+    margin-left: .5rem;
+    transition-property: background, color, opacity;
+}
+
+.copyable-field button:first-of-type {
+    margin-left: 2.5rem;
+}
+
+.copyable-field button:not(.inverse) {
+    background: transparent;
+}
+
+.copyable-field button:not(.inverse):hover {
+    background: rgba(255, 255, 255, .07);
+}
+
+.copyable-field button.inverse {
+    color: white;
+}
+
+.copyable-field button.single-key {
+    pointer-events: none;
+    background: transparent;
+}
+
+.copyable-field.small button {
+    height: 3rem;
+    line-height: 3rem;
+}
+
+.copyable-field .copied button {
+    opacity: 0;
+}
+
+.copyable-field .value-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    overflow-x: hidden; /* avoid overflow of the value while it's not resized yet */
+    white-space: nowrap;
+}
+
+.copyable-field .simple-value .value-container {
+    mask-image: linear-gradient(90deg, black 60%, transparent 80%);
+    mask-size: 160%;
+    transition-property: mask-size;
+}
+
+.copyable-field .simple-value.copied .value-container {
+    mask-size: 100%;
+}
+
+.copyable-field .nq-button-s,
+.copyable-field .nq-label {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.copyable-field .nq-label {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
+
+.copyable-field.small .nq-label {
+    margin-top: 2.75rem;
+    margin-bottom: 1.75rem;
+}

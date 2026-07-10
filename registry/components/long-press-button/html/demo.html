@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>LongPressButton</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="long-press-button.css">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; background: white; }
+</style>
+</head>
+<body>
+    <button class="long-press-button nq-button light-blue" data-duration="3000">
+        <span class="mix-blend-mode-mask">
+            <label class="show">Hold to confirm</label>
+            <label>Keep pressing…</label>
+        </span>
+    </button>
+
+    <script>
+    (function () {
+        var button = document.querySelector('.long-press-button');
+        var mask = button.querySelector('.mix-blend-mode-mask');
+        var labels = mask.querySelectorAll('label');
+        var subline = mask.querySelector('.subline');
+        var duration = parseInt(button.dataset.duration, 10) || 3000;
+        var pressed = false;
+        var indicator = null;
+        var keepPressingTimeout = -1;
+        var longPressTimeout = -1;
+
+        function setPressed(isPressed) {
+            if (pressed === isPressed) return;
+            pressed = isPressed;
+            if (isPressed) {
+                if (indicator) indicator.remove();
+                indicator = document.createElement('div');
+                indicator.className = 'indicator transition-indicator-enter';
+                indicator.style.setProperty('--transition-time', duration + 'ms');
+                mask.insertBefore(indicator, mask.firstChild);
+                indicator.getBoundingClientRect(); // force reflow so the width transition runs
+                indicator.classList.remove('transition-indicator-enter');
+                if (subline) {
+                    labels.forEach(function (label) { label.classList.add('center'); });
+                    subline.classList.remove('show');
+                }
+                keepPressingTimeout = setTimeout(function () {
+                    labels[0].classList.remove('show');
+                    labels[1].classList.add('show');
+                }, duration * .4);
+                longPressTimeout = setTimeout(function () {
+                    button.dispatchEvent(new CustomEvent('long-press'));
+                }, duration);
+            } else {
+                clearTimeout(keepPressingTimeout);
+                clearTimeout(longPressTimeout);
+                labels[0].classList.add('show');
+                labels[1].classList.remove('show');
+                labels.forEach(function (label) { label.classList.remove('center'); });
+                if (subline) subline.classList.add('show');
+                if (indicator) {
+                    var leaving = indicator;
+                    indicator = null;
+                    leaving.classList.add('transition-indicator-leave-active', 'transition-indicator-leave-to');
+                    leaving.addEventListener('transitionend', function () { leaving.remove(); });
+                    setTimeout(function () { leaving.remove(); }, 500);
+                }
+            }
+        }
+
+        button.addEventListener('mousedown', function (event) {
+            if (event.button !== 0) return;
+            event.preventDefault();
+            setPressed(true);
+        });
+        button.addEventListener('touchstart', function (event) {
+            event.preventDefault();
+            setPressed(true);
+        }, { passive: false });
+        button.addEventListener('keydown', function (event) {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            event.preventDefault();
+            setPressed(true);
+        });
+        button.addEventListener('touchend', function () { setPressed(false); });
+        button.addEventListener('keyup', function (event) {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            setPressed(false);
+        });
+        button.addEventListener('blur', function () { setPressed(false); });
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        });
+        document.addEventListener('mouseup', function () { setPressed(false); });
+
+        button.addEventListener('long-press', function () { console.log('long-press confirmed'); });
+    })();
+    </script>
+</body>
+</html>
