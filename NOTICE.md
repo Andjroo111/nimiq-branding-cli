@@ -15,6 +15,7 @@ This repo vendors their real shipped files rather than imitating them:
 | `nq-*` CSS framework | [nimiq/nimiq-style](https://github.com/nimiq/nimiq-style) | Apache-2.0 |
 | Modern nimiq-css + nimiq-icons + flags | [onmax/nimiq-ui](https://github.com/onmax/nimiq-ui) | MIT |
 | Vue component designs (ported) | [nimiq/vue-components](https://github.com/nimiq/vue-components), [nimiq/wallet](https://github.com/nimiq/wallet), [nimiq/hub](https://github.com/nimiq/hub) | Apache-2.0 |
+| Keyguard UI designs (ported: Login File, recovery words, backup codes, password box) | [nimiq/keyguard](https://github.com/nimiq/keyguard) | Apache-2.0 |
 | Identicon sprite + parts | [nimiq/identicons](https://github.com/nimiq/identicons) | MIT |
 | Official logo pack | [nimiq/designs](https://github.com/nimiq/designs) | see repo |
 | App/ecosystem icons | [nimiq/awesome](https://github.com/nimiq/awesome) | see repo |
