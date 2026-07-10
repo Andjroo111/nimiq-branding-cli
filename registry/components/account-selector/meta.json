@@ -1,0 +1,117 @@
+{
+  "name": "account-selector",
+  "purpose": "Account chooser across wallets — each wallet gets an uppercase label with a hairline rule, followed by its AccountList rows, in a 400px scroll container with fade masks and a 'Login to another account' footer.",
+  "category": "identity",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "wallets",
+      "type": "WalletInfo[]",
+      "required": true,
+      "description": "Wallets to list: { id, label, type (1 legacy / 2 BIP39 / 3 Ledger), accounts (Map or array of AccountInfo), contracts, btcXPub?, polygonAddresses? }."
+    },
+    {
+      "name": "disabledAddresses",
+      "type": "string[]",
+      "default": [],
+      "description": "Addresses rendered disabled, forwarded to each AccountList."
+    },
+    {
+      "name": "decimals",
+      "type": "number",
+      "description": "Exact decimals for the balance Amounts (else min 2 / max 5)."
+    },
+    {
+      "name": "minBalance",
+      "type": "number",
+      "description": "Balances render only when set; wallets and accounts below it sort to the end."
+    },
+    {
+      "name": "disableContracts",
+      "type": "boolean",
+      "description": "Disable contract entries with a tooltip."
+    },
+    {
+      "name": "disableLegacyAccounts",
+      "type": "boolean",
+      "description": "Disable type-1 wallets; a tooltip on the wallet label explains why."
+    },
+    {
+      "name": "disableBip39Accounts",
+      "type": "boolean",
+      "description": "Disable type-2 wallets."
+    },
+    {
+      "name": "disableLedgerAccounts",
+      "type": "boolean",
+      "description": "Disable type-3 wallets."
+    },
+    {
+      "name": "highlightBitcoinAccounts",
+      "type": "boolean",
+      "description": "Show an orange BTC pill next to wallets with a btcXPub."
+    },
+    {
+      "name": "highlightUsdcAccounts",
+      "type": "boolean",
+      "description": "Show a blue USDC pill next to wallets with polygonAddresses."
+    },
+    {
+      "name": "allowLogin",
+      "type": "boolean",
+      "default": true,
+      "description": "Render the 'Login to another account' footer button (emits login)."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [
+    "img/iqons.min.svg"
+  ],
+  "dependsOn": [
+    "account-list",
+    "identicon",
+    "tooltip"
+  ],
+  "npmDeps": [
+    "@nimiq/iqons"
+  ],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 500,
+      "height": 480
+    },
+    "selector": ".account-selector",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Sample state: 2 wallets ('Keyguard Wallet': Primary Account 120.2311 NIM + HODL Account 27 124 151.41213 NIM; 'Ledger Wallet': My Ledger Account 98 765.4321 NIM + Pocket Money 2500.00 NIM), minBalance 1 so balances render, allowLogin true, no disabled wallets (so no Tooltip) and no BTC/USDC pills, at 420px width. Addresses are checksum-valid (story addresses + one synthetic); labels/amounts follow the account-list recipe (U+202F grouping above 4 integer digits, min 2 / max 5 decimals). The component is 400px tall (scoped height) with an overflow-y scroll container masked by a 4rem fade at top and bottom — the sample content overflows and clips at the fade, which is the real upstream behavior. CLASS COLLISION TRAP: AccountSelector's .wallet-label HEADER shares its class name with Account.vue's .wallet-label row rule; runtime scope attributes keep them apart, and the flattened CSS restores the same result only because the AccountSelector block comes AFTER the Account block (its margin shorthand wins by source order) — keep that order. The upstream wallets prop keys accounts in a JS Map; the Vue port accepts a Map or a plain array. wallets.length is greater than 1 here so headers render; a single enabled wallet drops its header and adds .extra-spacing to the container. Identicons via @nimiq/iqons@1.6.0 pinned on jsdelivr with Iqons.svgPath probing the vendored assets/img/iqons.min.svg first (same recipe as account-list).",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/AccountSelector.vue",
+      "vue-components:src/components/AccountList.vue",
+      "vue-components:src/components/Account.vue",
+      "vue-components:src/components/Amount.vue",
+      "vue-components:src/components/Identicon.vue"
+    ]
+  }
+}

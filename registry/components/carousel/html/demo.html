@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nimiq Carousel — demo</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="carousel.css">
+<style>
+    body {
+        font-family: 'Mulish', sans-serif;
+        margin: 0;
+        padding: 32px;
+        background: white;
+    }
+
+    /* Demo slides: fixed-size cards (the frozen geometry assumes 200x240) */
+    .carousel .nq-card {
+        width: 200px;
+        height: 240px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: 600;
+    }
+</style>
+</head>
+<body>
+
+<div class="carousel" style="min-height: 240px;">
+    <div style="transform: translate3d(calc(-108.00000000000001px - 50%),-50%,-187.06148721743872px); z-index: 0;">
+        <div class="nq-card">Card 1</div>
+    </div>
+    <div class="selected" style="transform: translate3d(calc(0px - 50%),-50%,0px); z-index: 2;">
+        <div class="nq-card">Card 2</div>
+    </div>
+    <div style="transform: translate3d(calc(108.00000000000001px - 50%),-50%,-187.06148721743872px); z-index: 1;">
+        <div class="nq-card">Card 3</div>
+    </div>
+</div>
+</body>
+</html>

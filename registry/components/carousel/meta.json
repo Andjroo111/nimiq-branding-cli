@@ -1,0 +1,82 @@
+{
+  "name": "carousel",
+  "purpose": "3D slide carousel — entries sit on a circle in perspective, the selected one faces front and the rest recede; click, arrow keys or the selected prop rotate the ring (used by the Keyguard for account and word choices).",
+  "category": "layout",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "entries",
+      "type": "string[]",
+      "required": true,
+      "description": "Slide names; each names a slot that provides that slide's content."
+    },
+    {
+      "name": "selected",
+      "type": "String",
+      "description": "Entry name to bring to the front. Invalid or missing values fall back to the first entry."
+    },
+    {
+      "name": "entryMargin",
+      "type": "Number",
+      "default": 16,
+      "description": "Minimum gap in px between neighboring slides; sets the ring radius together with the slide widths."
+    },
+    {
+      "name": "animationDuration",
+      "type": "Number",
+      "default": 1000,
+      "description": "Tween duration in ms for radius and rotation changes."
+    },
+    {
+      "name": "hideBackgroundEntries",
+      "type": "Boolean",
+      "default": false,
+      "description": "display:none for entries on the back half of the circle."
+    },
+    {
+      "name": "disabled",
+      "type": "Boolean",
+      "default": false,
+      "description": "Blocks interaction and rotates all non-selected entries to the hidden back position."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 700,
+      "height": 400
+    },
+    "selector": ".carousel",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Sample state: 3 slides ('Card 1/2/3' as fixed 200x240 nq-cards), middle selected, entryMargin 16 (default), settled (no tween running). JS-MEASURED GEOMETRY TRAP: upstream positions every slide from JS — it measures slide offsetWidth/offsetHeight, derives radius = (maxNeighborDistance/2)/sin(pi/entryCount), tweens per-entry rotations (Tweenable from @nimiq/utils), and writes transform/z-index/min-height into element.style each animation frame. The html variant freezes those exact styles inline (values documented in truth.html); it is a static snapshot — changing selection/rotation needs the Vue variant, where the full Tweenable loop is ported (Tweenable itself is inlined verbatim, so no npm dep). Slides must have a fixed size for the frozen numbers to hold; resizing slides or margins means recomputing x=sin(r)*radius, z=cos(r)*radius-radius per entry. z-index is assigned by ascending z (stable sort), NOT transform-style:preserve-3d — upstream avoids preserve-3d because it breaks clickability. With 1 or 2 entries upstream adds a dummy circle position so the second entry is not hidden exactly behind the first. The 1500px perspective on the container projects the z=-187.06 side cards to ~89% scale. Keyboard: ArrowLeft/ArrowRight rotate (ignored while an input/textarea has focus, while disabled, or before the previous tween is half done).",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/Carousel.vue"
+    ]
+  }
+}

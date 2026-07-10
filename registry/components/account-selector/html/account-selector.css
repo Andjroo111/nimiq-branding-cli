@@ -1,0 +1,296 @@
+/* Nimiq AccountSelector — account chooser across wallets (wallet label headers
+   with hairline rules, AccountList rows, scroll container with fade masks,
+   login footer). Port of @nimiq/vue-components AccountSelector.vue (+ its
+   AccountList/Account/Identicon/Amount row internals), all selectors
+   namespaced under .account-selector. Requires the Nimiq legacy stylesheet
+   (nimiq-style.min.css) for the --nimiq-* variables, .nq-label, .nq-button-s
+   and .nq-icon sizing.
+   ORDER MATTERS: the AccountSelector block at the bottom shares the
+   .wallet-label class name with Account's row rule above and wins by source
+   order (same mechanism as upstream's scoped-CSS injection order). */
+
+/* --- Identicon (Identicon.vue) --- */
+
+.account-selector .identicon {
+    width: 10rem;
+}
+
+.account-selector .identicon img {
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Amount (Amount.vue) --- */
+
+.account-selector .amount {
+    white-space: nowrap;
+}
+
+.account-selector .amount.approx::before {
+    content: '~ ';
+    opacity: 0.5;
+}
+
+/* --- Account rows (Account.vue, row layout) --- */
+
+.account-selector .account {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.75rem 2rem;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    font-size: 2rem;
+    line-height: 1.2;
+    overflow: hidden; /* hide chevron right on hover */
+}
+
+.account-selector .account.row {
+    width: 100%;
+    flex-direction: row;
+}
+
+.account-selector .identicon-and-label {
+    display: flex;
+    align-items: center;
+}
+
+.account-selector .row .identicon-and-label {
+    flex-direction: row;
+    overflow: hidden;
+    min-width: 5.625rem;
+    flex-grow: 1;
+}
+
+.account-selector .identicon {
+    flex-shrink: 0;
+    position: relative;
+}
+
+.account-selector .row .identicon {
+    width: 5.625rem;
+    height: 5.625rem;
+    margin-right: 1.5rem;
+}
+
+.account-selector .wallet-label {
+    margin-bottom: 0;
+}
+
+.account-selector .label,
+.account-selector .wallet-label {
+    overflow: hidden;
+}
+
+.account-selector .row .label:not(.editable) {
+    opacity: 0.7;
+    padding-left: 1rem;
+}
+
+.account-selector .row .label,
+.account-selector .row .wallet-label {
+    white-space: nowrap;
+    font-weight: 600;
+    mask-image: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+}
+
+.account-selector .row .label {
+    flex-grow: 1;
+}
+
+.account-selector .label.address-font {
+    font-family: 'Fira Mono', 'Andale Mono', monospace;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.account-selector .balance {
+    flex-shrink: 0;
+}
+
+.account-selector .row .balance {
+    margin-left: 1rem;
+    font-weight: bold;
+    opacity: 0.7;
+}
+
+/* --- Row entries (AccountList.vue) --- */
+
+.account-selector .account-list {
+    flex-grow: 1;
+}
+
+.account-selector .account-entry {
+    display: block;
+    transition: background-color .3s var(--nimiq-ease);
+    border-radius: 0.5rem;
+    margin: 0.5rem 2rem;
+    position: relative;
+    color: inherit;
+    text-decoration: none;
+}
+
+.account-selector .account-entry .identicon img {
+    transform: scale(0.9);
+    transition: transform .45s var(--nimiq-ease);
+}
+
+.account-selector .account-entry .label,
+.account-selector .account-entry .balance {
+    transition: opacity .3s var(--nimiq-ease), color .3s var(--nimiq-ease), margin-right .45s var(--nimiq-ease);
+}
+
+.account-selector .account-entry .caret,
+.account-selector .account-entry .tooltip {
+    position: absolute;
+    right: 2rem;
+    top: 3.625rem;
+    font-size: 2rem;
+}
+
+.account-selector .account-entry .caret {
+    transform: translateX(3rem);
+    opacity: 0;
+    transition: transform .45s var(--nimiq-ease), opacity .35s .1s var(--nimiq-ease);
+}
+
+.account-selector a.account-entry:focus {
+    outline: none;
+}
+
+.account-selector a.account-entry:focus::after {
+    content: "";
+    position: absolute;
+    left: -0.625rem;
+    top: -0.625rem;
+    right: -0.625rem;
+    bottom: -0.625rem;
+    border: 0.25rem solid rgba(5, 130, 202, 0.5); /* Based on Nimiq Light Blue */
+    border-radius: 1rem;
+    pointer-events: none;
+}
+
+.account-selector a.account-entry:hover,
+.account-selector a.account-entry:focus {
+    background-color: rgba(31, 35, 72, 0.06); /* Based on Nimiq Blue */
+}
+
+.account-selector a.account-entry:hover .identicon img,
+.account-selector a.account-entry:focus .identicon img {
+    transform: scale(1);
+}
+
+.account-selector a.account-entry:hover .label,
+.account-selector a.account-entry:hover .balance,
+.account-selector a.account-entry:focus .label,
+.account-selector a.account-entry:focus .balance {
+    opacity: 1;
+}
+
+.account-selector a.account-entry:hover .balance,
+.account-selector a.account-entry:focus .balance,
+.account-selector .account-entry.has-tooltip .balance {
+    margin-right: 3rem; /* make space for caret or tooltip trigger */
+}
+
+.account-selector a.account-entry:hover .balance,
+.account-selector a.account-entry:focus .balance {
+    color: var(--nimiq-green);
+}
+
+.account-selector a.account-entry:hover .caret,
+.account-selector a.account-entry:focus .caret {
+    transform: translateX(0);
+    opacity: 0.23;
+}
+
+.account-selector .account-entry.disabled {
+    cursor: not-allowed;
+}
+
+.account-selector .account-entry.disabled .identicon,
+.account-selector .account-entry.disabled .label,
+.account-selector .account-entry.disabled .balance {
+    opacity: 0.2;
+}
+
+.account-selector .account-entry.highlight-insufficient-balance .balance {
+    color: var(--nimiq-red);
+    opacity: 1;
+}
+
+/* --- Selector shell (AccountSelector.vue) — keep LAST --- */
+
+.account-selector {
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 400px;
+}
+
+.account-selector .container {
+    overflow-y: auto;
+    padding-top: 0.5rem;
+    padding-bottom: 4rem;
+    flex-grow: 1;
+    mask-image: linear-gradient(0deg , rgba(255,255,255,0), rgba(255,255,255, 1) 4rem,
+        rgba(255,255,255,1) calc(100% - 4rem), rgba(255,255,255,0));
+}
+
+.account-selector .container.extra-spacing {
+    padding-top: 3rem;
+}
+
+.account-selector .wallet-label {
+    margin: 3.5rem 2rem 2rem 3rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.account-selector .wallet-label .nq-label {
+    margin: 0;
+}
+
+.account-selector .wallet-label .tooltip {
+    margin-left: 1rem;
+}
+
+.account-selector .wallet-label::after {
+    content: '';
+    display: block;
+    flex-grow: 1;
+    height: 1px;
+    margin-left: 2rem;
+    background: rgba(31, 35, 72, 0.1);
+}
+
+.account-selector .pill {
+    color: white;
+    font-weight: bold;
+    font-size: 1.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    margin-left: 0.5rem;
+    letter-spacing: 0;
+}
+
+.account-selector .btc-pill {
+    background: #F7931A; /* Bitcoin orange */
+}
+
+.account-selector .usdc-pill {
+    background: #2775CA; /* USDC blue */
+}
+
+.account-selector .footer {
+    padding: 4rem 0 3rem;
+    margin-top: -4rem;
+    text-align: center;
+}
+
+.account-selector .nq-button-s {
+    margin: auto;
+    pointer-events: all;
+}
