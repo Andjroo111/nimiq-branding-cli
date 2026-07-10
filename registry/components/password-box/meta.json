@@ -1,0 +1,107 @@
+{
+  "name": "password-box",
+  "purpose": "The Keyguard PIN/password unlock box — a light-blue gradient action box with centered masked dots, a show/hide eye toggle, the prompt label and a white pill Unlock button, plus the hexagon loading state shown while the key is being decrypted.",
+  "category": "form",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "value",
+      "type": "string",
+      "required": false,
+      "default": "''",
+      "description": "The password text, bindable via v-model (emits 'input'). Sample/demo: 8 characters -> input-eligible."
+    },
+    {
+      "name": "masked",
+      "type": "boolean",
+      "required": false,
+      "default": "true",
+      "description": "Masks the input as dots (input type password). The eye button toggles it via update:masked; visible text drops the wide letter-spacing, as upstream."
+    },
+    {
+      "name": "loading",
+      "type": "boolean",
+      "required": false,
+      "default": "false",
+      "description": "Shows the hexagon spinner centered in the box and hides everything else, replacing upstream's global body.loading + .page:target gate. Spinner freezes at its stylesheet dash offsets when animations are disabled and under prefers-reduced-motion."
+    },
+    {
+      "name": "prompt",
+      "type": "string",
+      "required": false,
+      "default": "'Enter your password'",
+      "description": "Prompt label. Upstream shows 'Enter your PIN' when minLength equals Key.PIN_LENGTH (6)."
+    },
+    {
+      "name": "buttonLabel",
+      "type": "string",
+      "required": false,
+      "default": "'Unlock'",
+      "description": "Submit button text, standing in for upstream's buttonI18nTag variants (Unlock, Confirm transaction, Show recovery words, ...)."
+    },
+    {
+      "name": "minLength",
+      "type": "number",
+      "required": false,
+      "default": "8",
+      "description": "Characters required before the box becomes input-eligible (input rises, button fades in). PasswordInput.DEFAULT_MIN_LENGTH = 8; PIN = 6."
+    },
+    {
+      "name": "bgColor",
+      "type": "string",
+      "required": false,
+      "default": "'light-blue'",
+      "description": "Upstream bgColor option: the box gets nq-<bgColor>-bg and the button gets that color class (inverse while the input is shown)."
+    },
+    {
+      "name": "hideInput",
+      "type": "boolean",
+      "required": false,
+      "default": "false",
+      "description": "No password required (unencrypted key): hides prompt and input, shows only the button on the plain card."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 500,
+      "height": 560
+    },
+    "selector": ".password-box-demo",
+    "maxDiffPct": 0.5,
+    "settleMs": 400
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Source: upstream/keyguard src/components/PasswordBox.js/.css (markup with default bgColor 'light-blue' and the 'passwordbox-log-in' button 'Unlock' as used by ExportBackupCodes.js) + src/components/PasswordInput.js/.css (input-container/input-wrapper/eye-button) + src/common.css (.actionbox and the password-box loading-spinner positioning + hexagon keyframes). Sample state: two stacked boxes at 51rem (the .page-footer width of the 52.5rem Keyguard card): (1) 8 characters entered -> input-eligible with masked dots, eye toggle and the raised white Unlock pill; (2) the same box with the loading gate active, only the hexagon spinner visible. Icons are verbatim team assets, never redrawn: the eye toggle is @nimiq/style nimiq-style.icons.svg #nq-view-off/#nq-view inlined as the .is-visible/.not-visible groups (the upstream <use> pair, resolved for file:// rendering, same approach as close-button), and the hexagon spinner is the inline SVG from PasswordBox.js byte-identical (same paths as the loading-spinner component). Deviations, all documented: upstream's loading gate is global (body.loading .page:target ...) and cannot show loading and non-loading boxes on one page, so both truth and port scope those exact declarations to a .loading class on the box; hexagon keyframes are prefixed password-box-* in the port (truth keeps upstream's loading-big-hex/loading-small-hex names); common.css .actionbox is folded into a single-class .password-box selector so the later padding override wins by order like upstream's file order (a .password-box.actionbox selector would out-specify it); the port adds a prefers-reduced-motion guard. When animations are disabled the spinner renders at stroke-dashoffset -40.5/13 (identical to the 0% keyframes) — deterministic. The nq-light-blue-bg gradient, nq-input, nq-button light-blue inverse and --nimiq-ease all come from the vendored nimiq-style.min.css. Vue port maps upstream options to props (value/masked/loading/prompt/buttonLabel/minLength/bgColor/hideInput), emits input/update:masked/submit and exposes focus(); the shake-on-wrong-password animation is not ported.",
+  "source": {
+    "repo": "keyguard",
+    "ref": "02e7534",
+    "files": [
+      "keyguard:src/components/PasswordBox.js",
+      "keyguard:src/components/PasswordBox.css",
+      "keyguard:src/components/PasswordInput.js",
+      "keyguard:src/components/PasswordInput.css",
+      "keyguard:src/common.css"
+    ]
+  }
+}

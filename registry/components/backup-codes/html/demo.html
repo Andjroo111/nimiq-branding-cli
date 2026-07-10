@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nimiq BackupCodes</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="backup-codes.css">
+<style>
+    /* Stage: Keyguard renders the illustration as the card body of a
+       .page.nq-card.nq-blue-bg card, max-width 52.5rem. */
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; background: white; }
+    .card-stage {
+        width: 52.5rem; /* 420px */
+        padding: 2rem 0;
+        color: white;
+        background: var(--nimiq-blue);
+        background-image: var(--nimiq-blue-bg);
+    }
+</style>
+</head>
+<body>
+<div class="card-stage">
+    <!-- BackupCodesIllustration at the intro step: both bubbles masked, empty codes fall
+         back to the redacted placeholder dashes. -->
+    <div class="backup-codes backup-codes-intro">
+        <div class="message-bubble code-1 masked">
+            <div class="background"></div>
+            <div class="label">Nimiq Backup Code 1/2</div>
+            <code class="code"></code>
+        </div>
+        <div class="message-bubble code-2 masked">
+            <div class="background"></div>
+            <div class="label">Nimiq Backup Code 2/2</div>
+            <code class="code"></code>
+        </div>
+    </div>
+</div>
+</body>
+</html>
