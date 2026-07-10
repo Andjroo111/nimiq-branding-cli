@@ -1,0 +1,64 @@
+{
+  "name": "recovery-words",
+  "purpose": "The 24-word recovery phrase as a numbered grid of filled tiles — three translucent-white rounded tiles per row on the dark blue card, each with a faded zero-padded number and the word in white (Keyguard's RecoveryWords in display mode).",
+  "category": "form",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "words",
+      "type": "string[]",
+      "required": false,
+      "default": "[]",
+      "description": "The 24 recovery words, in order. Shorter arrays are padded with empty (non-complete) tiles. Sample/demo: the keyguard test fixture mnemonic from tests/lib/BitcoinKey.spec.js."
+    },
+    {
+      "name": "revealed",
+      "type": "boolean",
+      "required": false,
+      "default": "true",
+      "description": "When false, word text is withheld from the DOM and the grid gets the upstream background-page treatment: blur(10px) at 40% opacity (Export.css :not(:target) rule)."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 520,
+      "height": 560
+    },
+    "selector": ".card-stage",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Source: upstream/keyguard src/components/RecoveryWords.js (display mode markup, providesInput = false: .word.complete.recovery-words-input-field with zero-padded .word-number + .word-content) + src/components/RecoveryWords.css (verbatim; the unscoped .autocomplete-suggestions block for the input mode's suggestion dropdown is dropped) + geometry from src/request/export/Export.css (.recovery-words padding 0 3rem, .word-section padding 4rem 0; the page id scoping, the 39rem scroll viewport and its linear-gradient fade mask are omitted so the full grid is the sample state; the element's scrollbar is hidden for the static display). Stage: Keyguard shows this on a .page.nq-card.nq-blue-bg card, max-width 52.5rem (src/common.css .page, src/request/export/index.html #recovery-words) — truth/demo reproduce that as a 52.5rem .card-stage with the nimiq-blue bottom-right radial gradient and white text; the component itself carries no background. Sample words: keyguard's own test mnemonic (tests/lib/BitcoinKey.spec.js) — a valid 24-word BIP39 phrase that is public fixture data, never a real wallet. Light-stage principle: the component's native stage IS the dark card (friction where it protects a passphrase); tiles are structured by white space and a translucent white derived from the card color, no borders. Vue port adds the words[]/revealed props; revealed:false reuses the upstream blur(10px)/opacity .4 background-page treatment and its .6s transition (disabled under prefers-reduced-motion).",
+  "source": {
+    "repo": "keyguard",
+    "ref": "02e7534",
+    "files": [
+      "keyguard:src/components/RecoveryWords.js",
+      "keyguard:src/components/RecoveryWords.css",
+      "keyguard:src/request/export/Export.css",
+      "keyguard:tests/lib/BitcoinKey.spec.js"
+    ]
+  }
+}

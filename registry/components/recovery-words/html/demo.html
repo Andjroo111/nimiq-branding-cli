@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nimiq RecoveryWords</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="recovery-words.css">
+<style>
+    /* Stage: Keyguard shows the filled words on a .page.nq-card.nq-blue-bg card
+       (52.5rem wide, src/request/export/index.html #recovery-words). */
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; background: white; }
+    .card-stage {
+        width: 52.5rem; /* 420px */
+        color: white;
+        background: var(--nimiq-blue);
+        background-image: var(--nimiq-blue-bg);
+    }
+</style>
+</head>
+<body>
+<div class="card-stage">
+    <!-- RecoveryWords display mode (providesInput = false), 24 completed word tiles.
+         Words: keyguard test fixture mnemonic (tests/lib/BitcoinKey.spec.js). -->
+    <div class="recovery-words">
+        <div class="words-container">
+            <div class="word-section">
+                <div class="word complete recovery-words-input-field"><span class="word-number">01</span><span class="word-content" title="word #1">rib</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">02</span><span class="word-content" title="word #2">dream</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">03</span><span class="word-content" title="word #3">attitude</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">04</span><span class="word-content" title="word #4">script</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">05</span><span class="word-content" title="word #5">click</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">06</span><span class="word-content" title="word #6">hope</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">07</span><span class="word-content" title="word #7">aisle</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">08</span><span class="word-content" title="word #8">orphan</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">09</span><span class="word-content" title="word #9">flat</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">10</span><span class="word-content" title="word #10">early</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">11</span><span class="word-content" title="word #11">athlete</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">12</span><span class="word-content" title="word #12">twelve</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">13</span><span class="word-content" title="word #13">toy</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">14</span><span class="word-content" title="word #14">sell</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">15</span><span class="word-content" title="word #15">cigar</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">16</span><span class="word-content" title="word #16">ugly</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">17</span><span class="word-content" title="word #17">drink</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">18</span><span class="word-content" title="word #18">flavor</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">19</span><span class="word-content" title="word #19">power</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">20</span><span class="word-content" title="word #20">common</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">21</span><span class="word-content" title="word #21">devote</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">22</span><span class="word-content" title="word #22">love</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">23</span><span class="word-content" title="word #23">relax</span></div>
+                <div class="word complete recovery-words-input-field"><span class="word-number">24</span><span class="word-content" title="word #24">capable</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
