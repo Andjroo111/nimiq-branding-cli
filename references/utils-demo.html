@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nimiq utils playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Fira+Mono:400,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/legacy/nimiq-style.min.css">
+<style>
+body { font-family: 'Mulish', 'Muli', system-ui, sans-serif !important; background: #F8F8F8; margin: 0; }
+
+/* intro band, house pattern from supporting-elements.html */
+.intro { background-image: radial-gradient(100% 100% at bottom right, #260133, #1F2348); color: #fff; padding: 52px 32px 44px; text-align: center; }
+.intro h1 { font-size: 30px; font-weight: 800; margin: 0 0 10px; letter-spacing: -0.5px; }
+.intro p { font-size: 16px; color: rgba(255,255,255,0.6); max-width: 680px; margin: 0 auto; line-height: 1.6; }
+.intro code { color: #E9B213; font-family: 'Fira Mono', monospace; font-size: 15px; }
+
+.offline-note { display: none; max-width: 1096px; margin: 24px auto 0; padding: 14px 20px; box-sizing: border-box;
+    background: #fff; border-radius: 8px; box-shadow: 0 4px 28px rgba(0,0,0,0.07);
+    color: #D94432; font-size: 14px; font-weight: 600; }
+body.offline .offline-note { display: block; margin-left: 32px; margin-right: 32px; }
+@media (min-width: 1160px) { body.offline .offline-note { margin-left: auto; margin-right: auto; } }
+
+/* card grid */
+.grid { max-width: 1160px; margin: 40px auto 0; padding: 0 32px 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+.demo-card { background: #fff; border-radius: 12px; box-shadow: 0 4px 28px rgba(0,0,0,0.07); padding: 28px 28px 24px; display: flex; flex-direction: column; gap: 14px; }
+.demo-card h2 { font-size: 18px; font-weight: 700; color: #1F2348; margin: 0; }
+.demo-card h2 code { font-family: 'Fira Mono', monospace; font-size: 15px; color: #0582CA; font-weight: 500; }
+.demo-card .desc { font-size: 14px; color: rgba(31,35,72,0.6); line-height: 1.55; margin: 0; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.controls label { font-size: 13px; font-weight: 600; color: rgba(31,35,72,0.6); display: flex; flex-direction: column; gap: 4px; }
+.controls input[type="text"], .controls input[type="number"], .controls select {
+    font-family: 'Mulish', sans-serif; font-size: 14px; color: #1F2348;
+    border: 1px solid rgba(31,35,72,0.16); border-radius: 4px; padding: 8px 10px; background: #fff;
+    transition: border-color .2s var(--nimiq-ease), box-shadow .2s var(--nimiq-ease);
+}
+.controls input:focus, .controls select:focus { outline: none; border-color: rgba(5,130,202,0.5); box-shadow: 0 0 0 2px rgba(5,130,202,0.12); }
+.controls input:disabled, .controls select:disabled, .controls button:disabled { opacity: 0.4; cursor: not-allowed; }
+.controls .grow { flex: 1; min-width: 160px; }
+.controls .grow input, .controls .grow select { width: 100%; box-sizing: border-box; }
+.controls input.mono { font-family: 'Fira Mono', monospace; font-size: 13px; }
+.check { flex-direction: row !important; align-items: center; gap: 6px !important; padding-top: 14px; }
+
+.copy-btn { font-family: 'Mulish', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.05em;
+    color: #fff; background-image: radial-gradient(100% 100% at bottom right, #265DD7, #0582CA);
+    border: none; border-radius: 500px; padding: 10px 22px; cursor: pointer;
+    transition: transform .2s var(--nimiq-ease), box-shadow .2s var(--nimiq-ease); }
+.copy-btn:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(5,130,202,0.35); }
+.copy-btn.copied { background-image: radial-gradient(100% 100% at bottom right, #41A38E, #21BCA5); }
+
+.result { font-family: 'Fira Mono', monospace; font-size: 14px; color: #1F2348;
+    background: rgba(31,35,72,0.04); border-radius: 6px; padding: 12px 14px;
+    min-height: 20px; line-height: 1.5; word-break: break-all; }
+.result.ok { color: #21BCA5; background: rgba(33,188,165,0.08); }
+.result.bad { color: #D94432; background: rgba(217,68,50,0.07); }
+.result a { color: #0582CA; text-decoration: none; word-break: break-all; }
+.result-rows { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; font-size: 14px; }
+.result-rows dt { font-weight: 600; color: rgba(31,35,72,0.5); margin: 0; }
+.result-rows dd { font-family: 'Fira Mono', monospace; color: #1F2348; margin: 0; }
+
+pre { background: #1F2348; color: #fff; border-radius: 8px; padding: 14px 16px; overflow-x: auto; margin: 0; }
+pre code { font-family: 'Fira Mono', monospace; font-size: 12px; line-height: 1.6; color: rgba(255,255,255,0.85); }
+pre .c { color: rgba(255,255,255,0.4); }
+pre .s { color: #9adcf5; }
+
+.page-footer-band { background-image: radial-gradient(100% 100% at bottom right, #260133, #1F2348);
+    color: rgba(255,255,255,0.5); text-align: center; padding: 32px; font-size: 14px; }
+.page-footer-band a { color: rgba(255,255,255,0.7); text-decoration: none; }
+.page-footer-band a:hover { color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="intro">
+    <h1>Nimiq utils playground</h1>
+    <p>Live demos of <code>@nimiq/utils@0.12.4</code>, loaded as an ES module from jsDelivr.
+       Full signatures and gotchas: <code>references/utils.md</code> in this repo</p>
+</div>
+
+<div class="offline-note">Could not load @nimiq/utils from the CDN, so the live inputs are disabled. Each card still shows the exact call it would make</div>
+
+<div class="grid">
+
+    <!-- FormattableNumber -->
+    <section class="demo-card">
+        <h2>Format an amount <code>FormattableNumber</code></h2>
+        <p class="desc">String-based, no floating-point loss. Grouping uses a narrow no-break
+           space and only appears past 4 integer digits</p>
+        <div class="controls">
+            <label class="grow">Value
+                <input type="text" id="fn-value" class="mono" value="1234567.891234" disabled>
+            </label>
+            <label>Max decimals
+                <input type="number" id="fn-max" value="4" min="0" max="20" style="width:70px" disabled>
+            </label>
+            <label class="check">
+                <input type="checkbox" id="fn-group" checked disabled> Grouping
+            </label>
+        </div>
+        <div class="result" id="fn-out">&nbsp;</div>
+<pre><code>new FormattableNumber(<span class="s">'1234567.891234'</span>)
+    .toString({ maxDecimals: 4, useGrouping: true })
+<span class="c">// '1 234 567.8912' (U+202F separators)</span></code></pre>
+    </section>
+
+    <!-- ValidationUtils -->
+    <section class="demo-card">
+        <h2>Validate an address <code>ValidationUtils</code></h2>
+        <p class="desc">NQ prefix, 36 chars ignoring spaces, 32-char alphabet without
+           I, O, W, Z, and an IBAN mod-97 checksum</p>
+        <div class="controls">
+            <label class="grow">Address
+                <input type="text" id="va-input" class="mono" value="NQ07 0000 0000 0000 0000 0000 0000 0000 0000" spellcheck="false" disabled>
+            </label>
+        </div>
+        <div class="result" id="va-out">&nbsp;</div>
+<pre><code>ValidationUtils.isValidAddress(address)  <span class="c">// boolean</span>
+ValidationUtils.isUserFriendlyAddress(address)  <span class="c">// throws the reason</span>
+ValidationUtils.NIMIQ_ALPHABET  <span class="c">// '0123456789ABCDEFGHJKLMNPQRSTUVXY'</span></code></pre>
+    </section>
+
+    <!-- RequestLinkEncoding -->
+    <section class="demo-card">
+        <h2>Build a request link <code>createRequestLink</code></h2>
+        <p class="desc">NIM amounts go in as luna (1 NIM = 100&#8239;000 luna), the message tops
+           out at 64 UTF-8 bytes</p>
+        <div class="controls">
+            <label class="grow" style="flex-basis:100%">Recipient
+                <input type="text" id="rl-recipient" class="mono" value="NQ07 0000 0000 0000 0000 0000 0000 0000 0000" spellcheck="false" disabled>
+            </label>
+            <label>Amount (NIM)
+                <input type="number" id="rl-amount" value="12.5" min="0" step="0.00001" style="width:100px" disabled>
+            </label>
+            <label class="grow">Message
+                <input type="text" id="rl-message" value="Coffee" maxlength="64" disabled>
+            </label>
+            <label>Type
+                <select id="rl-type" disabled>
+                    <option value="safe" selected>safe</option>
+                    <option value="nimiq">nimiq:</option>
+                    <option value="web+nim">web+nim:</option>
+                </select>
+            </label>
+        </div>
+        <div class="result" id="rl-out">&nbsp;</div>
+<pre><code>createRequestLink(recipient, {
+    currency: Currency.NIM,
+    amount: 12.5e5,  <span class="c">// luna</span>
+    message: <span class="s">'Coffee'</span>,
+    basePath: <span class="s">'https://wallet.nimiq.com'</span>,
+})</code></pre>
+    </section>
+
+    <!-- CurrencyInfo -->
+    <section class="demo-card">
+        <h2>Currency info lookup <code>CurrencyInfo</code></h2>
+        <p class="desc">Symbol, name, decimals and locale for any 3-letter fiat code,
+           resolved through Intl with Nimiq's correction tables</p>
+        <div class="controls">
+            <label>Currency code
+                <input type="text" id="ci-code" class="mono" value="EUR" maxlength="3" style="width:80px; text-transform:uppercase" spellcheck="false" disabled>
+            </label>
+        </div>
+        <div class="result" id="ci-out">
+            <dl class="result-rows" id="ci-rows" style="display:none">
+                <dt>symbol</dt><dd id="ci-symbol"></dd>
+                <dt>name</dt><dd id="ci-name"></dd>
+                <dt>decimals</dt><dd id="ci-decimals"></dd>
+                <dt>locale</dt><dd id="ci-locale"></dd>
+            </dl>
+            <span id="ci-error"></span>
+        </div>
+<pre><code>const c = new CurrencyInfo(<span class="s">'EUR'</span>);
+c.symbol;    <span class="c">// '&euro;'</span>
+c.name;      <span class="c">// 'Euro'</span>
+c.decimals;  <span class="c">// 2</span></code></pre>
+    </section>
+
+    <!-- Clipboard -->
+    <section class="demo-card" style="grid-column: 1 / -1">
+        <h2>Copy to clipboard <code>Clipboard.copy</code></h2>
+        <p class="desc">Synchronous textarea and execCommand copy that restores your focus and
+           selection afterwards, the same helper behind the wallet's copy buttons</p>
+        <div class="controls">
+            <label class="grow">Text to copy
+                <input type="text" id="cb-input" class="mono" value="NQ07 0000 0000 0000 0000 0000 0000 0000 0000" disabled>
+            </label>
+            <button class="copy-btn" id="cb-btn" disabled>COPY</button>
+        </div>
+<pre><code>Clipboard.copy(text)  <span class="c">// returns true on success; wallet shows 'Copied' for 800 ms</span></code></pre>
+    </section>
+
+</div>
+
+<div class="page-footer-band">
+    @nimiq/utils 0.12.4 &middot; Apache-2.0 &middot;
+    <a href="https://github.com/nimiq/nimiq-utils">github.com/nimiq/nimiq-utils</a>
+</div>
+
+<script type="module">
+const CDNS = [
+    'https://cdn.jsdelivr.net/npm/@nimiq/utils@0.12.4/dist/main.mjs',
+    'https://esm.sh/@nimiq/utils@0.12.4',
+];
+
+let U = null;
+for (const url of CDNS) {
+    try { U = await import(url); break; } catch (e) { /* try next */ }
+}
+
+if (!U) {
+    document.body.classList.add('offline');
+} else {
+    const $ = (id) => document.getElementById(id);
+    for (const el of document.querySelectorAll('input, select, button')) el.disabled = false;
+
+    // FormattableNumber
+    const fnRender = () => {
+        const out = $('fn-out');
+        try {
+            const options = { useGrouping: $('fn-group').checked };
+            const max = $('fn-max').value;
+            if (max !== '') options.maxDecimals = parseInt(max, 10);
+            out.textContent = new U.FormattableNumber($('fn-value').value.trim()).toString(options);
+            out.className = 'result';
+        } catch (e) {
+            out.textContent = e.message;
+            out.className = 'result bad';
+        }
+    };
+    for (const id of ['fn-value', 'fn-max', 'fn-group']) $(id).addEventListener('input', fnRender);
+    fnRender();
+
+    // ValidationUtils
+    const vaRender = () => {
+        const out = $('va-out');
+        const address = $('va-input').value;
+        try {
+            U.ValidationUtils.isUserFriendlyAddress(address);
+            out.textContent = 'Valid: ' + U.ValidationUtils.normalizeAddress(address);
+            out.className = 'result ok';
+        } catch (e) {
+            out.textContent = 'Invalid: ' + e.message;
+            out.className = 'result bad';
+        }
+    };
+    $('va-input').addEventListener('input', vaRender);
+    vaRender();
+
+    // RequestLinkEncoding
+    const rlRender = () => {
+        const out = $('rl-out');
+        try {
+            const nim = parseFloat($('rl-amount').value);
+            const link = U.createRequestLink($('rl-recipient').value, {
+                currency: U.Currency.NIM,
+                amount: Number.isFinite(nim) && nim > 0 ? Math.round(nim * 1e5) : undefined,
+                message: $('rl-message').value || undefined,
+                type: $('rl-type').value,
+                basePath: 'https://wallet.nimiq.com',
+            });
+            out.textContent = link;
+            out.className = 'result';
+        } catch (e) {
+            out.textContent = e.message;
+            out.className = 'result bad';
+        }
+    };
+    for (const id of ['rl-recipient', 'rl-amount', 'rl-message', 'rl-type']) $(id).addEventListener('input', rlRender);
+    rlRender();
+
+    // CurrencyInfo
+    const ciRender = () => {
+        const code = $('ci-code').value.trim().toUpperCase();
+        const rows = $('ci-rows');
+        const error = $('ci-error');
+        $('ci-out').className = 'result';
+        try {
+            const info = new U.CurrencyInfo(code);
+            $('ci-symbol').textContent = info.symbol;
+            $('ci-name').textContent = info.name;
+            $('ci-decimals').textContent = info.decimals;
+            $('ci-locale').textContent = info.locale;
+            rows.style.display = '';
+            error.textContent = '';
+        } catch (e) {
+            rows.style.display = 'none';
+            error.textContent = e.message;
+            $('ci-out').className = 'result bad';
+        }
+    };
+    $('ci-code').addEventListener('input', ciRender);
+    ciRender();
+
+    // Clipboard
+    $('cb-btn').addEventListener('click', () => {
+        const button = $('cb-btn');
+        const success = U.Clipboard.copy($('cb-input').value);
+        button.textContent = success ? 'COPIED' : 'FAILED';
+        button.classList.toggle('copied', success);
+        setTimeout(() => {
+            button.textContent = 'COPY';
+            button.classList.remove('copied');
+        }, 800);
+    });
+}
+</script>
+</body>
+</html>
