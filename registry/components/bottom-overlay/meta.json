@@ -1,0 +1,56 @@
+{
+  "name": "bottom-overlay",
+  "purpose": "Dismissible notification bar pinned to the bottom center of the viewport — rounded, shadowed, in dark, light or green theme, with an optional close button — used by the wallet for status and update notices.",
+  "category": "layout",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "theme",
+      "type": "String",
+      "default": "dark",
+      "description": "'dark' (nimiq-blue on white text), 'light' (white on nimiq-blue text) or 'green' (nimiq-green). Dark and green use the inverse close button."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [
+    "close-button"
+  ],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 1000,
+      "height": 300
+    },
+    "selector": ".bottom-overlay-stage",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": false,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Sample state: theme 'dark' (default), close listener bound (upstream watches $listeners.close, so .has-close-button + CloseButton appear; the Vue 3 port checks attrs.onClose), slot text from the upstream storybook. POSITIONING TRAP: the overlay is position:fixed (left 50%, bottom 2rem, translateX(-50%)) — normally viewport-anchored. Truth/demo pin it inside a fixed-size stage (.bottom-overlay-stage, 720x220) whose transform makes it the containing block for fixed descendants, so verify captures the anchored bottom-center state deterministically; the verify selector is the STAGE, not the overlay, because cropping the overlay alone would not prove the anchoring. In a 720px containing block the shrink-to-fit width is capped at half the box (available space right of left:50%), so the sample text wraps to two lines — real upstream behavior for narrow containers. Media queries at 912px (full-width minus margins) and 450px (flush bottom sheet) are viewport-based; the 1000px verify viewport keeps the desktop state. The gradients principle flag is false-by-design faithful to upstream: the dark theme is the flat var(--nimiq-blue), not the radial nq-blue-bg. CloseButton scoped CSS compiles to button[data-v-x] upstream — the truth keeps the attribute so its (0,1,1) specificity beats .nq-button-s (0,1,0) for height 3rem; the html variant gets the same result from .bottom-overlay .close-button (0,2,0). Upstream emits 'close' on click; the html snippet removes the bar.",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/BottomOverlay.vue",
+      "vue-components:src/components/CloseButton.vue"
+    ]
+  }
+}

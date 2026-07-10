@@ -1,0 +1,100 @@
+{
+  "name": "account-details",
+  "purpose": "Full account detail panel — large identicon, label, wallet label, balance and the full address in monospace chunks, with a top-right close button — shown when inspecting an account in Hub flows.",
+  "category": "identity",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "address",
+      "type": "String",
+      "required": true,
+      "description": "User-friendly Nimiq address; renders the identicon and the AddressDisplay chunks."
+    },
+    {
+      "name": "image",
+      "type": "String",
+      "description": "Optional image URL (e.g. a shop logo) shown instead of the identicon; falls back to the identicon if it fails to load."
+    },
+    {
+      "name": "label",
+      "type": "String",
+      "description": "Account label. If it equals the address, an empty label is rendered instead."
+    },
+    {
+      "name": "walletLabel",
+      "type": "String",
+      "description": "Wallet (account group) label shown under the account label as an uppercase nq-label."
+    },
+    {
+      "name": "balance",
+      "type": "Number",
+      "description": "Balance in luna; rendered through Amount with 2 decimals when set."
+    },
+    {
+      "name": "editable",
+      "type": "Boolean",
+      "description": "Render the label as a LabelInput field; changes are emitted as 'changed'."
+    },
+    {
+      "name": "placeholder",
+      "type": "String",
+      "description": "Placeholder for the editable label input."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [
+    "img/iqons.min.svg"
+  ],
+  "dependsOn": [
+    "identicon",
+    "address-display",
+    "copyable",
+    "amount",
+    "close-button",
+    "label-input"
+  ],
+  "npmDeps": [
+    "@nimiq/iqons"
+  ],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 500,
+      "height": 640
+    },
+    "selector": ".account-details",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Sample state: address NQ33 DH76 PHUK J41Q LX3A U4E0 M0BM QJH9 QQL1 (the checksum-valid upstream storybook address), label 'Savings Account', walletLabel 'Keyguard Wallet', balance 2712415141213 luna -> '27 124 151.41' (Account passes its default decimals=2 to Amount; U+202F narrow no-break space grouping above 4 integer digits), editable=false, hosted in a 420x560 box (the storybook mounts it in a SmallPage). The panel is upstream's Account.vue in layout 'column' plus AddressDisplay(copyable) and CloseButton; their markup/styles are inlined since Account has no own registry entry. SCOPED-CSS SPECIFICITY TRAP: AccountDetails' '.account >>> .identicon' overrides (18rem identicon, 3rem label/balance, padding 0) share specificity (0,2,0) with Account.vue's '.column .identicon' rules and win only by source order — keep the AccountDetails block AFTER the Account block (runtime injects children on import, parent last). AddressDisplay renders its root AS a Copyable ('copyable address-display format-nimiq' on one element) because AccountDetails hardcodes copyable; resting state (tooltip/background at opacity 0). The Vue port wraps AddressDisplay's chunks in the registry Copyable instead (upstream merges both components onto one root; visually identical, but the flattened DOM differs there). Identicons via @nimiq/iqons@1.6.0 pinned on jsdelivr with Iqons.svgPath probing the vendored assets/img/iqons.min.svg first (same recipe as the identicon component). The image prop and editable/LabelInput path are ported in the Vue variant but not part of the pixel sample.",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/AccountDetails.vue",
+      "vue-components:src/components/Account.vue",
+      "vue-components:src/components/AddressDisplay.vue",
+      "vue-components:src/components/Copyable.vue",
+      "vue-components:src/components/CloseButton.vue",
+      "vue-components:src/components/Amount.vue",
+      "vue-components:src/components/Identicon.vue"
+    ]
+  }
+}
