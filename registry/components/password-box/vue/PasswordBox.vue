@@ -1,0 +1,287 @@
+<template>
+    <form class="password-box actionbox" :class="[`nq-${bgColor}-bg`, {
+        'input-eligible': inputEligible,
+        'hide-input': hideInput,
+        loading,
+    }]" @submit.prevent="onSubmit">
+        <div class="prompt nq-text-s">{{ prompt }}</div>
+        <div class="password-input">
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <input class="nq-input password" :type="masked ? 'password' : 'text'"
+                        :placeholder="placeholder" :autocomplete="autocomplete"
+                        v-model="liveValue" ref="input$">
+                </div>
+                <!-- @nimiq/style nimiq-style.icons.svg #nq-view-off / #nq-view, inlined verbatim -->
+                <svg class="nq-icon eye-button" :class="{ visible: !masked }" viewBox="0 0 24 24"
+                    @click="toggleVisibility">
+                    <g class="is-visible" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M18.9 6.95c1.59 1 3.03 2.21 4.3 3.6.74.82.74 2.07 0 2.9-2.56 2.81-6.79 5.8-11.04 5.8h-.3a11.26 11.26 0 0 1-4.31-.94L3.4 22.45a1 1 0 0 1-1.63-1.08l.01-.01.01-.01 19.5-19.5a.74.74 0 0 0 .18-.3l.02-.01a1 1 0 1 1 1.41 1.41l-4 4zm-5.59 9.35a4.58 4.58 0 0 0 3-3.03 4.3 4.3 0 0 0-.2-3.06.25.25 0 0 0-.4-.07l-5.57 5.56a.25.25 0 0 0 .07.4 4.3 4.3 0 0 0 3.1.2z"/><path d="M7.62 13.4a.24.24 0 0 0 .06-.24A4.32 4.32 0 0 1 7.5 12a4.5 4.5 0 0 1 5.66-4.33c.09.03.18 0 .24-.06l1.94-1.94a.25.25 0 0 0-.1-.42c-1.05-.34-2.14-.5-3.24-.5C7.7 4.69 3.4 7.7.81 10.55a2.15 2.15 0 0 0 0 2.9 21.21 21.21 0 0 0 3.43 3.03c.1.07.24.06.33-.03l3.05-3.05z"/></g>
+                    <g class="not-visible" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 4.6c4.4-.06 8.79 3.01 11.43 5.92.75.84.75 2.11 0 2.95-2.61 2.88-6.94 5.93-11.28 5.93h-.31c-4.33 0-8.66-3.05-11.27-5.93a2.21 2.21 0 0 1 0-2.95C3.2 7.62 7.6 4.54 12 4.6zm0 2.8a4.6 4.6 0 1 0 0 9.2 4.6 4.6 0 0 0 0-9.2z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></g>
+                </svg>
+            </div>
+        </div>
+        <button class="submit nq-button" :class="[bgColor, { inverse: !hideInput }]">{{ buttonLabel }}</button>
+        <!-- Loading spinner SVG (verbatim from PasswordBox.js) -->
+        <svg height="48" width="54" color="inherit" class="loading-spinner"><g stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round">
+            <path class="big-hex" d="M51.9,21.9L41.3,3.6c-0.8-1.3-2.2-2.1-3.7-2.1H16.4c-1.5,0-2.9,0.8-3.7,2.1L2.1,21.9c-0.8,1.3-0.8,2.9,0,4.2 l10.6,18.3c0.8,1.3,2.2,2.1,3.7,2.1h21.3c1.5,0,2.9-0.8,3.7-2.1l10.6-18.3C52.7,24.8,52.7,23.2,51.9,21.9z" opacity="0.4" stroke-dasharray="92.5 60"/>
+            <path class="small-hex" d="M51.9,21.9L41.3,3.6c-0.8-1.3-2.2-2.1-3.7-2.1H16.4c-1.5,0-2.9,0.8-3.7,2.1L2.1,21.9c-0.8,1.3-0.8,2.9,0,4.2 l10.6,18.3c0.8,1.3,2.2,2.1,3.7,2.1h21.3c1.5,0,2.9-0.8,3.7-2.1l10.6-18.3C52.7,24.8,52.7,23.2,51.9,21.9z" stroke-dasharray="47.5 105"/>
+        </g></svg>
+    </form>
+</template>
+
+<script setup lang="ts">
+import { computed, ref, watch } from 'vue';
+
+// Port of Keyguard PasswordBox (PasswordBox.js/.css + PasswordInput.js/.css + the
+// actionbox/loading rules from common.css). Upstream's body.loading + .page:target
+// gate becomes the `loading` prop; i18n button variants become `buttonLabel`.
+const props = withDefaults(defineProps<{
+    /** The password text (v-model). */
+    value?: string,
+    /** Masks the input (dots). The eye button toggles this via update:masked. */
+    masked?: boolean,
+    /** Shows the hexagon spinner and hides everything else (while unlocking). */
+    loading?: boolean,
+    /** Upstream: prompt is 'Enter your PIN' when minLength equals Key.PIN_LENGTH (6). */
+    prompt?: string,
+    /** One of the upstream buttonVersions texts ('Unlock', 'Confirm transaction', ...). */
+    buttonLabel?: string,
+    /** Minimum characters before the box becomes input-eligible (PIN: 6). */
+    minLength?: number,
+    maxLength?: number,
+    placeholder?: string,
+    autocomplete?: 'current-password' | 'new-password',
+    /** Upstream bgColor option; the box gets nq-<bgColor>-bg and the button that color. */
+    bgColor?: string,
+    /** No password required: hides prompt + input, shows only the button. */
+    hideInput?: boolean,
+}>(), {
+    value: '',
+    masked: true,
+    loading: false,
+    prompt: 'Enter your password',
+    buttonLabel: 'Unlock',
+    minLength: 8, // PasswordInput.DEFAULT_MIN_LENGTH
+    maxLength: Infinity,
+    placeholder: '••••••••',
+    autocomplete: 'current-password',
+    bgColor: 'light-blue',
+    hideInput: false,
+});
+
+const emit = defineEmits<{
+    (e: 'input', value: string): void,
+    (e: 'update:masked', masked: boolean): void,
+    /** Emitted on submit when the input is eligible (or hideInput). */
+    (e: 'submit', password?: string): void,
+}>();
+
+const input$ = ref<HTMLInputElement | null>(null);
+const liveValue = ref(props.value);
+watch(() => props.value, v => { liveValue.value = v; });
+watch(liveValue, v => emit('input', v));
+
+// PasswordInput._onInputChanged(): count characters, not code units
+const inputEligible = computed(() => {
+    const length = [...liveValue.value].length;
+    return length >= props.minLength && length <= props.maxLength;
+});
+
+function toggleVisibility() {
+    emit('update:masked', !props.masked);
+    input$.value?.focus();
+}
+
+function onSubmit() {
+    if (!props.hideInput && !inputEligible.value) return;
+    emit('submit', props.hideInput ? undefined : liveValue.value);
+}
+
+function focus() {
+    if (!props.hideInput) input$.value?.focus();
+}
+defineExpose({ focus });
+</script>
+
+<style scoped>
+    /* common.css .actionbox — verbatim (padding overridden below, as upstream) */
+    .password-box {
+        width: 100%;
+        padding: 1.25rem;
+        border-radius: 0.625rem;
+        text-align: center;
+    }
+
+    /* PasswordInput.css — verbatim */
+    .password-input {
+        width: 100%;
+        margin: 2rem 0;
+    }
+
+    .password-input .input-container {
+        width: 100%;
+        position: relative;
+    }
+
+    .password-input input {
+        padding: 0 2.75rem;
+        box-shadow: none !important;
+        font-size: 3rem;
+        letter-spacing: 1.25rem;
+        color: inherit !important;
+    }
+
+    .password-input input::placeholder {
+        letter-spacing: 1.25rem;
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .password-input input[type="text"] {
+        letter-spacing: 0.25rem;
+    }
+
+    .password-input .eye-button {
+        position: absolute;
+        top: 0.25rem;
+        left: 0;
+        width: 3rem;
+        height: 3rem;
+        background-size: 3rem;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity .3s ease;
+    }
+
+    .password-input .eye-button:hover {
+        opacity: 1;
+    }
+
+    .password-input .eye-button:not(.visible) .is-visible,
+    .password-input .eye-button.visible .not-visible {
+        display: none;
+    }
+
+    /* PasswordBox.css — verbatim (swap-authorization + SETTER sections omitted) */
+    .password-box {
+        position: relative;
+        padding: 5.5rem 1.25rem 1.25rem;
+    }
+
+    .password-box .prompt {
+        margin-top: -2.75rem;
+        line-height: 1;
+        pointer-events: none;
+    }
+
+    .password-box .password-input {
+        margin: 5rem 0 4.5rem 0;
+    }
+
+    .password-box .password-input .input-container {
+        position: static;
+    }
+
+    .password-box .password-input .input-wrapper {
+        transition: transform 300ms var(--nimiq-ease)!important;
+    }
+
+    .password-box.input-eligible .password-input .input-wrapper {
+        transform: translate(0, -3.5rem);
+    }
+
+    .password-box .password-input input {
+        text-align: center;
+        width: 100%;
+    }
+
+    .password-box .password-input .eye-button {
+        top: 1.5rem;
+        left: 2rem;
+    }
+
+    .password-box.hide-input .prompt,
+    .password-box.hide-input .password-input {
+        display: none;
+        margin: 0;
+    }
+
+    .password-box .submit {
+        margin: -6.375rem auto 0.75rem;
+        opacity: 0;
+        transition:
+            transform 450ms cubic-bezier(.25,0,0,1), /* From @nimiq/style */
+            box-shadow 450ms cubic-bezier(.25,0,0,1), /* From @nimiq/style */
+            color .3s cubic-bezier(.25,0,0,1), /* From @nimiq/style */
+            opacity 150ms var(--nimiq-ease);
+        pointer-events: none;
+    }
+
+    .password-box.input-eligible .submit,
+    .password-box.hide-input .submit {
+        opacity: 1;
+        transition-delay: 75ms;
+        pointer-events: all;
+    }
+
+    /* common.css loading-spinner rules — verbatim, keyframes prefixed */
+    .password-box .loading-spinner {
+        position: absolute;
+        display: none;
+        left: calc(50% - 3.375rem);
+        bottom: calc(50% - 3.125rem);
+    }
+
+    .password-box.hide-input .loading-spinner {
+        bottom: 3rem;  /* 2rem button margin + 1 rem to center */
+        color: white;
+    }
+
+    .loading-spinner .big-hex {
+        stroke-dashoffset: -40.5;
+        animation: password-box-big-hex 4s cubic-bezier(0.76, 0.29, 0.29, 0.76) infinite;
+    }
+
+    .loading-spinner .small-hex {
+        stroke-dashoffset: 13;
+        animation: password-box-small-hex 4s cubic-bezier(0.76, 0.29, 0.29, 0.76) infinite;
+    }
+
+    @keyframes password-box-big-hex {
+        0%   { stroke-dashoffset: -40.5 }
+        17%  { stroke-dashoffset: -15.08 }
+        33%  { stroke-dashoffset: 10.33 }
+        50%  { stroke-dashoffset: 35.75 }
+        67%  { stroke-dashoffset: 61.17 }
+        83%  { stroke-dashoffset: 86.58 }
+        100% { stroke-dashoffset: 112 }
+    }
+
+    @keyframes password-box-small-hex {
+        0%   { stroke-dashoffset: 13 }
+        17%  { stroke-dashoffset: 38.42 }
+        33%  { stroke-dashoffset: 63.84 }
+        50%  { stroke-dashoffset: 89.25 }
+        67%  { stroke-dashoffset: 114.66 }
+        83%  { stroke-dashoffset: 140.08 }
+        100% { stroke-dashoffset: 165.5 }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        /* the spinner freezes at its stylesheet dash offsets (the 0% keyframes) */
+        .loading-spinner .big-hex,
+        .loading-spinner .small-hex {
+            animation: none;
+        }
+    }
+
+    /* Loading gate — upstream common.css flips this via body.loading + .page:target;
+       scoped here to the loading prop's class */
+    .password-box.loading > *:not(.loading-spinner) {
+        visibility: hidden;
+    }
+
+    .password-box.loading > .loading-spinner {
+        display: flex;
+        z-index: 1;
+    }
+</style>
