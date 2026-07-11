@@ -1,0 +1,71 @@
+/*
+ * Nimiq brand tokens as a Tailwind CSS v4 @theme block — the SAME verified values
+ * as tokens.css (see its provenance header). Import this INSTEAD of tokens.css in
+ * a Tailwind v4 project:
+ *
+ *   @import 'tailwindcss';
+ *   @import './nimiq/tokens-px/tailwind-theme.css';
+ *
+ * Colors become utilities (bg-nimiq-blue, text-nimiq-gold, ...), radii map to
+ * rounded-nimiq-*, shadows to shadow-nimiq-*, easing to ease-nimiq*. All values
+ * are plain px/absolute — no html{font-size} rescale anywhere.
+ *
+ * Text opacity ladder: use Tailwind's native opacity modifier instead of the
+ * --text-* vars, e.g. `text-nimiq-blue/70` == rgba(31, 35, 72, 0.7).
+ * Gradients: no utility namespace — the four core -bg gradients are emitted as
+ * plain vars below; use `bg-[image:var(--nimiq-blue-bg)]` (full set: tokens.css).
+ */
+@theme {
+  /* colors (@nimiq/style, verbatim) */
+  --color-nimiq-blue: #1F2348;
+  --color-nimiq-light-blue: #0582CA;
+  --color-nimiq-gold: #E9B213;
+  --color-nimiq-green: #21BCA5;
+  --color-nimiq-orange: #FC8702;
+  --color-nimiq-red: #D94432;
+  --color-nimiq-purple: #5F4B8B;
+  --color-nimiq-pink: #FA7268;
+  --color-nimiq-light-green: #88B04B;
+  --color-nimiq-brown: #795548;
+  --color-nimiq-gray: #F4F4F4;
+  --color-nimiq-light-gray: #FAFAFA;
+  --color-nimiq-blue-darkened: #151833;
+  --color-nimiq-light-blue-darkened: #0071C3;
+  --color-nimiq-gold-darkened: #E5A212;
+  --color-nimiq-green-darkened: #20B29E;
+  --color-nimiq-orange-darkened: #FC7500;
+  --color-nimiq-red-darkened: #D13030;
+  --color-nimiq-light-blue-on-dark: #0CA6FE;
+  --color-nimiq-red-on-dark: #FF5C48;
+
+  /* crypto asset colors (wallet themes.scss; NIM = nimiq-gold) */
+  --color-bitcoin-orange: #F7931A;
+  --color-usdc-blue: #2775CA;
+  --color-usdt-green: #009393;
+
+  /* font stacks */
+  --font-nimiq: 'Mulish', 'Muli', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  --font-nimiq-mono: 'Fira Mono', monospace;
+
+  /* radii (px @ the legacy 8px root) */
+  --radius-nimiq-input: 4px;
+  --radius-nimiq: 8px;
+  --radius-nimiq-card: 10px;
+  --radius-nimiq-pill: 500px;
+
+  /* shadows / elevation */
+  --shadow-nimiq: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-nimiq-l: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --shadow-nimiq-card: 0 4px 28px rgba(0, 0, 0, 0.111158);
+  --shadow-nimiq-page: 0 3px 22px rgba(0, 0, 0, 0.1);
+
+  /* easing */
+  --ease-nimiq: cubic-bezier(0.25, 0, 0, 1);
+  --ease-nimiq-bounce: cubic-bezier(0.41, 0.34, 0.26, 1.55);
+
+  /* the four core radial -bg gradients (plain vars — no utility namespace) */
+  --nimiq-blue-bg: radial-gradient(100% 100% at bottom right, #260133, #1F2348);
+  --nimiq-light-blue-bg: radial-gradient(100% 100% at bottom right, #265DD7, #0582CA);
+  --nimiq-gold-bg: radial-gradient(100% 100% at bottom right, #EC991C, #E9B213);
+  --nimiq-green-bg: radial-gradient(100% 100% at bottom right, #41A38E, #21BCA5);
+}

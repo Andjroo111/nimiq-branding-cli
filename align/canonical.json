@@ -35,6 +35,9 @@
     "fileSizeGuard": 800,
     "ci": true
   },
+  "pwa": {
+    "note": "Canonical PWA shell (what nq new-app scaffolds; NOT a graded axis yet — documented as the committed baseline). manifest.webmanifest with REAL 192/512 + maskable icon PNGs (official Nimiq signet on the brand navy gradient), theme_color #1f2348 on background_color #ffffff, plus the version-substitution service worker: public/sw.js carries a __BUILD_VERSION__ placeholder the server substitutes from package.json at request time, so the cache name is versioned structurally — no manual bumps (givechange recipe; scripts/check-sw-version.sh guards it in CI). Fleet history this fixes: 18 apps hand-rolled 3 competing SW recipes and 9 shipped manifests pointing at missing icon files."
+  },
   "settlementPackage": "nimiq-settlement",
   "miniApp": {
     "note": "Every fleet chain app must run as a Nimiq Pay mini-app. CLEAN when the app imports nimiq-app-shell's createWallet OR references the real mini-app surface (@nimiq/mini-app-sdk, window.nimiq, window.nimiqPay). A competition-era STUB/MOCK provider (or nothing) is SAFE-DRIFT — advisory only, NEVER risky — so the axis tracks adoption without failing CI fleet-wide while apps wire to the real SDK. Only graded for chainApp / non-exempt repos.",
