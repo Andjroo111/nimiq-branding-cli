@@ -50,6 +50,12 @@ each file. When `nq assets add icon:<name>` extracts an icon that has a summary,
 baked in as `role="img"`, `aria-label` and a `<title>`, so agents and screen readers can identify
 icons without seeing them.
 
+Extraction also repairs a known upstream defect: a few multi-defs `duotone-*` icons ship with
+every internal SVG id collapsed to one value, which makes them render blank or partial
+([onmax/nimiq-ui#77](https://github.com/onmax/nimiq-ui/issues/77)). `nq assets add` uniquifies
+the ids and re-points each reference on the way out (the vendored set stays byte-faithful), and
+prints a note whenever it repaired one.
+
 Open `showcase.html` for the full component gallery and `supporting-elements.html` for the
 wallet + marketing element demos.
 

@@ -223,6 +223,87 @@ function iconToSvg(set, name, summary) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}"${a11y}>${title}${ic.body}</svg>\n`;
 }
 
+// Some upstream nimiq-icons entries ship every id inside one icon collapsed to a
+// single generated value (the build namespaces ids per icon, not per id), so any
+// multi-defs icon renders blank/partial: its mask, gradients and clipPath fight
+// over one id. Repair on the way out: rename each duplicate def id uniquely
+// (-1, -2, ... in document order), then re-point references by attribute
+// semantics (fill/stroke -> paint servers, mask -> <mask>, clip-path ->
+// <clipPath>, filter -> <filter>), pairing in document order when a category
+// has several defs. No-op for healthy SVGs; the vendored set stays byte-faithful.
+// Upstream bug: https://github.com/onmax/nimiq-ui/issues/77
+function repairDuplicateSvgIds(svg) {
+  const defs = [...svg.matchAll(/<(\w+)\b[^>]*?\sid="([^"]+)"/g)].map(m => ({ tag: m[1], id: m[2] }));
+  const counts = new Map();
+  for (const d of defs) counts.set(d.id, (counts.get(d.id) ?? 0) + 1);
+  const dupIds = [...counts.keys()].filter(id => counts.get(id) > 1);
+  if (!dupIds.length) return { svg, repaired: 0 };
+
+  const PAINT = new Set(['linearGradient', 'radialGradient', 'pattern']);
+  const catOfTag = t => PAINT.has(t) ? 'paint'
+    : t === 'mask' ? 'mask' : t === 'clipPath' ? 'clip-path' : t === 'filter' ? 'filter' : 'other';
+  const catOfAttr = a => (a === 'fill' || a === 'stroke') ? 'paint'
+    : (a === 'mask' || a === 'clip-path' || a === 'filter') ? a : 'other';
+
+  let out = svg;
+  for (const id of dupIds) {
+    const esc = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // rename each def carrying this id, in document order, remembering categories
+    const byCat = {};
+    let n = 0;
+    out = out.replace(new RegExp(`(<(\\w+)\\b[^>]*?\\sid=")${esc}(")`, 'g'), (m, pre, tag, post) => {
+      const newId = `${id}-${++n}`;
+      (byCat[catOfTag(tag)] ??= []).push(newId);
+      return `${pre}${newId}${post}`;
+    });
+    const fallback = byCat.other ?? Object.values(byCat)[0];
+    // re-point url(#id) references, order-paired within each category
+    const used = {};
+    out = out.replace(new RegExp(`([\\w-]+)="url\\(#${esc}\\)"`, 'g'), (m, attr) => {
+      const cat = catOfAttr(attr);
+      const list = byCat[cat] ?? fallback;
+      const i = Math.min(used[cat] ?? 0, list.length - 1);
+      used[cat] = (used[cat] ?? 0) + 1;
+      return `${attr}="url(#${list[i]})"`;
+    });
+    // re-point href/xlink:href="#id" references. Ambiguity is real here (any use
+    // could have referenced any collapsed def), so route by geometry: a use inside
+    // a <clipPath> or a full-canvas <mask> (x=0 y=0 userSpaceOnUse) wants the
+    // canvas rect def (d="M0 0h24v24H0z"); a visible use or one inside a bare
+    // shape-mask wants a real shape def. Order-paired with clamping within each pool.
+    const others = byCat.other ?? fallback ?? [];
+    const canvasIds = others.filter(nid => {
+      const tag = out.match(new RegExp(`<[^>]*\\sid="${nid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*>`))?.[0] ?? '';
+      const d = tag.match(/\sd="([^"]+)"/)?.[1] ?? '';
+      return /^M0[ ,]0h\d+(?:\.\d+)?v\d+(?:\.\d+)?H0z$/i.test(d);
+    });
+    const shapeIds = others.filter(nid => !canvasIds.includes(nid));
+    const containerAt = (str, idx) => {
+      const stack = [];
+      const tre = /<(\/?)(mask|clipPath)\b([^>]*)>/g;
+      let t;
+      while ((t = tre.exec(str)) && t.index < idx) {
+        if (t[1]) stack.pop();
+        else if (!t[3].endsWith('/')) stack.push({ tag: t[2], attrs: t[3] });
+      }
+      return stack[stack.length - 1] ?? null;
+    };
+    const pools = { canvas: 0, shape: 0 };
+    out = out.replace(new RegExp(`((?:xlink:)?href=")#${esc}(")`, 'g'), (...args) => {
+      const [, pre, post] = args;
+      const offset = args[args.length - 2], str = args[args.length - 1];
+      const ctx = containerAt(str, offset);
+      const wantsCanvas = ctx && (ctx.tag === 'clipPath'
+        || (ctx.tag === 'mask' && /maskUnits="userSpaceOnUse"/.test(ctx.attrs) && /\sx="0"/.test(ctx.attrs) && /\sy="0"/.test(ctx.attrs)));
+      const pool = wantsCanvas && canvasIds.length ? 'canvas' : 'shape';
+      const list = pool === 'canvas' ? canvasIds : (shapeIds.length ? shapeIds : others);
+      if (!list.length) return args[0];
+      return `${pre}#${list[Math.min(pools[pool]++, list.length - 1)]}${post}`;
+    });
+  }
+  return { svg: out, repaired: dupIds.length };
+}
+
 async function cmdAssets(sub, args, flags) {
   if (sub === 'list') {
     const filter = args[0]?.toLowerCase();
@@ -266,8 +347,13 @@ async function cmdAssets(sub, args, flags) {
       if (q.startsWith('icon:') || q.startsWith('flag:')) {
         const [kind, name] = q.split(':');
         const set = await loadIconSet(kind === 'icon' ? 'nimiq-icons.json' : 'nimiq-flags.json');
-        const svg = set && iconToSvg(set, name, kind === 'icon' ? sums[name] : undefined);
+        let svg = set && iconToSvg(set, name, kind === 'icon' ? sums[name] : undefined);
         if (!svg) { console.warn(`! ${q} not found`); continue; }
+        const rep = repairDuplicateSvgIds(svg);
+        if (rep.repaired) {
+          svg = rep.svg;
+          console.log(`  repaired ${rep.repaired} duplicated id(s) in ${name} — upstream nimiq-icons bug, onmax/nimiq-ui#77`);
+        }
         const dest = resolve(flags.out ?? '.', 'nimiq', 'assets', 'icons', `${name}.svg`);
         await mkdir(dirname(dest), { recursive: true });
         await writeFile(dest, svg);
@@ -280,7 +366,15 @@ async function cmdAssets(sub, args, flags) {
       if (hits.length > 8) { console.warn(`! "${q}" matches ${hits.length} files — be more specific (nq assets search ${q})`); continue; }
       for (const f of hits) {
         await ensureAsset(f, flags);
-        console.log(`+ ${f} → ${resolve(flags.out ?? '.', 'nimiq', 'assets', f)}`);
+        const dest = resolve(flags.out ?? '.', 'nimiq', 'assets', f);
+        if (f.endsWith('.svg')) {
+          const rep = repairDuplicateSvgIds(await readFile(dest, 'utf8'));
+          if (rep.repaired) {
+            await writeFile(dest, rep.svg);
+            console.log(`  repaired ${rep.repaired} duplicated id(s) — upstream nimiq-icons bug, onmax/nimiq-ui#77`);
+          }
+        }
+        console.log(`+ ${f} → ${dest}`);
       }
     }
     return;
