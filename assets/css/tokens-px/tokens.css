@@ -1,0 +1,123 @@
+/*
+ * Nimiq brand tokens — PLAIN PX / absolute values. Tokens ONLY:
+ * no html{font-size} rescale, no resets, no component classes.
+ *
+ * WHY THIS FILE EXISTS — the 8px-rem trap: @nimiq/style (assets/css/legacy/
+ * nimiq-style.min.css) sets `html{font-size:8px}`, so 1rem = 8px page-wide and
+ * any hand-written rem CSS next to it renders half-size. Eleven fleet apps
+ * dodged that by hand-copying hex values into their own token sheets. This file
+ * is the canonical copy instead: `nq init --style tokens-px`, link it, write px.
+ * It never touches html{font-size}, so 1rem stays the browser default.
+ *
+ * Provenance (verified, not invented):
+ * - Colors, -bg radial gradients, easing: assets/css/legacy/nimiq-style.min.css
+ *   (@nimiq/style) — names and values verbatim.
+ * - Radii + shadows: same file, rem converted to px at its own 8px root;
+ *   .small-page canon from assets/tokens.md.
+ * - Text opacity ladder (--text-*): wallet scss/themes.scss `nimiq-blue()` steps,
+ *   documented in assets/tokens.md — names verbatim, so wallet-derived CSS drops in.
+ * - Crypto colors: wallet scss/themes.scss (see assets/tokens.md) — names verbatim.
+ *
+ * Usage: <link rel="stylesheet" href="nimiq/tokens-px/tokens.css">
+ * Tailwind v4 projects: import tailwind-theme.css (same values, @theme block) instead.
+ */
+:root {
+  /* ── Brand colors (@nimiq/style, verbatim) ── */
+  --nimiq-blue: #1F2348;         /* the brand navy — primary text + dark surfaces */
+  --nimiq-light-blue: #0582CA;   /* accent, links, info */
+  --nimiq-gold: #E9B213;         /* emphasis; doubles as the NIM asset color */
+  --nimiq-green: #21BCA5;        /* success ONLY */
+  --nimiq-orange: #FC8702;       /* warning */
+  --nimiq-red: #D94432;          /* error */
+  --nimiq-purple: #5F4B8B;
+  --nimiq-pink: #FA7268;
+  --nimiq-light-green: #88B04B;
+  --nimiq-brown: #795548;
+  --nimiq-gray: #F4F4F4;
+  --nimiq-light-gray: #FAFAFA;
+  --nimiq-white: #FFF;
+  --nimiq-light-blue-on-dark: #0CA6FE;
+  --nimiq-red-on-dark: #FF5C48;
+
+  /* hover/darkened companions */
+  --nimiq-blue-darkened: #151833;
+  --nimiq-light-blue-darkened: #0071C3;
+  --nimiq-gold-darkened: #E5A212;
+  --nimiq-green-darkened: #20B29E;
+  --nimiq-orange-darkened: #FC7500;
+  --nimiq-red-darkened: #D13030;
+
+  /* surfaces */
+  --nimiq-highlight-bg: rgba(31, 35, 72, 0.06);
+  --nimiq-card-bg: white;
+
+  /* ── Radial -bg gradients (@nimiq/style, verbatim) ──
+     Color AREAS use these via background-image — never a flat fill. */
+  --nimiq-blue-bg: radial-gradient(100% 100% at bottom right, #260133, var(--nimiq-blue));
+  --nimiq-light-blue-bg: radial-gradient(100% 100% at bottom right, #265DD7, var(--nimiq-light-blue));
+  --nimiq-gold-bg: radial-gradient(100% 100% at bottom right, #EC991C, var(--nimiq-gold));
+  --nimiq-green-bg: radial-gradient(100% 100% at bottom right, #41A38E, var(--nimiq-green));
+  --nimiq-orange-bg: radial-gradient(100% 100% at bottom right, #FD6216, var(--nimiq-orange));
+  --nimiq-red-bg: radial-gradient(100% 100% at bottom right, #CC3047, var(--nimiq-red));
+  --nimiq-purple-bg: radial-gradient(100% 100% at bottom right, #4D4C96, var(--nimiq-purple));
+  --nimiq-pink-bg: radial-gradient(100% 100% at bottom right, #E0516B, var(--nimiq-pink));
+  --nimiq-light-green-bg: radial-gradient(100% 100% at bottom right, #70B069, var(--nimiq-light-green));
+  --nimiq-brown-bg: radial-gradient(100% 100% at bottom right, #724147, var(--nimiq-brown));
+
+  /* hover/darkened gradient companions */
+  --nimiq-blue-bg-darkened: radial-gradient(100% 100% at bottom right, #180021, var(--nimiq-blue-darkened));
+  --nimiq-light-blue-bg-darkened: radial-gradient(100% 100% at bottom right, #2355C4, var(--nimiq-light-blue-darkened));
+  --nimiq-gold-bg-darkened: radial-gradient(100% 100% at bottom right, #E58A1B, var(--nimiq-gold-darkened));
+  --nimiq-green-bg-darkened: radial-gradient(100% 100% at bottom right, #3D9988, var(--nimiq-green-darkened));
+  --nimiq-orange-bg-darkened: radial-gradient(100% 100% at bottom right, #EA5200, var(--nimiq-orange-darkened));
+  --nimiq-red-bg-darkened: radial-gradient(100% 100% at bottom right, #BF2D46, var(--nimiq-red-darkened));
+
+  /* ── Radii (px; from @nimiq/style at its 8px root + the .small-page canon) ── */
+  --nimiq-radius-input: 4px;   /* .nq-input (0.5rem @ 8px) */
+  --nimiq-radius: 8px;         /* .small-page canon + card header (1rem @ 8px) */
+  --nimiq-radius-card: 10px;   /* .nq-card (1.25rem @ 8px) */
+  --nimiq-radius-pill: 500px;  /* .nq-button pill */
+
+  /* ── Shadows / elevation (px; converted at the 8px root) ── */
+  --nimiq-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);          /* .nq-shadow + buttons */
+  --nimiq-shadow-l: 0 4px 20px rgba(0, 0, 0, 0.15);        /* .nq-shadow-l */
+  --nimiq-shadow-card: 0 4px 28px rgba(0, 0, 0, 0.111158); /* .nq-card */
+  --nimiq-shadow-page: 0 3px 22px rgba(0, 0, 0, 0.1);      /* .small-page 420x564 canon */
+
+  /* ── Easing / motion (@nimiq/style, verbatim names) ── */
+  --nimiq-ease: cubic-bezier(0.25, 0, 0, 1);
+  --nimiq-ease-bounce: cubic-bezier(0.41, 0.34, 0.26, 1.55); /* .nq-button :active pop */
+  --attr-duration: 0.2s;
+  --movement-duration: 0.4s;
+
+  /* ── Font stacks (Mulish first — upstream renamed Muli; Fira Mono for
+        addresses / hashes / technical values, nothing else) ── */
+  --nimiq-font: 'Mulish', 'Muli', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  --nimiq-font-mono: 'Fira Mono', monospace;
+
+  /* ── Text opacity ladder (wallet scss/themes.scss, 16 steps, names verbatim) ──
+     Every step is the brand navy at descending alpha. Prefer a ladder step over
+     ad-hoc grays for secondary text on light surfaces. */
+  --text-100: rgba(31, 35, 72, 1);
+  --text-80: rgba(31, 35, 72, 0.8);
+  --text-70: rgba(31, 35, 72, 0.7);
+  --text-60: rgba(31, 35, 72, 0.6);
+  --text-50: rgba(31, 35, 72, 0.5);
+  --text-40: rgba(31, 35, 72, 0.4);
+  --text-35: rgba(31, 35, 72, 0.35);
+  --text-30: rgba(31, 35, 72, 0.3);
+  --text-25: rgba(31, 35, 72, 0.25);
+  --text-22: rgba(31, 35, 72, 0.22);
+  --text-20: rgba(31, 35, 72, 0.2);
+  --text-16: rgba(31, 35, 72, 0.16);
+  --text-14: rgba(31, 35, 72, 0.14);
+  --text-12: rgba(31, 35, 72, 0.12);
+  --text-10: rgba(31, 35, 72, 0.1);
+  --text-6: rgba(31, 35, 72, 0.06);
+
+  /* ── Crypto asset colors (wallet scss/themes.scss, names verbatim) ──
+     NIM has no extra token: its asset color IS var(--nimiq-gold). */
+  --bitcoin-orange: #F7931A;
+  --usdc-blue: #2775CA;
+  --usdt-green: #009393; /* named green, renders teal */
+}

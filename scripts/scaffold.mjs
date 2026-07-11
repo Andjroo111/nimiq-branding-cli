@@ -10,10 +10,12 @@
 // Flags: --no-chain (chainApp:false → omit settlement + styling parity, lean PWA)
 //        --settlement=mock|rpc|noop   (default mock)
 //        --deploy=fly|none            (default fly)
-import { mkdir, writeFile, readFile } from 'node:fs/promises';
+//        --no-pwa (skip the PWA shell: icon PNGs + sw.js + registration + manifest icons)
+import { chmod, mkdir, writeFile, readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { generatePwaIcons, ICON_SPECS } from './pwa-icons.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '..');
@@ -24,6 +26,7 @@ export async function scaffoldApp(name, opts = {}) {
   if (existsSync(dir)) throw new Error(`directory "${name}" already exists`);
 
   const chain = !opts.noChain;
+  const pwa = !opts.noPwa;
   const settlement = opts.settlement ?? 'mock'; // mock | rpc | noop
   const deploy = opts.deploy ?? 'fly';          // fly | none
   if (!['mock', 'rpc', 'noop'].includes(settlement)) throw new Error(`--settlement must be mock|rpc|noop (got "${settlement}")`);
@@ -52,6 +55,7 @@ export async function scaffoldApp(name, opts = {}) {
       // file the PWA loads. Run on install / before deploy. Esbuild via bunx — no devDep.
       'build:shell': "bunx esbuild --bundle --format=esm --minify --outfile=public/vendor/app-shell.js node_modules/nimiq-app-shell/dist/index.js || echo 'build:shell: nimiq-app-shell not installed yet — run bun install first'",
       postinstall: 'bun run build:shell',
+      ...(pwa ? { 'check:sw': 'bash scripts/check-sw-version.sh' } : {}),
     },
     dependencies: {
       hono: '^4.7.0',
@@ -63,19 +67,31 @@ export async function scaffoldApp(name, opts = {}) {
   }, null, 2) + '\n';
 
   // ---- src/server.ts (Hono + bun:sqlite + /health) ----
-  files['src/server.ts'] = serverTs(name, chain, settlement);
+  files['src/server.ts'] = serverTs(name, chain, settlement, pwa);
   files['src/db.ts'] = dbTs();
   if (chain) files['src/chain.ts'] = chainTs(settlement);
   files['test/health.test.ts'] = healthTest(name, chain);
 
   // ---- vanilla PWA front end ----
-  files['public/index.html'] = indexHtml(name, chain);
-  files['public/app.js'] = appJs(name, chain);
+  files['public/index.html'] = indexHtml(name, chain, pwa);
+  files['public/app.js'] = appJs(name, chain, pwa);
   files['public/css/tokens.css'] = tokensCss();
   files['public/manifest.webmanifest'] = JSON.stringify({
-    name, short_name: name, start_url: '/', display: 'standalone',
+    name, short_name: name, ...(pwa ? { id: '/' } : {}), start_url: '/', display: 'standalone',
     background_color: '#ffffff', theme_color: '#1f2348',
+    ...(pwa ? { icons: ICON_SPECS.map(s => ({ src: `/icons/${s.file}`, sizes: s.sizes, type: 'image/png', purpose: s.purpose })) } : {}),
   }, null, 2) + '\n';
+
+  // ---- PWA shell: REAL icon PNGs + version-substitution service worker ----
+  // Icons are generated at scaffold time (official Nimiq signet on the brand navy
+  // gradient, rasterized via playwright — vendored fallback if unavailable), so a
+  // fresh app can never ship a manifest pointing at missing/broken icon files.
+  if (pwa) {
+    const icons = await generatePwaIcons();
+    for (const [file, buf] of Object.entries(icons)) files[`public/icons/${file}`] = buf;
+    files['public/sw.js'] = swJs(name);
+    files['scripts/check-sw-version.sh'] = checkSwVersionSh(name);
+  }
 
   // ---- i18n: locales the shell's createI18n loads + switches between at runtime ----
   files['public/locales/en.json'] = JSON.stringify({
@@ -94,7 +110,7 @@ export async function scaffoldApp(name, opts = {}) {
   // ---- config ----
   files['tsconfig.json'] = tsconfigJson();
   files['.gitignore'] = ['node_modules/', 'data/', '.DS_Store', 'dist/', 'public/vendor/', ''].join('\n');
-  files['README.md'] = readmeMd(name, chain, settlement, deploy);
+  files['README.md'] = readmeMd(name, chain, settlement, deploy, pwa);
 
   // ---- deploy kit ----
   if (deploy === 'fly') {
@@ -103,7 +119,7 @@ export async function scaffoldApp(name, opts = {}) {
     files['.dockerignore'] = ['node_modules', 'data', '.git', '*.md', ''].join('\n');
     files['.github/workflows/deploy.yml'] = deployYml();
   }
-  files['.github/workflows/ci.yml'] = ciYml();
+  files['.github/workflows/ci.yml'] = ciYml(pwa);
 
   // ---- the stamped manifest: starts CLEAN on every axis ----
   files['nimiq-stack.json'] = JSON.stringify(stampManifest(name, canonical, { chain, settlement, deploy }), null, 2) + '\n';
@@ -113,9 +129,10 @@ export async function scaffoldApp(name, opts = {}) {
     const full = join(dir, rel);
     await mkdir(dirname(full), { recursive: true });
     await writeFile(full, content);
+    if (rel.endsWith('.sh')) await chmod(full, 0o755);
   }
 
-  return { dir, files: Object.keys(files), chain, settlement, deploy };
+  return { dir, files: Object.keys(files), chain, settlement, deploy, pwa };
 }
 
 function stampManifest(name, canonical, { chain, settlement, deploy }) {
@@ -145,7 +162,7 @@ function stampManifest(name, canonical, { chain, settlement, deploy }) {
 }
 
 // ---------- templates ----------
-function serverTs(name, chain, settlement) {
+function serverTs(name, chain, settlement, pwa) {
   return `// ${name} — canonical Nimiq fleet app (Bun + Hono + bun:sqlite).
 import { Hono } from 'hono';
 import { db, migrate } from './db.ts';
@@ -161,6 +178,21 @@ app.get('/manifest.webmanifest', () => new Response(Bun.file('public/manifest.we
 // shared app-shell bundle (build:shell) + i18n locale files
 app.get('/vendor/:file', (c) => new Response(Bun.file('public/vendor/' + c.req.param('file'))));
 app.get('/locales/:file', (c) => new Response(Bun.file('public/locales/' + c.req.param('file'))));
+${pwa ? `app.get('/icons/:file', (c) => new Response(Bun.file('public/icons/' + c.req.param('file'))));
+
+// Service worker: serve /sw.js with __BUILD_VERSION__ substituted to the live
+// package.json version, so the SW cache name + precached asset URLs are versioned
+// STRUCTURALLY — bump the package version and deploy; never hand-edit sw.js.
+// (Fleet PWA recipe; guarded by scripts/check-sw-version.sh.)
+const BUILD_VERSION: string = JSON.parse(await Bun.file('package.json').text()).version ?? '0.0.0';
+app.get('/sw.js', async (c) => {
+  const src = await Bun.file('public/sw.js').text();
+  return c.body(src.replaceAll('__BUILD_VERSION__', BUILD_VERSION), 200, {
+    'content-type': 'application/javascript; charset=utf-8',
+    'cache-control': 'no-cache',
+  });
+});
+` : ''}
 
 // health route — required by Fly checks + nq align deploy axis
 app.get('/health', (c) => c.json({ ok: true, app: '${name}', ts: Date.now() }));
@@ -255,15 +287,15 @@ test('chainClient.getBalance resolves a number (no light client)', async () => {
 ` : ''}`;
 }
 
-function indexHtml(name, chain) {
+function indexHtml(name, chain, pwa) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${name}</title>
-  <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="stylesheet" href="/css/tokens.css">
+${pwa ? '  <meta name="theme-color" content="#1f2348">\n' : ''}  <link rel="manifest" href="/manifest.webmanifest">
+${pwa ? '  <link rel="apple-touch-icon" href="/icons/icon-192.png">\n' : ''}  <link rel="stylesheet" href="/css/tokens.css">
 ${chain ? '  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@nimiq/style@0.8/nimiq-style.min.css">\n' : ''}</head>
 <body class="nq-style">
   <main class="app">
@@ -279,7 +311,7 @@ ${chain ? '  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@nimiq/st
 `;
 }
 
-function appJs(name, chain) {
+function appJs(name, chain, pwa) {
   // wire the shared app-shell: Nimiq Pay wallet-connect (mini-app) + runtime i18n.
   // The bundle is produced by `bun run build:shell` (esbuild → public/vendor/app-shell.js);
   // app-shell runs dual-mode (real Nimiq Pay SDK in-wallet, fallback connect elsewhere).
@@ -308,7 +340,127 @@ document.getElementById('ping')?.addEventListener('click', async () => {
 ${chain ? `
 // chain reads go through the shared nimiq-settlement package (rpc-block-scan), never the
 // light client. See src/chain.ts for the server-side adapter.
+` : ''}${pwa ? `
+// PWA: register the service worker. The server serves /sw.js with its version
+// placeholder substituted from package.json (src/server.ts), so cache busting is
+// structural — bump the package version, never sw.js itself.
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
 ` : ''}`;
+}
+
+// The fleet service-worker recipe (ported from givechange): the __BUILD_VERSION__
+// placeholder is substituted by the server at request time, so the cache name and
+// precached asset URLs track package.json — installed PWAs can never pin a stale
+// shell after a deploy, and nobody hand-bumps cache names (the 3-recipes-per-app
+// drift this replaces). Network-first navigations, cache-first static, API never cached.
+function swJs(name) {
+  return `// ${name} service worker — fleet PWA recipe (version-substitution, network-first).
+//
+// Cache-busting is STRUCTURAL, not a manual bump: the server serves this file with
+// __BUILD_VERSION__ replaced by the package.json version at request time
+// (src/server.ts), so the cache name and every precached asset URL carry the live
+// version. Bump the package version and deploy — installed clients pick up fresh
+// code. scripts/check-sw-version.sh guards the placeholder (run: bun run check:sw).
+//
+// (Opened directly as a static file the placeholder stays literal — fine for source
+// inspection; the running server always substitutes it.)
+const VERSION = '__BUILD_VERSION__';
+const CACHE = '${name}-' + VERSION;
+const v = (p) => p + '?v=' + VERSION;
+const PRECACHE = [
+  '/',
+  v('/app.js'),
+  v('/css/tokens.css'),
+  v('/manifest.webmanifest'),
+  v('/vendor/app-shell.js'),
+  v('/locales/en.json'),
+  v('/locales/de.json'),
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+];
+
+self.addEventListener('install', (e) => {
+  // allSettled so one missing URL can't nuke the whole precache (fleet PWA lesson).
+  e.waitUntil(
+    caches.open(CACHE)
+      .then((c) => Promise.allSettled(PRECACHE.map((u) => c.add(u))))
+      .then(() => self.skipWaiting()),
+  );
+});
+
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys()
+      .then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim()),
+  );
+});
+
+self.addEventListener('fetch', (e) => {
+  const { request } = e;
+  if (request.method !== 'GET') return;
+  const url = new URL(request.url);
+
+  // Never cache API responses — always live.
+  if (url.pathname.startsWith('/api/') || url.pathname === '/health') return;
+
+  // Network-first for navigations so the app shell stays fresh.
+  if (request.mode === 'navigate') {
+    e.respondWith(
+      fetch(request)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(request, copy));
+          return res;
+        })
+        .catch(() => caches.match('/').then((r) => r ?? Response.error())),
+    );
+    return;
+  }
+
+  // Cache-first for static assets. Match ignoring the ?v= query so a precached
+  // versioned URL still serves a same-path request without it.
+  e.respondWith(
+    caches.match(request, { ignoreSearch: true }).then((r) => r ?? fetch(request)),
+  );
+});
+`;
+}
+
+function checkSwVersionSh(name) {
+  return `#!/usr/bin/env bash
+# Fleet SW guard: keep the service-worker cache version structurally tied to
+# package.json. sw.js MUST keep the __BUILD_VERSION__ placeholder (substituted by
+# the server at request time) and MUST NOT hardcode a "${name}-x.y.z" cache name,
+# which would go stale on every release. Run: bun run check:sw (also fine in CI).
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+
+SW="public/sw.js"
+fail=0
+
+if ! grep -q "__BUILD_VERSION__" "$SW"; then
+  echo "FAIL  $SW must reference __BUILD_VERSION__ (the server substitutes the live version)."
+  fail=1
+fi
+
+# Reject any hardcoded ${name}-<semver> cache name.
+if grep -Eq "${name}-v?[0-9]+\\.[0-9]+\\.[0-9]+" "$SW"; then
+  echo "FAIL  $SW hardcodes a cache version — use the __BUILD_VERSION__ placeholder instead."
+  grep -En "${name}-v?[0-9]+\\.[0-9]+\\.[0-9]+" "$SW" || true
+  fail=1
+fi
+
+if [ "$fail" -eq 0 ]; then
+  PKG_VERSION="$(grep -E '"version"' package.json | head -1 | sed -E 's/.*"version"[^"]*"([^"]+)".*/\\1/')"
+  echo "OK — sw.js is version-structural (package.json version: $PKG_VERSION)."
+fi
+exit "$fail"
+`;
 }
 
 function tokensCss() {
@@ -402,7 +554,7 @@ jobs:
 `;
 }
 
-function ciYml() {
+function ciYml(pwa) {
   return `name: ci
 on:
   push: { branches: [main] }
@@ -415,7 +567,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: bun test
-  align:
+${pwa ? '      - run: bash scripts/check-sw-version.sh\n' : ''}  align:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -425,7 +577,7 @@ jobs:
 `;
 }
 
-function readmeMd(name, chain, settlement, deploy) {
+function readmeMd(name, chain, settlement, deploy, pwa) {
   return `# ${name}
 
 Canonical Nimiq fleet app — scaffolded by \`nq new\`.
@@ -433,7 +585,7 @@ Canonical Nimiq fleet app — scaffolded by \`nq new\`.
 - **Stack:** Bun + Hono + bun:sqlite + vanilla PWA${chain ? ' + @nimiq/style' : ''}
 - **App shell:** \`nimiq-app-shell\` — Nimiq Pay wallet-connect (mini-app) + profile + runtime i18n. Bundled to \`public/vendor/app-shell.js\` by \`bun run build:shell\` (runs on \`postinstall\`).
 - **i18n:** \`createI18n\` loads \`public/locales/<lang>.json\` (en, de seeded). The umbrella \`nimiq.life\` hands off the initial language via \`?lang=\`; users switch live with the flag picker.
-${chain ? `- **Settlement:** \`${settlement}\` client (\`src/chain.ts\`), via the shared \`nimiq-settlement\` package. Chain reads use rpc-block-scan; \`@nimiq/core\` is signing-only — never the light client.\n` : '- **Chain:** none (`--no-chain`)\n'}- **Deploy:** ${deploy === 'fly' ? 'Fly.io (Dockerfile + fly.toml + persistent volume at /app/data)' : 'none yet — wire a target'}
+${pwa ? `- **PWA:** installable out of the box — \`public/manifest.webmanifest\` with real 192/512 + maskable icon PNGs (\`public/icons/\`), and \`public/sw.js\` on the fleet version-substitution recipe: the server swaps \`__BUILD_VERSION__\` for the package.json version at request time, so cache busting is structural — bump the version, never sw.js. Guard: \`bun run check:sw\` (also in CI).\n` : ''}${chain ? `- **Settlement:** \`${settlement}\` client (\`src/chain.ts\`), via the shared \`nimiq-settlement\` package. Chain reads use rpc-block-scan; \`@nimiq/core\` is signing-only — never the light client.\n` : '- **Chain:** none (`--no-chain`)\n'}- **Deploy:** ${deploy === 'fly' ? 'Fly.io (Dockerfile + fly.toml + persistent volume at /app/data)' : 'none yet — wire a target'}
 - **Health:** \`GET /health\`
 
 ## Dev

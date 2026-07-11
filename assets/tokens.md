@@ -1,6 +1,6 @@
 # Nimiq Design Tokens — quick reference
 
-Two token sets ship with this CLI. Pick ONE per project via `nq init --style modern|legacy`.
+Three token sets ship with this CLI. Pick ONE per project via `nq init --style modern|legacy|tokens-px`.
 
 ## Modern (`assets/css/modern/` — from onmax/nimiq-ui nimiq-css)
 
@@ -47,6 +47,16 @@ Verified against the pinned wallet checkout (see `upstream-pins.json`).
   `--address-column-width: 150rem`, `--account-column-width: 70rem` default (>= 1500px)
   stepping 65 / 59 / 52 / 47.5rem down the desktop breakpoints, 80.75rem >= 1800px,
   85rem >= 2000px, and 100vw (with address column) at <= 768px.
+
+## tokens-px (`assets/css/tokens-px/` — the px-only escape hatch)
+
+`nq init --style tokens-px` drops `nimiq/tokens-px/tokens.css`: every brand custom
+property above (colors, the radial `-bg` gradients, radii, shadows, easing, font stacks,
+the 16-step `--text-*` opacity ladder, crypto colors) as `:root` values in PLAIN PX /
+absolute units — no `html{font-size}` rescale, no resets, no component classes. Use it
+when hand-authoring CSS so you don't hit the legacy 8px-rem trap (and stop hand-copying
+hex values per app). Tailwind v4 projects: import `tailwind-theme.css` (same values in an
+`@theme` block) instead. Values sourced from the legacy sheet + wallet extraction above.
 
 Full extraction with file paths: see `references/` in this repo and
 `~/Projects/nimiq/nimiq-branding-skill/nimiq-branding.md` (deep brand doc).
