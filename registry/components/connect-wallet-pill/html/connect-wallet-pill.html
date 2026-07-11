@@ -1,0 +1,46 @@
+<!-- connect-wallet-pill: the fleet's wallet connect button. Requires
+     connect-wallet-pill.css (+ Mulish, and Fira Mono for the address).
+     ORIGINAL composition, no upstream equivalent. Formalizes the hashmark
+     topbar chip (renderTopbarAddress) on shipped nq tokens.
+
+     Three states, one <button>, driven by data-state:
+       connect   -> busy (disabled, spinner) -> connected (identicon + address chip)
+     Tap the connected chip once and it flips to Disconnect (confirm state);
+     tap again to disconnect, tap anywhere else or wait 4s to keep the session.
+
+     LIVE USE: keep only the first button below and mount the driver:
+
+         <script type="module">
+             import { initConnectPill } from './connect-wallet-pill.js';
+             const wallet = createWallet({ appName: 'My app' });   // nimiq-app-shell seam
+             const pill = initConnectPill(document.querySelector('.connect-wallet-pill'), {
+                 connect: () => wallet.connect(),
+                 onDisconnect: () => wallet.disconnect(),
+             });
+             wallet.onAccountChange((account) => pill.setAccount(account));
+         </script>
+
+     Any async callback returning { address, label?, balance? } (or null on
+     cancel) works; there is no hard dependency on the app-shell.
+     Identicons: load @nimiq/iqons (pinned 1.6.0) and expose window.Iqons, or
+     pass options.identicon. On a navy surface add the on-dark class. -->
+
+<!-- 1. Idle: the navy radial pill (on light surfaces). The driver renders this state. -->
+<button type="button" class="connect-wallet-pill" data-state="connect">
+    <span class="cwp-label">Connect wallet</span>
+</button>
+
+<!-- 2. Busy (static reference): disabled, CircleSpinner arcs at currentColor. -->
+<button type="button" class="connect-wallet-pill" data-state="busy" disabled aria-busy="true">
+    <svg class="cwp-spinner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="14" height="14" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path stroke="currentColor" d="M9,1c4.42,0,8,3.58,8,8"/><path stroke="currentColor" opacity=".3" d="M4.27,2.56C2.29,4.01,1,6.35,1,9c0,4.42,3.58,8,8,8c2.65,0,4.99-1.29,6.44-3.27"/></svg>
+    <span class="cwp-label">Connecting</span>
+</button>
+
+<!-- 3. Connected (static reference): quiet chip, identicon + truncated address
+        in Fira Mono, optional balance. The img starts on the house placeholder;
+        the demo script (or the driver) swaps in the real iqon. -->
+<button type="button" class="connect-wallet-pill" data-state="connected" title="Indigo Address NQ87 JY9X JUEE HA17 JNBB HPGM 5ETQ VT1G CVN2">
+    <img class="cwp-identicon" data-address="NQ87 JY9X JUEE HA17 JNBB HPGM 5ETQ VT1G CVN2" src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23cwp_placeholder_radial)"/><defs><radialGradient id="cwp_placeholder_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>' alt="Nimiq identicon">
+    <span class="cwp-address">NQ87 JY…CVN2</span>
+    <span class="cwp-balance">519 NIM</span>
+</button>
