@@ -1,6 +1,6 @@
 {
   "name": "empty-state",
-  "purpose": "The fleet's quiet nothing-here message: a centered muted line with an optional emoji and at most one understated action, in block (page level) and row (list level) sizes with on-light and on-dark ink channels. Replaces the one-line empty states 13 apps hand-roll.",
+  "purpose": "The fleet's quiet nothing-here message: a real Nimiq duotone icon at the muted ink, a full-ink primary line, an optional muted secondary line and at most one understated action, in block (page level) and row (one quiet line inside a list card) sizes with on-light and on-dark ink ladders. Replaces the one-line empty states 13 apps hand-roll.",
   "category": "feedback",
   "variants": [
     "vue",
@@ -8,18 +8,25 @@
   ],
   "props": [
     {
+      "name": "title",
+      "type": "String",
+      "required": false,
+      "default": "''",
+      "description": "The primary line: full ink (#1F2348 on light, #FFF on dark), 18px 700. Keep it one short fragment, no period, no dashes. Skip it for the row size."
+    },
+    {
       "name": "message",
       "type": "String",
       "required": false,
       "default": "''",
-      "description": "The single muted line (navy 50% on light, white 60% on dark). The default slot overrides it. Keep it one short fragment, no period, no dashes."
+      "description": "The secondary line at the muted ink (navy 50% on light, white 60% on dark); in the row size it is the single quiet line. The default slot overrides it. Keep it one short fragment, no period, no dashes."
     },
     {
       "name": "size",
       "type": "'block' | 'row'",
       "required": false,
       "default": "'block'",
-      "description": "block is the page-level size (48px padding, 15px message, 44px icon); row is the list-level line for an empty list inside a card (26px padding, 14px message). HTML variant: add class 'row'."
+      "description": "block is the page-level size (48px padding, 80px spot-illustration icon, 18px title, 15px message); row is the one-line list-level state inside a card (26px padding, 20px glyph beside a 14px line). HTML variant: add class 'row'."
     },
     {
       "name": "dark",
@@ -39,7 +46,7 @@
       "name": "slot: icon",
       "type": "slot",
       "required": false,
-      "description": "Optional emoji (the chorecoin pattern) or a real Nimiq icon riding currentColor at the muted ink. Skip it for the row size. HTML variant: the .es-icon div, delete it if unused; keep aria-hidden on decorative emoji."
+      "description": "A real Nimiq duotone icon (assets/icons/duotone/*.svg) riding currentColor at the muted ink; the CSS sizes it to 80px in the block (the skill's spot-illustration tier) and 20px in the row. An emoji still works (chorecoin legacy, 44px line) but is no longer the default; never a generic icon set. HTML variant: the .es-icon div, delete it if unused; keep aria-hidden (decorative)."
     },
     {
       "name": "slot: action",
@@ -56,7 +63,7 @@
   "verify": {
     "viewport": {
       "width": 560,
-      "height": 720
+      "height": 900
     },
     "selector": ".empty-state-demo",
     "maxDiffPct": 0.5,
@@ -74,7 +81,7 @@
     "real-assets": true,
     "reproducible": true
   },
-  "notes": "ORIGINAL composition (flag-hex precedent), so verified:false; reference.png is snapped from truth/truth.html and nq verify guards the demo against it as a regression check. There is no upstream empty-state component (the wallet's empty screen is a whole layout, not a reusable block), so this formalizes the fleet's de facto standard: chorecoin public/app.css .empty (padding 26px 18px, centered, muted, 14px 600, big emoji in the line), tipjar .tips-empty (28px 16px, 15px, 'plain body text on the white feed card, set by whitespace'), drip .empty (15px, dim, 3x space padding), nimpot and snappos .empty-note (14px, ink-50). Design decisions: (a) radical simplicity per PRINCIPLES law 4: whitespace does the structural work; no borders, no boxes, no illustrations, no invented ornament; the component is transparent and the page or card supplies the surface. (b) One muted ink channel: navy 50% on light (the skill's secondary-text convention) and white 60% on dark; measured contrast: navy .5 on white 3.11:1 and on the #F8F8F8 page 3.06:1 (deliberately matches the brand's own secondary text, which nimiq.com ships sub-AA and nq lint warns rather than gates); white .6 on flat navy 6.33:1 and on the gradient corner 6.93:1. The interactive action is full-contrast: navy on its 7% tint 12.45:1, white on the 20% inverse chip 7.95:1. (c) The action is the legacy .nq-button-s capsule converted from the 8px root to px (height 3.375rem = 27px, padding 0 1.5rem = 12px, font 1.75rem = 14px 700, neutral bg rgba(31,35,72,.07), hover .12 with the darkened navy #151833, inverse white .2/.25 on dark), radius written as 999px (same render as the upstream 1.6875rem half-height, but on the skill's pill tier so lint's radius scale reads it as a capsule); focus-visible ring 2px #0582CA offset 3px per the skill's focus spec, and transitions ride --nimiq-ease with its cubic-bezier(0.25, 0, 0, 1) fallback plus a prefers-reduced-motion guard. One primary action max (PRINCIPLES); navy, never green (rule 5). (d) The emoji icon is the chorecoin pattern promoted to an optional slot (44px block, 22px row), aria-hidden because it is decorative; a real Nimiq icon can ride currentColor at the muted ink instead; never a generic icon set. (e) The message is a <p>, not a heading, so empty states never pollute the page outline; copy stays a short fragment with no period (rule 16 discipline) and no dashes (rule 18). (f) Two sizes only: block for a page section and row for an empty list inside a card, the two scales the fleet actually ships. Demo (= truth) shows block on the #F8F8F8 page with icon + action, row inside a white card (radius 10px, the app-card shadow 0 4px 28px rgba(0,0,0,.111)), and the on-dark block with the inverse action on the navy radial (rule 7). Pairs with transaction-list and the card components; use status-alert for errors that need attention rather than an empty state.",
+  "notes": "ORIGINAL composition (flag-hex precedent), so verified:false; reference.png is snapped from truth/truth.html and nq verify guards the demo against it as a regression check. There is no upstream empty-state component (the wallet's empty screen is a whole layout, not a reusable block), so this formalizes the fleet's de facto standard: chorecoin public/app.css .empty (padding 26px 18px, centered, muted, 14px 600, big emoji in the line), tipjar .tips-empty (28px 16px, 15px, 'plain body text on the white feed card, set by whitespace'), drip .empty (15px, dim, 3x space padding), nimpot and snappos .empty-note (14px, ink-50). V2 2026-07-10 after Andjroo's design review ('The block, that's ugly. The row inside a list has nothing. On navy, all caught up, that is terrible'): the raw-emoji default, the bare one-line row and the 'All caught up' sample copy are gone. Design decisions: (a) radical simplicity per PRINCIPLES law 4 still: whitespace + type hierarchy do the structural work; no borders, no boxes, no invented ornament; the component is transparent and the page or card supplies the surface. (b) Icon treatment: a real Nimiq duotone icon (assets/icons/duotone/*.svg) riding currentColor at the muted ink; the set's secondary shapes carry their own opacity .4 within the SAME color (skill icon rule: same color at .4, never a second hue). Sized by role per the skill: 80px in the block (the 80-130px spot/result illustration tier) and 20px beside the row line (the 16-24px glyph tier). Emoji stays possible via the slot (chorecoin legacy, 44px) but is no longer the demo or default; never a generic icon set. Demo icons chosen gradient-free (some duotone icons embed currentColor radialGradients whose duplicate ids could trip rule 3 when inlined twice): nim-phone (receive NIM on your wallet), cash-register (tips received), magnifying-glass (search/filter). (c) Type ladder calibrated against the wallet's real empty screen (screenshots/nimiq-wallet/wallet.nimiq.com-desktop.png: full-ink bold title over a muted secondary line, generous whitespace): .es-title 18px 700 full ink (#1F2348 / #FFF on dark), .es-message 15px 600 muted (navy 50% / white 60%; contrast ratios as before: navy .5 on white 3.11:1, deliberately matching the brand's own sub-AA secondary text which nq lint warns rather than gates; white .6 on flat navy 6.33:1, 6.93:1 on the gradient corner; action full-contrast navy on 7% tint 12.45:1, white on 20% inverse chip 7.95:1). Rhythm: 6px title-to-message via container gap, icon margin-bottom 14px (= 20px to title), action margin-top 18px (= 24px from message). (d) Row size is intentional, not bare: flex-row, 20px duotone glyph at the muted ink beside a single quiet 14px line, 10px gap, centered; still one line only, no title, no action. (e) The action is unchanged: the legacy .nq-button-s capsule converted from the 8px root to px (27px, padding 0 12px, 14px 700, neutral bg rgba(31,35,72,.07), hover .12 with darkened navy #151833, inverse white .2/.25 on dark), radius 999px on the skill's pill tier; focus-visible ring 2px #0582CA offset 3px; transitions ride --nimiq-ease with cubic-bezier(0.25, 0, 0, 1) fallback plus a prefers-reduced-motion guard. One primary action max (PRINCIPLES); navy, never green (rule 5). (f) Title and message are <p>, not headings, so empty states never pollute the page outline; copy stays short fragments with no periods (rule 16 discipline) and no dashes (rule 18); the 'All caught up' sample was dropped per Andjroo, demo copy is realistic fleet copy (No transactions yet / Receive your first NIM to get started + Receive NIM, No tips yet, No results for this filter + Clear filters). (g) Two sizes only: block for a page section and row for an empty list inside a card, the two scales the fleet actually ships. Demo (= truth) shows block on the #F8F8F8 page with the 80px nim-phone + title + secondary + action, row inside a white card (radius 10px, the app-card shadow 0 4px 28px rgba(0,0,0,.111)) with the cash-register glyph, and the on-dark block (magnifying-glass, white ink ladder, inverse action) on the navy radial (rule 7). Pairs with transaction-list and the card components; use status-alert for errors that need attention rather than an empty state. nq lint on demo.html: 0 errors; the two advisory warnings stay: the 27px tap target is the shipped legacy .nq-button-s height (3.375rem at the 8px root, same as v1), and the off-scale spacing values are the fleet's own row padding (26px, chorecoin) plus the v2 rhythm (10/14/18px, tuned to the wallet reference rather than snapped to the marketing scale).",
   "source": {
     "repo": "original",
     "ref": null,

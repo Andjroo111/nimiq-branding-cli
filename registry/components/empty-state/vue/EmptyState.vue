@@ -1,35 +1,42 @@
 <!--
   EmptyState: the fleet's quiet nothing-here message. Radical simplicity:
-  whitespace, one muted line, at most one optional emoji and one optional
-  understated action. No borders, no boxes, no illustrations; the surrounding
-  page or card supplies the surface.
+  whitespace and a type ladder do the structural work. No borders, no boxes,
+  no ornament; the surrounding page or card supplies the surface.
 
-  ORIGINAL composition. Fleet refs: chorecoin .empty (centered muted line with
-  a big emoji), tipjar .tips-empty, drip .empty, nimpot/snappos .empty-note.
-  The action is the legacy .nq-button-s capsule converted to px.
+  ORIGINAL composition, calibrated against the wallet's real empty screen
+  (full-ink bold primary line, muted secondary line, one action). Fleet refs:
+  chorecoin .empty, tipjar .tips-empty, drip .empty, nimpot/snappos
+  .empty-note. The action is the legacy .nq-button-s capsule converted to px.
 
   props:
-    message?      string   The single muted line. The default slot overrides it.
+    title?        string   The primary line: full ink, bold (block level).
+    message?      string   The secondary line at the muted ink; in the row
+                  size it is the single quiet line. The default slot overrides it.
     size?         'block' | 'row'  (default 'block'): block is page level;
-                  row is the smaller list-level line inside a card.
-    dark?         boolean  (default false): white ink channel for navy surfaces.
+                  row is the one-line list-level state inside a card.
+    dark?         boolean  (default false): white ink ladder for navy surfaces.
     actionLabel?  string   Renders the ONE understated action (emits 'action').
                   Keep it to a single primary action, navy, never green.
 
   slots:
-    icon     optional emoji (chorecoin style) or a real Nimiq icon riding
-             currentColor. Skip it for the row size.
+    icon     a real Nimiq duotone icon (assets/icons/duotone/*.svg) riding
+             currentColor at the muted ink; sized to the 80px spot-illustration
+             scale in the block and a 20px glyph in the row. An emoji still
+             works (chorecoin legacy) but is not the default. Never a generic
+             icon set.
     default  overrides message.
     action   replaces the built-in action button entirely (still one action
              max; give your element class "es-action" to inherit the capsule).
 -->
 <script setup lang="ts">
 withDefaults(defineProps<{
+  title?: string
   message?: string
   size?: 'block' | 'row'
   dark?: boolean
   actionLabel?: string
 }>(), {
+  title: '',
   message: '',
   size: 'block',
   dark: false,
@@ -42,7 +49,8 @@ defineEmits<{ (e: 'action'): void }>()
 <template>
   <div class="empty-state" :class="{ row: size === 'row', 'on-dark': dark }">
     <div v-if="$slots.icon" class="es-icon" aria-hidden="true"><slot name="icon" /></div>
-    <p class="es-message"><slot>{{ message }}</slot></p>
+    <p v-if="title" class="es-title">{{ title }}</p>
+    <p v-if="message || $slots.default" class="es-message"><slot>{{ message }}</slot></p>
     <slot name="action">
       <button v-if="actionLabel" class="es-action" type="button" @click="$emit('action')">{{ actionLabel }}</button>
     </slot>
@@ -51,25 +59,48 @@ defineEmits<{ (e: 'action'): void }>()
 
 <style scoped>
 .empty-state {
-  /* one muted ink: navy 50% on light, white 60% with .on-dark */
+  /* two inks: full for the primary line, muted for everything else
+     (navy on light, white with .on-dark) */
+  --es-ink: #1F2348;
   --es-muted: rgba(31, 35, 72, 0.5);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 16px;
+  gap: 6px;
   padding: 48px 24px;
   font-family: 'Mulish', 'Muli', system-ui, sans-serif;
   color: var(--es-muted);
 }
 
 .empty-state.on-dark {
+  --es-ink: #FFFFFF;
   --es-muted: rgba(255, 255, 255, 0.6);
 }
 
+/* the duotone icon rides currentColor at the muted ink; its secondary shapes
+   ship opacity .4 inside the SVG (same color, never a second hue). Emoji via
+   the slot inherits the 44px font-size (chorecoin legacy). */
 .es-icon {
+  margin-bottom: 14px;
   font-size: 44px;
   line-height: 1;
+  color: var(--es-muted);
+}
+
+.es-icon :slotted(svg) {
+  display: block;
+  width: 80px;
+  height: 80px;
+}
+
+.es-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  max-width: 40ch;
+  color: var(--es-ink);
 }
 
 .es-message {
@@ -81,14 +112,25 @@ defineEmits<{ (e: 'action'): void }>()
   color: var(--es-muted);
 }
 
-/* row size: list-level empty line inside a card */
+/* row size: one quiet line inside a card or list, small glyph beside the text */
 .empty-state.row {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
   padding: 26px 16px;
-  gap: 8px;
 }
 
 .empty-state.row .es-icon {
-  font-size: 22px;
+  margin: 0;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.empty-state.row .es-icon :slotted(svg) {
+  width: 20px;
+  height: 20px;
 }
 
 .empty-state.row .es-message {
@@ -103,6 +145,7 @@ defineEmits<{ (e: 'action'): void }>()
   align-items: center;
   justify-content: center;
   height: 27px;
+  margin-top: 18px;
   padding: 0 12px;
   border: 0;
   border-radius: 999px;

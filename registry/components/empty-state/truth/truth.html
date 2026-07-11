@@ -30,23 +30,29 @@
 </head>
 <body>
 <!-- empty-state truth: ORIGINAL composition, no single upstream file to render
-     verbatim. Canonical composition instead (flag-hex precedent), built from
-     the fleet's own empty states: chorecoin public/app.css .empty (centered
-     muted 14px 600, big emoji in the message), tipjar .tips-empty, drip
-     .empty, nimpot/snappos .empty-note; the action is the legacy .nq-button-s
-     recipe from assets/css/legacy/nimiq-style.min.css converted to px.
-     Keep this file identical to html/demo.html. -->
+     verbatim. Canonical composition instead (flag-hex precedent), calibrated
+     against the wallet's real empty screen (screenshots/nimiq-wallet/
+     wallet.nimiq.com-desktop.png: full-ink bold primary line, muted secondary
+     line, one action, whitespace does the structure) and built from the
+     fleet's own empty states: chorecoin public/app.css .empty, tipjar
+     .tips-empty, drip .empty, nimpot/snappos .empty-note; the action is the
+     legacy .nq-button-s recipe from assets/css/legacy/nimiq-style.min.css
+     converted to px. Icons are the real assets/icons/duotone/*.svg
+     (nim-phone, cash-register, magnifying-glass) riding currentColor at the
+     muted ink. Keep this file identical to html/demo.html. -->
 <div class="empty-state-demo">
     <section class="stage">
         <p class="demo-label">Block, page level</p>
         <div class="empty-state">
-            <div class="es-icon" aria-hidden="true">&#128238;</div>
-            <p class="es-message">No transactions yet</p>
+            <div class="es-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none"><g clip-path="url(#nimiq-duotone-nim-phone-h18137)"><path fill="currentColor" d="M7.125 19.5a.938.938 0 110 1.875.938.938 0 010-1.875"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.688 15.75v5.738c0 1.15-.8 1.95-1.95 1.95h-9.3A1.867 1.867 0 01.562 21.57V2.43A1.867 1.867 0 012.439.563h7.81"/><path fill="currentColor" d="m22.988 6.593-2.625-4.56a1.08 1.08 0 00-.912-.533h-5.283c-.375 0-.717.188-.904.533l-2.625 4.56c-.188.314-.188.72 0 1.064l2.625 4.56c.187.316.529.533.904.533h5.283c.375 0 .716-.187.904-.533l2.625-4.56a.94.94 0 000-1.064z" opacity=".4"/><path stroke="currentColor" stroke-width="1.5" d="M13.688 17.438H.75"/></g><defs><clipPath id="nimiq-duotone-nim-phone-h18137"><path fill="#fff" d="M0 0h24v24H0z"/></clipPath></defs></g></svg></div>
+            <p class="es-title">No transactions yet</p>
+            <p class="es-message">Receive your first NIM to get started</p>
             <button class="es-action" type="button">Receive NIM</button>
         </div>
         <p class="demo-label">Row, list level, inside a card</p>
         <div class="demo-card">
             <div class="empty-state row">
+                <div class="es-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><defs><path id="nimiq-duotone-cash-register-lr6icz" fill="#fff" d="M0 0h24v24H0z"/></defs><g fill="none"><g clip-path="url(#nimiq-duotone-cash-register-lr6icz)"><mask id="nimiq-duotone-cash-register-lr6icz" width="24" height="24" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><use href="#nimiq-duotone-cash-register-lr6icz"/></mask><g mask="url(#nimiq-duotone-cash-register-lr6icz)"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="1.2" d="M22.688 17.438H1.313c-.413 0-.75.352-.75.787v4.425c0 .435.337.788.75.788h21.375c.412 0 .75-.353.75-.788v-4.425c0-.435-.338-.788-.75-.788Z"/><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="1.2" d="M20.434 8.438H3.562c-.412 0-.753.352-.753.787v7.425c0 .435.337.788.753.788h16.876c.412 0 .753-.353.753-.788V9.225c0-.435-.337-.787-.753-.787z"/><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="1.2" d="M17.055 11.063H14.07a1.155 1.155 0 00-1.133 1.173v1.403a1.155 1.155 0 001.133 1.174h2.985c.626 0 1.133-.526 1.133-1.174v-1.403a1.155 1.155 0 00-1.133-1.174Z"/><path fill="currentColor" d="M6.188 13.875a.938.938 0 100-1.875.938.938 0 000 1.875"/><path fill="currentColor" d="M11.25 8.813a.375.375 0 01-.375-.375V.518a.375.375 0 01.488-.357l1.563.503a.75.75 0 00.544-.03l1.192-.559a.38.38 0 01.3 0l1.347.563a.75.75 0 00.532.018L18.255.18a.375.375 0 01.495.356v7.902a.375.375 0 01-.375.37H11.25z" opacity=".4"/></g></g><defs><clipPath id="nimiq-duotone-cash-register-lr6icz"><use href="#nimiq-duotone-cash-register-lr6icz"/></clipPath></defs></g></svg></div>
                 <p class="es-message">No tips yet</p>
             </div>
         </div>
@@ -54,7 +60,8 @@
     <section class="stage dark">
         <p class="demo-label">Block on dark</p>
         <div class="empty-state on-dark">
-            <p class="es-message">No results for this filter</p>
+            <div class="es-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none"><g clip-path="url(#nimiq-duotone-magnifying-glass-kx9a9s)"><path fill="currentColor" d="M12.188 16.5a4.313 4.313 0 100-8.625 4.313 4.313 0 000 8.625" opacity=".4"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.125" d="M12.188 19.346a7.159 7.159 0 10-.001-14.317 7.159 7.159 0 000 14.317"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.125" d="M21.824 17.625a11 11 0 001.426-5.437c0-6.11-4.953-11.063-11.062-11.063-6.11 0-11.063 4.953-11.063 11.063 0 6.109 4.953 11.062 11.063 11.062 1.976 0 3.831-.518 5.437-1.427" opacity=".4"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.125" d="m22.5 22.5-5.25-5.25"/></g><defs><clipPath id="nimiq-duotone-magnifying-glass-kx9a9s"><path fill="#fff" d="M0 0h24v24H0z"/></clipPath></defs></g></svg></div>
+            <p class="es-title">No results for this filter</p>
             <button class="es-action" type="button">Clear filters</button>
         </div>
     </section>
