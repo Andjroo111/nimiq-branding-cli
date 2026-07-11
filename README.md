@@ -42,6 +42,14 @@ nq audit                    # (repo dev) check the LIVE Nimiq upstreams for bran
 nq sync-skill               # (repo dev) regenerate the nimiq-ui skill block from index.json
 ```
 
+Every icon in the vendored sets carries a plain-language summary in
+`assets/icon-summaries.json`: the 48 duotone icons, the 39 legacy `nq-*` sprite glyphs and the
+89 visible `logos-*` marks. `nq assets search` matches these summaries as well as names, so
+`nq assets search success` finds the checkmark, and `nq assets list` prints the summary next to
+each file. When `nq assets add icon:<name>` extracts an icon that has a summary, the SVG gets it
+baked in as `role="img"`, `aria-label` and a `<title>`, so agents and screen readers can identify
+icons without seeing them.
+
 Open `showcase.html` for the full component gallery and `supporting-elements.html` for the
 wallet + marketing element demos.
 

@@ -22,6 +22,7 @@ Usage:
   nq tokens                     Print core design tokens (colors, fonts, radii, shadows)
   nq assets list [filter]       List the vendored official Nimiq asset library
   nq assets search <term>       Search assets incl. the 323 nimiq-icons + 422 hexagon flags
+                                (matches plain-language summaries too: "success" finds the checkmark)
   nq assets add <name...>       Copy official asset(s) into ./nimiq/assets/
                                 (icon:<name> extracts from nimiq-icons, flag:<cc> from nimiq-flags)
   nq principles                 Print the Nimiq design principles — the soul of this tool
@@ -202,32 +203,51 @@ async function loadIconSet(file) {
   return JSON.parse(await readFile(p, 'utf8'));
 }
 
-function iconToSvg(set, name) {
+// Plain-language icon summaries (assets/icon-summaries.json) keyed by icon id:
+// duotone-* (icon files), nq-* (legacy sprite symbols), logos-* (nimiq-icons set).
+async function loadIconSummaries() {
+  const p = join(ROOT, 'assets', 'icon-summaries.json');
+  if (!existsSync(p)) return {};
+  return JSON.parse(await readFile(p, 'utf8'));
+}
+
+const iconKey = f => f.replace(/^.*\//, '').replace(/\.svg$/, '');
+
+function iconToSvg(set, name, summary) {
   const ic = set.icons[name];
   if (!ic) return null;
   const w = ic.width ?? set.width ?? 16, h = ic.height ?? set.height ?? 16;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">${ic.body}</svg>\n`;
+  // when a summary exists, bake it in as accessible name; otherwise byte-identical to before
+  const a11y = summary ? ` role="img" aria-label="${summary}"` : '';
+  const title = summary ? `<title>${summary}</title>` : '';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}"${a11y}>${title}${ic.body}</svg>\n`;
 }
 
 async function cmdAssets(sub, args, flags) {
   if (sub === 'list') {
     const filter = args[0]?.toLowerCase();
+    const sums = await loadIconSummaries();
     const files = (await walkAssets()).filter(f => !filter || f.toLowerCase().includes(filter));
-    for (const f of files) console.log('  ' + f);
+    for (const f of files) console.log('  ' + f + (sums[iconKey(f)] ? ` — ${sums[iconKey(f)]}` : ''));
     console.log(`\n${files.length} file(s). Plus icon sets: nq assets search <term>  (nimiq-icons: 323, nimiq-flags: 422)`);
     return;
   }
   if (sub === 'search') {
     const term = args[0]?.toLowerCase();
     if (!term) throw new Error('nq assets search <term>');
-    const files = (await walkAssets()).filter(f => f.toLowerCase().includes(term));
-    files.forEach(f => console.log('  file   ' + f));
+    const sums = await loadIconSummaries();
+    const hits = (name, key) => name.toLowerCase().includes(term) || (sums[key] ?? '').toLowerCase().includes(term);
+    const files = (await walkAssets()).filter(f => hits(f, iconKey(f)));
+    files.forEach(f => console.log('  file   ' + f + (sums[iconKey(f)] ? ` — ${sums[iconKey(f)]}` : '')));
     for (const [setFile, prefix] of [['nimiq-icons.json', 'icon'], ['nimiq-flags.json', 'flag']]) {
       const set = await loadIconSet(setFile);
       if (!set) continue;
-      Object.keys(set.icons).filter(n => n.includes(term)).slice(0, 40)
-        .forEach(n => console.log(`  ${prefix}   ${prefix}:${n}`));
+      Object.keys(set.icons).filter(n => hits(n, n)).slice(0, 40)
+        .forEach(n => console.log(`  ${prefix}   ${prefix}:${n}` + (sums[n] ? ` — ${sums[n]}` : '')));
     }
+    // legacy sprite symbols live in assets/css/legacy/nimiq-style.icons.svg (use <svg><use href="#nq-x"/></svg>)
+    Object.keys(sums).filter(n => n.startsWith('nq-') && hits(n, n)).slice(0, 40)
+      .forEach(n => console.log(`  sprite ${n} — ${sums[n]}  (css/legacy/nimiq-style.icons.svg)`));
     // catalog descriptions for context
     const catPath = join(ROOT, 'references', 'assets', 'asset-catalog.json');
     if (existsSync(catPath)) {
@@ -241,11 +261,12 @@ async function cmdAssets(sub, args, flags) {
   }
   if (sub === 'add') {
     if (!args.length) throw new Error('nq assets add <name...> — file path fragment, icon:<name>, or flag:<name>');
+    const sums = await loadIconSummaries();
     for (const q of args) {
       if (q.startsWith('icon:') || q.startsWith('flag:')) {
         const [kind, name] = q.split(':');
         const set = await loadIconSet(kind === 'icon' ? 'nimiq-icons.json' : 'nimiq-flags.json');
-        const svg = set && iconToSvg(set, name);
+        const svg = set && iconToSvg(set, name, kind === 'icon' ? sums[name] : undefined);
         if (!svg) { console.warn(`! ${q} not found`); continue; }
         const dest = resolve(flags.out ?? '.', 'nimiq', 'assets', 'icons', `${name}.svg`);
         await mkdir(dirname(dest), { recursive: true });
