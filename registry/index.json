@@ -111,6 +111,26 @@
       "verified": true
     },
     {
+      "name": "app-footer",
+      "purpose": "Slim single-row 'Built on Nimiq' attribution footer for fleet mini apps: the horizontal mono Nimiq logo linked to nimiq.com at 50% ink, with optional version string and dev-link slots, in on-light and on-dark variants.",
+      "category": "layout",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
+    },
+    {
+      "name": "app-header",
+      "purpose": "The fleet's navy brand bar: the verbatim horizontal-white Nimiq logo (or the universal hexagon + your app name) on the navy radial gradient, with an optional right-side tools cluster for a network badge and the connect-wallet-pill. Replaces the header block 15 apps hand-roll per page.",
+      "category": "layout",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
+    },
+    {
       "name": "app-showcase-card",
       "purpose": "nimiq.com 'THE APPS' marketing card: light-gray rounded card with gold app-icon chip (official white Nimiq signet), title, 2-line gray subtitle and the REAL Nimiq Pay phone screenshot clipped at the card edge. .wide modifier puts the bare gold signet + copy left and the REAL Nimiq Wallet desktop screenshot bleeding off the bottom-right.",
       "category": "marketing",
@@ -209,6 +229,16 @@
         "html"
       ],
       "verified": true
+    },
+    {
+      "name": "connect-wallet-pill",
+      "purpose": "The fleet's wallet connect button: one pill that walks connect -> busy (spinner) -> connected chip (identicon + truncated address + optional NIM balance), with a tap-twice disconnect. A small vanilla driver (initConnectPill) takes a pluggable async connect callback, designed for the nimiq-app-shell createWallet seam. Replaces 6 divergent bespoke connect buttons.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
     },
     {
       "name": "consensus-icon",
