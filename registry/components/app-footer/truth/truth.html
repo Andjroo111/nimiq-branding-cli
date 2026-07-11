@@ -10,18 +10,133 @@
 <link rel="stylesheet" href="../html/app-footer.css">
 <style>
     html, body { margin: 0; padding: 0; }
-    body { font-family: 'Mulish', 'Muli', system-ui, sans-serif; }
-    /* the light app stage the footer sits on: flex column so margin-top:auto pins it */
+    body { font-family: 'Mulish', 'Muli', system-ui, sans-serif; background: #fff; }
+    /* app stages the SLIM footer sits on: flex column so margin-top:auto pins it.
+       The slim footer is transparent chrome; the page supplies the surface.
+       Navy surfaces get the bottom-right radial, never a flat fill (rule 7). */
     .stage { min-height: 180px; display: flex; flex-direction: column; background: #F8F8F8; }
+    .stage.dark {
+        background-color: #1F2348;
+        background-image: radial-gradient(100% 100% at bottom right, #260133, #1F2348);
+    }
 </style>
 </head>
 <body>
-<!-- app-footer truth: ORIGINAL composition, no upstream design exists for this
-     surface. Canonical form: the on-light footer with all optional slots filled
-     (brand link + version + dev links) on the #F8F8F8 app stage. Derived from
-     PRINCIPLES.md + the fleet convention (swellet footer(), tipjar landing) and
-     the skill's footer spec: mono logo link at 50% ink, hover full, nimiq.com,
-     target _blank. Markup is identical to html/app-footer.html. -->
+<!-- app-footer: FEATURED community variant first (full width, sample custom
+     app lockup "nimiq.example" with the globe-with-check icon), then the slim
+     "Built on Nimiq" variant on a light and a dark app stage. The .af-demo
+     wrapper is the canonical verify target, so the reference guards all three
+     renders. Markup is identical to html/app-footer.html; keep truth/demo/
+     snippet in sync. -->
+<div class="af-demo">
+
+<!-- community variant: the featured fleet footer -->
+<footer class="app-footer-community">
+    <!-- White community band: title, CTA pill, full-bleed honeycomb lattice -->
+    <section class="afc-band">
+        <h2 class="afc-title">Built by the community<br>for the community</h2>
+        <a class="afc-cta" href="https://nimiq.com" target="_blank" rel="noopener">
+            Visit nimiq.com
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8h10.4M8.6 3.6 13 8l-4.4 4.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <!-- Honeycomb: column-major, top to bottom; offset columns drop half a
+             pitch so the flat-top cells interlock. The four community hexes sit
+             in the center columns so they stay on-screen at any width while the
+             faint cells bleed past both edges. GitHub href: SET IT to the
+             consuming app's own repository. -->
+        <nav class="afc-comb" aria-label="Nimiq community">
+            <div class="afc-col">
+                <span class="afc-hex afc-hex--faint" style="opacity:.16" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.34" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.13" aria-hidden="true"></span>
+            </div>
+            <div class="afc-col afc-col--offset">
+                <span class="afc-hex afc-hex--faint" style="opacity:.46" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.22" aria-hidden="true"></span>
+            </div>
+            <div class="afc-col">
+                <span class="afc-hex afc-hex--faint" style="opacity:.26" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.55" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.18" aria-hidden="true"></span>
+            </div>
+            <div class="afc-col afc-col--offset">
+                <span class="afc-hex afc-hex--faint" style="opacity:.14" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.4" aria-hidden="true"></span>
+            </div>
+            <div class="afc-col">
+                <span class="afc-hex afc-hex--faint" style="opacity:.3" aria-hidden="true"></span>
+                <a class="afc-hex afc-social afc-social--forum" href="https://forum.nimiq.community" target="_blank" rel="noopener" aria-label="Nimiq Forum" title="Nimiq Forum"><svg width="71" height="61" viewBox="0 0 21 18" fill="none" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M14.3 18c.6 0 1.156-.32 1.456-.844l4.207-7.312a1.69 1.69 0 00.002-1.688L15.76.844A1.69 1.69 0 0014.3 0H5.906A1.69 1.69 0 004.45.84L.748 7.248l-.523.908a1.7 1.7 0 000 1.684l4.224 7.313A1.68 1.68 0 005.905 18zm-5.416-5.107a5.6 5.6 0 001.62.232c2.687 0 4.878-1.875 4.878-4.125s-2.191-4.125-4.878-4.125C7.818 4.875 5.627 6.75 5.627 9a3.75 3.75 0 001.35 2.85l-.974 1.995a.225.225 0 00.09.292.21.21 0 00.187 0z"/></svg></a>
+                <span class="afc-hex afc-hex--faint" style="opacity:.2" aria-hidden="true"></span>
+            </div>
+            <div class="afc-col afc-col--offset">
+                <span class="afc-hex afc-hex--faint" style="opacity:.52" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.16" aria-hidden="true"></span>
+            </div>
+            <div class="afc-col">
+                <a class="afc-hex afc-social afc-social--discord" href="https://discord.gg/nimiq" target="_blank" rel="noopener" aria-label="Nimiq Discord" title="Nimiq Discord"><svg width="74" height="58" viewBox="0 0 18 14" fill="none" aria-hidden="true"><path fill="currentColor" d="M15.247 1.167A14.7 14.7 0 0011.534 0c-.16.29-.347.678-.476.988a13.6 13.6 0 00-4.115 0A11 11 0 006.462 0a14.6 14.6 0 00-3.716 1.17C.396 4.72-.241 8.184.077 11.597a14.8 14.8 0 004.554 2.334q.555-.763.976-1.606a9.6 9.6 0 01-1.536-.748q.192-.143.376-.298c2.962 1.385 6.18 1.385 9.106 0q.184.154.376.298a9.6 9.6 0 01-1.539.749c.282.564.608 1.102.976 1.606a14.8 14.8 0 004.557-2.335c.373-3.957-.639-7.388-2.676-10.43M6.01 9.497c-.889 0-1.618-.83-1.618-1.84s.714-1.842 1.618-1.842 1.634.83 1.618 1.842c.002 1.01-.713 1.84-1.618 1.84m5.98 0c-.89 0-1.618-.83-1.618-1.84s.713-1.842 1.618-1.842c.904 0 1.633.83 1.618 1.842 0 1.01-.714 1.84-1.618 1.84"/></svg></a>
+                <span class="afc-hex afc-hex--faint" style="opacity:.28" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.2" aria-hidden="true"></span>
+            </div>
+            <div class="afc-col afc-col--offset">
+                <a class="afc-hex afc-social afc-social--telegram" href="https://t.me/Nimiq" target="_blank" rel="noopener" aria-label="Nimiq Telegram" title="Nimiq Telegram"><svg width="68" height="60" viewBox="0 0 18 16" fill="none" aria-hidden="true"><path fill="currentColor" d="M16.785.1.84 6.247c-1.088.438-1.08 1.045-.2 1.316L4.735 8.84l9.472-5.976c.448-.273.857-.126.52.172L7.054 9.962H7.05h.002l-.283 4.22c.414 0 .597-.19.829-.413l1.988-1.934 4.136 3.055c.762.42 1.31.204 1.5-.706L17.938 1.39C18.216.276 17.513-.229 16.785.1"/></svg></a>
+                <span class="afc-hex afc-hex--faint" style="opacity:.48" aria-hidden="true"></span>
+            </div>
+            <div class="afc-col">
+                <span class="afc-hex afc-hex--faint" style="opacity:.36" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.15" aria-hidden="true"></span>
+                <a class="afc-hex afc-social afc-social--github" href="#" target="_blank" rel="noopener" aria-label="nimiq.example on GitHub" title="nimiq.example on GitHub"><svg width="68" height="68" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path fill="currentColor" d="M9 0a9 9 0 00-2.845 17.54c.45.082.615-.196.615-.434 0-.214-.009-.923-.012-1.675-2.504.544-3.032-1.062-3.032-1.062-.41-1.04-1-1.317-1-1.317-.816-.559.062-.547.062-.547.904.063 1.38.927 1.38.927.802 1.376 2.105.978 2.618.749.081-.582.314-.98.572-1.204-2-.228-4.1-1-4.1-4.447 0-.983.351-1.786.927-2.416-.094-.227-.402-1.142.087-2.382 0 0 .756-.242 2.475.923.718-.2 1.488-.3 2.253-.303a8.7 8.7 0 012.255.303c1.717-1.165 2.472-.923 2.472-.923.49 1.24.182 2.155.088 2.382.577.63.926 1.433.926 2.416 0 3.456-2.105 4.217-4.109 4.44.323.28.61.827.61 1.667 0 1.204-.01 2.173-.01 2.47 0 .239.162.52.618.43A9 9 0 0018 9a9 9 0 00-9-9M3.371 12.82c-.02.045-.09.058-.154.027-.065-.029-.102-.09-.081-.135s.09-.059.155-.028.103.091.08.136m.443.395c-.043.04-.127.021-.184-.042-.059-.062-.07-.146-.026-.187.044-.04.125-.02.184.042.06.063.07.147.026.187m.304.505c-.056.039-.146.003-.202-.077-.055-.08-.055-.176.002-.215.056-.038.144-.004.2.076.056.081.056.177 0 .216m.513.586c-.05.054-.154.04-.231-.035-.079-.072-.1-.175-.051-.23.05-.054.155-.039.233.035.078.072.102.176.049.23m.664.197c-.022.07-.123.103-.225.073s-.168-.114-.148-.185.123-.104.226-.072c.101.03.168.113.147.184m.755.084c.003.074-.084.136-.19.137-.108.003-.195-.057-.197-.13 0-.075.085-.136.193-.138.107-.002.194.057.194.131m.742-.028c.013.072-.061.147-.167.166-.105.02-.202-.025-.215-.097-.013-.074.063-.149.167-.168.107-.018.202.025.215.099"/></svg></a>
+            </div>
+            <div class="afc-col afc-col--offset">
+                <span class="afc-hex afc-hex--faint" style="opacity:.54" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.24" aria-hidden="true"></span>
+            </div>
+            <div class="afc-col">
+                <span class="afc-hex afc-hex--faint" style="opacity:.17" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.42" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.3" aria-hidden="true"></span>
+            </div>
+            <div class="afc-col afc-col--offset">
+                <span class="afc-hex afc-hex--faint" style="opacity:.34" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.13" aria-hidden="true"></span>
+            </div>
+            <div class="afc-col">
+                <span class="afc-hex afc-hex--faint" style="opacity:.44" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.2" aria-hidden="true"></span>
+                <span class="afc-hex afc-hex--faint" style="opacity:.36" aria-hidden="true"></span>
+            </div>
+        </nav>
+    </section>
+    <!-- Navy strip: app lockup + independent-project disclaimer + quiet dev links -->
+    <section class="afc-dark">
+        <div class="afc-brand">
+            <svg class="afc-brand-icon" viewBox="0 0 24 24" role="img" aria-label="nimiq.example">
+                <g transform="translate(1.4 1.6) scale(1.6)">
+                    <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M.248 4.27A6.1 6.1 0 000 6c0 .601.087 1.182.248 1.73H2.69A12 12 0 012.57 6c0-.629.043-1.204.119-1.73zm.33-.866h2.275C3.15 2.135 3.65 1.207 4.162.542q.174-.225.347-.41A6.03 6.03 0 00.577 3.403M6 0q-.091.055-.22.146a4.6 4.6 0 00-.942.928c-.408.53-.828 1.282-1.102 2.33h4.528c-.274-1.048-.694-1.8-1.102-2.33A4.6 4.6 0 006.22.146 3 3 0 006 0m2.443 4.27H3.557A11 11 0 003.429 6c0 .638.046 1.214.128 1.73h4.886c.082-.516.128-1.092.128-1.73s-.046-1.214-.128-1.73m.867 3.46c.076-.526.119-1.101.119-1.73s-.043-1.204-.119-1.73h2.441A6.1 6.1 0 0112 6a6.1 6.1 0 01-.248 1.73zm-1.046.866H3.736c.274 1.048.694 1.8 1.102 2.33.347.45.69.746.942.928q.129.092.22.146.091-.055.22-.146a4.6 4.6 0 00.942-.927c.408-.53.828-1.283 1.102-2.33M4.509 11.87a6 6 0 01-.347-.411c-.512-.665-1.01-1.593-1.31-2.862H.578A6.03 6.03 0 004.51 11.87m2.982 0q.173-.185.347-.411c.512-.665 1.01-1.593 1.31-2.862h2.275A6.03 6.03 0 017.49 11.87m3.932-8.465H9.147C8.85 2.135 8.35 1.207 7.838.542a6 6 0 00-.347-.41 6.03 6.03 0 013.932 3.272"/>
+                </g>
+                <circle cx="18.4" cy="18.4" r="6" fill="#1f2348"/>
+                <circle cx="18.4" cy="18.4" r="4.8" fill="url(#afc-check-grad)"/>
+                <g transform="translate(15.3 15.3) scale(0.52)">
+                    <path fill="#fff" d="M11.687.14a.75.75 0 00-1.046.173l-7.018 9.79-2.342-2.346A.75.75 0 10.22 8.818l2.967 2.969a.762.762 0 001.14-.093L11.86 1.188A.75.75 0 0011.687.14"/>
+                </g>
+                <defs>
+                    <linearGradient id="afc-check-grad" x1="13.6" y1="13.6" x2="23.2" y2="23.2" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#21bca5"/>
+                        <stop offset="1" stop-color="#0e9b86"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span class="afc-brand-name">nimiq.example</span>
+        </div>
+        <p class="afc-line">An independent community project. Not affiliated with Team Nimiq.</p>
+        <nav class="afc-links" aria-label="App links">
+            <a href="#">Status</a>
+            <a href="#">Source</a>
+            <span class="afc-version">v1.0.0</span>
+        </nav>
+    </section>
+</footer>
+
+<!-- slim variant on-light (grey/white page body): navy ink at 50%, hover full navy -->
 <div class="stage">
     <footer class="app-footer">
         <a class="af-brand" href="https://nimiq.com" target="_blank" rel="noopener">
@@ -37,6 +152,21 @@
             <a href="#">Source</a>
         </nav>
     </footer>
+</div>
+
+<!-- slim variant on-dark (navy app): white ink at 50%, hover white; minimal brand-only form -->
+<div class="stage dark">
+    <footer class="app-footer on-dark">
+        <a class="af-brand" href="https://nimiq.com" target="_blank" rel="noopener">
+            <span>Built on</span>
+            <svg class="af-logo" viewBox="0 0 76 18" role="img" aria-label="Nimiq">
+                <path fill="currentColor" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                <path fill="currentColor" d="M34.91 3.656h1.829v10.688H35.33L29.582 6.89v7.453H27.76V3.656h1.403l5.748 7.453zm5.47 10.688V3.656h1.962v10.688zM54.82 3.656h1.543v10.688H54.68v-6.61l-2.874 6.61h-1.262l-2.874-6.61v6.61h-1.683V3.656h1.542l3.646 8.368zm5.189 10.688V3.656h1.962v10.688zm15.075-2.436c-.572 1.14-1.461 1.809-2.25 2.135.093.214.528.81.856 1.153s.673.692 1.11 1.046l-1.332 1.055c-.49-.343-.917-.754-1.351-1.232a9 9 0 01-1.142-1.595 9 9 0 01-.451.014c-1.085 0-1.991-.222-2.773-.663a4.4 4.4 0 01-1.792-1.913c-.379-.756-.623-1.766-.623-2.908s.21-2.076.628-2.908a4.44 4.44 0 011.8-1.913c.783-.444 1.697-.663 2.76-.663s1.991.222 2.773.663a4.4 4.4 0 011.792 1.913c.415.832.623 1.766.623 2.908s-.25 2.154-.628 2.908m-6.935.009q.849 1.02 2.375 1.02 1.528 0 2.375-1.02c.567-.684.85-1.646.85-2.917 0-1.263-.283-2.247-.85-2.922q-.849-1.014-2.375-1.016-1.528 0-2.375 1.007c-.567.673-.85 1.66-.85 2.931s.283 2.233.85 2.917"/>
+            </svg>
+        </a>
+    </footer>
+</div>
+
 </div>
 </body>
 </html>
