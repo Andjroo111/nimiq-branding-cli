@@ -1,7 +1,7 @@
 # nimiq-branding-cli
 
 Scaffold **pixel-accurate Nimiq-branded UI components** into any project — Vue 3 SFCs or plain
-HTML/CSS — from a registry of 40 components (39 pixel-diffed against the real Nimiq apps before
+HTML/CSS — from a registry of 57 components (56 pixel-diffed against the real Nimiq apps before
 they ship, plus 1 original brand composition), plus the team's real asset library (logos, icons,
 flags, imagery). A weekly self-learning audit keeps it current with live Nimiq design — see
 [AUDIT.md](AUDIT.md).
