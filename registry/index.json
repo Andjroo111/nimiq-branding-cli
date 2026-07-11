@@ -122,7 +122,7 @@
     },
     {
       "name": "app-header",
-      "purpose": "The fleet's navy brand bar: the verbatim horizontal-white Nimiq logo (or the universal hexagon + your app name) on the navy radial gradient, with an optional right-side tools cluster for a network badge and the connect-wallet-pill. Replaces the header block 15 apps hand-roll per page.",
+      "purpose": "The fleet's brand bar in navy and light: a custom per-app brand (hexagon-family icon + the app's own wordmark, the nimiq.school 'Nimiq.school' style) with a built-in flag-hex language selector, an optional network badge and a tools slot for the connect-wallet-pill. The plain horizontal-white Nimiq logo stays as the fallback brand. Replaces the header block 15 apps hand-roll per page.",
       "category": "layout",
       "variants": [
         "vue",
