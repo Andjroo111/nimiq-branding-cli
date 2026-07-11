@@ -1,6 +1,6 @@
 {
   "name": "app-header",
-  "purpose": "The fleet's navy brand bar: the verbatim horizontal-white Nimiq logo (or the universal hexagon + your app name) on the navy radial gradient, with an optional right-side tools cluster for a network badge and the connect-wallet-pill. Replaces the header block 15 apps hand-roll per page.",
+  "purpose": "The fleet's brand bar in navy and light: a custom per-app brand (hexagon-family icon + the app's own wordmark, the nimiq.school 'Nimiq.school' style) with a built-in flag-hex language selector, an optional network badge and a tools slot for the connect-wallet-pill. The plain horizontal-white Nimiq logo stays as the fallback brand. Replaces the header block 15 apps hand-roll per page.",
   "category": "layout",
   "variants": [
     "vue",
@@ -12,14 +12,39 @@
       "type": "String",
       "required": false,
       "default": "undefined",
-      "description": "Wordmark brand mode: renders the universal hexagon + this name instead of the horizontal Nimiq logo (the splitlink pattern). Omit for the default Nimiq logo. Never combine the hexagon with the horizontal logo (rule 4)."
+      "description": "Custom brand mode, the DEFAULT for fleet apps (Andjroo, 2026-07-10): the #icon slot (or the universal hexagon) + this name in the 'Nimiq.school' wordmark style (17px/700, no tracking). Omit for the fallback horizontal-white Nimiq logo. Never combine any icon with that logo (rule 4)."
+    },
+    {
+      "name": "slot: icon",
+      "type": "slot (Vue) / markup (html)",
+      "required": false,
+      "description": "The app's own hexagon-family brand icon, 24px, drawn in currentColor so it reads navy on light and white on navy (class app-header-icon). Namespace its gradient/clip ids per instance (rule 3). The demo carries the nimiq.school globe-with-check verbatim; the universal hexagon is the default."
+    },
+    {
+      "name": "variant",
+      "type": "'navy' | 'light'",
+      "required": false,
+      "default": "'navy'",
+      "description": "Surface. navy = the radial --nimiq-blue-bg bar (rule 7). light = the nimiq.school bar: #FAFAFA, hairline box-shadow 0 1px 0 rgba(31,35,72,.08) instead of a border, navy ink; works sticky (host sets position: sticky; top: 0; z-index: 50). html variant: add class app-header--light."
+    },
+    {
+      "name": "languages",
+      "type": "{ id, name, flagUrl, fit? }[]",
+      "required": false,
+      "description": "The built-in language selector (the nimiq.school NavBar pattern): the button shows ONLY the current language's flag-hex + a small caret; the dropdown lists flag + native name. Flags are vendored flag-icons files per the flag-hex precedent (fit pans/zooms per flag, e.g. us { aspect: 4/3 }); never a flag CDN. html variant: author the trigger + list markup and wire it with initLanguageMenu (app-header.js)."
+    },
+    {
+      "name": "language",
+      "type": "String",
+      "required": false,
+      "description": "Current language id, v-model:language compatible (pairs with the update:language emit; change fires too). html driver: 'change' CustomEvent (detail = id) + onChange callback."
     },
     {
       "name": "badge",
       "type": "String",
       "required": false,
       "default": "undefined",
-      "description": "Network badge text (e.g. 'Testnet', 'Demo'), rendered as the wallet's testnet treatment: orange uppercase label on a white .07 chip. Omit to hide."
+      "description": "Network badge text (e.g. 'Testnet', 'Demo'), the wallet's testnet treatment: orange uppercase label on a white .07 chip (navy .07, the nq-button-s rest surface, on the light bar). Omit to hide."
     },
     {
       "name": "href",
@@ -32,26 +57,28 @@
       "name": "slot: brand",
       "type": "slot (Vue) / markup (html)",
       "required": false,
-      "description": "Replaces the whole brand link. Default renders the logo (or hexagon + appName)."
+      "description": "Replaces the whole brand link. Default renders the custom brand (or the fallback logo)."
     },
     {
       "name": "slot: tools",
       "type": "slot (Vue) / markup (html)",
       "required": false,
-      "description": "Right-side cluster after the badge; the intended mount for connect-wallet-pill. Without badge and tools the brand centers itself (the tipjar layout)."
+      "description": "Right-side cluster after the badge and language selector; the intended mount for connect-wallet-pill (class on-dark / variant dark on navy). Without badge, languages and tools the brand centers itself (the tipjar layout)."
     }
   ],
   "cssFiles": [
     "css/legacy/nimiq-style.min.css"
   ],
   "assetFiles": [],
-  "dependsOn": [],
+  "dependsOn": [
+    "flag-hex"
+  ],
   "npmDeps": [],
   "verified": false,
   "verify": {
     "viewport": {
       "width": 720,
-      "height": 560
+      "height": 900
     },
     "selector": ".app-header-demo-stack",
     "maxDiffPct": 0.5,
@@ -69,7 +96,7 @@
     "real-assets": true,
     "reproducible": true
   },
-  "notes": "ORIGINAL composition (flag-hex precedent), so verified:false; reference.png is still snapped from truth/truth.html and nq verify guards the demo against it as a regression check. There is no upstream mini-app header: the Nimiq team builds the wallet and hub, not app chrome, so this formalizes the fleet's de-facto standard. Design decisions: (1) The bar is the tipjar brand bar verbatim (navy radial --nimiq-blue-bg anchor bottom right per rule 7, 16px 20px padding, 22px logo) promoted to a component so the logo block stops being pasted into 9+ pages per app. (2) The logo is the VERBATIM horizontal-white SVG (path starts M19.964 8.156) with its gradient id namespaced to nq-app-header-logo-grad so it cannot collide with hex-grad etc on the page (rule 3); the demo suffixes -b/-c per extra instance, and the Vue variant generates a unique id per instance with a module counter (flag-hex pattern). (3) Wordmark mode formalizes the splitlink header on the REAL hexagon path (splitlink had redrawn the geometry, the exact drift this kills); the hexagon is universal ground per the style guide, so hexagon + app name is legitimate, while hexagon next to the horizontal logo is banned (rule 4). (4) The badge is the wallet's own testnet treatment (upstream/wallet Sidebar.vue .testnet-notice: orange label on rgba(255,255,255,.07)); orange = warning is semantically right for testnet/demo flags. nq lint reports it as a colored-uppercase warning; accepted deliberately with this upstream citation. (5) Layout by white space alone: brand centers itself when no tools exist (:has(), the tipjar layout), space-between otherwise; no separators, no borders. (6) Mobile safe: safe-area-inset padding (notch PWAs) and no overflow at 360px, proven by the fourth demo instance. (7) No new colors, no shadows, no ornament; the one calculated break is the gold hexagon gradient the logo already carries. Fleet refs: tipjar public/index.html .header, splitlink public/index.html .app-header, wallet Sidebar.vue testnet-notice. Pairs with connect-wallet-pill (the demo mounts it in the tools slot).",
+  "notes": "ORIGINAL composition (flag-hex precedent), so verified:false; reference.png is still snapped from truth/truth.html and nq verify guards the demo against it as a regression check. v2, redesigned 2026-07-10 on Andjroo's direct feedback: 'All my app headers should have the language selector. The testnet/mainnet indicator is okay. All of them will have a custom logo... they'll say nimiq dot their app name and then they'll have the custom logo.' The flagship reference is nimiq.school (NavBar.vue + CommunityFooter.vue). Design decisions: (1) CUSTOM PER-APP BRAND IS THE DEFAULT: a 24px hexagon-family icon slot in currentColor + the app wordmark at 17px/700 with normal tracking (NavBar .nav-brand-name verbatim; v1 had 16px). The demo icon is the nimiq.school globe-with-check verbatim from CommunityFooter.vue (real Nimiq icon-set paths: nimiq--globe-filled + nimiq--check-thin; the green check gradient and its knockout ring kept exactly as shipped, ring fill set per surface so the knockout matches the bar; gradient ids namespaced nq-ah-check-<instance> per rule 3). The horizontal-white Nimiq logo is DEMOTED to the fallback brand for pages with no identity of their own; it keeps working (kept in demo, last) and still must never receive a second icon (rule 4). (2) TWO SURFACES: navy stays the v1 bar (radial --nimiq-blue-bg anchor bottom right per rule 7, 16px 20px padding); light is the nimiq.school NavBar surface verbatim: #FAFAFA, hairline box-shadow 0 1px 0 rgba(31,35,72,.08) (never a border), navy ink, sticky-safe. (3) BUILT-IN LANGUAGE SELECTOR, the NavBar pattern verbatim: trigger = current flag ONLY (24x22 flag-hex) + 10x6 caret, 38px/radius-8 ghost button (hover rgba(31,35,72,.06) on light per NavBar, white .07 on navy, the wallet testnet chip surface); dropdown = 220px white card, radius 10, shadow 0 4px 28px rgba(0,0,0,.16) (NavBar verbatim), options 14px/600 flag + NATIVE name, current in #0582CA (blue text on the white card, fine under rule 20). ARIA per the spec: aria-haspopup=listbox + aria-expanded on the trigger, role=listbox/option + aria-selected, outside-click + Escape close, everything tabbable with the house :focus-visible rings (#0582CA on light, #0CA6FE on navy per rule 20). Arrow-key roving is NOT carried: the flagship NavBar has none and options are real buttons on the tab order (radical simplicity). Closed headers may omit the list from the DOM entirely (the NavBar v-if pattern; the demo's closed instances do). (4) FLAGS are vendored artwork per the flag-hex precedent, never a CDN: the demo inlines exactly-drawable civil flag designs (de, fr, it, nl, jp rects/circle) inside the verbatim hexagon clip with the one gray fh-edge; real apps point <image href> at their vendored flag-icons files or pass flagUrl to FlagHex (Vue, dependsOn flag-hex; fit pans/zooms per flag, us { aspect: 4/3 } etc). (5) HTML DRIVER app-header.js (initLanguageMenu), the connect-wallet-pill driver precedent: dependency-free ES module, markup owns the languages, driver wires open/close/selection, re-suffixes cloned flag ids (rule 3) when swapping the trigger flag, dispatches 'change' (detail = id) + onChange. (6) BADGE unchanged (wallet Sidebar.vue .testnet-notice, orange = warning); on light the chip is rgba(31,35,72,.07), the shipped nq-button-s rest surface, because white .07 vanishes on #FAFAFA. nq lint reports the badge as a colored-uppercase warning; accepted deliberately with the upstream citation. nq lint's only other demo warning is off-scale spacing (10px brand gap, 7px option padding, 20px side padding): those values are the flagship NavBar and the v1 tipjar bar verbatim, kept over snapping to the scale so the header matches the shipped sites pixel for pixel. (7) MOBILE: safe-area insets kept; the bar is a container (container-type inline-size) so the wordmark yields below 420px when the tools cluster is full (2+ tools, :has probe) and spacing tightens one step; both the bar and the tools cluster flex-wrap instead of overflowing below that. Proven by the 360px demo instance (single row: icon + badge + lang + pill). (8) IDENTICON-BEARING pill states in the demos stay idle; the connected chip lives in connect-wallet-pill's own restaged demo. (9) No new colors, no ornament; the one calculated break stays the brand icon's gold/green accent. Fleet refs: nimiq.school NavBar.vue + CommunityFooter.vue (flagship), tipjar public/index.html .header, splitlink public/index.html .app-header, wallet Sidebar.vue testnet-notice. Pairs with connect-wallet-pill (mounted in the tools slot; its restaged demo mounts inside THIS header).",
   "source": {
     "repo": "original",
     "ref": null,
