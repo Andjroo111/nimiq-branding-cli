@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nimiq app-header</title>
-<!-- Demo: default brand bar, wordmark brand, badge + wallet pill, and the
-     same header at 360px. The stack is the verify capture and must stay
-     identical to truth/truth.html. -->
+<!-- Demo: the flagship light bar (custom brand + language selector + wallet
+     pill), the navy bar with a testnet badge, the same at 360px, the demoted
+     Nimiq-logo fallback, and the language menu open. The stack is the verify
+     capture and must stay identical to truth/truth.html. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
@@ -21,13 +22,161 @@
     .demo-label { margin: 24px 0 8px; font-size: 12px; font-weight: 600; color: rgba(31, 35, 72, 0.5); }
     .app-header-demo-stack > .demo-label:first-child { margin-top: 0; }
     .demo-mobile { width: 360px; max-width: 100%; }
+    .demo-menu-space { height: 210px; }
+
+    /* Live playground chrome (demo only, outside the verify capture) */
+    .demo-live { width: 100%; max-width: 640px; margin-top: 24px; }
 </style>
 </head>
 <body>
 
 <div class="app-header-demo-stack">
 
-    <p class="demo-label">Default, the brand bar</p>
+    <p class="demo-label">The flagship look, a custom brand on the light bar</p>
+    <header class="app-header app-header--light">
+        <a class="app-header-brand" href="/" aria-label="Nimiq.school">
+            <svg class="app-header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                <g transform="translate(1.4 1.6) scale(1.6)">
+                    <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M.248 4.27A6.1 6.1 0 000 6c0 .601.087 1.182.248 1.73H2.69A12 12 0 012.57 6c0-.629.043-1.204.119-1.73zm.33-.866h2.275C3.15 2.135 3.65 1.207 4.162.542q.174-.225.347-.41A6.03 6.03 0 00.577 3.403M6 0q-.091.055-.22.146a4.6 4.6 0 00-.942.928c-.408.53-.828 1.282-1.102 2.33h4.528c-.274-1.048-.694-1.8-1.102-2.33A4.6 4.6 0 006.22.146 3 3 0 006 0m2.443 4.27H3.557A11 11 0 003.429 6c0 .638.046 1.214.128 1.73h4.886c.082-.516.128-1.092.128-1.73s-.046-1.214-.128-1.73m.867 3.46c.076-.526.119-1.101.119-1.73s-.043-1.204-.119-1.73h2.441A6.1 6.1 0 0112 6a6.1 6.1 0 01-.248 1.73zm-1.046.866H3.736c.274 1.048.694 1.8 1.102 2.33.347.45.69.746.942.928q.129.092.22.146.091-.055.22-.146a4.6 4.6 0 00.942-.927c.408-.53.828-1.283 1.102-2.33M4.509 11.87a6 6 0 01-.347-.411c-.512-.665-1.01-1.593-1.31-2.862H.578A6.03 6.03 0 004.51 11.87m2.982 0q.173-.185.347-.411c.512-.665 1.01-1.593 1.31-2.862h2.275A6.03 6.03 0 017.49 11.87m3.932-8.465H9.147C8.85 2.135 8.35 1.207 7.838.542a6 6 0 00-.347-.41 6.03 6.03 0 013.932 3.272"/>
+                </g>
+                <circle cx="18.4" cy="18.4" r="6" fill="#FAFAFA"/>
+                <circle cx="18.4" cy="18.4" r="4.8" fill="url(#nq-ah-check-a)"/>
+                <g transform="translate(15.3 15.3) scale(0.52)">
+                    <path fill="#fff" d="M11.687.14a.75.75 0 00-1.046.173l-7.018 9.79-2.342-2.346A.75.75 0 10.22 8.818l2.967 2.969a.762.762 0 001.14-.093L11.86 1.188A.75.75 0 0011.687.14"/>
+                </g>
+                <defs>
+                    <linearGradient id="nq-ah-check-a" x1="13.6" y1="13.6" x2="23.2" y2="23.2" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#21bca5"/>
+                        <stop offset="1" stop-color="#0e9b86"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span class="app-header-name">Nimiq.school</span>
+        </a>
+        <div class="app-header-tools">
+            <div class="app-header-lang">
+                <button type="button" class="app-header-lang-btn" aria-label="Language"
+                    aria-haspopup="listbox" aria-expanded="false">
+                    <span class="app-header-lang-flag">
+                        <svg viewBox="0 0 20 18" aria-hidden="true">
+                            <defs><clipPath id="fh-a-de-t"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                            <g clip-path="url(#fh-a-de-t)">
+                                <rect x="-1" y="-1.8" width="21.6" height="7.2" fill="#000"/><rect x="-1" y="5.4" width="21.6" height="7.2" fill="#d00"/><rect x="-1" y="12.6" width="21.6" height="7.2" fill="#ffce00"/>
+                            </g>
+                            <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                        </svg>
+                    </span>
+                    <svg class="app-header-lang-caret" viewBox="0 0 10 6" aria-hidden="true">
+                        <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            <button type="button" class="connect-wallet-pill" data-state="connect">
+                <span class="cwp-label">Connect wallet</span>
+            </button>
+        </div>
+    </header>
+
+    <p class="demo-label">Navy with a testnet badge</p>
+    <header class="app-header">
+        <a class="app-header-brand" href="/" aria-label="Nimiq.school">
+            <svg class="app-header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                <g transform="translate(1.4 1.6) scale(1.6)">
+                    <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M.248 4.27A6.1 6.1 0 000 6c0 .601.087 1.182.248 1.73H2.69A12 12 0 012.57 6c0-.629.043-1.204.119-1.73zm.33-.866h2.275C3.15 2.135 3.65 1.207 4.162.542q.174-.225.347-.41A6.03 6.03 0 00.577 3.403M6 0q-.091.055-.22.146a4.6 4.6 0 00-.942.928c-.408.53-.828 1.282-1.102 2.33h4.528c-.274-1.048-.694-1.8-1.102-2.33A4.6 4.6 0 006.22.146 3 3 0 006 0m2.443 4.27H3.557A11 11 0 003.429 6c0 .638.046 1.214.128 1.73h4.886c.082-.516.128-1.092.128-1.73s-.046-1.214-.128-1.73m.867 3.46c.076-.526.119-1.101.119-1.73s-.043-1.204-.119-1.73h2.441A6.1 6.1 0 0112 6a6.1 6.1 0 01-.248 1.73zm-1.046.866H3.736c.274 1.048.694 1.8 1.102 2.33.347.45.69.746.942.928q.129.092.22.146.091-.055.22-.146a4.6 4.6 0 00.942-.927c.408-.53.828-1.283 1.102-2.33M4.509 11.87a6 6 0 01-.347-.411c-.512-.665-1.01-1.593-1.31-2.862H.578A6.03 6.03 0 004.51 11.87m2.982 0q.173-.185.347-.411c.512-.665 1.01-1.593 1.31-2.862h2.275A6.03 6.03 0 017.49 11.87m3.932-8.465H9.147C8.85 2.135 8.35 1.207 7.838.542a6 6 0 00-.347-.41 6.03 6.03 0 013.932 3.272"/>
+                </g>
+                <circle cx="18.4" cy="18.4" r="6" fill="#1F2348"/>
+                <circle cx="18.4" cy="18.4" r="4.8" fill="url(#nq-ah-check-b)"/>
+                <g transform="translate(15.3 15.3) scale(0.52)">
+                    <path fill="#fff" d="M11.687.14a.75.75 0 00-1.046.173l-7.018 9.79-2.342-2.346A.75.75 0 10.22 8.818l2.967 2.969a.762.762 0 001.14-.093L11.86 1.188A.75.75 0 0011.687.14"/>
+                </g>
+                <defs>
+                    <linearGradient id="nq-ah-check-b" x1="13.6" y1="13.6" x2="23.2" y2="23.2" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#21bca5"/>
+                        <stop offset="1" stop-color="#0e9b86"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span class="app-header-name">Nimiq.school</span>
+        </a>
+        <div class="app-header-tools">
+            <span class="app-header-badge">Testnet</span>
+            <div class="app-header-lang">
+                <button type="button" class="app-header-lang-btn" aria-label="Language"
+                    aria-haspopup="listbox" aria-expanded="false">
+                    <span class="app-header-lang-flag">
+                        <svg viewBox="0 0 20 18" aria-hidden="true">
+                            <defs><clipPath id="fh-b-de-t"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                            <g clip-path="url(#fh-b-de-t)">
+                                <rect x="-1" y="-1.8" width="21.6" height="7.2" fill="#000"/><rect x="-1" y="5.4" width="21.6" height="7.2" fill="#d00"/><rect x="-1" y="12.6" width="21.6" height="7.2" fill="#ffce00"/>
+                            </g>
+                            <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                        </svg>
+                    </span>
+                    <svg class="app-header-lang-caret" viewBox="0 0 10 6" aria-hidden="true">
+                        <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            <button type="button" class="connect-wallet-pill on-dark" data-state="connect">
+                <span class="cwp-label">Connect wallet</span>
+            </button>
+        </div>
+    </header>
+
+    <p class="demo-label">The same header at 360px</p>
+    <div class="demo-mobile">
+        <header class="app-header">
+            <a class="app-header-brand" href="/" aria-label="Nimiq.school">
+                <svg class="app-header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <g transform="translate(1.4 1.6) scale(1.6)">
+                        <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M.248 4.27A6.1 6.1 0 000 6c0 .601.087 1.182.248 1.73H2.69A12 12 0 012.57 6c0-.629.043-1.204.119-1.73zm.33-.866h2.275C3.15 2.135 3.65 1.207 4.162.542q.174-.225.347-.41A6.03 6.03 0 00.577 3.403M6 0q-.091.055-.22.146a4.6 4.6 0 00-.942.928c-.408.53-.828 1.282-1.102 2.33h4.528c-.274-1.048-.694-1.8-1.102-2.33A4.6 4.6 0 006.22.146 3 3 0 006 0m2.443 4.27H3.557A11 11 0 003.429 6c0 .638.046 1.214.128 1.73h4.886c.082-.516.128-1.092.128-1.73s-.046-1.214-.128-1.73m.867 3.46c.076-.526.119-1.101.119-1.73s-.043-1.204-.119-1.73h2.441A6.1 6.1 0 0112 6a6.1 6.1 0 01-.248 1.73zm-1.046.866H3.736c.274 1.048.694 1.8 1.102 2.33.347.45.69.746.942.928q.129.092.22.146.091-.055.22-.146a4.6 4.6 0 00.942-.927c.408-.53.828-1.283 1.102-2.33M4.509 11.87a6 6 0 01-.347-.411c-.512-.665-1.01-1.593-1.31-2.862H.578A6.03 6.03 0 004.51 11.87m2.982 0q.173-.185.347-.411c.512-.665 1.01-1.593 1.31-2.862h2.275A6.03 6.03 0 017.49 11.87m3.932-8.465H9.147C8.85 2.135 8.35 1.207 7.838.542a6 6 0 00-.347-.41 6.03 6.03 0 013.932 3.272"/>
+                    </g>
+                    <circle cx="18.4" cy="18.4" r="6" fill="#1F2348"/>
+                    <circle cx="18.4" cy="18.4" r="4.8" fill="url(#nq-ah-check-c)"/>
+                    <g transform="translate(15.3 15.3) scale(0.52)">
+                        <path fill="#fff" d="M11.687.14a.75.75 0 00-1.046.173l-7.018 9.79-2.342-2.346A.75.75 0 10.22 8.818l2.967 2.969a.762.762 0 001.14-.093L11.86 1.188A.75.75 0 0011.687.14"/>
+                    </g>
+                    <defs>
+                        <linearGradient id="nq-ah-check-c" x1="13.6" y1="13.6" x2="23.2" y2="23.2" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#21bca5"/>
+                            <stop offset="1" stop-color="#0e9b86"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="app-header-name">Nimiq.school</span>
+            </a>
+            <div class="app-header-tools">
+                <span class="app-header-badge">Testnet</span>
+                <div class="app-header-lang">
+                    <button type="button" class="app-header-lang-btn" aria-label="Language"
+                        aria-haspopup="listbox" aria-expanded="false">
+                        <span class="app-header-lang-flag">
+                            <svg viewBox="0 0 20 18" aria-hidden="true">
+                                <defs><clipPath id="fh-c-de-t"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                                <g clip-path="url(#fh-c-de-t)">
+                                    <rect x="-1" y="-1.8" width="21.6" height="7.2" fill="#000"/><rect x="-1" y="5.4" width="21.6" height="7.2" fill="#d00"/><rect x="-1" y="12.6" width="21.6" height="7.2" fill="#ffce00"/>
+                                </g>
+                                <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                            </svg>
+                        </span>
+                        <svg class="app-header-lang-caret" viewBox="0 0 10 6" aria-hidden="true">
+                            <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <button type="button" class="connect-wallet-pill on-dark" data-state="connect">
+                    <span class="cwp-label">Connect wallet</span>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <p class="demo-label">Fallback, the plain Nimiq bar</p>
+    <!-- Pages with no brand of their own: the verbatim horizontal-white logo,
+         centered (the tipjar layout). No longer the featured default. -->
     <header class="app-header">
         <a class="app-header-brand" href="/" aria-label="Nimiq">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 18" height="22" aria-hidden="true">
@@ -49,88 +198,268 @@
         </a>
     </header>
 
-    <p class="demo-label">App wordmark on the universal hexagon</p>
-    <header class="app-header">
-        <a class="app-header-brand" href="/" aria-label="Splitlink">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 18" height="22" aria-hidden="true">
-                <g fill="none">
-                    <path fill="url(#nq-app-header-hex-grad)"
-                        d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
-                    <defs>
-                        <radialGradient id="nq-app-header-hex-grad" cx="0" cy="0" r="1"
-                            gradientTransform="matrix(20.1956 0 0 20.2552 15.188 17.766)"
-                            gradientUnits="userSpaceOnUse">
-                            <stop stop-color="#ec991c"/>
-                            <stop offset="1" stop-color="#e9b213"/>
-                        </radialGradient>
-                    </defs>
+    <p class="demo-label">The language menu open</p>
+    <header class="app-header app-header--light">
+        <a class="app-header-brand" href="/" aria-label="Nimiq.school">
+            <svg class="app-header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                <g transform="translate(1.4 1.6) scale(1.6)">
+                    <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M.248 4.27A6.1 6.1 0 000 6c0 .601.087 1.182.248 1.73H2.69A12 12 0 012.57 6c0-.629.043-1.204.119-1.73zm.33-.866h2.275C3.15 2.135 3.65 1.207 4.162.542q.174-.225.347-.41A6.03 6.03 0 00.577 3.403M6 0q-.091.055-.22.146a4.6 4.6 0 00-.942.928c-.408.53-.828 1.282-1.102 2.33h4.528c-.274-1.048-.694-1.8-1.102-2.33A4.6 4.6 0 006.22.146 3 3 0 006 0m2.443 4.27H3.557A11 11 0 003.429 6c0 .638.046 1.214.128 1.73h4.886c.082-.516.128-1.092.128-1.73s-.046-1.214-.128-1.73m.867 3.46c.076-.526.119-1.101.119-1.73s-.043-1.204-.119-1.73h2.441A6.1 6.1 0 0112 6a6.1 6.1 0 01-.248 1.73zm-1.046.866H3.736c.274 1.048.694 1.8 1.102 2.33.347.45.69.746.942.928q.129.092.22.146.091-.055.22-.146a4.6 4.6 0 00.942-.927c.408-.53.828-1.283 1.102-2.33M4.509 11.87a6 6 0 01-.347-.411c-.512-.665-1.01-1.593-1.31-2.862H.578A6.03 6.03 0 004.51 11.87m2.982 0q.173-.185.347-.411c.512-.665 1.01-1.593 1.31-2.862h2.275A6.03 6.03 0 017.49 11.87m3.932-8.465H9.147C8.85 2.135 8.35 1.207 7.838.542a6 6 0 00-.347-.41 6.03 6.03 0 013.932 3.272"/>
                 </g>
+                <circle cx="18.4" cy="18.4" r="6" fill="#FAFAFA"/>
+                <circle cx="18.4" cy="18.4" r="4.8" fill="url(#nq-ah-check-d)"/>
+                <g transform="translate(15.3 15.3) scale(0.52)">
+                    <path fill="#fff" d="M11.687.14a.75.75 0 00-1.046.173l-7.018 9.79-2.342-2.346A.75.75 0 10.22 8.818l2.967 2.969a.762.762 0 001.14-.093L11.86 1.188A.75.75 0 0011.687.14"/>
+                </g>
+                <defs>
+                    <linearGradient id="nq-ah-check-d" x1="13.6" y1="13.6" x2="23.2" y2="23.2" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#21bca5"/>
+                        <stop offset="1" stop-color="#0e9b86"/>
+                    </linearGradient>
+                </defs>
             </svg>
-            <span class="app-header-name">Splitlink</span>
+            <span class="app-header-name">Nimiq.school</span>
         </a>
         <div class="app-header-tools">
-            <span class="app-header-badge">Demo</span>
-        </div>
-    </header>
-
-    <p class="demo-label">With a network badge and the wallet pill</p>
-    <header class="app-header">
-        <a class="app-header-brand" href="/" aria-label="Nimiq">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 18" height="22" aria-hidden="true">
-                <g fill="none">
-                    <path fill="url(#nq-app-header-logo-grad-b)"
-                        d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
-                    <path fill="#fff"
-                        d="M34.91 3.656h1.829v10.688H35.33L29.582 6.89v7.453H27.76V3.656h1.403l5.748 7.453zm5.47 10.688V3.656h1.962v10.688zM54.82 3.656h1.543v10.688H54.68v-6.61l-2.874 6.61h-1.262l-2.874-6.61v6.61h-1.683V3.656h1.542l3.646 8.368zm5.189 10.688V3.656h1.962v10.688zm15.075-2.436c-.572 1.14-1.461 1.809-2.25 2.135.093.214.528.81.856 1.153s.673.692 1.11 1.046l-1.332 1.055c-.49-.343-.917-.754-1.351-1.232a9 9 0 01-1.142-1.595 9 9 0 01-.451.014c-1.085 0-1.991-.222-2.773-.663a4.4 4.4 0 01-1.792-1.913c-.379-.756-.623-1.766-.623-2.908s.21-2.076.628-2.908a4.44 4.44 0 011.8-1.913c.783-.444 1.697-.663 2.76-.663s1.991.222 2.773.663a4.4 4.4 0 011.792 1.913c.415.832.623 1.766.623 2.908s-.25 2.154-.628 2.908m-6.935.009q.849 1.02 2.375 1.02 1.528 0 2.375-1.02c.567-.684.85-1.646.85-2.917 0-1.263-.283-2.247-.85-2.922q-.849-1.014-2.375-1.016-1.528 0-2.375 1.007c-.567.673-.85 1.66-.85 2.931s.283 2.233.85 2.917"/>
-                    <defs>
-                        <radialGradient id="nq-app-header-logo-grad-b" cx="0" cy="0" r="1"
-                            gradientTransform="matrix(20.1956 0 0 20.2552 15.188 17.766)"
-                            gradientUnits="userSpaceOnUse">
-                            <stop stop-color="#ec991c"/>
-                            <stop offset="1" stop-color="#e9b213"/>
-                        </radialGradient>
-                    </defs>
-                </g>
-            </svg>
-        </a>
-        <div class="app-header-tools">
-            <span class="app-header-badge">Testnet</span>
-            <button type="button" class="connect-wallet-pill on-dark" data-state="connect">
+            <div class="app-header-lang">
+                <button type="button" class="app-header-lang-btn" aria-label="Language"
+                    aria-haspopup="listbox" aria-expanded="true">
+                    <span class="app-header-lang-flag">
+                        <svg viewBox="0 0 20 18" aria-hidden="true">
+                            <defs><clipPath id="fh-d-de-t"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                            <g clip-path="url(#fh-d-de-t)">
+                                <rect x="-1" y="-1.8" width="21.6" height="7.2" fill="#000"/><rect x="-1" y="5.4" width="21.6" height="7.2" fill="#d00"/><rect x="-1" y="12.6" width="21.6" height="7.2" fill="#ffce00"/>
+                            </g>
+                            <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                        </svg>
+                    </span>
+                    <svg class="app-header-lang-caret" viewBox="0 0 10 6" aria-hidden="true">
+                        <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <ul class="app-header-lang-list" role="listbox" aria-label="Language">
+                    <li>
+                        <button type="button" class="app-header-lang-option current" role="option"
+                            aria-selected="true" data-lang="de">
+                            <span class="app-header-lang-flag">
+                                <svg viewBox="0 0 20 18" aria-hidden="true">
+                                    <defs><clipPath id="fh-d-de"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                                    <g clip-path="url(#fh-d-de)">
+                                        <rect x="-1" y="-1.8" width="21.6" height="7.2" fill="#000"/><rect x="-1" y="5.4" width="21.6" height="7.2" fill="#d00"/><rect x="-1" y="12.6" width="21.6" height="7.2" fill="#ffce00"/>
+                                    </g>
+                                    <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                                </svg>
+                            </span>
+                            Deutsch
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="app-header-lang-option" role="option"
+                            aria-selected="false" data-lang="fr">
+                            <span class="app-header-lang-flag">
+                                <svg viewBox="0 0 20 18" aria-hidden="true">
+                                    <defs><clipPath id="fh-d-fr"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                                    <g clip-path="url(#fh-d-fr)">
+                                        <rect x="-1" y="-1.8" width="7.2" height="21.6" fill="#002395"/><rect x="6.2" y="-1.8" width="7.2" height="21.6" fill="#fff"/><rect x="13.4" y="-1.8" width="7.2" height="21.6" fill="#ed2939"/>
+                                    </g>
+                                    <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                                </svg>
+                            </span>
+                            Français
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="app-header-lang-option" role="option"
+                            aria-selected="false" data-lang="it">
+                            <span class="app-header-lang-flag">
+                                <svg viewBox="0 0 20 18" aria-hidden="true">
+                                    <defs><clipPath id="fh-d-it"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                                    <g clip-path="url(#fh-d-it)">
+                                        <rect x="-1" y="-1.8" width="7.2" height="21.6" fill="#009246"/><rect x="6.2" y="-1.8" width="7.2" height="21.6" fill="#fff"/><rect x="13.4" y="-1.8" width="7.2" height="21.6" fill="#ce2b37"/>
+                                    </g>
+                                    <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                                </svg>
+                            </span>
+                            Italiano
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="app-header-lang-option" role="option"
+                            aria-selected="false" data-lang="nl">
+                            <span class="app-header-lang-flag">
+                                <svg viewBox="0 0 20 18" aria-hidden="true">
+                                    <defs><clipPath id="fh-d-nl"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                                    <g clip-path="url(#fh-d-nl)">
+                                        <rect x="-1" y="-1.8" width="21.6" height="7.2" fill="#ae1c28"/><rect x="-1" y="5.4" width="21.6" height="7.2" fill="#fff"/><rect x="-1" y="12.6" width="21.6" height="7.2" fill="#21468b"/>
+                                    </g>
+                                    <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                                </svg>
+                            </span>
+                            Nederlands
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="app-header-lang-option" role="option"
+                            aria-selected="false" data-lang="jp">
+                            <span class="app-header-lang-flag">
+                                <svg viewBox="0 0 20 18" aria-hidden="true">
+                                    <defs><clipPath id="fh-d-jp"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                                    <g clip-path="url(#fh-d-jp)">
+                                        <rect x="-1" y="-1.8" width="21.6" height="21.6" fill="#fff"/><circle cx="10" cy="9" r="6.5" fill="#bc002d"/>
+                                    </g>
+                                    <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                                </svg>
+                            </span>
+                            日本語
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <button type="button" class="connect-wallet-pill" data-state="connect">
                 <span class="cwp-label">Connect wallet</span>
             </button>
         </div>
     </header>
-
-    <p class="demo-label">The same header at 360px</p>
-    <div class="demo-mobile">
-        <header class="app-header">
-            <a class="app-header-brand" href="/" aria-label="Nimiq">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 18" height="22" aria-hidden="true">
-                    <g fill="none">
-                        <path fill="url(#nq-app-header-logo-grad-c)"
-                            d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
-                        <path fill="#fff"
-                            d="M34.91 3.656h1.829v10.688H35.33L29.582 6.89v7.453H27.76V3.656h1.403l5.748 7.453zm5.47 10.688V3.656h1.962v10.688zM54.82 3.656h1.543v10.688H54.68v-6.61l-2.874 6.61h-1.262l-2.874-6.61v6.61h-1.683V3.656h1.542l3.646 8.368zm5.189 10.688V3.656h1.962v10.688zm15.075-2.436c-.572 1.14-1.461 1.809-2.25 2.135.093.214.528.81.856 1.153s.673.692 1.11 1.046l-1.332 1.055c-.49-.343-.917-.754-1.351-1.232a9 9 0 01-1.142-1.595 9 9 0 01-.451.014c-1.085 0-1.991-.222-2.773-.663a4.4 4.4 0 01-1.792-1.913c-.379-.756-.623-1.766-.623-2.908s.21-2.076.628-2.908a4.44 4.44 0 011.8-1.913c.783-.444 1.697-.663 2.76-.663s1.991.222 2.773.663a4.4 4.4 0 011.792 1.913c.415.832.623 1.766.623 2.908s-.25 2.154-.628 2.908m-6.935.009q.849 1.02 2.375 1.02 1.528 0 2.375-1.02c.567-.684.85-1.646.85-2.917 0-1.263-.283-2.247-.85-2.922q-.849-1.014-2.375-1.016-1.528 0-2.375 1.007c-.567.673-.85 1.66-.85 2.931s.283 2.233.85 2.917"/>
-                        <defs>
-                            <radialGradient id="nq-app-header-logo-grad-c" cx="0" cy="0" r="1"
-                                gradientTransform="matrix(20.1956 0 0 20.2552 15.188 17.766)"
-                                gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#ec991c"/>
-                                <stop offset="1" stop-color="#e9b213"/>
-                            </radialGradient>
-                        </defs>
-                    </g>
-                </svg>
-            </a>
-            <div class="app-header-tools">
-                <span class="app-header-badge">Testnet</span>
-                <button type="button" class="connect-wallet-pill on-dark" data-state="connect">
-                    <span class="cwp-label">Connect wallet</span>
-                </button>
-            </div>
-        </header>
-    </div>
+    <!-- headroom so the open menu stays inside the capture -->
+    <div class="demo-menu-space" aria-hidden="true"></div>
 
 </div>
+
+<!-- Live playground: the real language menu driver. Click the flag, pick a
+     language, watch the trigger flag swap. Needs http:// (or a bundler);
+     browsers block local module imports from file:// pages, where this
+     header stays static. -->
+<div class="demo-live">
+    <p class="demo-label">Live, pick a language</p>
+    <header class="app-header app-header--light">
+        <a class="app-header-brand" href="/" aria-label="Nimiq.school">
+            <svg class="app-header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                <g transform="translate(1.4 1.6) scale(1.6)">
+                    <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M.248 4.27A6.1 6.1 0 000 6c0 .601.087 1.182.248 1.73H2.69A12 12 0 012.57 6c0-.629.043-1.204.119-1.73zm.33-.866h2.275C3.15 2.135 3.65 1.207 4.162.542q.174-.225.347-.41A6.03 6.03 0 00.577 3.403M6 0q-.091.055-.22.146a4.6 4.6 0 00-.942.928c-.408.53-.828 1.282-1.102 2.33h4.528c-.274-1.048-.694-1.8-1.102-2.33A4.6 4.6 0 006.22.146 3 3 0 006 0m2.443 4.27H3.557A11 11 0 003.429 6c0 .638.046 1.214.128 1.73h4.886c.082-.516.128-1.092.128-1.73s-.046-1.214-.128-1.73m.867 3.46c.076-.526.119-1.101.119-1.73s-.043-1.204-.119-1.73h2.441A6.1 6.1 0 0112 6a6.1 6.1 0 01-.248 1.73zm-1.046.866H3.736c.274 1.048.694 1.8 1.102 2.33.347.45.69.746.942.928q.129.092.22.146.091-.055.22-.146a4.6 4.6 0 00.942-.927c.408-.53.828-1.283 1.102-2.33M4.509 11.87a6 6 0 01-.347-.411c-.512-.665-1.01-1.593-1.31-2.862H.578A6.03 6.03 0 004.51 11.87m2.982 0q.173-.185.347-.411c.512-.665 1.01-1.593 1.31-2.862h2.275A6.03 6.03 0 017.49 11.87m3.932-8.465H9.147C8.85 2.135 8.35 1.207 7.838.542a6 6 0 00-.347-.41 6.03 6.03 0 013.932 3.272"/>
+                </g>
+                <circle cx="18.4" cy="18.4" r="6" fill="#FAFAFA"/>
+                <circle cx="18.4" cy="18.4" r="4.8" fill="url(#nq-ah-check-l)"/>
+                <g transform="translate(15.3 15.3) scale(0.52)">
+                    <path fill="#fff" d="M11.687.14a.75.75 0 00-1.046.173l-7.018 9.79-2.342-2.346A.75.75 0 10.22 8.818l2.967 2.969a.762.762 0 001.14-.093L11.86 1.188A.75.75 0 0011.687.14"/>
+                </g>
+                <defs>
+                    <linearGradient id="nq-ah-check-l" x1="13.6" y1="13.6" x2="23.2" y2="23.2" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#21bca5"/>
+                        <stop offset="1" stop-color="#0e9b86"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span class="app-header-name">Nimiq.school</span>
+        </a>
+        <div class="app-header-tools">
+            <div class="app-header-lang">
+                <button type="button" class="app-header-lang-btn" aria-label="Language"
+                    aria-haspopup="listbox" aria-expanded="false">
+                    <span class="app-header-lang-flag">
+                        <svg viewBox="0 0 20 18" aria-hidden="true">
+                            <defs><clipPath id="fh-l-de-t"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                            <g clip-path="url(#fh-l-de-t)">
+                                <rect x="-1" y="-1.8" width="21.6" height="7.2" fill="#000"/><rect x="-1" y="5.4" width="21.6" height="7.2" fill="#d00"/><rect x="-1" y="12.6" width="21.6" height="7.2" fill="#ffce00"/>
+                            </g>
+                            <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                        </svg>
+                    </span>
+                    <svg class="app-header-lang-caret" viewBox="0 0 10 6" aria-hidden="true">
+                        <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <ul class="app-header-lang-list" role="listbox" aria-label="Language" hidden>
+                    <li>
+                        <button type="button" class="app-header-lang-option current" role="option"
+                            aria-selected="true" data-lang="de">
+                            <span class="app-header-lang-flag">
+                                <svg viewBox="0 0 20 18" aria-hidden="true">
+                                    <defs><clipPath id="fh-l-de"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                                    <g clip-path="url(#fh-l-de)">
+                                        <rect x="-1" y="-1.8" width="21.6" height="7.2" fill="#000"/><rect x="-1" y="5.4" width="21.6" height="7.2" fill="#d00"/><rect x="-1" y="12.6" width="21.6" height="7.2" fill="#ffce00"/>
+                                    </g>
+                                    <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                                </svg>
+                            </span>
+                            Deutsch
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="app-header-lang-option" role="option"
+                            aria-selected="false" data-lang="fr">
+                            <span class="app-header-lang-flag">
+                                <svg viewBox="0 0 20 18" aria-hidden="true">
+                                    <defs><clipPath id="fh-l-fr"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                                    <g clip-path="url(#fh-l-fr)">
+                                        <rect x="-1" y="-1.8" width="7.2" height="21.6" fill="#002395"/><rect x="6.2" y="-1.8" width="7.2" height="21.6" fill="#fff"/><rect x="13.4" y="-1.8" width="7.2" height="21.6" fill="#ed2939"/>
+                                    </g>
+                                    <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                                </svg>
+                            </span>
+                            Français
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="app-header-lang-option" role="option"
+                            aria-selected="false" data-lang="it">
+                            <span class="app-header-lang-flag">
+                                <svg viewBox="0 0 20 18" aria-hidden="true">
+                                    <defs><clipPath id="fh-l-it"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                                    <g clip-path="url(#fh-l-it)">
+                                        <rect x="-1" y="-1.8" width="7.2" height="21.6" fill="#009246"/><rect x="6.2" y="-1.8" width="7.2" height="21.6" fill="#fff"/><rect x="13.4" y="-1.8" width="7.2" height="21.6" fill="#ce2b37"/>
+                                    </g>
+                                    <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                                </svg>
+                            </span>
+                            Italiano
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="app-header-lang-option" role="option"
+                            aria-selected="false" data-lang="nl">
+                            <span class="app-header-lang-flag">
+                                <svg viewBox="0 0 20 18" aria-hidden="true">
+                                    <defs><clipPath id="fh-l-nl"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                                    <g clip-path="url(#fh-l-nl)">
+                                        <rect x="-1" y="-1.8" width="21.6" height="7.2" fill="#ae1c28"/><rect x="-1" y="5.4" width="21.6" height="7.2" fill="#fff"/><rect x="-1" y="12.6" width="21.6" height="7.2" fill="#21468b"/>
+                                    </g>
+                                    <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                                </svg>
+                            </span>
+                            Nederlands
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="app-header-lang-option" role="option"
+                            aria-selected="false" data-lang="jp">
+                            <span class="app-header-lang-flag">
+                                <svg viewBox="0 0 20 18" aria-hidden="true">
+                                    <defs><clipPath id="fh-l-jp"><path d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/></clipPath></defs>
+                                    <g clip-path="url(#fh-l-jp)">
+                                        <rect x="-1" y="-1.8" width="21.6" height="21.6" fill="#fff"/><circle cx="10" cy="9" r="6.5" fill="#bc002d"/>
+                                    </g>
+                                    <path class="fh-edge" d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                                </svg>
+                            </span>
+                            日本語
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+</div>
+
+<script type="module">
+    try {
+        const { initLanguageMenu } = await import('./app-header.js');
+        initLanguageMenu(document.querySelector('.demo-live .app-header-lang'), {
+            onChange: (id) => console.log('language:', id),
+        });
+    } catch (e) {
+        // file:// context: the static closed menu still renders.
+    }
+</script>
 </body>
 </html>
