@@ -1,0 +1,78 @@
+{
+  "name": "app-header",
+  "purpose": "The fleet's navy brand bar: the verbatim horizontal-white Nimiq logo (or the universal hexagon + your app name) on the navy radial gradient, with an optional right-side tools cluster for a network badge and the connect-wallet-pill. Replaces the header block 15 apps hand-roll per page.",
+  "category": "layout",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "appName",
+      "type": "String",
+      "required": false,
+      "default": "undefined",
+      "description": "Wordmark brand mode: renders the universal hexagon + this name instead of the horizontal Nimiq logo (the splitlink pattern). Omit for the default Nimiq logo. Never combine the hexagon with the horizontal logo (rule 4)."
+    },
+    {
+      "name": "badge",
+      "type": "String",
+      "required": false,
+      "default": "undefined",
+      "description": "Network badge text (e.g. 'Testnet', 'Demo'), rendered as the wallet's testnet treatment: orange uppercase label on a white .07 chip. Omit to hide."
+    },
+    {
+      "name": "href",
+      "type": "String",
+      "required": false,
+      "default": "'/'",
+      "description": "Brand link target."
+    },
+    {
+      "name": "slot: brand",
+      "type": "slot (Vue) / markup (html)",
+      "required": false,
+      "description": "Replaces the whole brand link. Default renders the logo (or hexagon + appName)."
+    },
+    {
+      "name": "slot: tools",
+      "type": "slot (Vue) / markup (html)",
+      "required": false,
+      "description": "Right-side cluster after the badge; the intended mount for connect-wallet-pill. Without badge and tools the brand centers itself (the tipjar layout)."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": false,
+  "verify": {
+    "viewport": {
+      "width": 720,
+      "height": 560
+    },
+    "selector": ".app-header-demo-stack",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "ORIGINAL composition (flag-hex precedent), so verified:false; reference.png is still snapped from truth/truth.html and nq verify guards the demo against it as a regression check. There is no upstream mini-app header: the Nimiq team builds the wallet and hub, not app chrome, so this formalizes the fleet's de-facto standard. Design decisions: (1) The bar is the tipjar brand bar verbatim (navy radial --nimiq-blue-bg anchor bottom right per rule 7, 16px 20px padding, 22px logo) promoted to a component so the logo block stops being pasted into 9+ pages per app. (2) The logo is the VERBATIM horizontal-white SVG (path starts M19.964 8.156) with its gradient id namespaced to nq-app-header-logo-grad so it cannot collide with hex-grad etc on the page (rule 3); the demo suffixes -b/-c per extra instance, and the Vue variant generates a unique id per instance with a module counter (flag-hex pattern). (3) Wordmark mode formalizes the splitlink header on the REAL hexagon path (splitlink had redrawn the geometry, the exact drift this kills); the hexagon is universal ground per the style guide, so hexagon + app name is legitimate, while hexagon next to the horizontal logo is banned (rule 4). (4) The badge is the wallet's own testnet treatment (upstream/wallet Sidebar.vue .testnet-notice: orange label on rgba(255,255,255,.07)); orange = warning is semantically right for testnet/demo flags. nq lint reports it as a colored-uppercase warning; accepted deliberately with this upstream citation. (5) Layout by white space alone: brand centers itself when no tools exist (:has(), the tipjar layout), space-between otherwise; no separators, no borders. (6) Mobile safe: safe-area-inset padding (notch PWAs) and no overflow at 360px, proven by the fourth demo instance. (7) No new colors, no shadows, no ornament; the one calculated break is the gold hexagon gradient the logo already carries. Fleet refs: tipjar public/index.html .header, splitlink public/index.html .app-header, wallet Sidebar.vue testnet-notice. Pairs with connect-wallet-pill (the demo mounts it in the tools slot).",
+  "source": {
+    "repo": "original",
+    "ref": null,
+    "files": []
+  }
+}
