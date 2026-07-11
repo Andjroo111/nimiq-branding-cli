@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nimiq Toast Notification</title>
 <link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
@@ -152,15 +153,39 @@
         }
     }
 
-    /* ── Sample-state layout only (page chrome): stack the three states ── */
-    .nq-toast.sample-stack-2 { bottom: 12.5rem; }
-    .nq-toast.sample-stack-3 { bottom: 22rem; }
+    /* ── Sample-state layout only (page chrome): the component is
+       position:fixed bottom-right by upstream design; for the demo the three
+       states sit visibly IN the page flow on a compact stage. Positioning is
+       overridden at the stage level only — the component CSS above is
+       untouched. position:relative (not static) keeps the absolute maximize
+       glyph anchored to its toast. ── */
+    .toast-stage {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: max-content;
+        padding: 24px;
+    }
+    .toast-stage .nq-toast {
+        position: relative;
+        right: auto;
+        bottom: auto;
+    }
+
+    /* ── Live driver demo (page chrome) ── */
+    .live-demo { padding: 8px 24px 40px; max-width: 60ch; }
+    .live-demo .nq-text { line-height: 1.5; }
+    .live-demo .nq-button-s { margin: 0 8px 8px 0; }
 </style>
 </head>
 <body>
 
+  <!-- The three static sample states, in the page flow on the compact stage
+       (the pixel contract: reference.png captures .toast-stage only) -->
+  <div class="toast-stage">
+
   <!-- info / in-progress -->
-  <button class="nq-toast sample-stack-3" type="button">
+  <button class="nq-toast" type="button">
     <div class="icon">
       <svg height="48" width="54" viewBox="0 0 54 48" color="inherit" class="loading-spinner">
         <path class="big-hex" d="M51.9,21.9L41.3,3.6c-0.8-1.3-2.2-2.1-3.7-2.1H16.4c-1.5,0-2.9,0.8-3.7,2.1L2.1,21.9c-0.8,1.3-0.8,2.9,0,4.2 l10.6,18.3c0.8,1.3,2.2,2.1,3.7,2.1h21.3c1.5,0,2.9-0.8,3.7-2.1l10.6-18.3C52.7,24.8,52.7,23.2,51.9,21.9z" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.4" stroke-dasharray="92.5 60" />
@@ -178,7 +203,7 @@
   </button>
 
   <!-- error -->
-  <button class="nq-toast nq-toast--error sample-stack-2" type="button">
+  <button class="nq-toast nq-toast--error" type="button">
     <div class="icon">
       <svg class="nq-icon" width="17" height="16" viewBox="0 0 17 16" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.913 13.333L9.68 1.433a1.333 1.333 0 0 0-2.362 0l-6.232 11.9a1.333 1.333 0 0 0 1.182 1.952H14.73a1.333 1.333 0 0 0 1.182-1.952zm-8.08-7.718a.667.667 0 0 1 1.334 0v4a.667.667 0 1 1-1.334 0v-4zm.682 7.674h.018a.983.983 0 0 0 .967-1.022 1.018 1.018 0 0 0-1.016-.978h-.019a.984.984 0 0 0-.965 1.02c.02.546.468.978 1.015.98z" fill="currentColor"/></svg>
     </div>
@@ -192,7 +217,7 @@
     </svg>
   </button>
 
-  <!-- success — resting visible state at the upstream bottom position -->
+  <!-- success -->
   <button class="nq-toast nq-toast--success" type="button">
     <div class="icon">
       <svg class="nq-icon" width="74" height="74" viewBox="0 0 74 74" xmlns="http://www.w3.org/2000/svg"><path d="M71.12 1.84a4.5 4.5 0 0 0-6.28 1.04l-42.1 58.74L8.68 47.54a4.5 4.5 0 1 0-6.36 6.37l17.8 17.81a4.57 4.57 0 0 0 6.84-.56l45.2-63.03a4.5 4.5 0 0 0-1.04-6.29z" fill="currentColor" stroke="currentColor" stroke-width=".8"/></svg>
@@ -203,32 +228,29 @@
     </div>
   </button>
 
-  <!-- ── Live driver demo (toast.js) ──
-       Hidden by default: the pixel contract (reference.png) captures the static
-       samples above, untouched. Open demo.html?live (or #live) to hide the
-       static stack and fire real toasts through the singleton driver. -->
-  <div id="live-demo" hidden style="padding: 4rem;">
-    <h2 class="nq-h2">toast.js live demo</h2>
-    <p class="nq-text">Singleton driver — replace-not-queue, auto-dismiss, click to dismiss.</p>
-    <button type="button" class="nq-button-s light-blue" data-kind="info">info</button>
-    <button type="button" class="nq-button-s green" data-kind="success">success</button>
-    <button type="button" class="nq-button-s orange" data-kind="error">error</button>
+  </div><!-- /.toast-stage -->
+
+  <!-- ── Live driver demo (toast.js), visible by default. Fires real toasts
+       through the shipped singleton driver; they appear fixed bottom-center,
+       clear of the static stage. The pixel contract is unaffected:
+       reference.png captures .toast-stage only. ── -->
+  <div class="live-demo">
+    <h2 class="nq-h2">Try the driver</h2>
+    <p class="nq-text">toast.js is the shipped singleton driver: replace, not queue. A new toast swaps the current one, clicking dismisses it, and it auto-dismisses after 2.6s.</p>
+    <button type="button" class="nq-button-s" data-kind="info">Show info toast</button>
+    <button type="button" class="nq-button-s" data-kind="success">Show success toast</button>
+    <button type="button" class="nq-button-s" data-kind="error">Show error toast</button>
   </div>
 
   <script src="toast.js"></script>
   <script>
     (function () {
-      if (!/[?&#]live\b/.test(location.search + location.hash)) return;
-      document.getElementById('live-demo').hidden = false;
-      // hide the static samples so the driver's bottom-center toast stands alone
-      // (inline style: the component's display:flex outranks the [hidden] UA rule)
-      document.querySelectorAll('body > .nq-toast').forEach(function (t) { t.style.display = 'none'; });
       var messages = {
         info: 'Performing swap 2/5',
         success: 'Swap successful!',
         error: "There's a problem",
       };
-      document.querySelectorAll('#live-demo [data-kind]').forEach(function (btn) {
+      document.querySelectorAll('.live-demo [data-kind]').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var kind = btn.dataset.kind;
           window.nqToast(messages[kind], { kind: kind });
