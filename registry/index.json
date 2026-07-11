@@ -272,7 +272,7 @@
     },
     {
       "name": "empty-state",
-      "purpose": "The fleet's quiet nothing-here message: a centered muted line with an optional emoji and at most one understated action, in block (page level) and row (list level) sizes with on-light and on-dark ink channels. Replaces the one-line empty states 13 apps hand-roll.",
+      "purpose": "The fleet's quiet nothing-here message: a real Nimiq duotone icon at the muted ink, a full-ink primary line, an optional muted secondary line and at most one understated action, in block (page level) and row (one quiet line inside a list card) sizes with on-light and on-dark ink ladders. Replaces the one-line empty states 13 apps hand-roll.",
       "category": "feedback",
       "variants": [
         "vue",

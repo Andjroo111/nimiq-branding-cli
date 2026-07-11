@@ -1,15 +1,22 @@
 <!-- empty-state: the fleet's quiet nothing-here message. Requires
      empty-state.css; self-contained, no nimiq-style needed.
-     Structure (icon and action are optional, delete if unused):
-       .es-icon     one emoji (chorecoin style) or a real Nimiq icon
-       .es-message  the single muted line (navy 50% / white 60% on dark)
+     Structure (icon, title, message and action all optional, but keep at
+     least one line; delete what you don't use):
+       .es-icon     a real Nimiq duotone icon (assets/icons/duotone/*.svg)
+                    riding currentColor at the muted ink; the CSS sizes it to
+                    the 80px spot-illustration scale in the block and a 20px
+                    glyph in the row. An emoji still works here (chorecoin
+                    legacy) but is not the default. Never a generic icon set.
+       .es-title    the primary line: full ink, bold
+       .es-message  the secondary line at the muted ink (the row's only line)
        .es-action   at most ONE understated action (the .nq-button-s capsule)
      Classes on .empty-state:
-       row      list-level size, for an empty list inside a card
-       on-dark  white ink channel for navy surfaces
-     No borders, no boxes, no illustrations: whitespace does the work. -->
+       row      list-level size: one quiet line, small glyph beside the text
+       on-dark  white ink ladder for navy surfaces
+     No borders, no boxes, no ornament: whitespace + type hierarchy do the work. -->
 <div class="empty-state">
-    <div class="es-icon" aria-hidden="true">&#128238;</div>
-    <p class="es-message">No transactions yet</p>
+    <div class="es-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none"><g clip-path="url(#nimiq-duotone-nim-phone-h18137)"><path fill="currentColor" d="M7.125 19.5a.938.938 0 110 1.875.938.938 0 010-1.875"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.688 15.75v5.738c0 1.15-.8 1.95-1.95 1.95h-9.3A1.867 1.867 0 01.562 21.57V2.43A1.867 1.867 0 012.439.563h7.81"/><path fill="currentColor" d="m22.988 6.593-2.625-4.56a1.08 1.08 0 00-.912-.533h-5.283c-.375 0-.717.188-.904.533l-2.625 4.56c-.188.314-.188.72 0 1.064l2.625 4.56c.187.316.529.533.904.533h5.283c.375 0 .716-.187.904-.533l2.625-4.56a.94.94 0 000-1.064z" opacity=".4"/><path stroke="currentColor" stroke-width="1.5" d="M13.688 17.438H.75"/></g><defs><clipPath id="nimiq-duotone-nim-phone-h18137"><path fill="#fff" d="M0 0h24v24H0z"/></clipPath></defs></g></svg></div>
+    <p class="es-title">No transactions yet</p>
+    <p class="es-message">Receive your first NIM to get started</p>
     <button class="es-action" type="button">Receive NIM</button>
 </div>
