@@ -1,0 +1,69 @@
+/* app-footer: slim "Built on Nimiq" attribution row, the fleet mini-app chrome footer.
+   ORIGINAL composition (no upstream); fleet ref: swellet footer() + tipjar landing.
+   Principles: transparent chrome on the page's own stage, one ink channel at 50%
+   resting opacity (the skill's footer convention), whitespace instead of separators,
+   static flow (never fixed), safe-area aware. Run: nq principles */
+
+.app-footer {
+    /* one ink channel: navy on light surfaces; .on-dark switches it to white */
+    --af-ink: 31, 35, 72;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    column-gap: 32px;
+    row-gap: 12px;
+    /* pins to the bottom of a flex-column page; computes to 0 in normal block flow */
+    margin-top: auto;
+    padding: 24px 24px calc(24px + env(safe-area-inset-bottom));
+    font-family: 'Mulish', 'Muli', system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1;
+    color: rgba(var(--af-ink), 0.5);
+}
+
+.app-footer.on-dark {
+    --af-ink: 255, 255, 255;
+}
+
+/* links rest at 50% ink and hover to full ink (rule 21: bold, sentence case,
+   never underlined; skill: footer links on dark are white 50%, hover #fff) */
+.app-footer a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: rgba(var(--af-ink), 0.5);
+    text-decoration: none;
+    transition: color 0.2s var(--nimiq-ease, cubic-bezier(0.25, 0, 0, 1));
+}
+
+.app-footer a:hover,
+.app-footer a:focus-visible {
+    color: rgb(var(--af-ink));
+}
+
+.app-footer .af-brand {
+    white-space: nowrap;
+}
+
+/* the horizontal mono logo rides currentColor, so it dims and hovers with the link */
+.app-footer .af-logo {
+    display: block;
+    height: 16px;
+    width: auto;
+}
+
+/* version string is a technical value: Fira Mono when loaded, any mono otherwise */
+.app-footer .af-version {
+    font-family: 'Fira Mono', monospace;
+    font-size: 12px;
+}
+
+.app-footer .af-links {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+}

@@ -1,0 +1,67 @@
+{
+  "name": "app-footer",
+  "purpose": "Slim single-row 'Built on Nimiq' attribution footer for fleet mini apps: the horizontal mono Nimiq logo linked to nimiq.com at 50% ink, with optional version string and dev-link slots, in on-light and on-dark variants.",
+  "category": "layout",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "dark",
+      "type": "Boolean",
+      "required": false,
+      "description": "Default false (navy ink for grey/white page bodies). True switches the ink channel to white for navy app surfaces. HTML variant: add class 'on-dark' to the footer element."
+    },
+    {
+      "name": "href",
+      "type": "String",
+      "required": false,
+      "description": "Brand link target, default https://nimiq.com. Always rendered target=_blank rel=noopener."
+    },
+    {
+      "name": "slot: version",
+      "type": "slot",
+      "required": false,
+      "description": "Optional version string (e.g. v1.4.2), rendered 12px in Fira Mono with a generic monospace fallback. Load Fira Mono only if you use this slot. HTML variant: the .af-version span, delete it if unused."
+    },
+    {
+      "name": "slot: links",
+      "type": "slot",
+      "required": false,
+      "description": "Optional one or two dev links as plain <a> elements (Status, Source). Styled bold 600, sentence case, not underlined, 50% ink resting, full ink on hover (rule 21). HTML variant: the .af-links nav, delete it if unused."
+    }
+  ],
+  "cssFiles": [],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": false,
+  "verify": {
+    "viewport": {
+      "width": 600,
+      "height": 400
+    },
+    "selector": ".app-footer:not(.on-dark)",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "ORIGINAL Nimiq-brand composition (not an upstream port), so verified:false with reference.png kept as a regression guard, the flag-hex precedent. THE THREE FOOTERS, do not confuse them: (1) registry page-footer is the wallet card ACTION row (nq-card-footer, pins buttons at the bottom of a SmallPage); (2) the nimiq.com MARKETING footer is a heavy light surface (link columns, newsletter pill, honeycomb social band); (3) app-footer, this component, is fleet app CHROME: the slim 'Built on Nimiq' attribution row. Fleet evidence: 12 of 18 Nimiq mini apps ship no footer at all; where one exists it converges on this pattern (swellet footer() in src/client/main.ts, tipjar landing), and the skill's Page Composition section documents the same convention (mono logo link at 50% opacity, nimiq.com, target _blank). Design decisions: (a) the horizontal mono logo is inlined VERBATIM from assets/logos/nimiq-icons-logos/logos-nimiq-horizontal-mono.svg with the hexagon's radialGradient flattened to plain fill=currentColor: the asset's gradient has two IDENTICAL currentColor stops, so the render is pixel-identical, and dropping the <defs> removes the gradient-id collision footgun when both variants render on one page (rule 3). (b) One ink channel: --af-ink is '31, 35, 72' or, with .on-dark, '255, 255, 255'; everything rests at rgba(ink, 0.5) and hovers to rgb(ink), so one custom property drives both surface variants and the logo rides currentColor. (c) Static flow only, never position:fixed, so it can never overlap content; margin-top:auto pins it to the bottom of a flex-column page and computes to 0 in normal block flow; bottom padding adds env(safe-area-inset-bottom) for iOS PWAs. (d) The footer is TRANSPARENT chrome: the page supplies the surface, and a navy surface must be the bottom-right radial, never a flat fill (rule 7), as the demo's dark stage shows. (e) Self-contained: no nimiq-style dependency; --nimiq-ease is consumed with its cubic-bezier(0.25, 0, 0, 1) fallback. Vue gotcha: consumer links in the links slot need :slotted(a) in scoped CSS; the component ships those selectors. Canonical verify target is the on-light footer in demo.html (selector .app-footer:not(.on-dark), which Playwright strict mode requires to be unique) with all slots filled on the #F8F8F8 stage; the second instance is the on-dark minimal form.",
+  "source": {
+    "repo": "original",
+    "ref": null,
+    "files": []
+  }
+}
