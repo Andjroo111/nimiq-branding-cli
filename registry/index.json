@@ -112,7 +112,7 @@
     },
     {
       "name": "app-footer",
-      "purpose": "Slim single-row 'Built on Nimiq' attribution footer for fleet mini apps: the horizontal mono Nimiq logo linked to nimiq.com at 50% ink, with optional version string and dev-link slots, in on-light and on-dark variants.",
+      "purpose": "Fleet app footer, two variants. FEATURED community variant (generalized from Andrew's nimiq.school CommunityFooter): white 'Built by the community / for the community' band with the light-blue 'Visit nimiq.com' pill and a full-bleed honeycomb lattice of faint gray hexagons carrying four brand-colored community hexes (Nimiq Forum gold radial, Discord, Telegram, GitHub), over a navy radial strip with the app's own lockup, independent-project disclaimer, and optional quiet Status/Source/version line. Plus the original slim single-row 'Built on Nimiq' attribution footer (on-light and on-dark).",
       "category": "layout",
       "variants": [
         "vue",
