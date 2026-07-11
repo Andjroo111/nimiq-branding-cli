@@ -271,6 +271,16 @@
       "verified": true
     },
     {
+      "name": "empty-state",
+      "purpose": "The fleet's quiet nothing-here message: a centered muted line with an optional emoji and at most one understated action, in block (page level) and row (list level) sizes with on-light and on-dark ink channels. Replaces the one-line empty states 13 apps hand-roll.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
+    },
+    {
       "name": "fiat-amount",
       "purpose": "Displays a fiat amount with an optimized currency symbol (e.g. $1234.56 instead of USD 1234.56) and adaptive decimal precision: decimals are extended until the rounded display deviates from the true amount by at most maxRelativeDeviation.",
       "category": "payment",
@@ -451,6 +461,16 @@
       "verified": true
     },
     {
+      "name": "provider-gate",
+      "purpose": "The fleet's environment and wallet-status gate: a non-blocking strip with five canned states (demo, open-in-wallet, connected, testnet, simulated) on the status-alert semantic treatment, plus the tipjar-style blocking handoff wall (signet, headline, QR deep link, open button, copy-link fallback) for states that block. Replaces the banner 15 apps hand-roll.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
+    },
+    {
       "name": "qr-code",
       "purpose": "Nimiq QR code — renders arbitrary data (typically a nimiq: payment URI) as a rounded-module QR code on a canvas, filled by default with the Nimiq light-blue radial gradient (#265DD7 → #0582CA) on a transparent background.",
       "category": "data-display",
@@ -529,6 +549,16 @@
         "html"
       ],
       "verified": true
+    },
+    {
+      "name": "status-pill",
+      "purpose": "The fleet's semantic status chip, the ONE legitimate pill (rule 17): success/warning/error/info/neutral families plus testnet/mainnet/demo/live/simulated environment presets, as a 10% semantic tint with an AA ink on light and semantic ink on the wallet's white .07 chip on dark. Replaces the badge/tag/pill 12 apps hand-roll.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
     },
     {
       "name": "status-screen",
