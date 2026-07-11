@@ -1,0 +1,64 @@
+{
+  "name": "status-pill",
+  "purpose": "The fleet's semantic status chip, the ONE legitimate pill (rule 17): success/warning/error/info/neutral families plus testnet/mainnet/demo/live/simulated environment presets, as a 10% semantic tint with an AA ink on light and semantic ink on the wallet's white .07 chip on dark. Replaces the badge/tag/pill 12 apps hand-roll.",
+  "category": "feedback",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "type",
+      "type": "String",
+      "required": false,
+      "default": "'neutral'",
+      "description": "Semantic family (success | warning | error | info | neutral) or environment preset (testnet/simulated -> warning, mainnet/live -> success, demo -> neutral). Unknown values fall back to neutral. HTML variant: the same words as classes on .status-pill; preset classes ship as CSS aliases."
+    },
+    {
+      "name": "dark",
+      "type": "Boolean",
+      "required": false,
+      "default": "false",
+      "description": "On-dark variant for navy surfaces: white .07 chip + on-dark inks (the wallet testnet treatment). HTML variant: add class 'on-dark'."
+    },
+    {
+      "name": "label",
+      "type": "String",
+      "required": false,
+      "default": "undefined",
+      "description": "Pill text; defaults to the type word. The default slot overrides both. CSS uppercases it. Keep it a status word, never a decorative label."
+    }
+  ],
+  "cssFiles": [],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": false,
+  "verify": {
+    "viewport": {
+      "width": 720,
+      "height": 460
+    },
+    "selector": ".status-pill-demo",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "ORIGINAL composition (flag-hex precedent), so verified:false; reference.png is snapped from truth/truth.html and nq verify guards the demo against it as a regression check. PARTIAL upstream heritage rather than a single portable source: (1) the legacy .nq-button-s colored recipe in nimiq-style.min.css is the tint formula (semantic color at 10% alpha + full-strength ink, e.g. rgba(33,188,165,.1); neutral rgba(31,35,72,.07)); (2) the wallet Sidebar.vue .testnet-notice is the on-dark treatment (orange label on rgba(255,255,255,.07)), the same treatment app-header ships as its badge; (3) swellet brand.ts pill() contributes the one-class-per-MEANING family mapping (its 12% tint was normalized to the upstream 10%, which snappos .sim-banner also uses). Fleet refs replaced: bounti .badge, splitlink .mode-badge, nimpot .net-pill, chorecoin .tag, snappos .sim-tag. METRICS are the app-header badge verbatim (Mulish 700, 12px, uppercase, letter-spacing 0.09em, line-height 1, padding 5px 8px, radius 4px) so the badge slot can host a status-pill seamlessly; Mulish 700 over Fira Mono because every fleet pill ships bold Mulish and Fira Mono is reserved for technical values (addresses, keys, numbers), not UI labels; radius 4px is the skill's chip tier (chips 3 to 4px) and the app-header badge value, chosen over the fleet's occasional 999px full round for the same slot-compatibility reason. CONTRAST, all combinations computed (WCAG 2.x, alpha composited): on light, tint over a white card / over the #F8F8F8 page: success #3A766F 4.81/4.55, warning #985F1D 4.81/4.55, error #B53121 5.35/5.06, info #265DD7 5.10/4.82, neutral rgba(31,35,72,.7) 5.34/5.18; on dark, ink on the white .07 chip over flat #1F2348 (worst case) / over the gradient corner #260133: success #21BCA5 5.14/6.66, warning #FC8702 5.02/6.51, error #FF735D 4.59/5.95, info #0CA6FE 4.61/5.98, neutral rgba(255,255,255,.7) 6.89/8.32. Every combination clears 4.5:1. INK DERIVATIONS: full-strength palette tokens fail AA on their own light tints (green 2.2, orange 2.6), so each on-light ink is the darkest same-hue shade inside the palette envelope (nq lint rule 13 gates any color further than delta 55 from a brand anchor): error is #B53121, the nimiq-css --colors-red-1100 light half (oklch 0.515 0.1713 30.54) converted to sRGB, delta 44; info is #265DD7, the shipped light-blue gradient start, delta 0; success #3A766F holds the brand green's own hue 173 at delta 55 from the green gradient start #41A38E (the nimiq-css --colors-green-1100 light half lands at delta 64 and would fail lint); warning #985F1D is the darkest amber on the orange hue side (hue 32, delta 54; no orange-family ink can pass 4.5:1 on a light tint closer than that because the darkest lint-legal pure orange tops out at 3.3). On dark the base tokens green/orange already pass on the chip so no swap is needed (which is why legacy defines none); blue swaps to --nimiq-light-blue-on-dark #0CA6FE per rule 20; red needs more than the shipped --nimiq-red-on-dark #FF5C48 (4.01 on the chip), so #FF735D raises it along its own oklch hue line (0.2018 chroma, hue 30) to L 0.755. DESIGN GUARDS: no colored-dot chips (banned ornament; drip's dot deliberately not ported), no icons, no gradient on the chip (the tint is not a saturated color area and its .nq-button-s ancestor is also flat), non-interactive so no hover states, sentence-case source text uppercased by CSS. nq lint reports colored-uppercase warnings for the pills; accepted deliberately with the wallet testnet-notice citation (the app-header badge precedent). The demo (= truth) shows all ten states on both surfaces: light pills inside a white card, their canonical fleet host; dark pills directly on the navy radial (rule 7). Pairs with app-header (badge slot) and status-alert (block-level alerts; this is the inline chip).",
+  "source": {
+    "repo": "original",
+    "ref": null,
+    "files": []
+  }
+}

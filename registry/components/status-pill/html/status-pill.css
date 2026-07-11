@@ -1,0 +1,101 @@
+/* Nimiq status-pill: the fleet's semantic status chip, the ONE legitimate pill
+   (skill rule 17). Strictly semantic state, never decorative: green = success,
+   orange = warning, red = error, blue = info, navy alpha = neutral, plus the
+   environment preset aliases (testnet/simulated = warning, mainnet/live =
+   success, demo = neutral).
+   ORIGINAL composition. Heritage: the legacy .nq-button-s colored recipe
+   (semantic color at 10% alpha + full-strength ink), the wallet Sidebar.vue
+   .testnet-notice (orange label on a white .07 surface, on dark) which
+   app-header ships as its badge, and swellet brand.ts pill() (one class per
+   MEANING). Metrics match the app-header badge exactly (12px 700 uppercase,
+   0.09em, 5px 8px, radius 4px) so app-header's badge slot can host this pill.
+   Every ink clears 4.5:1 on its tint; the exact ratios and ink derivations
+   live in meta.json notes. No dots, no icons, no gradients: the tint chip is
+   flat like its .nq-button-s ancestor, and text is the whole pill.
+   Run: nq principles */
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Mulish', 'Muli', system-ui, sans-serif;
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 5px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    /* neutral default (also .neutral / .demo): the .nq-button-s neutral recipe */
+    background: rgba(31, 35, 72, 0.07);
+    color: rgba(31, 35, 72, 0.7);
+}
+
+/* Semantic families on light: 10% tint of the semantic color (the legacy
+   .nq-button-s colored recipe) + the darkest palette-true ink of the same hue.
+   Contrast on a white card: success 4.81, warning 4.81, error 5.35, info 5.10,
+   neutral 5.34 (all >= 4.5:1; see meta.json notes for the full table). */
+.status-pill.success,
+.status-pill.mainnet,
+.status-pill.live {
+    background: rgba(33, 188, 165, 0.1);
+    color: #3A766F;
+}
+
+.status-pill.warning,
+.status-pill.testnet,
+.status-pill.simulated {
+    background: rgba(252, 135, 2, 0.1);
+    color: #985F1D;
+}
+
+.status-pill.error {
+    background: rgba(217, 68, 50, 0.1);
+    color: #B53121;
+}
+
+.status-pill.info {
+    background: rgba(5, 130, 202, 0.1);
+    color: #265DD7;
+}
+
+.status-pill.neutral,
+.status-pill.demo {
+    background: rgba(31, 35, 72, 0.07);
+    color: rgba(31, 35, 72, 0.7);
+}
+
+/* On dark (navy surfaces): the wallet testnet-notice treatment generalized,
+   semantic ink on the white .07 chip. Base palette tokens where they pass on
+   the chip (green 5.14, orange 5.02), the rule-20 on-dark swap for blue
+   (#0CA6FE, 4.61), and the red on-dark line raised to clear AA (#FF735D,
+   4.59; the shipped #FF5C48 lands 4.01). Neutral is white .7 (6.89). */
+.status-pill.on-dark {
+    background: rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.status-pill.on-dark.success,
+.status-pill.on-dark.mainnet,
+.status-pill.on-dark.live {
+    color: #21BCA5;
+}
+
+.status-pill.on-dark.warning,
+.status-pill.on-dark.testnet,
+.status-pill.on-dark.simulated {
+    color: #FC8702;
+}
+
+.status-pill.on-dark.error {
+    color: #FF735D;
+}
+
+.status-pill.on-dark.info {
+    color: #0CA6FE;
+}
+
+.status-pill.on-dark.neutral,
+.status-pill.on-dark.demo {
+    color: rgba(255, 255, 255, 0.7);
+}

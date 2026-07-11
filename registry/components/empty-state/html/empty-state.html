@@ -1,0 +1,15 @@
+<!-- empty-state: the fleet's quiet nothing-here message. Requires
+     empty-state.css; self-contained, no nimiq-style needed.
+     Structure (icon and action are optional, delete if unused):
+       .es-icon     one emoji (chorecoin style) or a real Nimiq icon
+       .es-message  the single muted line (navy 50% / white 60% on dark)
+       .es-action   at most ONE understated action (the .nq-button-s capsule)
+     Classes on .empty-state:
+       row      list-level size, for an empty list inside a card
+       on-dark  white ink channel for navy surfaces
+     No borders, no boxes, no illustrations: whitespace does the work. -->
+<div class="empty-state">
+    <div class="es-icon" aria-hidden="true">&#128238;</div>
+    <p class="es-message">No transactions yet</p>
+    <button class="es-action" type="button">Receive NIM</button>
+</div>
