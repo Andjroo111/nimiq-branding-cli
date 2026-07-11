@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nimiq connect-wallet-pill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link rel="stylesheet" href="connect-wallet-pill.css">
+<style>
+    html, body { margin: 0; padding: 0; background: #F8F8F8; }
+    body { font-family: 'Mulish', 'Muli', system-ui, sans-serif; padding: 32px; }
+
+    /* Demo chrome (identical in truth/truth.html): two 8px panels on the light
+       stage, no rest shadow, structure by white space. */
+    .cwp-canonical { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 16px; }
+    .cwp-panel { border-radius: 8px; padding: 24px; }
+    .cwp-panel.light { background: #FFFFFF; }
+    .cwp-panel.dark {
+        background-color: #1F2348;
+        background-image: radial-gradient(100% 100% at 100% 100%, #260133, #1F2348);
+    }
+    .cwp-panel-label { margin: 0 0 16px; font-size: 12px; font-weight: 600; color: rgba(31, 35, 72, 0.5); }
+    .cwp-panel.dark .cwp-panel-label { color: rgba(255, 255, 255, 0.6); }
+    .cwp-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+    /* Live playground chrome (demo only, outside the verify capture) */
+    .cwp-live { width: 100%; max-width: 560px; margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<!-- Canonical composition (the verify capture): the three states on both
+     surfaces. Static markup, identical to truth/truth.html. -->
+<div class="cwp-canonical">
+    <div class="cwp-panel light">
+        <p class="cwp-panel-label">On a light surface</p>
+        <div class="cwp-row">
+            <button type="button" class="connect-wallet-pill" data-state="connect">
+                <span class="cwp-label">Connect wallet</span>
+            </button>
+            <button type="button" class="connect-wallet-pill" data-state="busy" disabled aria-busy="true">
+                <svg class="cwp-spinner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="14" height="14" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path stroke="currentColor" d="M9,1c4.42,0,8,3.58,8,8"/><path stroke="currentColor" opacity=".3" d="M4.27,2.56C2.29,4.01,1,6.35,1,9c0,4.42,3.58,8,8,8c2.65,0,4.99-1.29,6.44-3.27"/></svg>
+                <span class="cwp-label">Connecting</span>
+            </button>
+            <button type="button" class="connect-wallet-pill" data-state="connected" title="Indigo Address NQ87 JY9X JUEE HA17 JNBB HPGM 5ETQ VT1G CVN2">
+                <img class="cwp-identicon" data-address="NQ87 JY9X JUEE HA17 JNBB HPGM 5ETQ VT1G CVN2" src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23cwp_placeholder_radial)"/><defs><radialGradient id="cwp_placeholder_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>' alt="Nimiq identicon">
+                <span class="cwp-address">NQ87 JY…CVN2</span>
+                <span class="cwp-balance">519 NIM</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="cwp-panel dark">
+        <p class="cwp-panel-label">On navy</p>
+        <div class="cwp-row">
+            <button type="button" class="connect-wallet-pill on-dark" data-state="connect">
+                <span class="cwp-label">Connect wallet</span>
+            </button>
+            <button type="button" class="connect-wallet-pill on-dark" data-state="busy" disabled aria-busy="true">
+                <svg class="cwp-spinner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="14" height="14" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path stroke="currentColor" d="M9,1c4.42,0,8,3.58,8,8"/><path stroke="currentColor" opacity=".3" d="M4.27,2.56C2.29,4.01,1,6.35,1,9c0,4.42,3.58,8,8,8c2.65,0,4.99-1.29,6.44-3.27"/></svg>
+                <span class="cwp-label">Connecting</span>
+            </button>
+            <button type="button" class="connect-wallet-pill on-dark" data-state="connected" title="Indigo Address NQ87 JY9X JUEE HA17 JNBB HPGM 5ETQ VT1G CVN2">
+                <img class="cwp-identicon" data-address="NQ87 JY9X JUEE HA17 JNBB HPGM 5ETQ VT1G CVN2" src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23cwp_placeholder_radial2)"/><defs><radialGradient id="cwp_placeholder_radial2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>' alt="Nimiq identicon">
+                <span class="cwp-address">NQ87 JY…CVN2</span>
+                <span class="cwp-balance">519 NIM</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Live playground: the real driver on a mock connect callback that resolves
+     after a second. Click through connect, busy, connected, then tap the chip
+     twice to disconnect. Needs http:// (or a bundler); browsers block local
+     module imports from file:// pages. -->
+<div class="cwp-panel light cwp-live">
+    <p class="cwp-panel-label">Live, with a mock connect callback</p>
+    <button type="button" class="connect-wallet-pill" id="cwp-live"></button>
+</div>
+
+<script type="module">
+    import Iqons from 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.js';
+    // The house identicon recipe (see swap-balance-bar): the REAL team-shipped
+    // iqons.min.svg sprite is vendored at ../../../../assets/img/iqons.min.svg;
+    // the byte-identical CDN sprite is only the fallback when the local copy is
+    // unreachable (e.g. file:// contexts that block fetch). The iqons LIBRARY
+    // stays on the jsdelivr pin: it is code, not artwork.
+    const localIqonsSprite = '../../../../assets/img/iqons.min.svg';
+    const cdnIqonsSprite = 'https://cdn.jsdelivr.net/npm/@nimiq/iqons@1.6.0/dist/iqons.min.svg';
+    Iqons.svgPath = await fetch(localIqonsSprite, { method: 'HEAD' }).then((r) => (r.ok ? localIqonsSprite : cdnIqonsSprite)).catch(() => cdnIqonsSprite);
+    window.Iqons = Iqons; // the driver picks this up for chip identicons
+
+    // Scoped to connect-wallet-pill roots; safe with multiple snippets on one page.
+    for (const el of document.querySelectorAll('.connect-wallet-pill .cwp-identicon[data-address]')) {
+        el.src = await Iqons.toDataUrl(el.dataset.address);
+    }
+</script>
+
+<script type="module">
+    // Live instance. Wrapped in a dynamic import so the static composition
+    // above still renders when this page is opened from file://.
+    try {
+        const { initConnectPill } = await import('./connect-wallet-pill.js');
+        initConnectPill(document.getElementById('cwp-live'), {
+            connect: () => new Promise((resolve) => setTimeout(() => resolve({
+                address: 'NQ87 JY9X JUEE HA17 JNBB HPGM 5ETQ VT1G CVN2',
+                label: 'Indigo Address',
+                balance: 519,
+            }), 900)),
+            onDisconnect: () => console.log('disconnected'),
+        });
+        // Real apps sit this on the nimiq-app-shell seam instead of a mock:
+        //   const wallet = createWallet({ appName: 'My app' });
+        //   const pill = initConnectPill(el, { connect: () => wallet.connect(),
+        //       onDisconnect: () => wallet.disconnect() });
+        //   wallet.onAccountChange((account) => pill.setAccount(account));
+    } catch (e) {
+        const live = document.getElementById('cwp-live');
+        live.append(Object.assign(document.createElement('span'), { className: 'cwp-label', textContent: 'Connect wallet' }));
+        live.title = 'Serve this page over http for the live demo';
+    }
+</script>
+</body>
+</html>
