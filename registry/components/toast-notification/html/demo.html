@@ -203,5 +203,39 @@
     </div>
   </button>
 
+  <!-- ── Live driver demo (toast.js) ──
+       Hidden by default: the pixel contract (reference.png) captures the static
+       samples above, untouched. Open demo.html?live (or #live) to hide the
+       static stack and fire real toasts through the singleton driver. -->
+  <div id="live-demo" hidden style="padding: 4rem;">
+    <h2 class="nq-h2">toast.js live demo</h2>
+    <p class="nq-text">Singleton driver — replace-not-queue, auto-dismiss, click to dismiss.</p>
+    <button type="button" class="nq-button-s light-blue" data-kind="info">info</button>
+    <button type="button" class="nq-button-s green" data-kind="success">success</button>
+    <button type="button" class="nq-button-s orange" data-kind="error">error</button>
+  </div>
+
+  <script src="toast.js"></script>
+  <script>
+    (function () {
+      if (!/[?&#]live\b/.test(location.search + location.hash)) return;
+      document.getElementById('live-demo').hidden = false;
+      // hide the static samples so the driver's bottom-center toast stands alone
+      // (inline style: the component's display:flex outranks the [hidden] UA rule)
+      document.querySelectorAll('body > .nq-toast').forEach(function (t) { t.style.display = 'none'; });
+      var messages = {
+        info: 'Performing swap 2/5',
+        success: 'Swap successful!',
+        error: "There's a problem",
+      };
+      document.querySelectorAll('#live-demo [data-kind]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var kind = btn.dataset.kind;
+          window.nqToast(messages[kind], { kind: kind });
+        });
+      });
+    })();
+  </script>
+
 </body>
 </html>
