@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nimiq app-header</title>
+<!-- Demo: default brand bar, wordmark brand, badge + wallet pill, and the
+     same header at 360px. The stack is the verify capture and must stay
+     identical to truth/truth.html. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link rel="stylesheet" href="app-header.css">
+<link rel="stylesheet" href="../../connect-wallet-pill/html/connect-wallet-pill.css">
+<style>
+    html, body { margin: 0; padding: 0; background: #F8F8F8; }
+    body { font-family: 'Mulish', 'Muli', system-ui, sans-serif; padding: 32px; }
+
+    /* Demo chrome (identical in truth/truth.html) */
+    .app-header-demo-stack { width: 100%; max-width: 640px; }
+    .demo-label { margin: 24px 0 8px; font-size: 12px; font-weight: 600; color: rgba(31, 35, 72, 0.5); }
+    .app-header-demo-stack > .demo-label:first-child { margin-top: 0; }
+    .demo-mobile { width: 360px; max-width: 100%; }
+</style>
+</head>
+<body>
+
+<div class="app-header-demo-stack">
+
+    <p class="demo-label">Default, the brand bar</p>
+    <header class="app-header">
+        <a class="app-header-brand" href="/" aria-label="Nimiq">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 18" height="22" aria-hidden="true">
+                <g fill="none">
+                    <path fill="url(#nq-app-header-logo-grad)"
+                        d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                    <path fill="#fff"
+                        d="M34.91 3.656h1.829v10.688H35.33L29.582 6.89v7.453H27.76V3.656h1.403l5.748 7.453zm5.47 10.688V3.656h1.962v10.688zM54.82 3.656h1.543v10.688H54.68v-6.61l-2.874 6.61h-1.262l-2.874-6.61v6.61h-1.683V3.656h1.542l3.646 8.368zm5.189 10.688V3.656h1.962v10.688zm15.075-2.436c-.572 1.14-1.461 1.809-2.25 2.135.093.214.528.81.856 1.153s.673.692 1.11 1.046l-1.332 1.055c-.49-.343-.917-.754-1.351-1.232a9 9 0 01-1.142-1.595 9 9 0 01-.451.014c-1.085 0-1.991-.222-2.773-.663a4.4 4.4 0 01-1.792-1.913c-.379-.756-.623-1.766-.623-2.908s.21-2.076.628-2.908a4.44 4.44 0 011.8-1.913c.783-.444 1.697-.663 2.76-.663s1.991.222 2.773.663a4.4 4.4 0 011.792 1.913c.415.832.623 1.766.623 2.908s-.25 2.154-.628 2.908m-6.935.009q.849 1.02 2.375 1.02 1.528 0 2.375-1.02c.567-.684.85-1.646.85-2.917 0-1.263-.283-2.247-.85-2.922q-.849-1.014-2.375-1.016-1.528 0-2.375 1.007c-.567.673-.85 1.66-.85 2.931s.283 2.233.85 2.917"/>
+                    <defs>
+                        <radialGradient id="nq-app-header-logo-grad" cx="0" cy="0" r="1"
+                            gradientTransform="matrix(20.1956 0 0 20.2552 15.188 17.766)"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#ec991c"/>
+                            <stop offset="1" stop-color="#e9b213"/>
+                        </radialGradient>
+                    </defs>
+                </g>
+            </svg>
+        </a>
+    </header>
+
+    <p class="demo-label">App wordmark on the universal hexagon</p>
+    <header class="app-header">
+        <a class="app-header-brand" href="/" aria-label="Splitlink">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 18" height="22" aria-hidden="true">
+                <g fill="none">
+                    <path fill="url(#nq-app-header-hex-grad)"
+                        d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                    <defs>
+                        <radialGradient id="nq-app-header-hex-grad" cx="0" cy="0" r="1"
+                            gradientTransform="matrix(20.1956 0 0 20.2552 15.188 17.766)"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#ec991c"/>
+                            <stop offset="1" stop-color="#e9b213"/>
+                        </radialGradient>
+                    </defs>
+                </g>
+            </svg>
+            <span class="app-header-name">Splitlink</span>
+        </a>
+        <div class="app-header-tools">
+            <span class="app-header-badge">Demo</span>
+        </div>
+    </header>
+
+    <p class="demo-label">With a network badge and the wallet pill</p>
+    <header class="app-header">
+        <a class="app-header-brand" href="/" aria-label="Nimiq">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 18" height="22" aria-hidden="true">
+                <g fill="none">
+                    <path fill="url(#nq-app-header-logo-grad-b)"
+                        d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                    <path fill="#fff"
+                        d="M34.91 3.656h1.829v10.688H35.33L29.582 6.89v7.453H27.76V3.656h1.403l5.748 7.453zm5.47 10.688V3.656h1.962v10.688zM54.82 3.656h1.543v10.688H54.68v-6.61l-2.874 6.61h-1.262l-2.874-6.61v6.61h-1.683V3.656h1.542l3.646 8.368zm5.189 10.688V3.656h1.962v10.688zm15.075-2.436c-.572 1.14-1.461 1.809-2.25 2.135.093.214.528.81.856 1.153s.673.692 1.11 1.046l-1.332 1.055c-.49-.343-.917-.754-1.351-1.232a9 9 0 01-1.142-1.595 9 9 0 01-.451.014c-1.085 0-1.991-.222-2.773-.663a4.4 4.4 0 01-1.792-1.913c-.379-.756-.623-1.766-.623-2.908s.21-2.076.628-2.908a4.44 4.44 0 011.8-1.913c.783-.444 1.697-.663 2.76-.663s1.991.222 2.773.663a4.4 4.4 0 011.792 1.913c.415.832.623 1.766.623 2.908s-.25 2.154-.628 2.908m-6.935.009q.849 1.02 2.375 1.02 1.528 0 2.375-1.02c.567-.684.85-1.646.85-2.917 0-1.263-.283-2.247-.85-2.922q-.849-1.014-2.375-1.016-1.528 0-2.375 1.007c-.567.673-.85 1.66-.85 2.931s.283 2.233.85 2.917"/>
+                    <defs>
+                        <radialGradient id="nq-app-header-logo-grad-b" cx="0" cy="0" r="1"
+                            gradientTransform="matrix(20.1956 0 0 20.2552 15.188 17.766)"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#ec991c"/>
+                            <stop offset="1" stop-color="#e9b213"/>
+                        </radialGradient>
+                    </defs>
+                </g>
+            </svg>
+        </a>
+        <div class="app-header-tools">
+            <span class="app-header-badge">Testnet</span>
+            <button type="button" class="connect-wallet-pill on-dark" data-state="connect">
+                <span class="cwp-label">Connect wallet</span>
+            </button>
+        </div>
+    </header>
+
+    <p class="demo-label">The same header at 360px</p>
+    <div class="demo-mobile">
+        <header class="app-header">
+            <a class="app-header-brand" href="/" aria-label="Nimiq">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 18" height="22" aria-hidden="true">
+                    <g fill="none">
+                        <path fill="url(#nq-app-header-logo-grad-c)"
+                            d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                        <path fill="#fff"
+                            d="M34.91 3.656h1.829v10.688H35.33L29.582 6.89v7.453H27.76V3.656h1.403l5.748 7.453zm5.47 10.688V3.656h1.962v10.688zM54.82 3.656h1.543v10.688H54.68v-6.61l-2.874 6.61h-1.262l-2.874-6.61v6.61h-1.683V3.656h1.542l3.646 8.368zm5.189 10.688V3.656h1.962v10.688zm15.075-2.436c-.572 1.14-1.461 1.809-2.25 2.135.093.214.528.81.856 1.153s.673.692 1.11 1.046l-1.332 1.055c-.49-.343-.917-.754-1.351-1.232a9 9 0 01-1.142-1.595 9 9 0 01-.451.014c-1.085 0-1.991-.222-2.773-.663a4.4 4.4 0 01-1.792-1.913c-.379-.756-.623-1.766-.623-2.908s.21-2.076.628-2.908a4.44 4.44 0 011.8-1.913c.783-.444 1.697-.663 2.76-.663s1.991.222 2.773.663a4.4 4.4 0 011.792 1.913c.415.832.623 1.766.623 2.908s-.25 2.154-.628 2.908m-6.935.009q.849 1.02 2.375 1.02 1.528 0 2.375-1.02c.567-.684.85-1.646.85-2.917 0-1.263-.283-2.247-.85-2.922q-.849-1.014-2.375-1.016-1.528 0-2.375 1.007c-.567.673-.85 1.66-.85 2.931s.283 2.233.85 2.917"/>
+                        <defs>
+                            <radialGradient id="nq-app-header-logo-grad-c" cx="0" cy="0" r="1"
+                                gradientTransform="matrix(20.1956 0 0 20.2552 15.188 17.766)"
+                                gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#ec991c"/>
+                                <stop offset="1" stop-color="#e9b213"/>
+                            </radialGradient>
+                        </defs>
+                    </g>
+                </svg>
+            </a>
+            <div class="app-header-tools">
+                <span class="app-header-badge">Testnet</span>
+                <button type="button" class="connect-wallet-pill on-dark" data-state="connect">
+                    <span class="cwp-label">Connect wallet</span>
+                </button>
+            </div>
+        </header>
+    </div>
+
+</div>
+</body>
+</html>

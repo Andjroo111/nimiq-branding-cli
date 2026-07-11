@@ -1,0 +1,72 @@
+/* Nimiq app-header: the fleet's navy brand bar.
+   ORIGINAL composition (no upstream equivalent). Formalizes the bar tipjar
+   pastes into 9+ pages (verbatim horizontal-white logo on the navy radial,
+   16px 20px padding) and the splitlink hexagon + wordmark header, on shipped
+   tokens only. Left: brand (the Nimiq logo, or the universal hexagon + your
+   app name). Right: optional tools cluster (network badge + connect-wallet-pill).
+   Without tools the brand centers itself, matching the tipjar layout.
+   Mobile safe: safe-area insets, no overflow at 360px.
+   All selectors namespaced under .app-header. Run: nq principles */
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px 20px;
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+    padding-top: calc(16px + env(safe-area-inset-top, 0px));
+    background-color: #1F2348;
+    background-image: radial-gradient(100% 100% at 100% 100%, #260133, #1F2348);
+    color: #FFFFFF;
+    font-family: 'Mulish', 'Muli', system-ui, sans-serif;
+}
+
+/* With a tools cluster the brand anchors left and the tools anchor right. */
+.app-header:has(.app-header-tools) {
+    justify-content: space-between;
+}
+
+.app-header-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+.app-header-brand svg {
+    display: block;
+    flex: none;
+}
+
+/* App wordmark next to the universal hexagon (never next to the horizontal
+   logo, which already contains it). */
+.app-header-name {
+    font-size: 16px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.app-header-tools {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    flex: none;
+}
+
+/* Network badge: the wallet's own testnet treatment (Sidebar.vue
+   .testnet-notice), an orange uppercase label on a white .07 surface.
+   Orange = warning, and a testnet flag is a warning. */
+.app-header-badge {
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #FC8702;
+    background: rgba(255, 255, 255, 0.07);
+    padding: 5px 8px;
+    border-radius: 4px;
+}

@@ -1,0 +1,142 @@
+/* Nimiq connect-wallet-pill: the fleet's wallet connect button.
+   ORIGINAL composition (no upstream equivalent). Built from shipped tokens only:
+   idle pill = the navy radial pill (the nq-button-pill treatment), on-dark
+   states = the shipped .nq-button-s.inverse alphas (white .2 rest, .25 hover),
+   connected chip = the quiet .nq-button-s surface (navy .07 rest, .12 hover).
+   Spinner = the CircleSpinner arc geometry recolored via currentColor.
+   Type: nq-button-s scale (14px/700 Mulish); height 32px, raised from the
+   legacy 27px small button to clear the 30px mobile tap floor.
+   All selectors namespaced under .connect-wallet-pill (children .cwp-*).
+   Driver: connect-wallet-pill.js (initConnectPill). Run: nq principles */
+
+.connect-wallet-pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 500px;
+    font-family: 'Mulish', 'Muli', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    color: #FFFFFF;
+    background-color: #1F2348;
+    background-image: radial-gradient(100% 100% at 100% 100%, #260133, #1F2348);
+    transition: background-color 0.3s cubic-bezier(0.25, 0, 0, 1);
+}
+
+/* Hover deepens the gradient, the house button pattern: the darkened radial
+   fades in on an overlay layer (nq-button does the same with ::before). */
+.connect-wallet-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: 500px;
+    background-image: radial-gradient(100% 100% at 100% 100%, #180021, #151833);
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.25, 0, 0, 1);
+}
+.connect-wallet-pill:hover::before,
+.connect-wallet-pill:focus-visible::before {
+    opacity: 1;
+}
+.connect-wallet-pill > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Keyboard focus: the house ring, sitting outside the pill. */
+.connect-wallet-pill:focus-visible {
+    outline: 2px solid #0582CA;
+    outline-offset: 3px;
+}
+
+/* Busy: same surface, the spinner is the signal. No grayed-out flash for a
+   sub-second wallet popup roundtrip. */
+.connect-wallet-pill[disabled] {
+    cursor: default;
+}
+
+.cwp-spinner {
+    display: block;
+    flex: none;
+    animation: cwp-spin 1s linear infinite;
+}
+@keyframes cwp-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .cwp-spinner {
+        animation: none;
+    }
+}
+
+/* Connected and confirm: status, not a call to action, so the pill drops to
+   the quiet small-button surface (the shipped .nq-button-s tokens). */
+.connect-wallet-pill[data-state="connected"],
+.connect-wallet-pill[data-state="confirm"] {
+    color: #1F2348;
+    background-color: rgba(31, 35, 72, 0.07);
+    background-image: none;
+}
+.connect-wallet-pill[data-state="connected"]::before,
+.connect-wallet-pill[data-state="confirm"]::before {
+    display: none;
+}
+.connect-wallet-pill[data-state="connected"]:hover,
+.connect-wallet-pill[data-state="connected"]:focus-visible,
+.connect-wallet-pill[data-state="confirm"]:hover,
+.connect-wallet-pill[data-state="confirm"]:focus-visible {
+    background-color: rgba(31, 35, 72, 0.12);
+}
+.connect-wallet-pill[data-state="connected"] {
+    padding: 0 12px 0 5px;
+}
+
+.cwp-identicon {
+    display: block;
+    width: 24px;
+    height: 24px;
+    flex: none;
+}
+
+/* Address: a technical value, Fira Mono, uppercase by nature. */
+.cwp-address {
+    font-family: 'Fira Mono', monospace;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+/* Optional balance: secondary, one opacity-ladder step down (60%). */
+.cwp-balance {
+    font-weight: 600;
+    opacity: 0.6;
+}
+
+/* On navy surfaces (e.g. inside app-header): the shipped inverse small-button
+   alphas. One flat white-alpha surface for every state, white text throughout
+   (flat fills are canonical for white/secondary pills). */
+.connect-wallet-pill.on-dark,
+.connect-wallet-pill.on-dark[data-state="connected"],
+.connect-wallet-pill.on-dark[data-state="confirm"] {
+    color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.2);
+    background-image: none;
+}
+.connect-wallet-pill.on-dark::before {
+    display: none;
+}
+.connect-wallet-pill.on-dark:hover,
+.connect-wallet-pill.on-dark:focus-visible {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+.connect-wallet-pill.on-dark:focus-visible {
+    outline-color: #0CA6FE;
+}
