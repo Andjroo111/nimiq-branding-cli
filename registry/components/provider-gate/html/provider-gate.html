@@ -1,0 +1,127 @@
+<!-- Provider gate — requires provider-gate.css + nimiq-style.min.css (the wall
+     button). The fleet's environment and wallet-status feedback, built ON the
+     status-alert family (the one legitimate pill/callout family, rule 17).
+
+     STRIP (non-blocking, top of content): canned states with fixed copy +
+     semantic color. data-state: demo (neutral) | open-in-wallet (blue info,
+     optional deep-link action) | connected (green) | testnet | simulated
+     (orange warning). Copy is sentence case; short status labels carry no
+     period, running sentences do.
+
+     WALL (blocking, the tipjar handoff wall): a centered navy app card that
+     gates the whole app for states that block (open-in-wallet on desktop):
+     signet + headline + QR deep link + open button + copy-link fallback.
+
+     Static markup below; provider-gate.js drives the same markup from a
+     detect callback (states map 1:1 to nimiq-app-shell detect outputs).
+     Sources: status-alert component (treatment), tipjar public/onboard-core.js
+     + app.css .wall-screen (wall), splitlink public/index.html (strip),
+     qr-code component (QR recipe). -->
+
+<div class="provider-gate" data-state="demo" role="status">
+    <span class="pg-icon" aria-hidden="true"></span>
+    <span class="pg-copy">Demo mode. No real payments.</span>
+</div>
+
+<div class="provider-gate" data-state="open-in-wallet" role="status">
+    <span class="pg-icon" aria-hidden="true"></span>
+    <span class="pg-copy">Open inside Nimiq Pay for live payments</span>
+    <a class="pg-action" href="nimiqpay://miniapp?url=https%3A%2F%2Fpay.example%2Fcreator">Open in Nimiq Pay</a>
+</div>
+
+<div class="provider-gate" data-state="connected" role="status">
+    <span class="pg-icon" aria-hidden="true"></span>
+    <span class="pg-copy">Connected to Nimiq Pay</span>
+</div>
+
+<div class="provider-gate" data-state="testnet" role="status">
+    <span class="pg-icon" aria-hidden="true"></span>
+    <span class="pg-copy">Testnet. Coins have no value.</span>
+</div>
+
+<div class="provider-gate" data-state="simulated" role="status">
+    <span class="pg-icon" aria-hidden="true"></span>
+    <span class="pg-copy">Simulated payments. No coins move.</span>
+</div>
+
+<!-- The blocking wall: mount in place of the app content (the tipjar pattern).
+     If layered OVER content instead, the overlay behind it must be navy
+     rgba(31,35,72,0.6), never black (rule 11). -->
+<div class="provider-gate-wall">
+    <div class="pgw-body">
+        <!-- Verbatim Nimiq hexagon (universal ground); unique gradient id per page (rule 3) -->
+        <svg class="pgw-signet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 18" role="img" aria-label="Nimiq">
+            <path fill="url(#nq-provider-gate-hex-grad)"
+                d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+            <defs>
+                <radialGradient id="nq-provider-gate-hex-grad" cx="0" cy="0" r="1"
+                    gradientTransform="matrix(20.1956 0 0 20.2552 15.188 17.766)"
+                    gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#ec991c"/>
+                    <stop offset="1" stop-color="#e9b213"/>
+                </radialGradient>
+            </defs>
+        </svg>
+        <h2 class="pgw-title">Open in Nimiq Pay</h2>
+        <p class="pgw-message">Live payments need Nimiq Pay. Scan the code with your phone or open this page inside the app.</p>
+        <div class="pgw-qr">
+            <canvas width="180" height="180" data-qr="nimiqpay://miniapp?url=https%3A%2F%2Fpay.example%2Fcreator"
+                aria-label="QR code that opens this page in Nimiq Pay"></canvas>
+        </div>
+        <div class="pgw-action">
+            <a class="nq-button light-blue" href="nimiqpay://miniapp?url=https%3A%2F%2Fpay.example%2Fcreator">Open in Nimiq Pay</a>
+        </div>
+        <p class="pgw-secondary"><button type="button" class="pgw-link" data-copy="https://pay.example/creator">Copy link</button></p>
+    </div>
+</div>
+
+<!-- QR: the registry qr-code recipe (pinned qr-creator@1.0.0, Nimiq light-blue
+     radial fill), scoped via document.currentScript. Copy link: clipboard with
+     a 2s label swap. -->
+<script src="https://cdn.jsdelivr.net/npm/qr-creator@1.0.0/dist/qr-creator.min.js"></script>
+<script>
+(() => {
+    // Scope to THIS snippet's wall: walk back from the current script tag.
+    let el = document.currentScript;
+    while (el && !(el.matches && el.matches('.provider-gate-wall'))) {
+        el = el.previousElementSibling;
+    }
+    const wall = el;
+    if (!wall) return;
+
+    // Nimiq default QR fill: bottom-right radial, the qr-code component recipe.
+    const NIMIQ_FILL = {
+        type: 'radial-gradient',
+        position: [1, 1, 0, 1, 1, Math.sqrt(2)],
+        colorStops: [[0, '#265DD7'], [1, '#0582CA']],
+    };
+    const canvas = wall.querySelector('.pgw-qr canvas');
+    let tries = 0;
+    (function render() {
+        if (typeof QrCreator === 'undefined') {
+            if (tries++ < 200) setTimeout(render, 25);
+            return;
+        }
+        if (!canvas || canvas.dataset.qrRendered) return;
+        canvas.dataset.qrRendered = 'true';
+        QrCreator.render({
+            text: canvas.dataset.qr,
+            radius: 0.5,
+            ecLevel: 'M',
+            fill: NIMIQ_FILL,
+            background: null, // transparent on the white tile
+            size: 180,
+        }, canvas);
+    })();
+
+    const copyBtn = wall.querySelector('.pgw-link[data-copy]');
+    if (copyBtn) copyBtn.addEventListener('click', async () => {
+        try {
+            await navigator.clipboard.writeText(copyBtn.dataset.copy);
+            const prev = copyBtn.textContent;
+            copyBtn.textContent = 'Link copied';
+            setTimeout(() => { copyBtn.textContent = prev; }, 2000);
+        } catch { /* clipboard unavailable (http, permissions): leave the label */ }
+    });
+})();
+</script>
