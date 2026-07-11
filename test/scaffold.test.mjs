@@ -134,6 +134,84 @@ test('--no-chain still gets the shell dep but no settlement dep', async () => {
   });
 });
 
+const PNG_MAGIC = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+
+test('pwa shell: valid manifest, REAL PNG icons, version-substitution sw.js, registration', async () => {
+  await inTmp(async () => {
+    const r = await scaffoldApp('pwaapp');
+    assert.equal(r.pwa, true);
+
+    // manifest parses, brand colors, standalone, 192/512 + maskable icon entries
+    const man = JSON.parse(await readFile(join(r.dir, 'public/manifest.webmanifest'), 'utf8'));
+    assert.equal(man.display, 'standalone');
+    assert.equal(man.theme_color, '#1f2348');
+    assert.equal(man.background_color, '#ffffff');
+    assert.equal(man.icons.length, 4);
+    assert.ok(man.icons.some(i => i.sizes === '192x192' && i.purpose === 'any'));
+    assert.ok(man.icons.some(i => i.sizes === '512x512' && i.purpose === 'any'));
+    assert.ok(man.icons.some(i => i.sizes === '192x192' && i.purpose === 'maskable'));
+    assert.ok(man.icons.some(i => i.sizes === '512x512' && i.purpose === 'maskable'));
+
+    // every referenced icon exists, is non-empty, and is a real PNG (magic bytes)
+    for (const ic of man.icons) {
+      const buf = await readFile(join(r.dir, 'public', ic.src.replace(/^\//, '')));
+      assert.ok(buf.length > 500, `${ic.src} should be a real render, got ${buf.length} bytes`);
+      assert.deepEqual([...buf.subarray(0, 8)], PNG_MAGIC, `${ic.src} must have PNG magic bytes`);
+    }
+
+    // sw.js: version placeholder, no hardcoded cache semver, lifecycle handlers
+    const sw = await readFile(join(r.dir, 'public/sw.js'), 'utf8');
+    assert.match(sw, /__BUILD_VERSION__/);
+    assert.ok(!/pwaapp-v?\d+\.\d+\.\d+/.test(sw), 'sw.js must not hardcode a cache version');
+    assert.match(sw, /skipWaiting/);
+    assert.match(sw, /clients\.claim/);
+
+    // index.html links manifest + theme-color + apple-touch-icon
+    const html = await readFile(join(r.dir, 'public/index.html'), 'utf8');
+    assert.match(html, /<link rel="manifest" href="\/manifest\.webmanifest">/);
+    assert.match(html, /<meta name="theme-color" content="#1f2348">/);
+    assert.match(html, /<link rel="apple-touch-icon" href="\/icons\/icon-192\.png">/);
+
+    // client entry registers the SW; server substitutes the placeholder
+    const appjs = await readFile(join(r.dir, 'public/app.js'), 'utf8');
+    assert.match(appjs, /serviceWorker/);
+    assert.match(appjs, /register\('\/sw\.js'\)/);
+    const server = await readFile(join(r.dir, 'src/server.ts'), 'utf8');
+    assert.match(server, /replaceAll\('__BUILD_VERSION__'/);
+    assert.match(server, /app\.get\('\/sw\.js'/);
+
+    // the check-sw-version guard is shipped, executable, and wired into CI + scripts
+    const guard = join(r.dir, 'scripts/check-sw-version.sh');
+    assert.ok(existsSync(guard));
+    const { statSync } = await import('node:fs');
+    assert.ok(statSync(guard).mode & 0o100, 'check-sw-version.sh must be executable');
+    const pkg = JSON.parse(await readFile(join(r.dir, 'package.json'), 'utf8'));
+    assert.equal(pkg.scripts['check:sw'], 'bash scripts/check-sw-version.sh');
+    const ci = await readFile(join(r.dir, '.github/workflows/ci.yml'), 'utf8');
+    assert.match(ci, /check-sw-version\.sh/);
+
+    // and the pwa shell keeps the app CLEAN on align
+    const graded = await alignApp(r.dir);
+    assert.equal(graded.overall, CLEAN, JSON.stringify(graded.axes, null, 2));
+  });
+});
+
+test('--no-pwa skips the pwa shell and still aligns CLEAN', async () => {
+  await inTmp(async () => {
+    const r = await scaffoldApp('nopwa', { noPwa: true });
+    assert.equal(r.pwa, false);
+    assert.ok(!existsSync(join(r.dir, 'public/sw.js')));
+    assert.ok(!existsSync(join(r.dir, 'public/icons')));
+    assert.ok(!existsSync(join(r.dir, 'scripts/check-sw-version.sh')));
+    const man = JSON.parse(await readFile(join(r.dir, 'public/manifest.webmanifest'), 'utf8'));
+    assert.ok(!man.icons, 'no icon entries pointing at files that do not exist');
+    const appjs = await readFile(join(r.dir, 'public/app.js'), 'utf8');
+    assert.ok(!appjs.includes('serviceWorker'), 'no dangling SW registration');
+    const graded = await alignApp(r.dir);
+    assert.equal(graded.overall, CLEAN);
+  });
+});
+
 test('hook artifacts contain the pre-commit gate and weekly workflow', () => {
   assert.ok(hooks.PRE_COMMIT.includes('--fail-on=settlement,styling'));
   assert.ok(hooks.SESSION_START.includes('nq align --quiet'));
