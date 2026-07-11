@@ -1,0 +1,17 @@
+<!-- status-pill: the fleet's semantic status chip, the ONE legitimate pill
+     (rule 17). Requires status-pill.css; self-contained, no nimiq-style needed.
+     Classes, one per MEANING (swellet brand.ts pill() pattern):
+       success | warning | error | info | neutral   semantic families
+       mainnet | live        aliases of success (environment presets)
+       testnet | simulated   aliases of warning
+       demo                  alias of neutral
+       on-dark               add on navy surfaces (wallet testnet treatment;
+                             matches the app-header badge, which can host this)
+     Keep it strictly semantic: a status word, never a decorative label.
+     No dots, no icons (the colored-dot chip is a banned ornament). -->
+<span class="status-pill success">Success</span>
+<span class="status-pill warning">Warning</span>
+<span class="status-pill error">Error</span>
+<span class="status-pill info">Info</span>
+<span class="status-pill neutral">Neutral</span>
+<span class="status-pill testnet on-dark">Testnet</span>

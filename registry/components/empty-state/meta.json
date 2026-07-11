@@ -1,0 +1,83 @@
+{
+  "name": "empty-state",
+  "purpose": "The fleet's quiet nothing-here message: a centered muted line with an optional emoji and at most one understated action, in block (page level) and row (list level) sizes with on-light and on-dark ink channels. Replaces the one-line empty states 13 apps hand-roll.",
+  "category": "feedback",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "message",
+      "type": "String",
+      "required": false,
+      "default": "''",
+      "description": "The single muted line (navy 50% on light, white 60% on dark). The default slot overrides it. Keep it one short fragment, no period, no dashes."
+    },
+    {
+      "name": "size",
+      "type": "'block' | 'row'",
+      "required": false,
+      "default": "'block'",
+      "description": "block is the page-level size (48px padding, 15px message, 44px icon); row is the list-level line for an empty list inside a card (26px padding, 14px message). HTML variant: add class 'row'."
+    },
+    {
+      "name": "dark",
+      "type": "Boolean",
+      "required": false,
+      "default": "false",
+      "description": "White ink channel for navy surfaces; the action switches to the .nq-button-s inverse recipe. HTML variant: add class 'on-dark'. The navy surface itself must be the bottom-right radial, never a flat fill (rule 7)."
+    },
+    {
+      "name": "actionLabel",
+      "type": "String",
+      "required": false,
+      "default": "''",
+      "description": "Renders the ONE understated action button (emits 'action' on click). One primary action max per PRINCIPLES; navy capsule, never green (rule 5). HTML variant: the .es-action button, delete it if unused."
+    },
+    {
+      "name": "slot: icon",
+      "type": "slot",
+      "required": false,
+      "description": "Optional emoji (the chorecoin pattern) or a real Nimiq icon riding currentColor at the muted ink. Skip it for the row size. HTML variant: the .es-icon div, delete it if unused; keep aria-hidden on decorative emoji."
+    },
+    {
+      "name": "slot: action",
+      "type": "slot",
+      "required": false,
+      "description": "Replaces the built-in action entirely (e.g. an <a>); still one action max. Give the element class 'es-action' to inherit the capsule styling (the component ships :slotted selectors)."
+    }
+  ],
+  "cssFiles": [],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": false,
+  "verify": {
+    "viewport": {
+      "width": 560,
+      "height": 720
+    },
+    "selector": ".empty-state-demo",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "ORIGINAL composition (flag-hex precedent), so verified:false; reference.png is snapped from truth/truth.html and nq verify guards the demo against it as a regression check. There is no upstream empty-state component (the wallet's empty screen is a whole layout, not a reusable block), so this formalizes the fleet's de facto standard: chorecoin public/app.css .empty (padding 26px 18px, centered, muted, 14px 600, big emoji in the line), tipjar .tips-empty (28px 16px, 15px, 'plain body text on the white feed card, set by whitespace'), drip .empty (15px, dim, 3x space padding), nimpot and snappos .empty-note (14px, ink-50). Design decisions: (a) radical simplicity per PRINCIPLES law 4: whitespace does the structural work; no borders, no boxes, no illustrations, no invented ornament; the component is transparent and the page or card supplies the surface. (b) One muted ink channel: navy 50% on light (the skill's secondary-text convention) and white 60% on dark; measured contrast: navy .5 on white 3.11:1 and on the #F8F8F8 page 3.06:1 (deliberately matches the brand's own secondary text, which nimiq.com ships sub-AA and nq lint warns rather than gates); white .6 on flat navy 6.33:1 and on the gradient corner 6.93:1. The interactive action is full-contrast: navy on its 7% tint 12.45:1, white on the 20% inverse chip 7.95:1. (c) The action is the legacy .nq-button-s capsule converted from the 8px root to px (height 3.375rem = 27px, padding 0 1.5rem = 12px, font 1.75rem = 14px 700, neutral bg rgba(31,35,72,.07), hover .12 with the darkened navy #151833, inverse white .2/.25 on dark), radius written as 999px (same render as the upstream 1.6875rem half-height, but on the skill's pill tier so lint's radius scale reads it as a capsule); focus-visible ring 2px #0582CA offset 3px per the skill's focus spec, and transitions ride --nimiq-ease with its cubic-bezier(0.25, 0, 0, 1) fallback plus a prefers-reduced-motion guard. One primary action max (PRINCIPLES); navy, never green (rule 5). (d) The emoji icon is the chorecoin pattern promoted to an optional slot (44px block, 22px row), aria-hidden because it is decorative; a real Nimiq icon can ride currentColor at the muted ink instead; never a generic icon set. (e) The message is a <p>, not a heading, so empty states never pollute the page outline; copy stays a short fragment with no period (rule 16 discipline) and no dashes (rule 18). (f) Two sizes only: block for a page section and row for an empty list inside a card, the two scales the fleet actually ships. Demo (= truth) shows block on the #F8F8F8 page with icon + action, row inside a white card (radius 10px, the app-card shadow 0 4px 28px rgba(0,0,0,.111)), and the on-dark block with the inverse action on the navy radial (rule 7). Pairs with transaction-list and the card components; use status-alert for errors that need attention rather than an empty state.",
+  "source": {
+    "repo": "original",
+    "ref": null,
+    "files": []
+  }
+}
