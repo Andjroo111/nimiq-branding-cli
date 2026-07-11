@@ -1,0 +1,111 @@
+/* Nimiq empty-state: the fleet's quiet nothing-here message. Radical
+   simplicity: whitespace, one muted line, at most one optional emoji and one
+   optional understated action. No borders, no boxes, no illustrations; the
+   surrounding page or card supplies the surface.
+   ORIGINAL composition. Fleet refs: chorecoin .empty (centered muted 14px 600
+   with a big emoji), tipjar .tips-empty, drip .empty, nimpot/snappos
+   .empty-note. The action is the legacy .nq-button-s recipe converted to px
+   (27px capsule, navy on the 7% navy tint; inverse on dark).
+   Sizes: block (page level, default) and .row (list level, smaller).
+   On dark surfaces add .on-dark (white ink channel).
+   Run: nq principles */
+
+.empty-state {
+    /* one muted ink: navy 50% on light, white 60% with .on-dark (the skill's
+       secondary-text convention; ratios recorded in meta.json notes) */
+    --es-muted: rgba(31, 35, 72, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    padding: 48px 24px;
+    font-family: 'Mulish', 'Muli', system-ui, sans-serif;
+    color: var(--es-muted);
+}
+
+.empty-state.on-dark {
+    --es-muted: rgba(255, 255, 255, 0.6);
+}
+
+/* optional emoji (chorecoin style) or a real Nimiq icon riding currentColor */
+.empty-state .es-icon {
+    font-size: 44px;
+    line-height: 1;
+}
+
+.empty-state .es-message {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.45;
+    max-width: 40ch;
+    color: var(--es-muted);
+}
+
+/* row size: list-level empty line inside a card (chorecoin/tipjar scale) */
+.empty-state.row {
+    padding: 26px 16px;
+    gap: 8px;
+}
+
+.empty-state.row .es-icon {
+    font-size: 22px;
+}
+
+.empty-state.row .es-message {
+    font-size: 14px;
+}
+
+/* the ONE optional action: the legacy .nq-button-s capsule in px (height
+   3.375rem = 27px, padding 0 1.5rem = 12px, font 1.75rem = 14px at the 8px
+   root). Understated on purpose; navy, never green (rule 5). */
+.empty-state .es-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 27px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    color: #1F2348;
+    background: rgba(31, 35, 72, 0.07);
+    cursor: pointer;
+    text-decoration: none;
+    transition:
+        color 0.3s var(--nimiq-ease, cubic-bezier(0.25, 0, 0, 1)),
+        background-color 0.3s var(--nimiq-ease, cubic-bezier(0.25, 0, 0, 1));
+}
+
+.empty-state .es-action:hover,
+.empty-state .es-action:focus-visible {
+    color: #151833;
+    background: rgba(31, 35, 72, 0.12);
+}
+
+.empty-state .es-action:focus-visible {
+    outline: 2px solid #0582CA;
+    outline-offset: 3px;
+}
+
+/* inverse action on dark (the .nq-button-s.inverse recipe) */
+.empty-state.on-dark .es-action {
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.empty-state.on-dark .es-action:hover,
+.empty-state.on-dark .es-action:focus-visible {
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .empty-state .es-action {
+        transition: none;
+    }
+}
