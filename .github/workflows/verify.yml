@@ -58,6 +58,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      # Generated artifacts (registry/SKILL-BLOCK.md, llms.txt, llms-full.txt) must match
+      # the registry — fail the PR if a registry change shipped without regenerating them.
+      - name: nq sync-skill --check (generated artifacts in sync)
+        run: node bin/nq.js sync-skill --check
+
       - name: nq list / info / add / assets
         run: |
           node bin/nq.js list
