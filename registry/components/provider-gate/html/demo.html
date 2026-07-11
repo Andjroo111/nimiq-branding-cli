@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nimiq provider-gate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link rel="stylesheet" href="provider-gate.css">
+<style>
+    html, body { margin: 0; padding: 0; background: #F8F8F8; }
+    body { font-family: 'Mulish', 'Muli', system-ui, sans-serif; padding: 32px; }
+
+    /* Demo chrome (identical in truth/truth.html) */
+    .provider-gate-demo-stack { width: 100%; max-width: 520px; }
+    .provider-gate-demo-stack .provider-gate { margin-top: 12px; }
+    .demo-label { margin: 24px 0 8px; font-size: 12px; font-weight: 600; color: rgba(31, 35, 72, 0.5); }
+    .provider-gate-demo-stack > .demo-label:first-child { margin-top: 0; }
+    .demo-wall { max-width: 360px; }
+
+    /* Live playground chrome (demo only, outside the verify capture) */
+    .demo-live { width: 100%; max-width: 520px; }
+    .demo-live-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .demo-live-controls button {
+        height: 32px; padding: 0 16px; border: 0; border-radius: 500px;
+        font: 700 13px/1 'Mulish', 'Muli', system-ui, sans-serif; cursor: pointer;
+        color: #1F2348; background: rgba(31, 35, 72, 0.07);
+    }
+    .demo-live-controls button:hover { background: rgba(31, 35, 72, 0.12); }
+    .demo-live-controls button:focus-visible { outline: 2px solid #0582CA; outline-offset: 3px; }
+    #pg-live { margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<!-- Canonical composition (the verify capture): the strip in all five states
+     plus the blocking wall. Static markup, identical to truth/truth.html. -->
+<div class="provider-gate-demo-stack">
+
+    <p class="demo-label">Strip, the five states</p>
+
+    <div class="provider-gate" data-state="demo" role="status">
+        <span class="pg-icon" aria-hidden="true"></span>
+        <span class="pg-copy">Demo mode. No real payments.</span>
+    </div>
+
+    <div class="provider-gate" data-state="open-in-wallet" role="status">
+        <span class="pg-icon" aria-hidden="true"></span>
+        <span class="pg-copy">Open inside Nimiq Pay for live payments</span>
+        <a class="pg-action" href="nimiqpay://miniapp?url=https%3A%2F%2Fpay.example%2Fcreator">Open in Nimiq Pay</a>
+    </div>
+
+    <div class="provider-gate" data-state="connected" role="status">
+        <span class="pg-icon" aria-hidden="true"></span>
+        <span class="pg-copy">Connected to Nimiq Pay</span>
+    </div>
+
+    <div class="provider-gate" data-state="testnet" role="status">
+        <span class="pg-icon" aria-hidden="true"></span>
+        <span class="pg-copy">Testnet. Coins have no value.</span>
+    </div>
+
+    <div class="provider-gate" data-state="simulated" role="status">
+        <span class="pg-icon" aria-hidden="true"></span>
+        <span class="pg-copy">Simulated payments. No coins move.</span>
+    </div>
+
+    <p class="demo-label">Wall, the blocking handoff (open-in-wallet on desktop)</p>
+
+    <div class="demo-wall">
+        <div class="provider-gate-wall">
+            <div class="pgw-body">
+                <svg class="pgw-signet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 18" role="img" aria-label="Nimiq">
+                    <path fill="url(#nq-provider-gate-hex-grad)"
+                        d="M19.964 8.156 15.758.844A1.69 1.69 0 0014.299 0H5.887c-.6 0-1.156.32-1.456.844L.225 8.156c-.3.523-.3 1.165 0 1.688l4.206 7.312c.3.523.856.844 1.456.844h8.412c.6 0 1.156-.32 1.456-.844l4.206-7.312a1.69 1.69 0 00.003-1.688"/>
+                    <defs>
+                        <radialGradient id="nq-provider-gate-hex-grad" cx="0" cy="0" r="1"
+                            gradientTransform="matrix(20.1956 0 0 20.2552 15.188 17.766)"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#ec991c"/>
+                            <stop offset="1" stop-color="#e9b213"/>
+                        </radialGradient>
+                    </defs>
+                </svg>
+                <h2 class="pgw-title">Open in Nimiq Pay</h2>
+                <p class="pgw-message">Live payments need Nimiq Pay. Scan the code with your phone or open this page inside the app.</p>
+                <div class="pgw-qr">
+                    <canvas width="180" height="180" data-qr="nimiqpay://miniapp?url=https%3A%2F%2Fpay.example%2Fcreator"
+                        aria-label="QR code that opens this page in Nimiq Pay"></canvas>
+                </div>
+                <div class="pgw-action">
+                    <a class="nq-button light-blue" href="nimiqpay://miniapp?url=https%3A%2F%2Fpay.example%2Fcreator">Open in Nimiq Pay</a>
+                </div>
+                <p class="pgw-secondary"><button type="button" class="pgw-link" data-copy="https://pay.example/creator">Copy link</button></p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Live playground: the real driver. Click through the states; "wall" flips
+     the blocking form on so open-in-wallet renders the handoff wall. Needs
+     http:// (or a bundler); browsers block module imports from file://. -->
+<div class="demo-live">
+    <p class="demo-label">Live, driven by initProviderGate</p>
+    <div class="demo-live-controls" id="pg-live-controls"></div>
+    <div id="pg-live"></div>
+</div>
+
+<!-- QR: the registry qr-code recipe (pinned qr-creator@1.0.0), identical in truth/truth.html -->
+<script src="https://cdn.jsdelivr.net/npm/qr-creator@1.0.0/dist/qr-creator.min.js"></script>
+<script>
+(() => {
+    const NIMIQ_FILL = {
+        type: 'radial-gradient',
+        position: [1, 1, 0, 1, 1, Math.sqrt(2)],
+        colorStops: [[0, '#265DD7'], [1, '#0582CA']],
+    };
+    const canvas = document.querySelector('.provider-gate-demo-stack .pgw-qr canvas');
+    let tries = 0;
+    (function render() {
+        if (typeof QrCreator === 'undefined') {
+            if (tries++ < 200) setTimeout(render, 25);
+            return;
+        }
+        if (!canvas || canvas.dataset.qrRendered) return;
+        canvas.dataset.qrRendered = 'true';
+        QrCreator.render({
+            text: canvas.dataset.qr,
+            radius: 0.5,
+            ecLevel: 'M',
+            fill: NIMIQ_FILL,
+            background: null,
+            size: 180,
+        }, canvas);
+    })();
+})();
+</script>
+
+<script type="module">
+    // Live instance. Wrapped in a dynamic import so the static composition
+    // above still renders when this page is opened from file://.
+    try {
+        const { initProviderGate, GATE_STATES } = await import('./provider-gate.js');
+        const gate = initProviderGate(document.getElementById('pg-live'), {
+            state: 'demo',
+            pageUrl: 'https://pay.example/creator',
+        });
+        let wall = false;
+        const controls = document.getElementById('pg-live-controls');
+        for (const s of GATE_STATES) {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.textContent = s;
+            b.addEventListener('click', () => remount(s));
+            controls.append(b);
+        }
+        const wallBtn = document.createElement('button');
+        wallBtn.type = 'button';
+        wallBtn.textContent = 'wall: off';
+        wallBtn.addEventListener('click', () => {
+            wall = !wall;
+            wallBtn.textContent = 'wall: ' + (wall ? 'on' : 'off');
+            remount(current);
+        });
+        controls.append(wallBtn);
+        let current = 'demo';
+        let live = gate;
+        function remount(state) {
+            current = state;
+            live.destroy();
+            live = initProviderGate(document.getElementById('pg-live'), {
+                state,
+                wall,
+                pageUrl: 'https://pay.example/creator',
+            });
+        }
+        // Real apps sit the detect callback on the nimiq-app-shell seam:
+        //   initProviderGate(el, {
+        //       detect: () => (detectModeSync() === 'miniapp' ? 'connected' : 'open-in-wallet'),
+        //       wall: !navigator.userAgent.includes('Mobi'),
+        //   });
+    } catch (e) {
+        document.querySelector('.demo-live .demo-label').textContent =
+            'Live, driven by initProviderGate (serve this page over http for the live demo)';
+    }
+</script>
+</body>
+</html>
