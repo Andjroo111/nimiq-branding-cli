@@ -29,13 +29,16 @@ Usage:
   nq new <name>                 Scaffold a new REGISTRY component (principles checklist +
                                 verification contract embedded)
   nq new-app <name>             Scaffold a CANONICAL Nimiq fleet app (Bun+Hono+bun:sqlite+
-                                vanilla PWA + @nimiq/style + nimiq-settlement + Fly kit +
-                                a stamped nimiq-stack.json + /health). Starts clean on align.
+                                vanilla PWA + @nimiq/style + nimiq-settlement + nimiq-app-shell
+                                [Nimiq Pay mini-app + runtime i18n via createWallet/createI18n,
+                                build:shell → public/vendor/app-shell.js, public/locales/*.json]
+                                + Fly kit + CF notes + a stamped nimiq-stack.json + /health).
+                                Starts clean on align (incl. the miniApp/i18n/deps axes).
       --no-chain                chainApp:false (skip settlement + styling parity)
       --settlement mock|rpc|noop    settlement client (default mock)
       --deploy fly|none         deploy kit (default fly)
   nq check [path]               Run the FULL per-project alignment gate in one shot:
-                                align (--fail-on=settlement,styling) + 800-line file
+                                align (--fail-on=settlement,styling,identity) + 800-line file
                                 guard + bun test (if present) + nq lint (if Playwright).
                                 Prints a PASS/FAIL/SKIP summary; exits nonzero on any
                                 FAIL (SKIP is fine). --json for machine output. This is
@@ -47,6 +50,12 @@ Usage:
       --quiet                   One-line drift banner (SessionStart)  --json  machine output
                                 SETTLEMENT is load-bearing: any @nimiq/core/web import or
                                 Client.create( / waitForConsensusEstablished( in src HARD FAILS.
+                                IDENTITY is load-bearing for fleet repos (nimiq.<seg>): a
+                                package/stack name or load-bearing file that drifts from the
+                                repo name (stale codename like splitlink/tipjar) HARD FAILS.
+                                miniApp / i18n / deps are ADVISORY adoption axes (max
+                                safe-drift, never gate): Nimiq Pay mini-app wiring, runtime
+                                i18n, and shared-package (settlement/app-shell) git-tag drift.
   nq hooks install [repo]       Install the drift hooks: git pre-commit (align --fail-on),
                                 git pre-push (the fuller nq check gate), SessionStart banner,
                                 weekly GH Action (--write drops the workflow)
@@ -58,6 +67,15 @@ Usage:
   nq audit [--skip-verify]      Check the LIVE Nimiq upstreams for branding drift vs our
                                 pinned registry; attribute drift to components; write a report
   nq sync-skill                 Regenerate the nimiq-ui skill's registry block from index.json
+  nq reuse <query>              Search the fleet REUSE index so you import instead of rebuild.
+                                Fuzzy-matches packages (shared libs), components (nq add), and
+                                first-party modules; prints each match's import snippet.
+                                --json machine output  --dir <reposdir> point at a built index
+      --rebuild <reposdir>      (Re)build reuse-index.json + REUSE-CATALOG.md by scanning a
+                                directory of cloned fleet repos + this CLI's component registry.
+                                Indexes 3 kinds: package / component / module (curated seed:
+                                cashlink codec, QR, identicon, request-link, RPC rate, Fly kit,
+                                i18n).  --out <path> for the catalog (default <reposdir>/../REUSE-CATALOG.md)
   nq help                       This message
 
 All visual assets are the team's real shipped files (nimiq.com, wallet, hub,
@@ -95,6 +113,8 @@ function parseFlags(args) {
     else if (a === '--fail-on') flags.failOn = args[++i];
     else if (a === '--check') flags.check = true;
     else if (a === '--write') flags.write = true;
+    else if (a === '--rebuild') flags.rebuild = (args[i + 1] && !args[i + 1].startsWith('--')) ? args[++i] : true;
+    else if (a === '--dir') flags.dir = args[++i];
     else rest.push(a);
   }
   return { flags, rest };
@@ -567,6 +587,11 @@ try {
     }
     case 'audit': await import(join(ROOT, 'scripts', 'audit.mjs')); break;
     case 'sync-skill': await import(join(ROOT, 'scripts', 'sync-skill.mjs')); break;
+    case 'reuse': {
+      const { run } = await import(join(ROOT, 'scripts', 'reuse.mjs'));
+      await run(rest, flags);
+      break;
+    }
     default: console.log(HELP);
   }
 } catch (err) {
