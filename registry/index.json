@@ -271,6 +271,16 @@
       "verified": true
     },
     {
+      "name": "corner-control",
+      "purpose": "The fleet's one-button header corner: wallet state on the face (connect-wallet-pill + caret), everything else in one menu — mini wallet (rename, balance in NIM + reference fiat, Receive/Send/scan per the wallet's MobileActionBar), receive view with QR + tap-to-copy address, language picker, reference-currency picker, opt-in Create-a-Cashlink, Open in Nimiq Pay, testnet-only network row, quiet Disconnect. Replaces the divergent per-app connect + language chrome across the fleet.",
+      "category": "layout",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
+    },
+    {
       "name": "empty-state",
       "purpose": "The fleet's quiet nothing-here message: a real Nimiq duotone icon at the muted ink, a full-ink primary line, an optional muted secondary line and at most one understated action, in block (page level) and row (one quiet line inside a list card) sizes with on-light and on-dark ink ladders. Replaces the one-line empty states 13 apps hand-roll.",
       "category": "feedback",
