@@ -102,8 +102,9 @@
 .cc-connect:focus-visible { outline: 2px solid #0582CA; outline-offset: 2px; }
 .cc-onboard {
     width: 100%;
-    margin-top: 6px;
-    padding: 6px 4px;
+    margin-top: 2px;
+    /* 10px vertical padding keeps the quiet look but gives a >=36px tap target */
+    padding: 10px 4px;
     border: none;
     background: none;
     cursor: pointer;
@@ -111,10 +112,11 @@
     font-size: 13px;
     font-weight: 600;
     color: rgba(31, 35, 72, 0.6);
+    border-radius: 6px;
     transition: color 0.15s cubic-bezier(0.25, 0, 0, 1);
 }
 .cc-onboard:hover { color: #0582CA; }
-.cc-onboard:focus-visible { outline: 2px solid #0582CA; outline-offset: 2px; border-radius: 6px; }
+.cc-onboard:focus-visible { outline: 2px solid #0582CA; outline-offset: 2px; }
 
 /* state gates: the driver stamps data-state / data-mode / data-testnet on the
    root; markup ships every section and CSS shows the right ones. */
@@ -158,8 +160,9 @@
     font-family: inherit;
     color: inherit;
     text-align: left;
-    padding: 3px 6px;
-    margin-left: -6px;
+    /* 9px vertical padding + negative margin: same visual box, 36px tap target */
+    padding: 9px 6px;
+    margin: -6px 0 -6px -6px;
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.15s cubic-bezier(0.25, 0, 0, 1);
@@ -471,7 +474,9 @@
     padding-bottom: 6px;
 }
 .cc-disconnect {
-    padding: 2px 0;
+    /* quiet line, full-size hit: padding grows the target, margin gives it back */
+    padding: 10px 8px;
+    margin: -8px;
     border: none;
     background: none;
     cursor: pointer;

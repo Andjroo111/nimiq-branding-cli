@@ -29,6 +29,11 @@
     }
     .cc-demo-bar > .cc-demo-brand { display: inline-flex; align-items: center; gap: 10px; color: #1F2348; text-decoration: none; font-size: 17px; font-weight: 700; padding-top: 3px; }
     .cc-demo-bar > .corner-control { margin-left: auto; }
+    /* the 272px menu + bar chrome needs slimmer page padding on phones */
+    @media (max-width: 480px) {
+        body { padding: 16px; }
+        .cc-demo-bar { padding: 12px; }
+    }
 </style>
 </head>
 <body>
