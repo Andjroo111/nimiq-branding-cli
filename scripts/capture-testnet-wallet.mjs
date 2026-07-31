@@ -117,6 +117,30 @@ if (await tap('Receive')) {
   if (qr) { await sleep(2500); await shot('receive-nim-address-qr-mobile'); }
 }
 
+// Send → type a real address → the recipient card → Set Amount.
+// The gaps list called the amount screen out as missing for good reason: it is
+// three steps in and the field that gets you there is a <textarea> inside
+// .address-input, not a row of <input>s, so a naive query finds nothing. The
+// address below is a well-formed NQ string; nothing is signed or sent.
+await page.goto('https://wallet.nimiq-testnet.com/send/nim', { waitUntil: 'domcontentloaded' }).catch(() => {});
+await sleep(6500);
+const ADDR = process.env.NIMIQ_CAPTURE_ADDRESS || 'NQ94X4BL8VEUN896CHMHHL11ECQF8L22X4LM';
+const addrFocused = await page.evaluate(() => {
+  const ta = document.querySelector('.address-input textarea');
+  if (!ta) return false;
+  ta.focus();
+  return document.activeElement === ta;
+});
+console.log('  address textarea:', addrFocused ? 'focused' : 'NOT FOUND');
+if (addrFocused) {
+  // Typed, not filled: the wallet reformats per keystroke and advances itself.
+  await page.keyboard.type(ADDR, { delay: 40 });
+  await sleep(2500);
+  await shot('send-name-contact-mobile');
+  if (await tap('Set amount', 5000)) { await sleep(3500); await shot('send-set-amount-mobile'); }
+  else console.log('  SET AMOUNT: NOT FOUND');
+}
+
 // Home bottom bar → the scan glyph at its right end → the full-screen scanner:
 // an opaque navy radial gradient, four corner brackets, a white Cancel pill.
 await home();
