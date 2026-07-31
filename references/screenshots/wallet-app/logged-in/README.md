@@ -16,3 +16,18 @@ when nimiq-branding-skill was renamed. Regenerate with
 - send-choose-sender-mobile.png ...... "Choose a Sender" account picker (Send step 1)
 - send-transaction-enter-address-mobile.png  "Send Transaction": Contacts + recent identicons +
                                         "ENTER ADDRESS" 3×3 input grid + "Create a Cashlink" (the Send screen)
+- receive-nim-address-qr-mobile.png .. "NIM Address": the QR sheet behind Receive's corner glyph.
+                                        Its own sheet (X, no back arrow), a NAVY QR — NOT the
+                                        registry `qr-code` light-blue radial — the address as ONE
+                                        truncated Fira-Mono line with a `•••` middle, and a
+                                        light-blue instruction as the only other colour on it.
+- scanner-mobile.png ................. the QR scanner behind the home bar's right-hand glyph:
+                                        full-screen OPAQUE navy radial gradient, four white-55%
+                                        corner brackets with the radius on the one corner each
+                                        bracket turns, and a white Cancel pill. Captured headless,
+                                        so it shows the no-camera state; the chrome is the point.
+
+Both of the last two are bare SVG controls with no accessible name, so the script
+finds them by geometry, not by text. Everything here is captured, never inferred —
+if a screen is missing, extend the script rather than drawing what you think it
+looks like.
