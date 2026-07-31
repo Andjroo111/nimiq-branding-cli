@@ -27,7 +27,28 @@ when nimiq-branding-skill was renamed. Regenerate with
                                         bracket turns, and a white Cancel pill. Captured headless,
                                         so it shows the no-camera state; the chrome is the point.
 
-Both of the last two are bare SVG controls with no accessible name, so the script
-finds them by geometry, not by text. Everything here is captured, never inferred —
-if a screen is missing, extend the script rather than drawing what you think it
-looks like.
+- send-name-contact-mobile.png ....... the step after a complete, unknown address is typed into
+                                        ENTER ADDRESS: a big identicon for the new recipient, a
+                                        "Name this contact..." input, the 3x3 Fira-Mono address
+                                        grid, and a SET AMOUNT primary pill.
+- send-set-amount-mobile.png ......... "Set Amount", the screen the gaps list said was missing.
+                                        Sender identicon + label on the left, recipient identicon +
+                                        truncated address on the right, a hairline connector
+                                        between them; the `amount-input` (boxed value, NIM ticker
+                                        with a currency caret beside it, fiat underneath); "Add a
+                                        public message..."; and a DISABLED grey SEND NIM pill --
+                                        the disabled primary is grey, not a dimmed gradient.
+
+Two capture notes, both of which cost time to rediscover:
+
+- The QR toggle and the scan glyph are bare SVG controls with **no accessible
+  name**, so the script finds them by geometry rather than by text. That is why
+  the first pass missed them entirely.
+- The ENTER ADDRESS field is a **`<textarea>` inside `.address-input`**, not a row
+  of `<input>`s — the 3×3 chunking is drawn by an overlay. Query for the wrong tag
+  and the screen reads as "no address field". Type into it character by character;
+  the wallet reformats per keystroke and advances to the recipient step by itself
+  once the address is complete.
+
+Everything here is captured, never inferred — if a screen is missing, extend the
+script rather than drawing what you think it looks like.
