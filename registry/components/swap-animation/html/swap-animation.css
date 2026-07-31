@@ -1,0 +1,889 @@
+/* swap-animation: the wallet's Performing Atomic Swap animation.
+   Port of upstream/wallet@656ed56 src/components/swap/SwapAnimation.vue
+   (scoped SCSS flattened + every selector namespaced under .swap-animation).
+   Requires nimiq-style (legacy) for nq-* classes and the color/gradient vars.
+   Sections: base vars + helpers | vue-components excerpts | upstream scoped
+   CSS (verbatim declarations) | port additions (.steps stack) | demo loop
+   (.loop) | prefers-reduced-motion. */
+
+.swap-animation {
+    /* wallet src/scss/themes.scss font-size vars */
+    --body-size: 2rem;
+    --small-size: 1.75rem;
+}
+
+/* wallet src/scss/themes.scss global utilities (verbatim) */
+.swap-animation.flex-column,
+.swap-animation .flex-column { display: flex; flex-direction: column; }
+.swap-animation .flex-row { display: flex; flex-direction: row; }
+
+/* @nimiq/vue-components Tooltip base styles (static excerpts, verbatim) */
+.swap-animation .tooltip {
+    display: inline-block;
+    position: relative;
+    line-height: 1;
+}
+.swap-animation .tooltip .trigger {
+    position: relative;
+    display: inline-block;
+    vertical-align: bottom;
+    text-decoration: none;
+    outline: none;
+    cursor: default;
+    color: inherit;
+}
+.swap-animation .tooltip .trigger svg:first-child:last-child,
+.swap-animation .tooltip .trigger img:first-child:last-child {
+    display: block;
+}
+
+/* @nimiq/vue-components Amount base style (verbatim) */
+.amount { white-space: nowrap; }
+
+/* wallet MessageTransition.vue scoped CSS (static excerpts, verbatim) */
+.swap-animation .message-transition {
+    --message-height: auto;
+    --message-transition-duration: 500ms;
+    --message-transition-timing-function: cubic-bezier(0.5, 0, 0.15, 1);
+
+    position: relative;
+    height: var(--message-height);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    transition-property: height;
+    transition-duration: var(--message-transition-duration);
+    transition-timing-function: var(--message-transition-timing-function);
+}
+
+/* ============================================================
+   SwapAnimation.vue scoped CSS, verbatim
+   (upstream/wallet@656ed56 src/components/swap/SwapAnimation.vue,
+   SCSS nesting flattened, ::v-deep dropped. Ported scope: the
+   EUR/OASIS overlays [expired-background, oasis-limit-exceeded,
+   manual-funding, funding-delay notices] are omitted together
+   with their DOM; every kept declaration is upstream-verbatim.)
+   ============================================================ */
+.swap-animation {
+    flex-grow: 1;
+    height: 100%;
+    width: 100%;
+    justify-content: space-between;
+    overflow: hidden;
+    position: relative;
+    border-radius: 0.625rem;
+    font-size: var(--body-size);
+
+    background: var(--nimiq-blue);
+    background-image: var(--nimiq-blue-bg);
+    color: white;
+}
+
+.swap-animation > .identicon {
+    display: none;
+}
+
+.swap-animation .success-background {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 1s var(--nimiq-ease);
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+.swap-animation .success-background .nq-icon {
+    font-size: 9rem;
+}
+
+.swap-animation .success-background .title {
+    line-height: 1;
+    margin-top: 5rem;
+}
+
+.swap-animation .success-background.visible {
+    opacity: 1;
+    z-index: 2;
+    pointer-events: all;
+}
+
+.swap-animation .nq-card-header {
+    transition: opacity 0.5s var(--nimiq-ease);
+}
+
+.swap-animation .nq-card-header .nq-h1 {
+    line-height: 1;
+}
+
+.swap-animation .nq-card-header .nq-notice {
+    margin-top: 1.5rem;
+    max-width: 36rem;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.6;
+}
+
+.swap-animation .tooltip .trigger::after {
+    background: white;
+    left: 6.5rem;
+}
+
+.swap-animation .tooltip.right .trigger::after {
+    left: 13.5rem;
+}
+
+.swap-animation .tooltip .tooltip-box {
+    background: white;
+    color: var(--nimiq-blue);
+    left: 0 !important;
+
+    transform-origin: 50% calc(100% + 7rem);
+}
+
+.swap-animation .tooltip.right .tooltip-box {
+    left: auto !important;
+    right: 0 !important;
+}
+
+.swap-animation .tooltip svg {
+    display: block;
+}
+
+.swap-animation .tooltip .short-address {
+    opacity: 0.5;
+    font-weight: normal;
+    font-size: var(--small-size);
+    margin-top: 0.5rem;
+}
+
+.swap-animation .tooltip .blue-link {
+    color: var(--nimiq-light-blue);
+    font-size: var(--small-size);
+    margin-top: 1rem;
+}
+
+.swap-animation .tooltip .blue-link .nq-icon {
+    margin-left: 0.25rem;
+}
+
+.swap-animation .animation {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 3rem;
+
+    transition: transform 1s var(--nimiq-ease);
+}
+
+.swap-animation .animation .spinner {
+    height: 6.5rem;
+    width: 6.5rem;
+
+    overflow: visible;
+
+    transition: opacity 0.5s var(--nimiq-ease);
+}
+
+.swap-animation .animation .spinner circle {
+    animation: spinner-rotate reverse 1s linear infinite;
+}
+
+.swap-animation .animation .spinner circle:first-of-type {
+    transform-origin: 50% 0%;
+}
+
+.swap-animation .animation .spinner circle:last-of-type {
+    transform-origin: 50% 100%;
+}
+
+.swap-animation .animation .left,
+.swap-animation .animation .right {
+    height: 12rem;
+    transition: transform 1s var(--nimiq-ease), opacity 0.5s var(--nimiq-ease);
+    z-index: 1;
+}
+
+.swap-animation .animation .piece-container .swap-amount {
+    align-items: center;
+    font-weight: 600;
+    opacity: 0.3;
+    margin: 1rem 1rem -3rem;
+    transition: opacity 0.5s var(--nimiq-ease);
+}
+
+.swap-animation .animation .piece-container .swap-amount svg {
+    margin-right: 1rem;
+}
+
+.swap-animation .animation .right .piece-container .swap-amount {
+    justify-content: flex-end;
+}
+
+.swap-animation .animation .identicon-border {
+    transform-origin: 33.33% 50%;
+    transform: scale(1.15);
+}
+
+.swap-animation .animation .right .identicon-border {
+    transform-origin: 66.66% 50%;
+}
+
+.swap-animation .animation .right.nim .identicon-border {
+    fill: #22143F;
+}
+
+.swap-animation .animation svg {
+    height: 100%;
+    width: auto;
+}
+
+.swap-animation .animation .fill {
+    opacity: 0;
+}
+
+.swap-animation .animation .info-icon {
+    transition: stroke 1s var(--nimiq-ease) 1.6s;
+}
+
+.swap-animation .animation.sign-swap {
+    transform: scale(1.94);
+}
+
+.swap-animation .animation.sign-swap .left {
+    transform: translate3d(-15rem, 0, 0);
+}
+
+.swap-animation .animation.sign-swap .right {
+    transform: translate3d(+15rem, 0, 0);
+}
+
+.swap-animation .animation.sign-swap .spinner,
+.swap-animation .animation.await-incoming .spinner,
+.swap-animation .animation.create-outgoing .spinner,
+.swap-animation .animation.await-secret .spinner,
+.swap-animation .animation.complete .spinner {
+    animation: spinner-rotate 2.5s linear infinite;
+}
+
+.swap-animation .animation.await-incoming .left,
+.swap-animation .animation.create-outgoing .left,
+.swap-animation .animation.await-secret .left {
+    transform: translate3d(-2.5rem, 0, 0);
+}
+
+.swap-animation .animation.await-incoming .right,
+.swap-animation .animation.create-outgoing .right,
+.swap-animation .animation.await-secret .right {
+    transform: translate3d(+2.5rem, 0, 0);
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .piece.white .info-icon,
+.swap-animation .animation.await-secret .piece.white .info-icon,
+.swap-animation .animation.settle-incoming .piece.white .info-icon,
+.swap-animation .animation.complete .piece.white .info-icon {
+    stroke: var(--nimiq-blue);
+}
+
+.swap-animation .animation.await-incoming.right-to-left .left .lines > *,
+.swap-animation .animation.await-incoming.left-to-right .right .lines > *,
+.swap-animation .animation.create-outgoing.right-to-left .right .lines > *,
+.swap-animation .animation.create-outgoing.left-to-right .left .lines > * {
+    animation: pulsate 2s infinite;
+}
+
+.swap-animation .animation.await-incoming.right-to-left .left .lines > *:nth-child(1),
+.swap-animation .animation.await-incoming.left-to-right .right .lines > *:nth-child(1),
+.swap-animation .animation.create-outgoing.right-to-left .right .lines > *:nth-child(1),
+.swap-animation .animation.create-outgoing.left-to-right .left .lines > *:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.swap-animation .animation.await-incoming.right-to-left .left .lines > *:nth-child(2),
+.swap-animation .animation.await-incoming.left-to-right .right .lines > *:nth-child(2),
+.swap-animation .animation.create-outgoing.right-to-left .right .lines > *:nth-child(2),
+.swap-animation .animation.create-outgoing.left-to-right .left .lines > *:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.swap-animation .animation.await-incoming.right-to-left .left .lines > *:nth-child(3),
+.swap-animation .animation.await-incoming.left-to-right .right .lines > *:nth-child(3),
+.swap-animation .animation.create-outgoing.right-to-left .right .lines > *:nth-child(3),
+.swap-animation .animation.create-outgoing.left-to-right .left .lines > *:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.swap-animation .animation.await-incoming.right-to-left .left .lines > *:nth-child(4),
+.swap-animation .animation.await-incoming.left-to-right .right .lines > *:nth-child(4),
+.swap-animation .animation.create-outgoing.right-to-left .right .lines > *:nth-child(4),
+.swap-animation .animation.create-outgoing.left-to-right .left .lines > *:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+.swap-animation .animation.await-incoming.right-to-left .left .lines > *:nth-child(5),
+.swap-animation .animation.await-incoming.left-to-right .right .lines > *:nth-child(5),
+.swap-animation .animation.create-outgoing.right-to-left .right .lines > *:nth-child(5),
+.swap-animation .animation.create-outgoing.left-to-right .left .lines > *:nth-child(5) {
+    animation-delay: 0.8s;
+}
+
+.swap-animation .animation.await-incoming.right-to-left .left .lines > *:nth-child(6),
+.swap-animation .animation.await-incoming.left-to-right .right .lines > *:nth-child(6),
+.swap-animation .animation.create-outgoing.right-to-left .right .lines > *:nth-child(6),
+.swap-animation .animation.create-outgoing.left-to-right .left .lines > *:nth-child(6) {
+    animation-delay: 1s;
+}
+
+.swap-animation .animation.await-incoming.right-to-left .left .lines > *:nth-child(7),
+.swap-animation .animation.await-incoming.left-to-right .right .lines > *:nth-child(7),
+.swap-animation .animation.create-outgoing.right-to-left .right .lines > *:nth-child(7),
+.swap-animation .animation.create-outgoing.left-to-right .left .lines > *:nth-child(7) {
+    animation-delay: 1.2s;
+}
+
+.swap-animation .animation.await-incoming.right-to-left .left .lines > *:nth-child(8),
+.swap-animation .animation.await-incoming.left-to-right .right .lines > *:nth-child(8),
+.swap-animation .animation.create-outgoing.right-to-left .right .lines > *:nth-child(8),
+.swap-animation .animation.create-outgoing.left-to-right .left .lines > *:nth-child(8) {
+    animation-delay: 1.4s;
+}
+
+.swap-animation .animation.await-incoming.right-to-left .left .lines > *:nth-child(9),
+.swap-animation .animation.await-incoming.left-to-right .right .lines > *:nth-child(9),
+.swap-animation .animation.create-outgoing.right-to-left .right .lines > *:nth-child(9),
+.swap-animation .animation.create-outgoing.left-to-right .left .lines > *:nth-child(9) {
+    animation-delay: 1.6s;
+}
+
+.swap-animation .animation.await-incoming.right-to-left .left .lines > *:nth-child(10),
+.swap-animation .animation.await-incoming.left-to-right .right .lines > *:nth-child(10),
+.swap-animation .animation.create-outgoing.right-to-left .right .lines > *:nth-child(10),
+.swap-animation .animation.create-outgoing.left-to-right .left .lines > *:nth-child(10) {
+    animation-delay: 1.8s;
+}
+
+.swap-animation .animation.await-incoming.right-to-left .left .swap-amount,
+.swap-animation .animation.await-incoming.left-to-right .right .swap-amount,
+.swap-animation .animation.create-outgoing.right-to-left .right .swap-amount,
+.swap-animation .animation.create-outgoing.left-to-right .left .swap-amount {
+    opacity: 0.5;
+    animation: pulsate 2s infinite 0.2s;
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .left .lines > *,
+.swap-animation .animation.create-outgoing.left-to-right .right .lines > *,
+.swap-animation .animation.await-secret.right-to-left .right .lines > *,
+.swap-animation .animation.await-secret.left-to-right .left .lines > * {
+    opacity: 0.5;
+    animation: strokeColorChange 1s 1;
+    animation-fill-mode: forwards !important;
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .left .lines > *:nth-child(1),
+.swap-animation .animation.create-outgoing.left-to-right .right .lines > *:nth-child(1),
+.swap-animation .animation.await-secret.right-to-left .right .lines > *:nth-child(1),
+.swap-animation .animation.await-secret.left-to-right .left .lines > *:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .left .lines > *:nth-child(2),
+.swap-animation .animation.create-outgoing.left-to-right .right .lines > *:nth-child(2),
+.swap-animation .animation.await-secret.right-to-left .right .lines > *:nth-child(2),
+.swap-animation .animation.await-secret.left-to-right .left .lines > *:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .left .lines > *:nth-child(3),
+.swap-animation .animation.create-outgoing.left-to-right .right .lines > *:nth-child(3),
+.swap-animation .animation.await-secret.right-to-left .right .lines > *:nth-child(3),
+.swap-animation .animation.await-secret.left-to-right .left .lines > *:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .left .lines > *:nth-child(4),
+.swap-animation .animation.create-outgoing.left-to-right .right .lines > *:nth-child(4),
+.swap-animation .animation.await-secret.right-to-left .right .lines > *:nth-child(4),
+.swap-animation .animation.await-secret.left-to-right .left .lines > *:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .left .lines > *:nth-child(5),
+.swap-animation .animation.create-outgoing.left-to-right .right .lines > *:nth-child(5),
+.swap-animation .animation.await-secret.right-to-left .right .lines > *:nth-child(5),
+.swap-animation .animation.await-secret.left-to-right .left .lines > *:nth-child(5) {
+    animation-delay: 0.8s;
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .left .lines > *:nth-child(6),
+.swap-animation .animation.create-outgoing.left-to-right .right .lines > *:nth-child(6),
+.swap-animation .animation.await-secret.right-to-left .right .lines > *:nth-child(6),
+.swap-animation .animation.await-secret.left-to-right .left .lines > *:nth-child(6) {
+    animation-delay: 1s;
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .left .lines > *:nth-child(7),
+.swap-animation .animation.create-outgoing.left-to-right .right .lines > *:nth-child(7),
+.swap-animation .animation.await-secret.right-to-left .right .lines > *:nth-child(7),
+.swap-animation .animation.await-secret.left-to-right .left .lines > *:nth-child(7) {
+    animation-delay: 1.2s;
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .left .lines > *:nth-child(8),
+.swap-animation .animation.create-outgoing.left-to-right .right .lines > *:nth-child(8),
+.swap-animation .animation.await-secret.right-to-left .right .lines > *:nth-child(8),
+.swap-animation .animation.await-secret.left-to-right .left .lines > *:nth-child(8) {
+    animation-delay: 1.4s;
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .left .lines > *:nth-child(9),
+.swap-animation .animation.create-outgoing.left-to-right .right .lines > *:nth-child(9),
+.swap-animation .animation.await-secret.right-to-left .right .lines > *:nth-child(9),
+.swap-animation .animation.await-secret.left-to-right .left .lines > *:nth-child(9) {
+    animation-delay: 1.6s;
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .left .lines > *:nth-child(10),
+.swap-animation .animation.create-outgoing.left-to-right .right .lines > *:nth-child(10),
+.swap-animation .animation.await-secret.right-to-left .right .lines > *:nth-child(10),
+.swap-animation .animation.await-secret.left-to-right .left .lines > *:nth-child(10) {
+    animation-delay: 1.8s;
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .left .fill,
+.swap-animation .animation.create-outgoing.left-to-right .right .fill,
+.swap-animation .animation.await-secret .fill,
+.swap-animation .animation.settle-incoming .fill,
+.swap-animation .animation.complete .fill {
+    transition: opacity 1s var(--nimiq-ease) 1.6s;
+    opacity: 1;
+}
+
+.swap-animation .animation.create-outgoing.right-to-left .left .swap-amount,
+.swap-animation .animation.create-outgoing.left-to-right .right .swap-amount,
+.swap-animation .animation.await-secret .swap-amount,
+.swap-animation .animation.settle-incoming .swap-amount,
+.swap-animation .animation.complete .swap-amount {
+    opacity: 0.5;
+}
+
+.swap-animation .animation.settle-incoming {
+    transition-duration: 1.2s;
+    transition-delay: 1s;
+    transition-timing-function: ease;
+}
+
+.swap-animation .animation.settle-incoming .spinner {
+    transform: rotate(-32deg);
+}
+
+.swap-animation .animation.settle-incoming.left-to-right .right.eur .lines,
+.swap-animation .animation.settle-incoming.right-to-left .left.eur .lines {
+    opacity: 0;
+}
+
+.swap-animation .animation.settle-incoming.left-to-right .right.eur .fill,
+.swap-animation .animation.settle-incoming.right-to-left .left.eur .fill {
+    animation: pulsate-opaque 1.5s ease-out infinite;
+}
+
+.swap-animation .animation.settle-incoming .left,
+.swap-animation .animation.complete .left {
+    animation: piece-left-in-out 1s 1 var(--nimiq-ease) forwards;
+}
+
+.swap-animation .animation.settle-incoming .right,
+.swap-animation .animation.complete .right {
+    animation: piece-right-in-out 1s 1 var(--nimiq-ease) forwards;
+}
+
+.swap-animation .animation.settle-incoming .swap-amount,
+.swap-animation .animation.complete .swap-amount {
+    opacity: 0;
+    transition-duration: 0.8s;
+}
+
+.swap-animation .animation.complete {
+    transform: scale(1.94);
+}
+
+.swap-animation .animation.complete .spinner,
+.swap-animation .animation.complete .left,
+.swap-animation .animation.complete .right {
+    transition: opacity 1s var(--nimiq-ease);
+    opacity: 0;
+}
+
+@keyframes spinner-rotate {
+    0%   { transform: rotate(-32deg); }
+    100% { transform: rotate(calc(360deg - 32deg)); }
+}
+
+@keyframes pulsate {
+    0% { opacity: .25; }
+    50% { opacity: .5; }
+    100% { opacity: .25; }
+}
+
+@keyframes pulsate-opaque {
+    0% { opacity: 1; }
+    50% { opacity: .5; }
+    100% { opacity: 1; }
+}
+
+@keyframes strokeColorChange {
+    0% { stroke: #fff; }
+    100% { stroke: currentColor; opacity: 1; }
+}
+
+@keyframes piece-left-in-out {
+    0%     { transform: translate3d(-2.5rem, 0, 0); }
+    to     { transform: translate3d(+7.25rem, 0, 0); }
+}
+
+@keyframes piece-right-in-out {
+    0%     { transform: translate3d(+2.5rem, 0, 0); }
+    to     { transform: translate3d(-7.25rem, 0, 0); }
+}
+
+.swap-animation .nq-card-footer {
+    margin-top: 3rem;
+    text-align: center;
+
+    transition: opacity 0.5s var(--nimiq-ease);
+}
+
+.swap-animation .nq-card-footer .nq-h2 {
+    font-weight: normal;
+    margin-bottom: 2rem;
+}
+
+.swap-animation .nq-card-footer .dont-close-wallet-notice {
+    margin: 0 auto 2rem;
+    font-weight: 600;
+    --nimiq-light-blue: var(--nimiq-light-blue-on-dark);
+}
+
+.swap-animation .nq-card-footer .dont-close-wallet-notice.nq-gray {
+    opacity: 0.6;
+    color: white;
+}
+
+.swap-animation .error {
+    position: absolute;
+    left: 2rem;
+    right: 2rem;
+    bottom: 2rem;
+    border-radius: 0.5rem;
+    padding: 2rem;
+}
+
+.swap-animation .error p.retrying {
+    margin-bottom: 0;
+    font-size: var(--small-size);
+    font-weight: 600;
+    opacity: 0.7;
+    text-align: right;
+}
+
+.swap-animation .error .error-action {
+    display: block;
+    margin: 2rem auto 0;
+}
+
+/* mobile - animation downscale - starting at 500px width */
+@media (max-width: 500px) {
+    .swap-animation .animation.await-incoming,
+    .swap-animation .animation.create-outgoing,
+    .swap-animation .animation.await-secret {
+        transform: scale(0.8);
+    }
+    .swap-animation .animation.settle-incoming {
+        transform: scale(0.8);
+    }
+}
+@media (max-width: 400px) {
+    .swap-animation .animation.await-incoming,
+    .swap-animation .animation.create-outgoing,
+    .swap-animation .animation.await-secret {
+        transform: scale(0.7);
+    }
+    .swap-animation .animation.settle-incoming {
+        transform: scale(0.7);
+    }
+}
+@media (max-width: 350px) {
+    .swap-animation .animation.await-incoming,
+    .swap-animation .animation.create-outgoing,
+    .swap-animation .animation.await-secret {
+        transform: scale(0.65);
+    }
+    .swap-animation .animation.settle-incoming {
+        transform: scale(0.65);
+    }
+}
+
+/* ============================================================
+   Port addition: step label stack. Upstream v-ifs a single
+   .nq-h2 into the footer; the static port keeps all five labels
+   stacked in one grid cell so the loop can crossfade them.
+   Mark the active one with .current (base frame: 5/5).
+   ============================================================ */
+.swap-animation .nq-card-footer .steps {
+    display: grid;
+}
+
+.swap-animation .nq-card-footer .steps > .nq-h2 {
+    grid-area: 1 / 1;
+    opacity: 0;
+}
+
+.swap-animation .nq-card-footer .steps > .nq-h2.current {
+    opacity: 1;
+}
+
+/* ============================================================
+   Demo loop: add class "loop" to .swap-animation to play the
+   whole swap as one pure-CSS 18s cycle. Every loop animation is
+   infinite, so a screenshot with animations disabled cancels
+   them back to the base frame below: the interlocked
+   SETTLE_INCOMING state (the pixel-verified reference).
+   Step timings follow upstream processStateChange():
+   0s SIGN_SWAP (zoomed 1.94, pieces apart, spinner turning)
+   2s AWAIT_INCOMING (zoom out 1s, right piece lines pulsate)
+   6s CREATE_OUTGOING (left pulsates; right strokes turn
+      currentColor over 1s, fill fades in after 1.6s)
+   8.6s AWAIT_SECRET (left strokes turn, left fill after 1.6s)
+   11.2s SETTLE_INCOMING (pieces interlock in 1s, spinner parks
+      at -32deg, amounts fade out)
+   14.2s COMPLETE (zoom to 1.94, pieces + spinner fade out,
+      green success overlay in)
+   17.1s reset under the overlay, 18s loops.
+   ============================================================ */
+.swap-animation.loop .animation {
+    animation: swap-animation-loop-stage 18s cubic-bezier(0.25, 0, 0, 1) infinite;
+}
+
+/* Explicit interlocked base transforms: upstream reaches this frame via the
+   finite piece-left-in-out/piece-right-in-out animations, which the loop
+   animation property replaces on this element. */
+.swap-animation.loop .animation .left {
+    transform: translate3d(+7.25rem, 0, 0);
+    animation: swap-animation-loop-piece-left 18s cubic-bezier(0.25, 0, 0, 1) infinite;
+}
+
+.swap-animation.loop .animation .right {
+    transform: translate3d(-7.25rem, 0, 0);
+    animation: swap-animation-loop-piece-right 18s cubic-bezier(0.25, 0, 0, 1) infinite;
+}
+
+.swap-animation.loop .animation .spinner {
+    animation: swap-animation-loop-spinner 18s linear infinite;
+}
+
+.swap-animation.loop .animation .left .fill {
+    animation: swap-animation-loop-fill-left 18s linear infinite;
+}
+
+.swap-animation.loop .animation .right .fill {
+    animation: swap-animation-loop-fill-right 18s linear infinite;
+}
+
+.swap-animation.loop .animation .left .lines > * {
+    animation: swap-animation-loop-lines-left 18s linear infinite;
+}
+
+.swap-animation.loop .animation .right .lines > * {
+    animation: swap-animation-loop-lines-right 18s linear infinite;
+}
+
+/* upstream staggers the puzzle lines by 0.2s per path */
+.swap-animation.loop .animation .lines > *:nth-child(2)  { animation-delay: 0.2s; }
+.swap-animation.loop .animation .lines > *:nth-child(3)  { animation-delay: 0.4s; }
+.swap-animation.loop .animation .lines > *:nth-child(4)  { animation-delay: 0.6s; }
+.swap-animation.loop .animation .lines > *:nth-child(5)  { animation-delay: 0.8s; }
+.swap-animation.loop .animation .lines > *:nth-child(6)  { animation-delay: 1s; }
+.swap-animation.loop .animation .lines > *:nth-child(7)  { animation-delay: 1.2s; }
+.swap-animation.loop .animation .lines > *:nth-child(8)  { animation-delay: 1.4s; }
+.swap-animation.loop .animation .lines > *:nth-child(9)  { animation-delay: 1.6s; }
+.swap-animation.loop .animation .lines > *:nth-child(10) { animation-delay: 1.8s; }
+
+.swap-animation.loop .animation .left .swap-amount {
+    animation: swap-animation-loop-amount-left 18s linear infinite;
+}
+
+.swap-animation.loop .animation .right .swap-amount {
+    animation: swap-animation-loop-amount-right 18s linear infinite;
+}
+
+.swap-animation.loop .success-background {
+    z-index: 2;
+    animation: swap-animation-loop-success 18s linear infinite;
+}
+
+.swap-animation.loop .nq-card-footer .steps > .step-1 { animation: swap-animation-loop-step-1 18s linear infinite; }
+.swap-animation.loop .nq-card-footer .steps > .step-2 { animation: swap-animation-loop-step-2 18s linear infinite; }
+.swap-animation.loop .nq-card-footer .steps > .step-3 { animation: swap-animation-loop-step-3 18s linear infinite; }
+.swap-animation.loop .nq-card-footer .steps > .step-4 { animation: swap-animation-loop-step-4 18s linear infinite; }
+.swap-animation.loop .nq-card-footer .steps > .step-5 { animation: swap-animation-loop-step-5 18s linear infinite; }
+
+/* 18s timeline: 1s = 5.5556%. Key marks: 2s 11.111%, 3s 16.667%, 4s 22.222%,
+   5s 27.778%, 6s 33.333%, 7s 38.889%, 7.6s 42.222%, 8s 44.444%, 8.6s 47.778%,
+   9.6s 53.333%, 10.2s 56.667%, 11.2s 62.222%, 12.2s 67.778%, 14.2s 78.889%,
+   15.2s 84.444%, 16.9s 93.889%, 17.1s 95% (hidden reset), 17.55s 97.5%. */
+
+@keyframes swap-animation-loop-stage {
+    0%, 11.111% { transform: scale(1.94); }
+    16.667%, 78.889% { transform: scale(1); }
+    84.444%, 100% { transform: scale(1.94); }
+}
+
+@keyframes swap-animation-loop-piece-left {
+    0% { transform: translate3d(-15rem, 0, 0); opacity: 1; }
+    11.111% { transform: translate3d(-15rem, 0, 0); }
+    16.667%, 62.222% { transform: translate3d(-2.5rem, 0, 0); }
+    67.778% { transform: translate3d(+7.25rem, 0, 0); }
+    78.889% { transform: translate3d(+7.25rem, 0, 0); opacity: 1; }
+    84.444%, 94.999% { transform: translate3d(+7.25rem, 0, 0); opacity: 0; }
+    95%, 97.5% { transform: translate3d(-15rem, 0, 0); opacity: 0; }
+    100% { transform: translate3d(-15rem, 0, 0); opacity: 1; }
+}
+
+@keyframes swap-animation-loop-piece-right {
+    0% { transform: translate3d(+15rem, 0, 0); opacity: 1; }
+    11.111% { transform: translate3d(+15rem, 0, 0); }
+    16.667%, 62.222% { transform: translate3d(+2.5rem, 0, 0); }
+    67.778% { transform: translate3d(-7.25rem, 0, 0); }
+    78.889% { transform: translate3d(-7.25rem, 0, 0); opacity: 1; }
+    84.444%, 94.999% { transform: translate3d(-7.25rem, 0, 0); opacity: 0; }
+    95%, 97.5% { transform: translate3d(+15rem, 0, 0); opacity: 0; }
+    100% { transform: translate3d(+15rem, 0, 0); opacity: 1; }
+}
+
+/* four full turns from -32deg across the active states (approximates the
+   upstream 2.5s/turn spinner-rotate), then parked at -32deg (mod 360) */
+@keyframes swap-animation-loop-spinner {
+    0% { transform: rotate(-32deg); opacity: 1; }
+    62.222%, 78.889% { transform: rotate(1408deg); opacity: 1; }
+    84.444%, 94.999% { transform: rotate(1408deg); opacity: 0; }
+    95%, 97.5% { transform: rotate(-32deg); opacity: 0; }
+    100% { transform: rotate(-32deg); opacity: 1; }
+}
+
+@keyframes swap-animation-loop-fill-right {
+    0%, 42.222% { opacity: 0; }
+    47.778%, 94.999% { opacity: 1; }
+    95%, 100% { opacity: 0; }
+}
+
+@keyframes swap-animation-loop-fill-left {
+    0%, 56.667% { opacity: 0; }
+    62.222%, 94.999% { opacity: 1; }
+    95%, 100% { opacity: 0; }
+}
+
+/* right piece: pulsate while awaited (3s to 6s), stroke-color-change during
+   CREATE_OUTGOING (6s to 7s), covered by its fill from 8.6s */
+@keyframes swap-animation-loop-lines-right {
+    0%, 16.667% { stroke: #fff; opacity: 0.25; }
+    22.222% { stroke: #fff; opacity: 0.5; }
+    27.778% { stroke: #fff; opacity: 0.25; }
+    33.333% { stroke: #fff; opacity: 0.5; }
+    38.889%, 94.999% { stroke: currentColor; opacity: 1; }
+    95%, 100% { stroke: #fff; opacity: 0.25; }
+}
+
+/* left piece: pulsate during CREATE_OUTGOING (6s to 8.6s),
+   stroke-color-change during AWAIT_SECRET (8.6s to 9.6s) */
+@keyframes swap-animation-loop-lines-left {
+    0%, 33.333% { stroke: #fff; opacity: 0.25; }
+    38.889% { stroke: #fff; opacity: 0.5; }
+    44.444% { stroke: #fff; opacity: 0.25; }
+    47.778% { stroke: #fff; opacity: 0.5; }
+    53.333%, 94.999% { stroke: currentColor; opacity: 1; }
+    95%, 100% { stroke: #fff; opacity: 0.25; }
+}
+
+@keyframes swap-animation-loop-amount-right {
+    0%, 16.667% { opacity: 0.3; }
+    22.222% { opacity: 0.5; }
+    27.778% { opacity: 0.25; }
+    33.333%, 62.222% { opacity: 0.5; }
+    67.778%, 94.999% { opacity: 0; }
+    95%, 100% { opacity: 0.3; }
+}
+
+@keyframes swap-animation-loop-amount-left {
+    0%, 33.333% { opacity: 0.3; }
+    38.889% { opacity: 0.5; }
+    44.444% { opacity: 0.25; }
+    47.778%, 62.222% { opacity: 0.5; }
+    67.778%, 94.999% { opacity: 0; }
+    95%, 100% { opacity: 0.3; }
+}
+
+@keyframes swap-animation-loop-success {
+    0%, 78.889% { opacity: 0; }
+    84.444%, 93.889% { opacity: 1; }
+    97.5%, 100% { opacity: 0; }
+}
+
+/* footer step labels switch instantly, like the upstream v-ifs */
+@keyframes swap-animation-loop-step-1 {
+    0%, 11.111% { opacity: 1; }
+    11.112%, 94.999% { opacity: 0; }
+    95%, 100% { opacity: 1; }
+}
+
+@keyframes swap-animation-loop-step-2 {
+    0%, 11.111% { opacity: 0; }
+    11.112%, 33.333% { opacity: 1; }
+    33.334%, 100% { opacity: 0; }
+}
+
+@keyframes swap-animation-loop-step-3 {
+    0%, 33.333% { opacity: 0; }
+    33.334%, 47.778% { opacity: 1; }
+    47.779%, 100% { opacity: 0; }
+}
+
+@keyframes swap-animation-loop-step-4 {
+    0%, 47.778% { opacity: 0; }
+    47.779%, 62.222% { opacity: 1; }
+    62.223%, 100% { opacity: 0; }
+}
+
+@keyframes swap-animation-loop-step-5 {
+    0%, 62.222% { opacity: 0; }
+    62.223%, 94.999% { opacity: 1; }
+    95%, 100% { opacity: 0; }
+}
+
+/* ============================================================
+   Reduced motion: freeze the whole component (loop or static)
+   on the interlocked SETTLE_INCOMING frame.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .swap-animation *,
+    .swap-animation *::before,
+    .swap-animation *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    /* hold the interlocked end frame that upstream reaches via its
+       finite piece-in-out animations */
+    .swap-animation .animation.settle-incoming .left,
+    .swap-animation .animation.complete .left {
+        transform: translate3d(+7.25rem, 0, 0);
+    }
+
+    .swap-animation .animation.settle-incoming .right,
+    .swap-animation .animation.complete .right {
+        transform: translate3d(-7.25rem, 0, 0);
+    }
+}

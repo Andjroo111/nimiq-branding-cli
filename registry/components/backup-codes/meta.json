@@ -1,0 +1,78 @@
+{
+  "name": "backup-codes",
+  "purpose": "The Keyguard backup-codes illustration — two overlapping gradient chat bubbles labeled Nimiq Backup Code 1/2 and 2/2 (purple and red radial gradients with speech tails, white counter circles, redacted code lines) that walk the user through sending themselves their two backup codes.",
+  "category": "feedback",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "code1",
+      "type": "string",
+      "required": false,
+      "default": "''",
+      "description": "Backup code 1 text. Empty shows the redacted placeholder bars (upstream .code:empty fallback)."
+    },
+    {
+      "name": "code2",
+      "type": "string",
+      "required": false,
+      "default": "''",
+      "description": "Backup code 2 text. Empty shows the redacted placeholder bars."
+    },
+    {
+      "name": "step",
+      "type": "String",
+      "required": false,
+      "default": "'intro'",
+      "description": "Illustration step ('intro' | 'send-code-1' | 'send-code-1-confirm' | 'send-code-2' | 'send-code-2-confirm' | 'success'), mirroring BackupCodesIllustration.Steps. Drives the masked/faded/zoomed/complete bubble states via the upstream class logic. Sample/demo: 'intro'."
+    },
+    {
+      "name": "loading",
+      "type": "boolean",
+      "required": false,
+      "default": "false",
+      "description": "Pulses the active code's redaction bars while a code is being generated (upstream .loading opacity animation; disabled under prefers-reduced-motion)."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 520,
+      "height": 340
+    },
+    "selector": ".card-stage",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Source: upstream/keyguard src/components/BackupCodesIllustrationBase.css + BackupCodesIllustration.css (both verbatim; the trailing view-transition setup block is omitted from the port since it only wires the export flow's .page:target step transitions) and markup from BackupCodesIllustrationBase.js _createElement() (default div/div/code tag names, hardcoded English label with {n} interpolated). Sample state: the INTRO step — per BackupCodesIllustration._getMessageBubbleClasses both bubbles masked, empty codes falling back to the ':empty' placeholder dashes rendered as redaction bars. All artwork is the upstream inline SVG data URIs, byte-identical: the two bubble mask shapes (216x96 speech-tail paths), the white redaction-bar tile and the complete-state checkmark; gradients (#693BC4->#8F3FD5, #DC1845->#F33F68, green #41A38E->#21BCA5) and counter colors #8D3FD4/#F33E67 verbatim. Port renames the root .backup-codes-illustration-base/.backup-codes-illustration to .backup-codes, prefixes the loading keyframes (backup-codes-loading-animation) and adds a prefers-reduced-motion guard for the loading pulse; the pulse freezes at its from-frame (opacity 1, the stylesheet value) when animations are disabled. Stage: Keyguard renders this as the card body of a .page.nq-card.nq-blue-bg card, max-width 52.5rem (src/request/export/index.html #backup-codes-intro) — truth/demo reproduce that as a 52.5rem .card-stage with the nimiq-blue bottom-right radial gradient. Mulish weight 500 is required for the label/code. The bubble mask uses mask-image (unprefixed), Chromium 120+/Firefox 53+; CSS round() has a verbatim @supports fallback. Vue port adds code1/code2/step/loading props and translates _getMessageBubbleClasses verbatim; the view-transition animations between steps are not ported.",
+  "source": {
+    "repo": "keyguard",
+    "ref": "02e7534",
+    "files": [
+      "keyguard:src/components/BackupCodesIllustrationBase.js",
+      "keyguard:src/components/BackupCodesIllustrationBase.css",
+      "keyguard:src/components/BackupCodesIllustration.js",
+      "keyguard:src/components/BackupCodesIllustration.css"
+    ]
+  }
+}

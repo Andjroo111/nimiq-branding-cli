@@ -1,0 +1,23 @@
+<!-- Carousel: 3D slide ring, frozen at a settled state (middle slide selected).
+     Requires carousel.css + nimiq-style.min.css + Mulish. Slides here are fixed
+     200x240 nq-cards (size them in your page CSS — the geometry below assumes it).
+     GEOMETRY RECIPE (what upstream's JS computes, frozen inline):
+       n = entry count (3), w = slide width (200), margin = 16
+       radius = ((w + margin) / 2) / sin(pi / n)            = 124.70765814495917
+       rotation(i) = (i - selectedIndex) * 2pi / n
+       x = sin(rotation) * radius, z = cos(rotation) * radius - radius
+       transform: translate3d(calc(<x>px - 50%), -50%, <z>px)
+       z-index: slides sorted by ascending z (selected = highest)
+       min-height on .carousel = tallest slide height (240)
+     Recompute these when you change the slide size, count or margin. -->
+<div class="carousel" style="min-height: 240px;">
+    <div style="transform: translate3d(calc(-108.00000000000001px - 50%),-50%,-187.06148721743872px); z-index: 0;">
+        <div class="nq-card">Card 1</div>
+    </div>
+    <div class="selected" style="transform: translate3d(calc(0px - 50%),-50%,0px); z-index: 2;">
+        <div class="nq-card">Card 2</div>
+    </div>
+    <div style="transform: translate3d(calc(108.00000000000001px - 50%),-50%,-187.06148721743872px); z-index: 1;">
+        <div class="nq-card">Card 3</div>
+    </div>
+</div>

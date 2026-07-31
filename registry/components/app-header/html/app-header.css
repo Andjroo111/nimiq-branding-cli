@@ -1,0 +1,250 @@
+/* Nimiq app-header: the fleet's brand bar, in navy and light.
+   ORIGINAL composition (no upstream equivalent). v2 after Andrew's 2026-07-10
+   feedback, modeled on the nimiq.school flagship (NavBar.vue + the
+   CommunityFooter brand lockup): every app header carries a CUSTOM per-app
+   brand (a hexagon-family icon + the app's own wordmark, "Nimiq.school"
+   style) and a built-in language selector; the plain horizontal-white Nimiq
+   logo is the fallback for pages with no brand of their own.
+
+   Left: brand (custom icon + app name; or the fallback Nimiq logo).
+   Right: tools cluster (network badge + language selector + connect-wallet-pill).
+   Without tools the brand centers itself, matching the tipjar layout.
+
+   Surfaces: default = navy radial (--nimiq-blue-bg anchor bottom right,
+   rule 7). Add .app-header--light for the nimiq.school bar: #FAFAFA with the
+   hairline box-shadow instead of a border; it works sticky
+   (position: sticky; top: 0; z-index: 50 on the host side; the language
+   menu layers at z-index 60).
+
+   Mobile: safe-area insets; a container query hides the wordmark below 420px
+   when the tools cluster is full (2+ tools), and both the bar and the tools
+   cluster wrap instead of overflowing below that.
+   All selectors namespaced under .app-header. Run: nq principles */
+
+.app-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    row-gap: 10px;
+    padding: 16px 20px;
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+    padding-top: calc(16px + env(safe-area-inset-top, 0px));
+    background-color: #1F2348;
+    background-image: radial-gradient(100% 100% at 100% 100%, #260133, #1F2348);
+    color: #FFFFFF;
+    font-family: 'Mulish', 'Muli', system-ui, sans-serif;
+    container-type: inline-size;
+}
+
+/* With a tools cluster the brand anchors left and the tools anchor right. */
+.app-header:has(.app-header-tools) {
+    justify-content: space-between;
+}
+
+/* Light surface: the nimiq.school bar. #FAFAFA stage, hairline shadow
+   (never a border), navy ink. */
+.app-header--light {
+    background-color: #FAFAFA;
+    background-image: none;
+    box-shadow: 0 1px 0 rgba(31, 35, 72, 0.08);
+    color: #1F2348;
+}
+
+.app-header-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+}
+.app-header-brand svg {
+    display: block;
+    flex: none;
+}
+
+/* Custom per-app brand icon (the default brand mode): a hexagon-family SVG
+   drawn in currentColor so it reads navy on light and white on navy. The
+   nimiq.school reference is the globe-with-check lockup (CommunityFooter). */
+.app-header-icon {
+    width: 24px;
+    height: 24px;
+}
+
+/* App wordmark next to the custom icon (or the universal hexagon) — the
+   "Nimiq.school" style, 17px/700 like the nimiq.school NavBar. Never next to
+   the horizontal Nimiq logo, which already contains its own wordmark. */
+.app-header-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.app-header-tools {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    row-gap: 8px;
+    margin-left: auto;
+    flex: none;
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* Network badge: the wallet's own testnet treatment (Sidebar.vue
+   .testnet-notice), an orange uppercase label on a white .07 surface.
+   Orange = warning, and a testnet flag is a warning. On the light bar the
+   chip drops to the shipped navy .07 (the nq-button-s rest surface). */
+.app-header-badge {
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #FC8702;
+    background: rgba(255, 255, 255, 0.07);
+    padding: 5px 8px;
+    border-radius: 4px;
+}
+.app-header--light .app-header-badge {
+    background: rgba(31, 35, 72, 0.07);
+}
+
+/* Language selector: the nimiq.school NavBar pattern. The button shows ONLY
+   the current language's flag (flag-hex) plus a small caret; the dropdown is
+   a white card listing flag + native name. */
+.app-header-lang {
+    position: relative;
+    flex: none;
+}
+
+.app-header-lang-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 38px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    cursor: pointer;
+    color: inherit;
+    transition: background 0.2s cubic-bezier(0.25, 0, 0, 1);
+}
+.app-header-lang-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+.app-header--light .app-header-lang-btn:hover {
+    background: rgba(31, 35, 72, 0.06);
+}
+.app-header-lang-btn:focus-visible {
+    outline: 2px solid #0CA6FE;
+    outline-offset: 2px;
+}
+.app-header--light .app-header-lang-btn:focus-visible {
+    outline-color: #0582CA;
+}
+
+/* The flag slot holds a flag-hex svg (nq add flag-hex): the flag clipped into
+   the Nimiq hexagon with the one consistent gray edge. */
+.app-header-lang-flag {
+    display: block;
+    width: 24px;
+    height: 22px;
+    flex: none;
+}
+.app-header-lang-flag svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    /* let the gray edge stroke reach past the viewBox at the tips */
+    overflow: visible;
+}
+.app-header-lang-flag .fh-edge {
+    fill: none;
+    stroke: rgba(31, 35, 72, 0.22);
+    stroke-width: 0.4;
+    stroke-linejoin: round;
+}
+
+.app-header-lang-caret {
+    width: 10px;
+    height: 6px;
+    color: rgba(255, 255, 255, 0.6);
+}
+.app-header--light .app-header-lang-caret {
+    color: rgba(31, 35, 72, 0.45);
+}
+
+/* The dropdown: a white card on either surface (NavBar verbatim). */
+.app-header-lang-list {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 60;
+    width: 220px;
+    max-height: 320px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    background: #FFFFFF;
+    border-radius: 10px;
+    box-shadow: 0 4px 28px rgba(0, 0, 0, 0.16);
+}
+.app-header-lang-list[hidden] {
+    display: none;
+}
+
+.app-header-lang-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 6px;
+    background: none;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1F2348;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s cubic-bezier(0.25, 0, 0, 1);
+}
+.app-header-lang-option:hover {
+    background: rgba(31, 35, 72, 0.06);
+}
+.app-header-lang-option:focus-visible {
+    outline: 2px solid #0582CA;
+    outline-offset: -2px;
+}
+.app-header-lang-option.current,
+.app-header-lang-option[aria-selected="true"] {
+    color: #0582CA;
+}
+
+/* Narrow bars (PWAs at 360px): the wordmark yields to the tools when the
+   cluster is full (2+ tools); the icon alone carries the brand, like an
+   app icon. Spacing tightens one step. */
+@container (max-width: 419px) {
+    .app-header:has(.app-header-tools > :nth-child(2)) .app-header-name {
+        display: none;
+    }
+    .app-header-tools {
+        gap: 8px;
+    }
+    .app-header-lang-btn {
+        padding: 0 6px;
+    }
+}

@@ -1,0 +1,77 @@
+<!-- AccountSelector: account chooser across wallets. Requires account-selector.css +
+     nimiq-style.min.css + Mulish. The selector is 400px tall; give it a width
+     (e.g. 420px, the SmallPage content width). One outer div per wallet: a
+     .wallet-label header (skip it when there is only one enabled wallet and add
+     .extra-spacing to .container instead) followed by that wallet's .account-list.
+     Identicons: generate each img src with @nimiq/iqons from data-address (see the
+     script in demo.html). Remove the .footer to drop the login action. -->
+<div class="account-selector">
+    <div class="container">
+        <div>
+            <div class="wallet-label">
+                <div class="nq-label">Keyguard Wallet</div>
+            </div>
+            <div class="account-list">
+                <a href="javascript:void(0)" class="account-entry">
+                    <div class="account row">
+                        <div class="identicon-and-label">
+                            <div class="identicon" data-address="NQ55 VDTM 6PVT N672 SECN JKVD 9KE4 SD91 PCCM">
+                                <img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>' alt="Nimiq identicon">
+                            </div>
+                            <div class="label">Primary Account</div>
+                        </div>
+                        <span class="amount balance">120.2311 <span class="currency nim">NIM</span></span>
+                    </div>
+                    <svg class="nq-icon caret" viewBox="0 0 10 11" xmlns="http://www.w3.org/2000/svg"><path d="M5.00098 2L8.53602 5.53603L5.00098 9.07107" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a href="javascript:void(0)" class="account-entry">
+                    <div class="account row">
+                        <div class="identicon-and-label">
+                            <div class="identicon" data-address="NQ33 DH76 PHUK J41Q LX3A U4E0 M0BM QJH9 QQL1">
+                                <img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>' alt="Nimiq identicon">
+                            </div>
+                            <div class="label">HODL Account</div>
+                        </div>
+                        <span class="amount balance">27&#8239;124&#8239;151.41213 <span class="currency nim">NIM</span></span>
+                    </div>
+                    <svg class="nq-icon caret" viewBox="0 0 10 11" xmlns="http://www.w3.org/2000/svg"><path d="M5.00098 2L8.53602 5.53603L5.00098 9.07107" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </div>
+        </div>
+        <div>
+            <div class="wallet-label">
+                <div class="nq-label">Ledger Wallet</div>
+            </div>
+            <div class="account-list">
+                <a href="javascript:void(0)" class="account-entry">
+                    <div class="account row">
+                        <div class="identicon-and-label">
+                            <div class="identicon" data-address="NQ76 F8M9 1VJ9 K88B TXDY ADT3 F08D QLHY UULK">
+                                <img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>' alt="Nimiq identicon">
+                            </div>
+                            <div class="label">My Ledger Account</div>
+                        </div>
+                        <span class="amount balance">98&#8239;765.4321 <span class="currency nim">NIM</span></span>
+                    </div>
+                    <svg class="nq-icon caret" viewBox="0 0 10 11" xmlns="http://www.w3.org/2000/svg"><path d="M5.00098 2L8.53602 5.53603L5.00098 9.07107" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a href="javascript:void(0)" class="account-entry">
+                    <div class="account row">
+                        <div class="identicon-and-label">
+                            <div class="identicon" data-address="NQ09 P0CK ETM0 NEY0 0000 0000 0000 0000 0003">
+                                <img src='data:image/svg+xml,<svg width="64" height="64" viewBox="0 -4 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".1" d="M62.3 25.4L49.2 2.6A5.3 5.3 0 0 0 44.6 0H18.4c-1.9 0-3.6 1-4.6 2.6L.7 25.4c-1 1.6-1 3.6 0 5.2l13.1 22.8c1 1.6 2.7 2.6 4.6 2.6h26.2c1.9 0 3.6-1 4.6-2.6l13-22.8c1-1.6 1-3.6.1-5.2z" fill="url(%23identicon_radial)"/><defs><radialGradient id="identicon_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-63.0033 0 0 -56 63 56)"><stop stop-color="%23260133"/><stop offset="1" stop-color="%231F2348"/></radialGradient></defs></svg>' alt="Nimiq identicon">
+                            </div>
+                            <div class="label">Pocket Money</div>
+                        </div>
+                        <span class="amount balance">2500.00 <span class="currency nim">NIM</span></span>
+                    </div>
+                    <svg class="nq-icon caret" viewBox="0 0 10 11" xmlns="http://www.w3.org/2000/svg"><path d="M5.00098 2L8.53602 5.53603L5.00098 9.07107" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <button class="nq-button-s">Login to another account</button>
+    </div>
+</div>

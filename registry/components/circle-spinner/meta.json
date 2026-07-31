@@ -1,0 +1,46 @@
+{
+  "name": "circle-spinner",
+  "purpose": "Circular indeterminate spinner — a light-blue arc chasing a 30%-opacity navy track, rotating once per second; the small inline busy indicator used next to pending balances and in-flight actions.",
+  "category": "feedback",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 120,
+      "height": 120
+    },
+    "selector": ".circle-spinner",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Sample state: default 18x18 (viewBox '0 0 18 18') on white. Upstream is a functional template (no props, no state); the animation keyframe name is already component-prefixed (circle-spinner-spin) so no renaming was needed. Animation is 1s linear infinite; the verify harness disables animations, which cancels the infinite spin back to the rest frame (rotate 0), identical in truth and demo, so the frozen frame is deterministic. Colors are hardcoded upstream (#0582CA arc, #1F2348 track at opacity .3), not currentColor. House addition beyond upstream, in the html css and Vue scoped style only (truth stays verbatim): a prefers-reduced-motion rule that holds the rest frame; it cannot affect the pixel diff since the harness emulates no motion preference.",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/CircleSpinner.vue"
+    ]
+  }
+}

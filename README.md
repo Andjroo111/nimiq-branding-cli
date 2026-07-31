@@ -1,7 +1,10 @@
 # nimiq-branding-cli
 
+<!-- nimiq-north-star -->
+> 🧭 **North Star** · Every Nimiq project aligns to one shared set of values and a single mission. See the canonical [Nimiq Values & North Star](https://github.com/Andjroo111/nimiq.life/blob/main/NORTH-STAR.md).
+
 Scaffold **pixel-accurate Nimiq-branded UI components** into any project — Vue 3 SFCs or plain
-HTML/CSS — from a registry of 40 components (39 pixel-diffed against the real Nimiq apps before
+HTML/CSS — from a registry of 57 components (56 pixel-diffed against the real Nimiq apps before
 they ship, plus 1 original brand composition), plus the team's real asset library (logos, icons,
 flags, imagery). A weekly self-learning audit keeps it current with live Nimiq design — see
 [AUDIT.md](AUDIT.md).
@@ -42,8 +45,30 @@ nq audit                    # (repo dev) check the LIVE Nimiq upstreams for bran
 nq sync-skill               # (repo dev) regenerate the nimiq-ui skill block from index.json
 ```
 
+Every icon in the vendored sets carries a plain-language summary in
+`assets/icon-summaries.json`: the 48 duotone icons, the 39 legacy `nq-*` sprite glyphs and the
+89 visible `logos-*` marks. `nq assets search` matches these summaries as well as names, so
+`nq assets search success` finds the checkmark, and `nq assets list` prints the summary next to
+each file. When `nq assets add icon:<name>` extracts an icon that has a summary, the SVG gets it
+baked in as `role="img"`, `aria-label` and a `<title>`, so agents and screen readers can identify
+icons without seeing them.
+
+Extraction also repairs a known upstream defect: a few multi-defs `duotone-*` icons ship with
+every internal SVG id collapsed to one value, which makes them render blank or partial
+([onmax/nimiq-ui#77](https://github.com/onmax/nimiq-ui/issues/77)). `nq assets add` uniquifies
+the ids and re-points each reference on the way out (the vendored set stays byte-faithful), and
+prints a note whenever it repaired one.
+
 Open `showcase.html` for the full component gallery and `supporting-elements.html` for the
 wallet + marketing element demos.
+
+## For agents and LLMs
+
+Two generated artifacts mirror the registry for machine readers: [llms.txt](llms.txt) is the
+discovery index, [llms-full.txt](llms-full.txt) is the whole registry in one flat file with
+every component's props, dependencies, source pins and verbatim porting notes. Both are
+emitted by `nq sync-skill` from `registry/index.json`, so they cannot drift from the CLI;
+`nq sync-skill --check` fails CI when they go stale.
 
 ## Fleet stack alignment (`nq align` / `nq new-app` / `nq hooks`)
 
@@ -119,7 +144,9 @@ assets/
   tokens.md            design-token quick reference
 scripts/verify.mjs     pixel-diff harness (playwright + pixelmatch)
 scripts/audit.mjs      live-upstream branding-drift engine (nq audit)
-scripts/sync-skill.mjs regenerates the nimiq-ui skill block from index.json
+scripts/sync-skill.mjs regenerates the nimiq-ui skill block + llms artifacts from index.json
+scripts/build-llms.mjs  renders llms.txt + llms-full.txt (called by sync-skill)
+llms.txt               generated LLM discovery index (llms-full.txt = full registry export)
 upstream-pins.json     the upstream commits the registry is verified against
 audit/learnings.json   self-learning store: which upstream churn is benign vs branding
 references/screenshots side-by-side reference captures of live Nimiq UIs

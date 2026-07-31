@@ -13,6 +13,12 @@
       "pinned": "656ed569dac0e20ff61bba95a4fef14fce3541d6",
       "pinnedDate": "2026-06-15"
     },
+    "keyguard": {
+      "url": "https://github.com/nimiq/keyguard.git",
+      "branch": "master",
+      "pinned": "02e7534f9b7668bfc66666e1a82bd87584f5b406",
+      "pinnedDate": "2026-07-10"
+    },
     "nimiq-ui": {
       "url": "https://github.com/onmax/nimiq-ui.git",
       "branch": "main",

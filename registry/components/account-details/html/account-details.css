@@ -1,0 +1,314 @@
+/* Nimiq AccountDetails — full account detail panel (large identicon, label,
+   wallet label, balance, monospace address chunks, top-right close button).
+   Port of @nimiq/vue-components AccountDetails.vue (+ its Account/Identicon/
+   Amount/AddressDisplay/Copyable/CloseButton internals), all selectors
+   namespaced under .account-details. Requires the Nimiq legacy stylesheet
+   (nimiq-style.min.css: --nimiq-* variables, .nq-label, .nq-button-s,
+   .nq-icon) plus the Mulish and Fira Mono fonts.
+   ORDER MATTERS: the AccountDetails overrides at the bottom share specificity
+   with the Account/AddressDisplay rules above and win by source order (same
+   mechanism as upstream's scoped-CSS injection order). Keep the blocks in
+   this sequence. */
+
+/* --- Identicon (Identicon.vue) --- */
+
+.account-details .identicon {
+    width: 10rem;
+}
+
+.account-details .identicon img {
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Amount (Amount.vue) --- */
+
+.account-details .amount {
+    white-space: nowrap;
+}
+
+.account-details .amount.approx::before {
+    content: '~ ';
+    opacity: 0.5;
+}
+
+/* --- Account, column layout (Account.vue) --- */
+
+.account-details .account {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.75rem 2rem;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    font-size: 2rem;
+    line-height: 1.2;
+    overflow: hidden;
+}
+
+.account-details .account.column {
+    flex-direction: column;
+}
+
+.account-details .identicon-and-label {
+    display: flex;
+    align-items: center;
+}
+
+.account-details .column .identicon-and-label {
+    flex-direction: column;
+}
+
+.account-details .identicon {
+    flex-shrink: 0;
+    position: relative;
+}
+
+.account-details .column .identicon {
+    width: 10rem;
+    height: 10rem;
+    margin-bottom: 1.25rem;
+}
+
+.account-details .account-image {
+    border-radius: 1rem;
+}
+
+.account-details .wallet-label {
+    margin-bottom: 0;
+}
+
+.account-details .label,
+.account-details .wallet-label {
+    overflow: hidden;
+}
+
+.account-details .column .label,
+.account-details .column .wallet-label {
+    max-width: 18.5rem; /* 148px, the width the automatic labels are designed for */
+    text-align: center;
+    line-height: 1.5;
+    max-height: calc(2 * 1em * 1.5); /* #lines * font-size * line-height */
+}
+
+.account-details .label.address-font {
+    font-family: 'Fira Mono', 'Andale Mono', monospace;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.account-details .balance {
+    flex-shrink: 0;
+}
+
+.account-details .column .balance {
+    margin-top: 1.5rem;
+}
+
+/* --- Copyable (Copyable.vue) — the AddressDisplay root IS a Copyable --- */
+
+.account-details .copyable {
+    position: relative;
+    padding: 1.5rem;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color .3s var(--nimiq-ease);
+}
+
+.account-details .copyable:hover,
+.account-details .copyable:focus,
+.account-details .copyable.copied {
+    color: var(--nimiq-light-blue) !important;
+    outline: none;
+}
+
+.account-details .copyable .background {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-image: var(--nimiq-light-blue-bg);
+    border-radius: .5rem;
+    opacity: 0;
+    transition: opacity .3s var(--nimiq-ease);
+}
+
+.account-details .copyable:hover .background,
+.account-details .copyable:focus .background,
+.account-details .copyable.copied .background {
+    opacity: .07;
+}
+
+.account-details .copyable .tooltip {
+    pointer-events: none;
+    font-size: 1.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--nimiq-light-blue-bg);
+    position: absolute;
+    top: -5rem;
+    left: 50%;
+    margin-left: -3.75rem; /* half width of tooltip */
+    border-radius: .5rem;
+    color: white;
+    font-weight: 600;
+    line-height: 1.1;
+    box-shadow:
+        0px 2px 2.5px rgba(31, 35, 72, 0.02),
+        0px 7px 8.5px rgba(31, 35, 72, 0.04),
+        0px 18px 38px rgba(31, 35, 72, 0.07);
+
+    /* Animated styles */
+    transform: translate3d(0, 1rem, 0);
+    opacity: 0;
+
+    transition: transform .3s var(--nimiq-ease), opacity .3s var(--nimiq-ease);
+    transition-delay: .2s;
+}
+
+.account-details .copyable .tooltip::after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 2.25rem;
+    height: 2rem;
+    left: calc(50% - 1.125rem);
+    mask-image: url('data:image/svg+xml,<svg viewBox="0 0 18 16" xmlns="http://www.w3.org/2000/svg"><path d="M9 7.12c-.47 0-.93.2-1.23.64L3.2 14.29A4 4 0 0 1 0 16h18a4 4 0 0 1-3.2-1.7l-4.57-6.54c-.3-.43-.76-.64-1.23-.64z" fill="white"/></svg>');
+    z-index: 1000; /* move above tooltip-box's box-shadow */
+    background: #1A6AD2;
+    transform: rotate(180deg) translateY(-0.75rem);
+}
+
+.account-details .copyable.copied .tooltip {
+    transition-delay: 0s;
+    pointer-events: all;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+/* --- AddressDisplay (AddressDisplay.vue) --- */
+
+.account-details .address-display {
+    width: 100%;
+    box-sizing: content-box;
+    color: rgba(31, 35, 72, .5); /* nimiq-blue with .5 opacity */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    font-size: 3rem;
+}
+
+.account-details .format-nimiq {
+    max-width: 28.25rem;
+}
+
+.account-details .address-display.copyable:hover,
+.account-details .address-display.copyable:focus,
+.account-details .address-display.copyable.copied {
+    font-weight: 500;
+}
+
+.account-details .chunk {
+    font-family: 'Fira Mono', monospace;
+    margin: 0.875rem 0;
+    line-height: 1.11;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.account-details .format-nimiq .chunk {
+    width: 33%;
+    text-transform: uppercase;
+}
+
+.account-details .space {
+    font-size: 0;
+}
+
+/* --- CloseButton (CloseButton.vue) --- */
+
+.account-details .close-button {
+    font-size: 3rem;
+    padding: 0;
+    background: none !important;
+    height: 3rem;
+}
+
+.account-details .close-button::before {
+    border-radius: 50%;
+}
+
+.account-details .close-button .nq-icon {
+    opacity: .2;
+    transition: opacity .3s var(--nimiq-ease);
+}
+
+.account-details .close-button:hover .nq-icon,
+.account-details .close-button:active .nq-icon,
+.account-details .close-button:focus .nq-icon {
+    opacity: .4;
+}
+
+.account-details .close-button.top-right {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+}
+
+/* --- AccountDetails overrides (AccountDetails.vue) — keep LAST --- */
+
+.account-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    position: relative;
+    padding: 4rem;
+    border-radius: 1rem;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    box-sizing: border-box;
+}
+
+.account-details .account {
+    padding: 0;
+    width: 100%;
+}
+
+.account-details .account .identicon-and-label {
+    width: 100%;
+}
+
+.account-details .account .identicon {
+    width: 18rem;
+    height: 18rem;
+    margin-bottom: 3rem;
+}
+
+.account-details .account .label {
+    font-size: 3rem;
+    font-weight: 600;
+    opacity: 1;
+}
+
+.account-details .account .wallet-label {
+    margin-top: .5rem;
+}
+
+.account-details .account .label,
+.account-details .account .wallet-label {
+    max-width: unset;
+    max-height: unset;
+}
+
+.account-details .account .balance {
+    font-size: 3rem;
+    margin-top: 3rem;
+}
+
+.account-details .address-display {
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+}

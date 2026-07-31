@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nimiq LedgerUi</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ledger-ui.css">
+<style>
+    body {
+        font-family: 'Mulish', sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--nimiq-gray);
+    }
+
+    /* SmallPage container hosting the LedgerUi, as in hub SignupLedger.vue */
+    .small-page {
+        width: 100%;
+        max-width: 52.5rem; /* 420px */
+        height: 70.5rem; /* 564px */
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        margin: 0 1.25rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .small-page > * {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        transition: opacity .4s;
+    }
+
+    .small-page > :not(.status-screen) {
+        width: 100%;
+        height: 100%;
+        background: white;
+    }
+
+    .ledger-ui {
+        z-index: 0;
+    }
+</style>
+<!-- StatusScreen loading-state rules, from the status-screen component
+     (status-screen.css) - inlined so the demo is self-contained -->
+<style>
+    .status-screen {
+        --status-screen-margin: .75rem;
+        display: flex;
+        flex-direction: column;
+        border-radius: 0.625rem;
+        width: calc(100% - 2 * var(--status-screen-margin));
+        height: calc(100% - 2 * var(--status-screen-margin));
+        margin: var(--status-screen-margin);
+        z-index: 1000;
+        position: relative;
+        flex-grow: 1;
+    }
+
+    .status-screen .wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        flex-grow: 1;
+        border-radius: 0.625rem;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .status-screen .icon-row,
+    .status-screen .status-row,
+    .status-screen .action-row {
+        width: 100%;
+        text-align: center;
+    }
+
+    .status-screen .status-row {
+        --status-font-size: 2.5rem;
+        margin-top: 2rem;
+        margin-bottom: 5rem;
+        height: var(--status-font-size);
+        position: relative;
+    }
+
+    .status-screen.small .status-row {
+        margin-bottom: 2.5rem;
+    }
+
+    .status-screen .status {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0 2rem;
+        font-size: var(--status-font-size);
+        font-weight: normal;
+        line-height: 1.2;
+        opacity: 1;
+    }
+
+    .status-screen.small .status {
+        transform: translateY(calc(50% - var(--status-font-size) / 2));
+    }
+
+    .status-screen .status-row.transition .status {
+        transition: transform 500ms, opacity 500ms;
+    }
+
+    .status-screen .status-row.transition .status.current {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    .status-screen.small .status-row.transition .status.current {
+        transform: translateY(calc(-1 * var(--status-font-size)));
+    }
+
+    .status-screen .status-row:not(.transition) .status.next {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    .status-screen .title {
+        line-height: 1;
+        margin-top: 4rem;
+        white-space: pre-line;
+    }
+
+    .status-screen.small .title {
+        margin-top: 3rem;
+        margin-bottom: 2rem;
+        font-size: 2.5rem;
+    }
+</style>
+</head>
+<body>
+    <div class="small-page nq-card">
+        <div class="ledger-ui">
+            <div class="status-screen nq-blue-bg">
+                <div class="wrapper">
+                    <h1 class="title nq-h1">Connect Ledger</h1>
+
+                    <div class="icon-row">
+                        <div class="ledger-device-container nimiq" illustration="connecting" connect-animation-step="1">
+                            <div class="ledger-screen-confirm-address ledger-screen"></div>
+                            <div class="ledger-screen-confirm-transaction ledger-screen"></div>
+                            <div class="ledger-screen-confirm-message ledger-screen"></div>
+                            <div class="ledger-screen-app ledger-screen"></div>
+                            <div class="ledger-screen-dashboard ledger-screen"></div>
+                            <div class="ledger-screen-pin ledger-screen">
+                                <div class="ledger-pin-dot"></div>
+                                <div class="ledger-pin-dot"></div>
+                                <div class="ledger-pin-dot"></div>
+                                <div class="ledger-pin-dot"></div>
+                                <div class="ledger-pin-dot"></div>
+                                <div class="ledger-pin-dot"></div>
+                                <div class="ledger-pin-dot"></div>
+                                <div class="ledger-pin-dot"></div>
+                            </div>
+                            <div class="ledger-opacity-container">
+                                <div class="ledger-cable"></div>
+                                <div class="ledger-device"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="status-row">
+                        <div class="status current nq-h2">1. Connect your Ledger Device</div>
+                        <div class="status next nq-h2">1. Connect your Ledger Device</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Connect-flow loop driver: the static port of upstream LedgerUi's
+        // _cycleConnectInstructions() (3s per step, CONNECT_ANIMATION_STEP_DURATION =
+        // 9000/3) plus StatusScreen's 500ms status-text swap. No-op under
+        // prefers-reduced-motion and for non-connecting illustrations.
+        (() => {
+            const STEP_MS = 3000;
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const start = () => document.querySelectorAll('.ledger-ui').forEach((root) => {
+                const container = root.querySelector('.ledger-device-container');
+                if (!container || container.getAttribute('illustration') !== 'connecting') return;
+                const statusRow = root.querySelector('.status-row');
+                const current = root.querySelector('.status.current');
+                const next = root.querySelector('.status.next');
+                const connectButton = root.querySelector('.connect-button');
+                const app = container.classList.contains('bitcoin') ? 'Bitcoin' : 'Nimiq';
+                const wrongApp = root.classList.contains('is-wrong-app-connected');
+                let instructions = wrongApp ? [] : ['Connect your Ledger Device', 'Enter your PIN'];
+                instructions.push('Open the ' + app + ' App');
+                if (root.classList.contains('has-connect-button')) instructions.push('Click Connect');
+                if (instructions.length > 1) instructions = instructions.map((text, i) => (i + 1) + '. ' + text);
+                let index = 0;
+                setInterval(() => {
+                    index = (index + 1) % instructions.length;
+                    const step = (wrongApp ? 2 : 0) + index + 1;
+                    container.setAttribute('connect-animation-step', step);
+                    if (connectButton) connectButton.classList.toggle('pulsate', step === 4);
+                    next.textContent = instructions[index];
+                    statusRow.classList.add('transition');
+                    setTimeout(() => {
+                        current.textContent = instructions[index];
+                        statusRow.classList.remove('transition');
+                    }, 500);
+                }, STEP_MS);
+            });
+            if (document.readyState === 'complete') start();
+            else window.addEventListener('load', start, { once: true });
+        })();
+    </script>
+</body>
+</html>

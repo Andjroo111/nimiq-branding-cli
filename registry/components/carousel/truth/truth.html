@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Carousel — upstream truth</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Mulish', sans-serif; }
+</style>
+
+<!-- Carousel.vue <style scoped>, verbatim ('>>>' deep combinator -> descendant) -->
+<style>
+    .carousel {
+        position: relative;
+        padding: 4rem;
+        box-sizing: content-box;
+        perspective: 1500px;
+        /* perspective-origin: center 150%; */ /* useful for debugging */
+    }
+
+    .carousel > * {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+    }
+
+    .carousel:not(.disabled) > :not(.selected) {
+        cursor: pointer;
+    }
+
+    .carousel > :not(.selected) * {
+        pointer-events: none !important;
+    }
+</style>
+
+<!-- Page/demo state: three fixed-size nq-card slides so the JS-measured geometry
+     is exact (upstream measures offsetWidth/offsetHeight of the slot content) -->
+<style>
+    body {
+        margin: 0;
+        padding: 32px;
+        background: white;
+    }
+    .carousel .nq-card {
+        width: 200px;
+        height: 240px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: 600;
+    }
+</style>
+</head>
+<body>
+
+<!-- Upstream template expanded for the sample state:
+     entries = ['card-1', 'card-2', 'card-3'], selected = 'card-2' (middle),
+     entryMargin = 16 (default), slides = 200x240 nq-cards, animations settled.
+     The wrapper transforms/z-indices below are EXACTLY what the component's
+     mounted() -> updateDimensions(false) + _updateRotations(false) -> _rerender()
+     writes into element.style once the (skipped) tween finishes:
+       largestMinDistance = 200/2 + 200/2 + 16 = 216
+       radius   = (216/2) / sin(2pi/3/2)      = 124.70765814495917
+       rotation = (entryIndex - selectedIndex) * 2pi/3
+       x = sin(rotation)*radius, z = cos(rotation)*radius - radius
+       z-index: entries sorted by ascending z (stable) -> side cards 0 and 1, selected 2
+     min-height on the root = largestHeight (240px), also JS-set.
+     The 1500px perspective projects the z=-187.06 side cards down to ~89% scale. -->
+<div class="carousel" style="min-height: 240px;">
+    <div style="transform: translate3d(calc(-108.00000000000001px - 50%),-50%,-187.06148721743872px); z-index: 0;">
+        <div class="nq-card">Card 1</div>
+    </div>
+    <div class="selected" style="transform: translate3d(calc(0px - 50%),-50%,0px); z-index: 2;">
+        <div class="nq-card">Card 2</div>
+    </div>
+    <div style="transform: translate3d(calc(108.00000000000001px - 50%),-50%,-187.06148721743872px); z-index: 1;">
+        <div class="nq-card">Card 3</div>
+    </div>
+</div>
+</body>
+</html>

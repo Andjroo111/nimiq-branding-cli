@@ -1,0 +1,21 @@
+/* Nimiq CircleSpinner — circular indeterminate spinner.
+   Port of @nimiq/vue-components CircleSpinner.vue, selectors namespaced
+   under .circle-spinner. The two arcs are light-blue (#0582CA) over a
+   30%-opacity navy (#1F2348) track; size it via the svg width/height
+   attributes or CSS. The reduced-motion rule is a house addition — the
+   spinner holds its rest frame for users who ask for less motion. */
+
+.circle-spinner {
+    animation: circle-spinner-spin 1s linear infinite;
+}
+
+@keyframes circle-spinner-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .circle-spinner {
+        animation: none;
+    }
+}

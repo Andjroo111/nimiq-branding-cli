@@ -46,6 +46,34 @@ async function fixtureRepos() {
 
     // --- weird repo: no package.json, should not crash, should be ignored ---
     'repos/nimiq-weird/README.md': '# just docs\n',
+
+    // --- the shared app-shell: canonical source for wallet-adapter + nim-format ---
+    'repos/nimiq-app-shell/package.json': JSON.stringify({
+      name: 'nimiq-app-shell',
+      version: '0.1.0',
+      description: 'shared shell: dual-mode wallet + nim-format + i18n',
+      exports: { '.': './src/index.ts' },
+    }, null, 2),
+    'repos/nimiq-app-shell/src/index.ts':
+      "export { createWallet, detectModeSync } from './wallet';\n" +
+      "export { fmtNim, parseNim } from './format/nim';\n",
+    'repos/nimiq-app-shell/src/wallet/index.ts':
+      'export function createWallet() {}\n',
+    'repos/nimiq-app-shell/src/wallet/detect.ts':
+      "export function detectModeSync() { return 'hub'; }\n",
+    'repos/nimiq-app-shell/src/format/nim.ts':
+      'export function fmtNim(luna) { return String(luna); }\n',
+
+    // --- an app that merely USES the shared modules; sorts BEFORE nimiq-app-shell,
+    // --- so canonicalRepo must still win the dedup for wallet-adapter/nim-format ---
+    'repos/a-fakeconsumer/package.json': JSON.stringify({
+      name: 'a-fakeconsumer',
+      version: '0.1.0',
+      dependencies: { 'nimiq-app-shell': 'github:x/nimiq-app-shell#main' },
+    }, null, 2),
+    'repos/a-fakeconsumer/src/app.ts':
+      "import { createWallet, fmtNim } from 'nimiq-app-shell';\n" +
+      'createWallet(); fmtNim(1);\n',
   };
 
   for (const [rel, content] of Object.entries(files)) {
@@ -85,6 +113,59 @@ test('--rebuild writes reuse-index.json + REUSE-CATALOG.md with package + module
 
   // the weird (no package.json) repo did not crash the rebuild and is not an entry
   assert.ok(!index.entries.some(e => e.source?.repo === 'nimiq-weird'));
+
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('glue seeds: wallet-adapter + nim-format resolve to nimiq-app-shell, toast driver to the CLI registry', async () => {
+  const { dir, reposDir } = await fixtureRepos();
+  const { index } = await rebuild(reposDir);
+
+  // wallet-adapter: canonical source is nimiq-app-shell src/wallet/*, even though
+  // a-fakeconsumer (scanned earlier alphabetically) also matches the import rules
+  const wa = index.entries.find(e => e.kind === 'module' && e.key === 'wallet-adapter');
+  assert.ok(wa, 'wallet-adapter module entry present');
+  assert.equal(wa.source.repo, 'nimiq-app-shell', 'canonicalRepo beats the consumer app');
+  assert.match(wa.source.path, /src\/wallet\/(index|detect)\.ts/);
+  assert.match(wa.import, /bun add github:Andjroo111\/nimiq-app-shell#main/);
+  assert.match(wa.import, /import \{ createWallet \} from 'nimiq-app-shell';/);
+
+  // nim-format: same canonical-source rule
+  const nf = index.entries.find(e => e.kind === 'module' && e.key === 'nim-format');
+  assert.ok(nf, 'nim-format module entry present');
+  assert.equal(nf.source.repo, 'nimiq-app-shell', 'canonicalRepo beats the consumer app');
+  assert.match(nf.source.path, /src\/format\/nim\.ts/);
+  assert.match(nf.import, /import \{ fmtNim, parseNim, lunaToNim \} from 'nimiq-app-shell';/);
+
+  // toast driver: a FIXED seed — ships with this CLI, present even though no
+  // scanned fixture repo carries a toast.js
+  const toast = index.entries.find(e => e.kind === 'module' && e.key === 'toast');
+  assert.ok(toast, 'toast driver module entry present without any repo match');
+  assert.equal(toast.source.repo, 'nimiq-branding-cli');
+  assert.equal(toast.source.path, 'registry/components/toast-notification/html/toast.js');
+  assert.match(toast.import, /nq add toast-notification/);
+
+  // the consumer app claimed nothing it doesn't own
+  assert.ok(!index.entries.some(e => e.kind === 'module' && e.source.repo === 'a-fakeconsumer'
+    && (e.key === 'wallet-adapter' || e.key === 'nim-format')));
+
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('query surfaces the glue seeds by their obvious terms', async () => {
+  const { dir, reposDir } = await fixtureRepos();
+  await rebuild(reposDir);
+
+  const wallet = await query('wallet', { dir: reposDir, json: true });
+  assert.ok(wallet.matches.some(m => m.key === 'wallet-adapter'), "query 'wallet' finds the adapter");
+
+  const fmt = await query('fmtNim', { dir: reposDir, json: true });
+  assert.ok(fmt.matches.some(m => m.key === 'nim-format'), "query 'fmtNim' finds nim-format");
+
+  const toast = await query('toast', { dir: reposDir, json: true });
+  assert.ok(toast.matches.some(m => m.key === 'toast' && m.kind === 'module'), "query 'toast' finds the driver");
+  assert.ok(toast.matches.some(m => m.kind === 'component' && m.key === 'toast-notification'),
+    "query 'toast' still finds the component too");
 
   await rm(dir, { recursive: true, force: true });
 });

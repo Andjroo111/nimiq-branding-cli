@@ -1,6 +1,26 @@
 {
   "components": [
     {
+      "name": "account",
+      "purpose": "Single account row — identicon, label and optional balance — the building block of account choosers and confirmation screens, in row or column layout with image, cashlink and editable-label variants.",
+      "category": "identity",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "account-details",
+      "purpose": "Full account detail panel — large identicon, label, wallet label, balance and the full address in monospace chunks, with a top-right close button — shown when inspecting an account in Hub flows.",
+      "category": "identity",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
       "name": "account-header",
       "purpose": "The wallet address-overview header: large identicon, account name + chunked Fira Mono address, NIM balance + fiat value, and the actions row — search pill, green Stake pill with the green 'Earn NIM every month by staking your NIM' CTA tooltip, divider, light-blue Send and neutral Receive pills.",
       "category": "wallet",
@@ -23,6 +43,16 @@
     {
       "name": "account-ring",
       "purpose": "Ring of up to 6 identicons representing a logged-in multi-address account set — hexagonally arranged identicons for filled slots, faint hexagon placeholders for empty ones.",
+      "category": "identity",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "account-selector",
+      "purpose": "Account chooser across wallets — each wallet gets an uppercase label with a hairline rule, followed by its AccountList rows, in a 400px scroll container with fade masks and a 'Login to another account' footer.",
       "category": "identity",
       "variants": [
         "vue",
@@ -81,6 +111,26 @@
       "verified": true
     },
     {
+      "name": "app-footer",
+      "purpose": "Fleet app footer, two variants. FEATURED community variant (generalized from Andrew's nimiq.school CommunityFooter): white 'Built by the community / for the community' band with the light-blue 'Visit nimiq.com' pill and a full-bleed honeycomb lattice of faint gray hexagons carrying four brand-colored community hexes (Nimiq Forum gold radial, Discord, Telegram, GitHub), over a navy radial strip with the app's own lockup, independent-project disclaimer, and optional quiet Status/Source/version line. Plus the original slim single-row 'Built on Nimiq' attribution footer (on-light and on-dark).",
+      "category": "layout",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
+    },
+    {
+      "name": "app-header",
+      "purpose": "The fleet's brand bar in navy and light: a custom per-app brand (hexagon-family icon + the app's own wordmark, the nimiq.school 'Nimiq.school' style) with a built-in flag-hex language selector, an optional network badge and a tools slot for the connect-wallet-pill. The plain horizontal-white Nimiq logo stays as the fallback brand. Replaces the header block 15 apps hand-roll per page.",
+      "category": "layout",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
+    },
+    {
       "name": "app-showcase-card",
       "purpose": "nimiq.com 'THE APPS' marketing card: light-gray rounded card with gold app-icon chip (official white Nimiq signet), title, 2-line gray subtitle and the REAL Nimiq Pay phone screenshot clipped at the card edge. .wide modifier puts the bare gold signet + copy left and the REAL Nimiq Wallet desktop screenshot bleeding off the bottom-right.",
       "category": "marketing",
@@ -101,9 +151,29 @@
       "verified": true
     },
     {
+      "name": "backup-codes",
+      "purpose": "The Keyguard backup-codes illustration — two overlapping gradient chat bubbles labeled Nimiq Backup Code 1/2 and 2/2 (purple and red radial gradients with speech tails, white counter circles, redacted code lines) that walk the user through sending themselves their two backup codes.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
       "name": "balance-distribution",
       "purpose": "Sidebar balance-distribution donut from the Nimiq wallet: a ring made of one rounded SVG arc per currency (gold NIM, orange BTC, blue USDC, teal USDT), sized by each currency's share of the account's total fiat value, next to a bold white CURRENCY / percentage legend. Empty currencies get no arc and a dimmed legend row; hovering a row or arc highlights that currency. Lives on the navy wallet sidebar.",
       "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "bottom-overlay",
+      "purpose": "Dismissible notification bar pinned to the bottom center of the viewport — rounded, shadowed, in dark, light or green theme, with an optional close button — used by the wallet for status and update notices.",
+      "category": "layout",
       "variants": [
         "vue",
         "html"
@@ -131,6 +201,26 @@
       "verified": true
     },
     {
+      "name": "carousel",
+      "purpose": "3D slide carousel — entries sit on a circle in perspective, the selected one faces front and the rest recede; click, arrow keys or the selected prop rotate the ring (used by the Keyguard for account and word choices).",
+      "category": "layout",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "circle-spinner",
+      "purpose": "Circular indeterminate spinner — a light-blue arc chasing a 30%-opacity navy track, rotating once per second; the small inline busy indicator used next to pending balances and in-flight actions.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
       "name": "close-button",
       "purpose": "Circled X dismiss button used on modals and overlays. A .nq-button-s stripped of its pill background, showing the Nimiq close icon at 20% opacity (40% on hover/focus/active), with a round hover halo and enlarged hit area.",
       "category": "form",
@@ -139,6 +229,16 @@
         "html"
       ],
       "verified": true
+    },
+    {
+      "name": "connect-wallet-pill",
+      "purpose": "The fleet's wallet connect button: one pill that walks connect -> busy (spinner) -> connected chip (identicon + truncated address + optional NIM balance), with a tap-twice disconnect. A small vanilla driver (initConnectPill) takes a pluggable async connect callback, designed for the nimiq-app-shell createWallet seam. Replaces 6 divergent bespoke connect buttons.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
     },
     {
       "name": "consensus-icon",
@@ -161,6 +261,36 @@
       "verified": true
     },
     {
+      "name": "copyable-field",
+      "purpose": "Labeled click-to-copy field for dark surfaces — an uppercase nq-label over a translucent white pill-radius field whose value copies on click with a 'Copied' notice; keyed values get small switcher buttons for alternative representations.",
+      "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "corner-control",
+      "purpose": "The fleet's one-button header corner: wallet state on the face (connect-wallet-pill + caret), everything else in one menu — mini wallet (rename, balance in NIM + reference fiat, Receive/Send/scan per the wallet's MobileActionBar), receive view with QR + tap-to-copy address, language picker, reference-currency picker, opt-in Create-a-Cashlink, Open in Nimiq Pay, testnet-only network row, quiet Disconnect. Replaces the divergent per-app connect + language chrome across the fleet.",
+      "category": "layout",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
+    },
+    {
+      "name": "empty-state",
+      "purpose": "The fleet's quiet nothing-here message: a real Nimiq duotone icon at the muted ink, a full-ink primary line, an optional muted secondary line and at most one understated action, in block (page level) and row (one quiet line inside a list card) sizes with on-light and on-dark ink ladders. Replaces the one-line empty states 13 apps hand-roll.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
+    },
+    {
       "name": "fiat-amount",
       "purpose": "Displays a fiat amount with an optimized currency symbol (e.g. $1234.56 instead of USD 1234.56) and adaptive decimal precision: decimals are extended until the rounded display deviates from the true amount by at most maxRelativeDeviation.",
       "category": "payment",
@@ -169,6 +299,16 @@
         "html"
       ],
       "verified": true
+    },
+    {
+      "name": "flag-hex",
+      "purpose": "A country flag clipped into the Nimiq rounded hexagon (the same shape as the identicon) — for language / country pickers. Handles the overscan, per-flag pan/zoom, aspect-correct fill (no letterbox), and one consistent gray edge so every flag reads cleanly including the pointed left/right tips.",
+      "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
     },
     {
       "name": "hero-section",
@@ -211,9 +351,59 @@
       "verified": true
     },
     {
+      "name": "language-selector",
+      "purpose": "Locale dropdown — an uppercase trigger with a small caret that opens a navy gradient list of locale codes on focus, with keyboard navigation; used to switch the UI language.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "ledger-ui",
+      "purpose": "The Hub's animated Ledger connect illustration — a white line-art Ledger Nano on the navy loading StatusScreen that loops the connect flow: USB cable slides in (1. Connect your Ledger Device), device zooms and the PIN dots fill (2. Enter your PIN), dashboard then app screen light up (3. Open the Nimiq App); also renders the static confirm-address/transaction/message request screens. Shown whenever the Hub talks to a Ledger (signup, address derivation, transaction signing).",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
       "name": "loading-spinner",
       "purpose": "Animated hexagon loading indicator: two dashed hexagon outlines (one at 40% opacity) whose dash offsets rotate around the hexagon in a 4s stepped ease cycle. Inherits its color via currentColor.",
       "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "login-file",
+      "purpose": "Keyguard Login File — the downloadable account access card: white-framed card filled with the account color's bottom-right radial gradient, security-wave line pattern, key icon, NIMIQ wordmark, account label, rotated date line, rounded-module QR code of the encrypted secret and the 'Keep safe and confidential' footer. Drawn on canvas exactly like upstream, so the element doubles as the real, saveable Login File PNG.",
+      "category": "identity",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "login-file-animation",
+      "purpose": "Login File draw-in animation — Keyguard's line-art preview of the Login File that draws itself in while the user types their password: three dash-array border strokes, title and date lines, hexagon logo, key and QR fragments appear step by step (setStep 0-8), then the card floods with the account color (setColor). The frozen reference state is the fully drawn step-8 line art.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "long-press-button",
+      "purpose": "Hold-to-confirm button — a nq-button whose white progress pill fills over the hold duration, swapping the label to 'Keep pressing…' at 40% and firing 'long-press' at 100%; protects critical actions from accidental clicks.",
+      "category": "form",
       "variants": [
         "vue",
         "html"
@@ -251,6 +441,16 @@
       "verified": true
     },
     {
+      "name": "password-box",
+      "purpose": "The Keyguard PIN/password unlock box — a light-blue gradient action box with centered masked dots, a show/hide eye toggle, the prompt label and a white pill Unlock button, plus the hexagon loading state shown while the key is being decrypted.",
+      "category": "form",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
       "name": "payment-info-line",
       "purpose": "Checkout header line: crypto amount (with optional fiat value + price-breakdown tooltip) on the left, an animated arrow runway, the recipient (shop logo or identicon + origin domain) and an expiry countdown timer on the right. Used at the top of the Nimiq Hub checkout.",
       "category": "payment",
@@ -271,9 +471,39 @@
       "verified": true
     },
     {
+      "name": "provider-gate",
+      "purpose": "The fleet's environment and wallet-status gate: a non-blocking strip with five canned states (demo, open-in-wallet, connected, testnet, simulated) on the status-alert semantic treatment, plus the tipjar-style blocking handoff wall (signet, headline, QR deep link, open button, copy-link fallback) for states that block. Replaces the banner 15 apps hand-roll.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
+    },
+    {
       "name": "qr-code",
       "purpose": "Nimiq QR code — renders arbitrary data (typically a nimiq: payment URI) as a rounded-module QR code on a canvas, filled by default with the Nimiq light-blue radial gradient (#265DD7 → #0582CA) on a transparent background.",
       "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "qr-scanner",
+      "purpose": "Camera QR scanner — full-bleed video on the nimiq-blue gradient with a gold corner-frame viewport (pulsing while scanning), a white cancel pill and camera-failure guidance; scanning is powered by the qr-scanner library.",
+      "category": "data-display",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "recovery-words",
+      "purpose": "The 24-word recovery phrase as a numbered grid of filled tiles — three translucent-white rounded tiles per row on the dark blue card, each with a faded zero-padded number and the word in white (Keyguard's RecoveryWords in display mode).",
+      "category": "form",
       "variants": [
         "vue",
         "html"
@@ -331,8 +561,28 @@
       "verified": true
     },
     {
+      "name": "status-pill",
+      "purpose": "The fleet's semantic status chip, the ONE legitimate pill (rule 17): success/warning/error/info/neutral families plus testnet/mainnet/demo/live/simulated environment presets, as a 10% semantic tint with an AA ink on light and semantic ink on the wallet's white .07 chip on dark. Replaces the badge/tag/pill 12 apps hand-roll.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": false
+    },
+    {
       "name": "status-screen",
       "purpose": "Full-card overlay status screen from the Nimiq Hub: loading (navy/light-blue gradient + hexagon spinner + status line), success (green gradient + animated checkmark), warning (orange + neutral face) and error (red + sad face) states, with optional action button/link. Covers the whole SmallPage while a request is processed and resolves into the iconic green checkmark end screen.",
+      "category": "feedback",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
+      "name": "swap-animation",
+      "purpose": "Performing Atomic Swap animation, the wallet's full-card swap progress screen on the navy gradient: two interlocking HTLC puzzle pieces (address-colored NIM piece carrying the account identicon, counterpart BTC/USDC/USDT piece carrying its asset logo) lock around a counter-rotating dashed spinner, with 1/5 to 5/5 step labels, the orange do-not-close notice and the green Atomic Swap successful end overlay.",
       "category": "feedback",
       "variants": [
         "vue",
@@ -379,16 +629,6 @@
         "html"
       ],
       "verified": true
-    },
-    {
-      "name": "flag-hex",
-      "purpose": "A country flag clipped into the Nimiq rounded hexagon (the same shape as the identicon) — for language / country pickers. Handles the overscan, per-flag pan/zoom, aspect-correct fill (no letterbox), and one consistent gray edge so every flag reads cleanly including the pointed left/right tips.",
-      "category": "data-display",
-      "variants": [
-        "vue",
-        "html"
-      ],
-      "verified": false
     },
     {
       "name": "transaction-list",

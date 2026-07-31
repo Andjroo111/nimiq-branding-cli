@@ -1,0 +1,115 @@
+{
+  "name": "app-footer",
+  "purpose": "Fleet app footer, two variants. FEATURED community variant (generalized from Andrew's nimiq.school CommunityFooter): white 'Built by the community / for the community' band with the light-blue 'Visit nimiq.com' pill and a full-bleed honeycomb lattice of faint gray hexagons carrying four brand-colored community hexes (Nimiq Forum gold radial, Discord, Telegram, GitHub), over a navy radial strip with the app's own lockup, independent-project disclaimer, and optional quiet Status/Source/version line. Plus the original slim single-row 'Built on Nimiq' attribution footer (on-light and on-dark).",
+  "category": "layout",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "community: appName",
+      "type": "String",
+      "required": true,
+      "description": "AppFooterCommunity. The 'nimiq.appname' wordmark in the navy strip lockup (18px/800 white) and the GitHub hex aria-label. HTML variant: the .afc-brand-name span text."
+    },
+    {
+      "name": "community: githubHref",
+      "type": "String",
+      "required": true,
+      "description": "AppFooterCommunity. The GitHub hex target: point it at the CONSUMING app's own repository, not nimiq's. HTML variant: the .afc-social--github href."
+    },
+    {
+      "name": "community: ctaLabel / ctaHref",
+      "type": "String",
+      "required": false,
+      "description": "AppFooterCommunity. The light-blue band pill; defaults 'Visit nimiq.com' -> https://nimiq.com. Sentence case, no period (rule 16)."
+    },
+    {
+      "name": "community: forumHref / discordHref / telegramHref",
+      "type": "String",
+      "required": false,
+      "description": "AppFooterCommunity. The other three community hexes; defaults are the real links verified against live nimiq.com: forum.nimiq.community, discord.gg/nimiq, t.me/Nimiq. Do not invent replacements."
+    },
+    {
+      "name": "community slot: title",
+      "type": "slot",
+      "required": false,
+      "description": "AppFooterCommunity. Band title, default the two-line 'Built by the community<br>for the community'. Localizable; display title, so NO period and no em/en dashes. HTML variant: the .afc-title h2."
+    },
+    {
+      "name": "community slot: icon",
+      "type": "slot",
+      "required": false,
+      "description": "AppFooterCommunity. The lockup icon beside the wordmark (27px, rides currentColor at white-92%). Default = the Nimiq icon-set globe-with-check (nimiq--globe-filled + nimiq--check-thin, verbatim); swap in the app's own mark. Vue mints the check gradient id per instance; HTML variant ships id afc-check-grad, re-suffix it per instance if rendering several (rule 3)."
+    },
+    {
+      "name": "community slot: disclaimer",
+      "type": "slot",
+      "required": false,
+      "description": "AppFooterCommunity. Navy-strip line, default 'An independent community project. Not affiliated with Team Nimiq.' Localizable body sentence: periods are correct HERE, never on the title. HTML variant: the .afc-line p."
+    },
+    {
+      "name": "community slot: links",
+      "type": "slot",
+      "required": false,
+      "description": "AppFooterCommunity. Optional quiet second line under the disclaimer: Status / Source anchors (white-50%, hover white, bold 600, never underlined, rule 21) and a version in <span class='afc-version'> (Fira Mono when loaded). HTML variant: the .afc-links nav, delete it if unused."
+    },
+    {
+      "name": "slim: dark",
+      "type": "Boolean",
+      "required": false,
+      "description": "AppFooter (slim). Default false (navy ink for grey/white page bodies). True switches the ink channel to white for navy app surfaces. HTML variant: add class 'on-dark' to the footer element."
+    },
+    {
+      "name": "slim: href",
+      "type": "String",
+      "required": false,
+      "description": "AppFooter (slim). Brand link target, default https://nimiq.com. Always rendered target=_blank rel=noopener."
+    },
+    {
+      "name": "slim slot: version",
+      "type": "slot",
+      "required": false,
+      "description": "AppFooter (slim). Optional version string (e.g. v1.4.2), rendered 12px in Fira Mono with a generic monospace fallback. Load Fira Mono only if you use this slot. HTML variant: the .af-version span, delete it if unused."
+    },
+    {
+      "name": "slim slot: links",
+      "type": "slot",
+      "required": false,
+      "description": "AppFooter (slim). Optional one or two dev links as plain <a> elements (Status, Source). Styled bold 600, sentence case, not underlined, 50% ink resting, full ink on hover (rule 21). HTML variant: the .af-links nav, delete it if unused."
+    }
+  ],
+  "cssFiles": [],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": false,
+  "verify": {
+    "viewport": {
+      "width": 1200,
+      "height": 900
+    },
+    "selector": ".af-demo",
+    "maxDiffPct": 0.5,
+    "settleMs": 300
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "ORIGINAL Nimiq-brand composition (not an upstream port), so verified:false with reference.png kept as a regression guard, the flag-hex precedent. REDESIGN DRIVER: Andrew (2026-07-10) reviewed the v1 slim row: 'pretty basic... I would like to use something that looks a lot more like the actual brand footer. You can see it in my nimiq.school app.' The community variant is his nimiq.school CommunityFooter.vue (src/components/sections/CommunityFooter.vue) generalized for any fleet app; it is now the FEATURED variant and leads the demo; the slim row stays available unchanged as the minimal variant. THE FOUR FOOTERS, do not confuse them: (1) registry page-footer is the wallet card ACTION row (nq-card-footer, pins buttons at the bottom of a SmallPage); (2) the nimiq.com MARKETING footer is a heavy light surface (link columns, newsletter pill, honeycomb social band); (3) the FLEET COMMUNITY footer, this component's featured variant, is the flagship app-level closer: white community band + honeycomb + navy strip with the app's OWN lockup and independent-project disclaimer; (4) the slim 'Built on Nimiq' attribution row, this component's minimal variant, is fleet app CHROME (fleet evidence: swellet footer(), tipjar landing; 12 of 18 mini apps ship no footer at all). COMMUNITY VARIANT DECISIONS: (a) Honeycomb = the registry honeycomb-band TECHNIQUE (rounded flat-top hex as SVG data-URI mask) laid out as offset flex columns, taken verbatim from the reference including the 13-column LAYOUT, per-cell opacities (.13-.55, the organic fade of nimiq.com's bg-hexagons.svg whose 55 hexes range .01-.06), and the social placement: Discord+Telegram the ONE touching pair set diagonally, Forum mid-left, GitHub lower-right, all in center columns so they stay on-screen while faint cells bleed past both clipped edges (band overflow:hidden). Self-contained, no external asset, no JS. (b) Fully responsive via --w derived sizing (108px -> 92px @768 -> 80px @450): the SAME complete honeycomb shrinks on phones, never a flat row (the reference dropped an earlier absolute-positioned approach that scattered on desktop and collapsed on mobile). (c) Social glyphs are the REAL Nimiq icon-set mono logos (logos-{nimiq-forum,discord,telegram,github}-mono.svg) inlined verbatim, wrapper defs dropped so no SVG ids can collide; brand colors #5865f2/#2aabee/#24292f are third-party marks, exempt from the palette rule (nq lint SOCIAL set), and the Forum hex is the Nimiq gold bottom-right radial. (d) The demo lockup icon is the reference's globe-with-check (real Nimiq icon-set paths nimiq--globe-filled + nimiq--check-thin) verbatim, id namespaced afc-check-grad; the Vue SFC mints the id per instance via a module counter (rule 3). Consumers swap in their own mark via the icon slot. (e) Navy strip consumes var(--nimiq-blue-bg) with the bottom-right radial as an inline fallback plus background-color #1f2348 paint fallback, so it is rule-7 correct with or without nimiq-style loaded. (f) Two deliberate deltas from the reference CSS, both brand alignment: transitions use var(--nimiq-ease, cubic-bezier(0.25,0,0,1)) instead of plain 'ease' (skill motion spec), and .afc-title carries text-wrap:balance (nimiq.com applies balance to every heading; nq lint flags a multi-line heading without it; the title's <br> still forces the canonical two lines). (g) Copy rules: the title takes NO period and no em/en dashes; the disclaimer and any localized replacement are body sentences, so periods are correct there; CTA is a sentence-case light-blue pill. (h) The wordmark is 18px/800/-0.2px white per the reference; that weight is a LOCKUP spec, not heading typography (the lint faux-weight rule targets headings >=24px). (i) White-50% ink at 13.5px on navy is the fleet footer convention (nimiq.com itself ships sub-AA secondary text; lint warns, never gates). (j) nq lint on the demo: 0 errors, one advisory warning category (off-scale spacing: 54/21/28/44/116px). Those values are the reference's own component-intrinsic geometry (54px = the honeycomb half-pitch offset, 116px = column pitch, 21px pill padding, 28px title margin, 44px navy strip padding), verbatim from nimiq.school; the spacing scale targets page layout rhythm, so they are accepted, not fixed. SLIM VARIANT (unchanged from v1): one ink channel --af-ink (navy / .on-dark white), everything rests at rgba(ink,.5) and hovers to rgb(ink); horizontal mono logo VERBATIM from assets/logos/nimiq-icons-logos/logos-nimiq-horizontal-mono.svg with the two-identical-stop currentColor gradient flattened to fill=currentColor (pixel-identical, kills the gradient-id footgun); static flow only, never position:fixed; margin-top:auto pins to a flex-column page bottom; both variants pad the bottom with env(safe-area-inset-bottom) for iOS PWAs. Vue gotcha: consumer content in the links/icon slots needs :slotted() in scoped CSS; both SFCs ship those selectors. VERIFY: canonical target is the .af-demo wrapper (unique, Playwright strict mode) at 1200px, so reference.png guards all three renders: community variant full-width with the sample nimiq.example lockup, then the slim variant with all slots filled on the #F8F8F8 stage, then the on-dark minimal form on the navy radial stage. Keep truth/demo/snippet markup identical.",
+  "source": {
+    "repo": "original",
+    "ref": null,
+    "files": []
+  }
+}

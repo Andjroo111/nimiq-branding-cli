@@ -1,0 +1,120 @@
+{
+  "name": "account",
+  "purpose": "Single account row — identicon, label and optional balance — the building block of account choosers and confirmation screens, in row or column layout with image, cashlink and editable-label variants.",
+  "category": "identity",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "required": true,
+      "description": "The account's display label. Labels shaped like a valid Nimiq address render in Fira Mono uppercase (address-font)."
+    },
+    {
+      "name": "address",
+      "type": "string",
+      "required": false,
+      "description": "User-friendly Nimiq address; a checksum-valid address renders its identicon (no identicon otherwise)."
+    },
+    {
+      "name": "image",
+      "type": "string",
+      "required": false,
+      "description": "Image URL shown instead of the identicon (1rem radius); falls back to identicon/cashlink rendering on load error."
+    },
+    {
+      "name": "displayAsCashlink",
+      "type": "boolean",
+      "required": false,
+      "default": false,
+      "description": "Render the cashlink glyph (white link icon on a navy gradient circle with a 20% navy ring) instead of an identicon."
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "required": false,
+      "description": "Placeholder for the editable label input."
+    },
+    {
+      "name": "walletLabel",
+      "type": "string",
+      "required": false,
+      "description": "Secondary nq-label line under the label; column layout only."
+    },
+    {
+      "name": "balance",
+      "type": "number",
+      "required": false,
+      "description": "Balance in luna, rendered through Amount when set (0 included); omitted balances render no Amount."
+    },
+    {
+      "name": "decimals",
+      "type": "number",
+      "required": false,
+      "default": 2,
+      "description": "Exact decimals for the balance Amount."
+    },
+    {
+      "name": "editable",
+      "type": "boolean",
+      "required": false,
+      "description": "Render the label as a LabelInput field (maxBytes 63); emits 'changed' with the new label."
+    },
+    {
+      "name": "layout",
+      "type": "'row' | 'column'",
+      "required": false,
+      "default": "row",
+      "description": "'row' (5.625rem identicon left, balance right, full width) or 'column' (stacked, 10rem identicon, centered label)."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [
+    "img/iqons.min.svg"
+  ],
+  "dependsOn": [
+    "identicon",
+    "amount",
+    "label-input"
+  ],
+  "npmDeps": [
+    "@nimiq/iqons"
+  ],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 520,
+      "height": 160
+    },
+    "selector": ".account",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Sample state: layout 'row' at 420px (SmallPage width), label 'Main Account', address NQ11 MA1N ACC0 UNT0 0000 0000 0000 0000 001X (synthetic but checksum-valid, IBAN mod-97, verified against @nimiq/utils@0.12.4 ValidationUtils.isValidAddress), balance 1234567890 luna. (2026-07-10 fix: the previous sample spelled MAIN/ACCO with the letters I and O, which are not in the Nimiq base32 alphabet — 0123456789ABCDEFGHJKLMNPQRSTUVXY — so it failed validation despite the old note claiming checksum validity; replaced with 1/0 substitutions, check digits recomputed to the same NQ11, identicon re-snapped. Same fix as account-list.) Balance renders '12 345.68 NIM' (U+202F narrow no-break space grouping) because Account defaults decimals to 2 and passes it to Amount as EXACT decimals — unlike AccountList rows, which leave decimals unset and show min 2 / max 5. Identicon via @nimiq/iqons@1.6.0 pinned on jsdelivr with Iqons.svgPath pointed at the vendored iqons.min.svg (same recipe as the identicon component; sprite is the REAL team-shipped 84-symbol catalog at assets/img/iqons.min.svg, CDN fallback byte-identical). Static row state: label and balance at opacity 0.7, label fade-out mask on the right edge. Identicon.vue and Amount.vue scoped styles are inlined in truth/css (their markup is part of the row); the Vue port imports them plus LabelInput from the registry instead. Image/cashlink/column/editable/walletLabel variants carry full styles but are not in the pixel sample; the cashlink glyph svg is upstream's inline icon, kept verbatim in the Vue port. ValidationUtils.isValidAddress from @nimiq/utils@0.11.1 is inlined. Emits 'changed' (editable only); exposes focus().",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/Account.vue",
+      "vue-components:src/components/Identicon.vue",
+      "vue-components:src/components/Amount.vue"
+    ]
+  }
+}

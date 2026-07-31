@@ -17,11 +17,17 @@ Usage:
       --vue                     Vue 3 SFC variant (default if a package.json with vue is found)
       --html                    Plain HTML/CSS variant (default otherwise)
       --out <dir>               Destination dir (default: src/components or ./components)
-  nq init [--style modern|legacy] [--out dir]
-                                Drop Nimiq design tokens + base CSS into a project
+  nq init [--style modern|legacy|tokens-px] [--out dir]
+                                Drop Nimiq design tokens + base CSS into a project.
+                                tokens-px: brand tokens ONLY, plain px values — no
+                                html{font-size} rescale, no resets, no component
+                                classes. The escape hatch for the legacy 8px-rem
+                                trap (hand-authored CSS next to @nimiq/style).
+                                Ships tokens.css + tailwind-theme.css (@theme)
   nq tokens                     Print core design tokens (colors, fonts, radii, shadows)
   nq assets list [filter]       List the vendored official Nimiq asset library
   nq assets search <term>       Search assets incl. the 323 nimiq-icons + 422 hexagon flags
+                                (matches plain-language summaries too: "success" finds the checkmark)
   nq assets add <name...>       Copy official asset(s) into ./nimiq/assets/
                                 (icon:<name> extracts from nimiq-icons, flag:<cc> from nimiq-flags)
   nq principles                 Print the Nimiq design principles — the soul of this tool
@@ -31,11 +37,17 @@ Usage:
                                 vanilla PWA + @nimiq/style + nimiq-settlement + nimiq-app-shell
                                 [Nimiq Pay mini-app + runtime i18n via createWallet/createI18n,
                                 build:shell → public/vendor/app-shell.js, public/locales/*.json]
+                                + a REAL PWA shell [manifest.webmanifest with generated
+                                icon PNGs (192/512 + maskable, official signet on brand
+                                navy) + version-substitution sw.js: __BUILD_VERSION__ is
+                                swapped for package.json's version by the server, so cache
+                                busting is structural — guarded by check-sw-version.sh]
                                 + Fly kit + CF notes + a stamped nimiq-stack.json + /health).
                                 Starts clean on align (incl. the miniApp/i18n/deps axes).
       --no-chain                chainApp:false (skip settlement + styling parity)
       --settlement mock|rpc|noop    settlement client (default mock)
       --deploy fly|none         deploy kit (default fly)
+      --no-pwa                  skip the PWA shell (icons + sw.js + registration)
   nq check [path]               Run the FULL per-project alignment gate in one shot:
                                 align (--fail-on=settlement,styling,identity) + 800-line file
                                 guard + bun test (if present) + nq lint (if Playwright).
@@ -104,6 +116,7 @@ function parseFlags(args) {
     else if (a === '--quiet') flags.quiet = true;
     else if (a === '--all') flags.all = (args[i + 1] && !args[i + 1].startsWith('--')) ? args[++i] : true;
     else if (a === '--no-chain') flags.noChain = true;
+    else if (a === '--no-pwa') flags.noPwa = true;
     else if (a.startsWith('--settlement=')) flags.settlement = a.slice('--settlement='.length);
     else if (a === '--settlement') flags.settlement = args[++i];
     else if (a.startsWith('--deploy=')) flags.deploy = a.slice('--deploy='.length);
@@ -222,32 +235,132 @@ async function loadIconSet(file) {
   return JSON.parse(await readFile(p, 'utf8'));
 }
 
-function iconToSvg(set, name) {
+// Plain-language icon summaries (assets/icon-summaries.json) keyed by icon id:
+// duotone-* (icon files), nq-* (legacy sprite symbols), logos-* (nimiq-icons set).
+async function loadIconSummaries() {
+  const p = join(ROOT, 'assets', 'icon-summaries.json');
+  if (!existsSync(p)) return {};
+  return JSON.parse(await readFile(p, 'utf8'));
+}
+
+const iconKey = f => f.replace(/^.*\//, '').replace(/\.svg$/, '');
+
+function iconToSvg(set, name, summary) {
   const ic = set.icons[name];
   if (!ic) return null;
   const w = ic.width ?? set.width ?? 16, h = ic.height ?? set.height ?? 16;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">${ic.body}</svg>\n`;
+  // when a summary exists, bake it in as accessible name; otherwise byte-identical to before
+  const a11y = summary ? ` role="img" aria-label="${summary}"` : '';
+  const title = summary ? `<title>${summary}</title>` : '';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}"${a11y}>${title}${ic.body}</svg>\n`;
+}
+
+// Some upstream nimiq-icons entries ship every id inside one icon collapsed to a
+// single generated value (the build namespaces ids per icon, not per id), so any
+// multi-defs icon renders blank/partial: its mask, gradients and clipPath fight
+// over one id. Repair on the way out: rename each duplicate def id uniquely
+// (-1, -2, ... in document order), then re-point references by attribute
+// semantics (fill/stroke -> paint servers, mask -> <mask>, clip-path ->
+// <clipPath>, filter -> <filter>), pairing in document order when a category
+// has several defs. No-op for healthy SVGs; the vendored set stays byte-faithful.
+// Upstream bug: https://github.com/onmax/nimiq-ui/issues/77
+function repairDuplicateSvgIds(svg) {
+  const defs = [...svg.matchAll(/<(\w+)\b[^>]*?\sid="([^"]+)"/g)].map(m => ({ tag: m[1], id: m[2] }));
+  const counts = new Map();
+  for (const d of defs) counts.set(d.id, (counts.get(d.id) ?? 0) + 1);
+  const dupIds = [...counts.keys()].filter(id => counts.get(id) > 1);
+  if (!dupIds.length) return { svg, repaired: 0 };
+
+  const PAINT = new Set(['linearGradient', 'radialGradient', 'pattern']);
+  const catOfTag = t => PAINT.has(t) ? 'paint'
+    : t === 'mask' ? 'mask' : t === 'clipPath' ? 'clip-path' : t === 'filter' ? 'filter' : 'other';
+  const catOfAttr = a => (a === 'fill' || a === 'stroke') ? 'paint'
+    : (a === 'mask' || a === 'clip-path' || a === 'filter') ? a : 'other';
+
+  let out = svg;
+  for (const id of dupIds) {
+    const esc = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // rename each def carrying this id, in document order, remembering categories
+    const byCat = {};
+    let n = 0;
+    out = out.replace(new RegExp(`(<(\\w+)\\b[^>]*?\\sid=")${esc}(")`, 'g'), (m, pre, tag, post) => {
+      const newId = `${id}-${++n}`;
+      (byCat[catOfTag(tag)] ??= []).push(newId);
+      return `${pre}${newId}${post}`;
+    });
+    const fallback = byCat.other ?? Object.values(byCat)[0];
+    // re-point url(#id) references, order-paired within each category
+    const used = {};
+    out = out.replace(new RegExp(`([\\w-]+)="url\\(#${esc}\\)"`, 'g'), (m, attr) => {
+      const cat = catOfAttr(attr);
+      const list = byCat[cat] ?? fallback;
+      const i = Math.min(used[cat] ?? 0, list.length - 1);
+      used[cat] = (used[cat] ?? 0) + 1;
+      return `${attr}="url(#${list[i]})"`;
+    });
+    // re-point href/xlink:href="#id" references. Ambiguity is real here (any use
+    // could have referenced any collapsed def), so route by geometry: a use inside
+    // a <clipPath> or a full-canvas <mask> (x=0 y=0 userSpaceOnUse) wants the
+    // canvas rect def (d="M0 0h24v24H0z"); a visible use or one inside a bare
+    // shape-mask wants a real shape def. Order-paired with clamping within each pool.
+    const others = byCat.other ?? fallback ?? [];
+    const canvasIds = others.filter(nid => {
+      const tag = out.match(new RegExp(`<[^>]*\\sid="${nid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*>`))?.[0] ?? '';
+      const d = tag.match(/\sd="([^"]+)"/)?.[1] ?? '';
+      return /^M0[ ,]0h\d+(?:\.\d+)?v\d+(?:\.\d+)?H0z$/i.test(d);
+    });
+    const shapeIds = others.filter(nid => !canvasIds.includes(nid));
+    const containerAt = (str, idx) => {
+      const stack = [];
+      const tre = /<(\/?)(mask|clipPath)\b([^>]*)>/g;
+      let t;
+      while ((t = tre.exec(str)) && t.index < idx) {
+        if (t[1]) stack.pop();
+        else if (!t[3].endsWith('/')) stack.push({ tag: t[2], attrs: t[3] });
+      }
+      return stack[stack.length - 1] ?? null;
+    };
+    const pools = { canvas: 0, shape: 0 };
+    out = out.replace(new RegExp(`((?:xlink:)?href=")#${esc}(")`, 'g'), (...args) => {
+      const [, pre, post] = args;
+      const offset = args[args.length - 2], str = args[args.length - 1];
+      const ctx = containerAt(str, offset);
+      const wantsCanvas = ctx && (ctx.tag === 'clipPath'
+        || (ctx.tag === 'mask' && /maskUnits="userSpaceOnUse"/.test(ctx.attrs) && /\sx="0"/.test(ctx.attrs) && /\sy="0"/.test(ctx.attrs)));
+      const pool = wantsCanvas && canvasIds.length ? 'canvas' : 'shape';
+      const list = pool === 'canvas' ? canvasIds : (shapeIds.length ? shapeIds : others);
+      if (!list.length) return args[0];
+      return `${pre}#${list[Math.min(pools[pool]++, list.length - 1)]}${post}`;
+    });
+  }
+  return { svg: out, repaired: dupIds.length };
 }
 
 async function cmdAssets(sub, args, flags) {
   if (sub === 'list') {
     const filter = args[0]?.toLowerCase();
+    const sums = await loadIconSummaries();
     const files = (await walkAssets()).filter(f => !filter || f.toLowerCase().includes(filter));
-    for (const f of files) console.log('  ' + f);
+    for (const f of files) console.log('  ' + f + (sums[iconKey(f)] ? ` — ${sums[iconKey(f)]}` : ''));
     console.log(`\n${files.length} file(s). Plus icon sets: nq assets search <term>  (nimiq-icons: 323, nimiq-flags: 422)`);
     return;
   }
   if (sub === 'search') {
     const term = args[0]?.toLowerCase();
     if (!term) throw new Error('nq assets search <term>');
-    const files = (await walkAssets()).filter(f => f.toLowerCase().includes(term));
-    files.forEach(f => console.log('  file   ' + f));
+    const sums = await loadIconSummaries();
+    const hits = (name, key) => name.toLowerCase().includes(term) || (sums[key] ?? '').toLowerCase().includes(term);
+    const files = (await walkAssets()).filter(f => hits(f, iconKey(f)));
+    files.forEach(f => console.log('  file   ' + f + (sums[iconKey(f)] ? ` — ${sums[iconKey(f)]}` : '')));
     for (const [setFile, prefix] of [['nimiq-icons.json', 'icon'], ['nimiq-flags.json', 'flag']]) {
       const set = await loadIconSet(setFile);
       if (!set) continue;
-      Object.keys(set.icons).filter(n => n.includes(term)).slice(0, 40)
-        .forEach(n => console.log(`  ${prefix}   ${prefix}:${n}`));
+      Object.keys(set.icons).filter(n => hits(n, n)).slice(0, 40)
+        .forEach(n => console.log(`  ${prefix}   ${prefix}:${n}` + (sums[n] ? ` — ${sums[n]}` : '')));
     }
+    // legacy sprite symbols live in assets/css/legacy/nimiq-style.icons.svg (use <svg><use href="#nq-x"/></svg>)
+    Object.keys(sums).filter(n => n.startsWith('nq-') && hits(n, n)).slice(0, 40)
+      .forEach(n => console.log(`  sprite ${n} — ${sums[n]}  (css/legacy/nimiq-style.icons.svg)`));
     // catalog descriptions for context
     const catPath = join(ROOT, 'references', 'assets', 'asset-catalog.json');
     if (existsSync(catPath)) {
@@ -261,12 +374,18 @@ async function cmdAssets(sub, args, flags) {
   }
   if (sub === 'add') {
     if (!args.length) throw new Error('nq assets add <name...> — file path fragment, icon:<name>, or flag:<name>');
+    const sums = await loadIconSummaries();
     for (const q of args) {
       if (q.startsWith('icon:') || q.startsWith('flag:')) {
         const [kind, name] = q.split(':');
         const set = await loadIconSet(kind === 'icon' ? 'nimiq-icons.json' : 'nimiq-flags.json');
-        const svg = set && iconToSvg(set, name);
+        let svg = set && iconToSvg(set, name, kind === 'icon' ? sums[name] : undefined);
         if (!svg) { console.warn(`! ${q} not found`); continue; }
+        const rep = repairDuplicateSvgIds(svg);
+        if (rep.repaired) {
+          svg = rep.svg;
+          console.log(`  repaired ${rep.repaired} duplicated id(s) in ${name} — upstream nimiq-icons bug, onmax/nimiq-ui#77`);
+        }
         const dest = resolve(flags.out ?? '.', 'nimiq', 'assets', 'icons', `${name}.svg`);
         await mkdir(dirname(dest), { recursive: true });
         await writeFile(dest, svg);
@@ -279,7 +398,15 @@ async function cmdAssets(sub, args, flags) {
       if (hits.length > 8) { console.warn(`! "${q}" matches ${hits.length} files — be more specific (nq assets search ${q})`); continue; }
       for (const f of hits) {
         await ensureAsset(f, flags);
-        console.log(`+ ${f} → ${resolve(flags.out ?? '.', 'nimiq', 'assets', f)}`);
+        const dest = resolve(flags.out ?? '.', 'nimiq', 'assets', f);
+        if (f.endsWith('.svg')) {
+          const rep = repairDuplicateSvgIds(await readFile(dest, 'utf8'));
+          if (rep.repaired) {
+            await writeFile(dest, rep.svg);
+            console.log(`  repaired ${rep.repaired} duplicated id(s) — upstream nimiq-icons bug, onmax/nimiq-ui#77`);
+          }
+        }
+        console.log(`+ ${f} → ${dest}`);
       }
     }
     return;
@@ -295,9 +422,13 @@ async function cmdInit(flags) {
   await mkdir(dest, { recursive: true });
   await cp(srcDir, join(dest, style), { recursive: true });
   console.log(`+ Nimiq ${style} tokens → ${join(dest, style)}`);
-  console.log(style === 'modern'
-    ? `  Link: <link rel="stylesheet" href="nimiq/modern/index.css">  (layered: colors, typography, utilities, components)`
-    : `  Link: <link rel="stylesheet" href="nimiq/legacy/nimiq-style.min.css">  (nq-* classes)`);
+  const hints = {
+    modern: `  Link: <link rel="stylesheet" href="nimiq/modern/index.css">  (layered: colors, typography, utilities, components)`,
+    legacy: `  Link: <link rel="stylesheet" href="nimiq/legacy/nimiq-style.min.css">  (nq-* classes)`,
+    'tokens-px': `  Link: <link rel="stylesheet" href="nimiq/tokens-px/tokens.css">  (tokens only, plain px — write px, never rem)\n` +
+      `  Tailwind v4: import nimiq/tokens-px/tailwind-theme.css instead (@theme block, same values)`,
+  };
+  console.log(hints[style] ?? `  Link the stylesheet(s) in nimiq/${style}/ from your entry point.`);
 }
 
 async function cmdTokens() {
@@ -391,9 +522,10 @@ Read the soul of the tool first: nq principles`);
 
 async function cmdNew(name, flags) {
   const { scaffoldApp } = await import(join(ROOT, 'scripts', 'scaffold.mjs'));
-  const r = await scaffoldApp(name, { noChain: flags.noChain, settlement: flags.settlement, deploy: flags.deploy });
+  const r = await scaffoldApp(name, { noChain: flags.noChain, noPwa: flags.noPwa, settlement: flags.settlement, deploy: flags.deploy });
   console.log(`+ scaffolded canonical Nimiq app → ${r.dir}`);
-  console.log(`  ${r.files.length} files · chainApp=${r.chain}${r.chain ? ` · settlement=${r.settlement}` : ''} · deploy=${r.deploy}`);
+  console.log(`  ${r.files.length} files · chainApp=${r.chain}${r.chain ? ` · settlement=${r.settlement}` : ''} · deploy=${r.deploy} · pwa=${r.pwa}`);
+  if (r.pwa) console.log('  PWA shell: manifest + real icon PNGs + version-substitution sw.js (bump package.json version to bust caches — never edit sw.js)');
   console.log(`\nNext:\n  cd ${name}\n  bun install\n  bun run dev      # http://localhost:3000  (try GET /health)\n  nq align         # should be clean on every axis\n  nq hooks install # add the pre-commit settlement/styling gate`);
 }
 

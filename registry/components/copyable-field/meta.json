@@ -1,0 +1,66 @@
+{
+  "name": "copyable-field",
+  "purpose": "Labeled click-to-copy field for dark surfaces — an uppercase nq-label over a translucent white pill-radius field whose value copies on click with a 'Copied' notice; keyed values get small switcher buttons for alternative representations.",
+  "category": "data-display",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "value",
+      "type": "string | number | { [key: string]: any }",
+      "required": true,
+      "description": "The value to display and copy. An object renders one .nq-button-s per key to switch between alternative representations (e.g. { hex: ..., base64: ... }); a string or number renders as a simple value with a right-edge fade mask."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "required": false,
+      "description": "Uppercase field label rendered above the value (nq-label at 50% white)."
+    },
+    {
+      "name": "small",
+      "type": "boolean",
+      "required": false,
+      "default": false,
+      "description": "Compact variant: 5rem field height and 2.5rem default font size instead of 6.25rem and 3rem."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 560,
+      "height": 260
+    },
+    "selector": ".nq-blue-bg",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Sample state: label 'Address', simple string value 'NQ07 0000 0000 0000 0000', resting (uncopied), on a 60rem-wide navy .nq-blue-bg stage. The component renders WHITE text, so truth and demo sit on the navy surface and the verify selector crops .nq-blue-bg to capture the real look; .nq-blue-bg also swaps --nimiq-light-blue for the on-dark #0CA6FE that colors the 'Copied' notice. Upstream computes the value font size in JS (shrink-to-fit, default 3rem, 2.5rem when small); the sample value fits, so truth hardcodes font-size: 3rem inline and the demo's ported fit script computes the identical 3rem (min(3, 3 * scale)). Click copies the value (Clipboard.copy from @nimiq/utils, inlined verbatim in the Vue port) and shows the notice for 500ms; on simple values the .copied state also expands the right-edge fade mask (mask-size 160% to 100%). Keyed-value switcher buttons and the small variant carry full styles in the css but are not in the pixel sample. 'Copied' is the en-US i18n source string. Unlike Copyable, upstream CopyableField does not wrap the Copyable component, so there is no dependsOn. TRAP: the scoped .nq-label { color: rgba(255,255,255,.5) } only beats nimiq-style's .nq-blue-bg .nq-label { color: rgba(255,255,255,.7) } through Vue's scoped [data-v-*] attribute (specificity tie, later stylesheet wins); the truth reproduces the compiled scoping via [data-v-cf], and the namespaced .copyable-field .nq-label in the css variant resolves the tie the same way. Bare verbatim selectors render the label at the wrong alpha.",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/CopyableField.vue"
+    ]
+  }
+}

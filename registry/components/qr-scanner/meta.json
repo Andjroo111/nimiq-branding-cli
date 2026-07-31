@@ -1,0 +1,60 @@
+{
+  "name": "qr-scanner",
+  "purpose": "Camera QR scanner — full-bleed video on the nimiq-blue gradient with a gold corner-frame viewport (pulsing while scanning), a white cancel pill and camera-failure guidance; scanning is powered by the qr-scanner library.",
+  "category": "data-display",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "reportFrequency",
+      "type": "Number",
+      "default": 7000,
+      "description": "Minimum ms between repeated 'result' emits for the same scan result."
+    },
+    {
+      "name": "validate",
+      "type": "Function",
+      "description": "(scanResult: string) => boolean; results failing it are not emitted."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [
+    "qr-scanner"
+  ],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 400,
+      "height": 400
+    },
+    "selector": ".qr-scanner",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Sample state: the inactive/idle shell in a 300x300 box — the ONLY state a headless or permission-less context can show. The camera cannot run headless, so the pixel contract covers: video at opacity 0 (never .ready) over the nq-blue radial gradient, the corner-frame overlay with .inactive (white 40% stroke instead of gold, pulse animation off), the 'Your device does not have an accessible camera.' warning, and the white Cancel pill. JS-MEASURED GEOMETRY: repositionOverlay() sizes the overlay to ceil(2/3 * min(w,h)) = 200px and centers it (top/left 50px), written into element.style — the html variant freezes those numbers inline; recompute for other host sizes. SPECIFICITY TRAP: the scoped .cancel-button rules (background white, nimiq-blue text) tie with nimiq-style's .nq-button-s.inverse at (0,2,0) and win only through the scope attribute + source order — the truth keeps [data-v-scanner] on them; the html variant gets the same result from .qr-scanner .cancel-button. LIVE SCANNING (Vue variant only): wires the qr-scanner npm dep (QrScannerLib on the video element) — it needs a real camera, a user gesture in most browsers, and a secure context (HTTPS or localhost; getUserMedia is unavailable on plain HTTP). Camera access failures flip to the inactive state with per-browser unblock instructions (Chrome/Firefox/Safari, mobile vs desktop — BrowserDetection from @nimiq/utils is inlined) and retry every 3s. Emits 'result' (throttled by reportFrequency + validate), 'cancel', 'error'. The html variant is the static shell only.",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/QrScanner.vue"
+    ]
+  }
+}
