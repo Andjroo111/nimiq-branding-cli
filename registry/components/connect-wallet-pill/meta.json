@@ -1,0 +1,98 @@
+{
+  "name": "connect-wallet-pill",
+  "purpose": "The fleet's wallet connect button: one pill that walks connect -> busy (spinner) -> connected chip (identicon + truncated address + optional NIM balance), with a tap-twice disconnect. A small vanilla driver (initConnectPill) takes a pluggable async connect callback, designed for the nimiq-app-shell createWallet seam. Replaces 6 divergent bespoke connect buttons.",
+  "category": "form",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "connect",
+      "type": "async () => ({ address, label?, balance? } | null)",
+      "required": true,
+      "description": "The only integration point. Sit it on nimiq-app-shell: connect: () => wallet.connect(). Resolve null on cancel (or when a mobile redirect is in flight) and the pill returns to idle. No hard dependency on the app-shell: any async callback works."
+    },
+    {
+      "name": "onDisconnect",
+      "type": "() => void",
+      "required": false,
+      "description": "Called after the user confirms disconnect on the chip (e.g. wallet.disconnect())."
+    },
+    {
+      "name": "account",
+      "type": "{ address, label?, balance? }",
+      "required": false,
+      "description": "Initial account: restores a persisted session straight into the connected chip."
+    },
+    {
+      "name": "labels",
+      "type": "{ connect?, connecting?, disconnect? }",
+      "required": false,
+      "default": "{ connect: 'Connect wallet', connecting: 'Connecting', disconnect: 'Disconnect' }",
+      "description": "Localizable labels."
+    },
+    {
+      "name": "identicon",
+      "type": "async (address) => url",
+      "required": false,
+      "description": "Identicon resolver. Default: window.Iqons.toDataUrl when @nimiq/iqons is loaded (pinned 1.6.0, house recipe), else the hexagon placeholder."
+    },
+    {
+      "name": "formatBalance",
+      "type": "(balance) => string",
+      "required": false,
+      "description": "Balance formatter. Default: thin-space grouped NIM ('1 234 NIM'); strings pass through."
+    },
+    {
+      "name": "onError",
+      "type": "(err) => void",
+      "required": false,
+      "description": "Called when the connect callback rejects (the pill returns to idle). Default: console.error."
+    },
+    {
+      "name": "class: on-dark",
+      "type": "css class on the button",
+      "required": false,
+      "description": "On navy surfaces (e.g. inside app-header): flat white-alpha pill (the shipped .nq-button-s.inverse alphas) instead of the navy radial."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [
+    "img/iqons.min.svg"
+  ],
+  "dependsOn": [],
+  "npmDeps": [
+    "@nimiq/iqons"
+  ],
+  "verified": false,
+  "verify": {
+    "viewport": {
+      "width": 720,
+      "height": 560
+    },
+    "selector": ".cwp-canonical",
+    "maxDiffPct": 0.5,
+    "settleMs": 400
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "ORIGINAL composition (flag-hex precedent), so verified:false; reference.png is still snapped from truth/truth.html and nq verify guards the demo against it as a regression check. There is no upstream connect button: the wallet/hub own the other side of the popup, so this formalizes the best fleet pattern (hashmark renderTopbarAddress, a 3-state topbar chip whose CSS was off-brand) on shipped nq tokens. RESTAGED 2026-07-11 on Andjroo's direct feedback: 'the cards they're on right now look terrible, dark on dark. On the connected state it would have the identicon next to it.' The pill CSS and its tokens are UNCHANGED; what changed is the demo/truth staging: (a) the old bare navy panel is gone; the three states sit on a white card on the light stage, (b) the pill is then shown mounted inside its REAL host context, the redesigned app-header bars from this registry (light bar: custom nimiq.school brand + language selector + connected chip; navy bar: brand + testnet badge + language selector + connected on-dark chip), (c) every connected chip renders the identicon, PRE-RENDERED to a static data-url from the vendored team sprite (assets/img/iqons.min.svg + the pinned @nimiq/iqons@1.6.0 library, Iqons.toDataUrl over http against the local sprite) so the snapped reference is deterministic: no CDN race, no placeholder visible. Re-run that recipe if the demo address changes; the demo's live playground still does the runtime local-sprite-first dance. Judged against the snap, the on-dark connected chip on the shipped white .2 inverse surface reads clearly inside the navy bar (identicon + white ink, no navy-on-navy), so NO token step-up was taken; the inverse ladder (.2 rest, .25 hover, tokens.md) stays as shipped. nq lint on the restaged demo: 0 errors; its two warnings (the colored-uppercase Testnet badge, the 10px/20px flagship spacing) come from the embedded host header and are justified in app-header's notes. Design decisions: (1) Every surface is a shipped token, nothing invented: idle = the navy radial pill (nq-button-pill treatment, bottom-right anchor, darkened-gradient hover via the nq-button ::before pattern); connected/confirm = the quiet .nq-button-s surface (navy .07 rest, .12 hover) because a connected chip is status, not a call to action; on-dark = the shipped .nq-button-s.inverse alphas (white .2 rest, .25 hover; flat fills are canonical for white/secondary pills; white .2 rather than a bespoke lower alpha because it is the real shipped inverse token). (2) Type is the nq-button-s scale (14px/700 Mulish) written in px so the 8px-root rem trap cannot bite; height is 32px, raised from the legacy 27px to clear nq lint's 30px mobile tap floor. (3) The spinner is the CircleSpinner arc geometry (upstream vue-components) recolored via currentColor per the icon rule, with prefers-reduced-motion handling; busy keeps the surface (no disabled-gray flash for a sub-second popup roundtrip). (4) The address is a technical value: Fira Mono, uppercase, truncated to the first 7 + last 5 characters of the space-formatted address around an ellipsis (NQ87 JY...CVN2); the full formatted address rides in title. Optional balance sits one opacity step down (60%, wallet text ladder) with thin-space grouping. (5) Disconnect stays radically simple: tap the chip and it flips to a Disconnect label (confirm state, same quiet surface since red = error only and disconnecting is not an error), tap again to disconnect; outside click, Escape, or 4s reverts. One element, no menu. (6) Identicon via the house iqons recipe (pinned @nimiq/iqons@1.6.0 on jsdelivr, vendored team-shipped iqons.min.svg sprite with byte-identical CDN fallback, see swap-balance-bar); the driver falls back to the hexagon placeholder when iqons is absent, and races nothing: the chip renders immediately on the placeholder and swaps in the iqon (guarded against stale renders). (7) Keyboard focus = the house 2px blue ring outside the pill (:focus-visible; 0CA6FE on dark per rule 20). The one calculated break is the identicon itself. Driver returns { state, account, setAccount, setBalance, disconnect, destroy }; setAccount wires wallet.onAccountChange (the hashmark mobile-redirect return path). Fleet refs: hashmark-test-pool app/src/client/main.ts renderTopbarAddress, nimiq-app-shell src/wallet (createWallet/Account), tipjar identicon placeholder. Pairs with app-header (mount in its tools slot with class on-dark).",
+  "source": {
+    "repo": "original",
+    "ref": null,
+    "files": []
+  }
+}

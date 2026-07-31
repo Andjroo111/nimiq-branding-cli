@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>status-pill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="status-pill.css">
+<style>
+    html, body { margin: 0; padding: 0; background: #F8F8F8; }
+    body { font-family: 'Mulish', 'Muli', system-ui, sans-serif; }
+    /* demo chrome: the two surfaces pills live on in the fleet. Light pills sit
+       in a white card (their canonical host); dark pills sit directly on the
+       navy app surface, which must be the bottom-right radial (rule 7). */
+    .stage { padding: 24px; background: #F8F8F8; }
+    .stage.dark {
+        background-color: #1F2348;
+        background-image: radial-gradient(100% 100% at 100% 100%, #260133, #1F2348);
+    }
+    .demo-card {
+        background: #FFFFFF;
+        border-radius: 10px;
+        box-shadow: 0 4px 28px rgba(0, 0, 0, 0.111);
+        padding: 20px 24px;
+    }
+    .demo-label { margin: 0 0 12px; font-size: 13px; font-weight: 600; line-height: 1; color: rgba(31, 35, 72, 0.5); }
+    .demo-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .demo-row + .demo-label { margin-top: 20px; }
+    .stage.dark .demo-label { color: rgba(255, 255, 255, 0.6); }
+</style>
+</head>
+<body>
+<!-- status-pill demo: the five semantic families and the five environment
+     presets, on the two fleet surfaces. Keep truth/demo/snippet identical. -->
+<div class="status-pill-demo">
+    <section class="stage">
+        <div class="demo-card">
+            <p class="demo-label">Semantic set on light</p>
+            <div class="demo-row">
+                <span class="status-pill success">Success</span>
+                <span class="status-pill warning">Warning</span>
+                <span class="status-pill error">Error</span>
+                <span class="status-pill info">Info</span>
+                <span class="status-pill neutral">Neutral</span>
+            </div>
+            <p class="demo-label">Environment presets</p>
+            <div class="demo-row">
+                <span class="status-pill testnet">Testnet</span>
+                <span class="status-pill mainnet">Mainnet</span>
+                <span class="status-pill demo">Demo</span>
+                <span class="status-pill live">Live</span>
+                <span class="status-pill simulated">Simulated</span>
+            </div>
+        </div>
+    </section>
+    <section class="stage dark">
+        <p class="demo-label">Semantic set on dark</p>
+        <div class="demo-row">
+            <span class="status-pill success on-dark">Success</span>
+            <span class="status-pill warning on-dark">Warning</span>
+            <span class="status-pill error on-dark">Error</span>
+            <span class="status-pill info on-dark">Info</span>
+            <span class="status-pill neutral on-dark">Neutral</span>
+        </div>
+        <p class="demo-label">Environment presets</p>
+        <div class="demo-row">
+            <span class="status-pill testnet on-dark">Testnet</span>
+            <span class="status-pill mainnet on-dark">Mainnet</span>
+            <span class="status-pill demo on-dark">Demo</span>
+            <span class="status-pill live on-dark">Live</span>
+            <span class="status-pill simulated on-dark">Simulated</span>
+        </div>
+    </section>
+</div>
+</body>
+</html>

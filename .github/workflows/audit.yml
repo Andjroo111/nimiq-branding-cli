@@ -81,7 +81,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           branch="audit/auto-pin-bump"
           git checkout -B "$branch"
-          git add upstream-pins.json registry/SKILL-BLOCK.md
+          git add upstream-pins.json registry/SKILL-BLOCK.md llms.txt llms-full.txt
           if git diff --cached --quiet; then
             echo "Nothing to commit — pins already current."
             exit 0

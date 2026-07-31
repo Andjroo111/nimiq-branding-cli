@@ -1,0 +1,119 @@
+{
+    "name": "corner-control",
+    "purpose": "The fleet's one-button header corner: wallet state on the face (connect-wallet-pill + caret), everything else in one menu — mini wallet (rename, balance in NIM + reference fiat, Receive/Send/scan per the wallet's MobileActionBar), receive view with QR + tap-to-copy address, language picker, reference-currency picker, opt-in Create-a-Cashlink, Open in Nimiq Pay, testnet-only network row, quiet Disconnect. Replaces the divergent per-app connect + language chrome across the fleet.",
+    "category": "layout",
+    "variants": [
+        "vue",
+        "html"
+    ],
+    "props": [
+        {
+            "name": "connect",
+            "type": "async () => ({ address, label?, balanceNim?, identiconUrl? } | null)",
+            "required": false,
+            "description": "HubApi.chooseAddress via the nimiq-app-shell createWallet seam. Resolve null on cancel. Unwired, the Connect button shows a translated handoff bubble instead of sitting dead."
+        },
+        {
+            "name": "onboard",
+            "type": "() => void",
+            "required": false,
+            "description": "HubApi.onboard — the 'New to Nimiq? Create a wallet' line under Connect. The wallet-acquisition funnel: a visitor with no wallet creates one right in the popup."
+        },
+        {
+            "name": "onDisconnect",
+            "type": "() => void",
+            "required": false,
+            "description": "Forget the LOCAL connection. NEVER wire Hub logout here — logout removes the account from the wallet itself."
+        },
+        {
+            "name": "rename",
+            "type": "(label) => void",
+            "required": false,
+            "description": "HubApi.rename (RequestType.RENAME, hub/client/HubApi.ts:291). The label is stored IN THE WALLET, so a rename made in one app follows the user across every nimiq.* app. Hidden in mini-app mode (window.nimiq has no rename)."
+        },
+        {
+            "name": "send / scan / createCashlink",
+            "type": "() => void",
+            "required": false,
+            "description": "HubApi.checkout, the qr-scanner component, HubApi.createCashlink ('Create a Cashlink' — the wallet's exact SendModal string, official .po translations included). Cashlink row renders only with cashlink: true (opt-in per app: tips/party/cards/kids yes, POS no)."
+        },
+        {
+            "name": "cashlink / testnet",
+            "type": "boolean = false",
+            "required": false,
+            "description": "testnet renders the network row + badge; on MAINNET the network says nothing and the lone Disconnect centers itself."
+        },
+        {
+            "name": "language / defaultFiat / rates",
+            "type": "string = 'en' / string = 'USD' / { USD: nimPrice, ... }",
+            "required": false,
+            "description": "Balance is ALWAYS 'NIM (bold navy) over fiat (gray)' — the wallet's AddressOverview stack, right-aligned. The currency grid is fiat-only (NIM is never a mode). rates comes from the app's fiat feed; formatting via Intl.NumberFormat."
+        },
+        {
+            "name": "i18n / languages / currencies",
+            "type": "overrides / [{ id, name, flag }] / [{ ticker, flag }]",
+            "required": false,
+            "description": "Picking a language re-words the WHOLE menu live (data-i18n swap). 10-language table ships in the driver; language rows use nimiq.school order + flag choices (Spanish rides MX)."
+        },
+        {
+            "name": "isMiniApp / renderQr / openPay",
+            "type": "boolean override / (canvas, uri) => void / () => void",
+            "required": false,
+            "description": "Mini-app default detection = !!window.nimiqPay (injected pre-script by Nimiq Pay). QR default = window.QrCreator (qr-creator@1.0.0, the qr-code component's pinned lib). openPay default = nimiqpay://miniapp?url=<encoded> deeplink."
+        }
+    ],
+    "cssFiles": [
+        "css/legacy/nimiq-style.min.css"
+    ],
+    "assetFiles": [
+        "img/flags-square/flag-US.svg",
+        "img/flags-square/flag-MX.svg",
+        "img/flags-square/flag-DE.svg",
+        "img/flags-square/flag-IN.svg",
+        "img/flags-square/flag-CN.svg",
+        "img/flags-square/flag-FR.svg",
+        "img/flags-square/flag-TR.svg",
+        "img/flags-square/flag-KR.svg",
+        "img/flags-square/flag-BR.svg",
+        "img/flags-square/flag-VN.svg",
+        "img/flags-square/flag-EU.svg",
+        "img/flags-square/flag-GB.svg",
+        "img/flags-square/flag-JP.svg",
+        "img/flags-square/flag-CH.svg",
+        "img/flags-square/flag-CA.svg",
+        "img/flags-square/flag-AU.svg"
+    ],
+    "dependsOn": [
+        "connect-wallet-pill",
+        "flag-hex",
+        "qr-code"
+    ],
+    "npmDeps": [
+        "qr-creator",
+        "@nimiq/iqons",
+        "@nimiq/hub-api"
+    ],
+    "verified": false,
+    "verify": {
+        "viewport": {
+            "width": 720,
+            "height": 2100
+        },
+        "selector": ".cc-demo-stack",
+        "maxDiffPct": 0.5,
+        "settleMs": 400
+    },
+    "principles": {
+        "remove-everything-unnecessary": true,
+        "light-stage": true,
+        "color-rules": true,
+        "gradients": true,
+        "form": true,
+        "type": true,
+        "one-break": true,
+        "learned-patterns": true,
+        "real-assets": true,
+        "reproducible": true
+    },
+    "notes": "SPEC LOCKED with Andjroo 2026-07-23 (memory: nimiq-corner-control-2026-07-23). Sources, all verbatim upstream: actions row = wallet/src/components/MobileActionBar.vue (Receive nq-button-s quiet LEFT w/ arrow-right-small rotated 90deg=down; Send nq-button-pill light-blue RIGHT rotated -90deg=up; bare ScanQrCodeIcon at opacity .4, padding 4px, from nimiq-style/src/icons/scan-qr-code.svg). Copy = vue-components Copyable verbatim: light-blue radial tooltip 800ms w/ 0.2s delay + curved mask tail (scaleY(-1) when tooltip sits above), copied/hover field rgba(5,130,202,.08) + #0582CA text, and the blue HOLDS until blur (upstream colors on :focus; cc-copied-hold mirrors it for browsers that don't focus buttons on click). Balance = AddressOverview stack: name left (600), NIM bold 13/700 over gray fiat 12/600 right-aligned; NIM thin-space grouped; NIM always shown, currency grid is fiat-only w/ USD default (the wallet Settings reference-currency selector, circles -> flag-hex hexagons). Address lives BEHIND Receive (wallet pattern): back row, real QR (qr-creator, nimiq: URI, radius .5, fill #1F2348), 3x3 Fira Mono grid. Rename = tap the name -> inline input (inset box-shadow border, rule 1; no pencil icon — neither nimiq-style nor vue-components ships one, rule 15). 'Create a Cashlink' = the wallet's exact SendModal.vue string; official .po translations for de/es/fr/zh/pt. Flags = wallet square flag files clipped by flag-hex, per-flag FLAG_FIT (KR 0.84 + white hex underlay, the nimiq.school precedent); the official 422-hexagon nimiq-flags set (assets/icons/nimiq-flags.json) is a possible future swap. Mini-app mode: window.nimiqPay is injected pre-script; face collapses to flag-only, wallet/cashlink/openpay/disconnect hidden, language preset from nimiqPay.language. TRAPS baked into the CSS/JS: (1) standard scrollbar-width/scrollbar-color live in a Firefox-only @supports (-moz-appearance:none) block — unprefixed they make Chrome 121+ ignore ::-webkit-scrollbar and the gutter slider vanishes; (2) every svg copied at runtime gets fresh gradient/clipPath ids (rule 3) or url(#id) resolves into display:none defs and icons half-paint; (3) demo/consumer pages MUST open with <meta charset=\"utf-8\"> or non-ASCII language names mojibake on file://. Invisible Hub seams deliberately NOT in the UI: signMessage (sign-in with Nimiq) and list() (silent label refresh after fleet-wide renames; third-party storage caveat). Hub logout is NOT Disconnect. Demo/truth: identicon pre-rendered with @nimiq/iqons 1.6.0, QR pre-rendered with qr-creator@1.0.0 for a deterministic reference; ORIGINAL composition (no upstream equivalent) so verified stays false with the self-render reference.png as regression guard, the flag-hex precedent. PRODUCTION TRUTH (2026-07-24): the shipped implementation is nimiq-app-shell v0.4.0 mountCornerControl (.nq-cc-* namespace) — this registry component is the DESIGN REFERENCE; port deltas from the shell when re-staging. Production evolved past the locked mock in Andjroo's live phone reviews: (1) SEND VIEW — the menu is a real mini wallet: recipient (Nimiq-base32 validated) + amount (<= known balance) collected in-menu, then Wallet.pay(); hub mode rides the Hub CHECKOUT popup which signs AND broadcasts itself (verified: hub CheckoutTransmission.vue calls client.sendTransaction — plain signTransaction does NOT broadcast), sender pinned via forceSender; mini-app mode uses the host wallet's native send. (2) Hub 3rd-party whitelist (hub RpcApi): checkout/signTransaction/signStaking/signMessage/chooseAddress/ createCashlink/manageCashlink/connectAccount ONLY — onboard and rename are origin-PRIVILEGED, so the 'New to Nimiq?' line calls chooseAddress (its Hub view auto-onboards a zero-wallet visitor) and rename is LOCAL-first (localStorage per address; onRename = optional extra sync hook). (3) Hub connection PERSISTS across reloads (address+label in localStorage). (4) The menu stays a 272px corner-anchored card at EVERY viewport — the full-width phone sheet was rejected. (5) fmtFiat grows decimals until within 10% of the true value (wallet FiatAmount maxRelativeDeviation) — sub-cent NIM balances never floor to $0.00. (6) Action rows close the menu before their handoff. (7) Balance shows LIQUID NIM only (RPC account balance); staked NIM needs a getStaker RPC — tracked in nimiq.kids#82."
+}

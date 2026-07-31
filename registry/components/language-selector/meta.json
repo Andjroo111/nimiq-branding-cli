@@ -1,0 +1,59 @@
+{
+  "name": "language-selector",
+  "purpose": "Locale dropdown — an uppercase trigger with a small caret that opens a navy gradient list of locale codes on focus, with keyboard navigation; used to switch the UI language.",
+  "category": "form",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "languages",
+      "type": "string[]",
+      "required": true,
+      "description": "Locale codes to offer (e.g. ['en', 'de', 'es', 'fr']). Must be a non-empty array of strings; a single entry renders the trigger without arrow or list."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "required": false,
+      "description": "The selected locale, compatible with Vue 2 v-model (pairs with the 'input' emit). Defaults to the first entry of languages; values not in the list are ignored."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 240,
+      "height": 340
+    },
+    "selector": ".language-selector",
+    "maxDiffPct": 0.5,
+    "settleMs": 250
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "Sample state: closed, languages [en, de, es, fr, nl, pt], selected 'en' (renders EN via text-transform uppercase). Closed means the .list element is NOT in the DOM (upstream v-if) — the trigger arrow's closed orientation is driven by the :not(:where(:hover, :focus-within, :has(.list))) rule, so the HTML snippet also creates/removes the list dynamically instead of toggling visibility. Open state: navy .list (--nimiq-blue-bg bottom-right radial) overlays the trigger from bottom:-2rem, entries at opacity .4 that go full plus a white arrow on focus; the list opens on focus (focusin), closes on blur with upstream's 50ms delay so focus can move between entries, arrow keys wrap, Enter/Space select, Escape/Left close. The tabindex is removed while open, like upstream's :tabindex binding. The snippet fires an 'input' CustomEvent (detail = locale code) as the plain-HTML equivalent of the Vue emit. Not carried into the snippet: the .transition-fade opacity animation on open/close (entries appear without fade; noted, cosmetic only). Vue 3 port trap: upstream's Vue 2 '.transition-fade-enter' class is renamed '-enter-from'. Truth/demo pages carry 240px top headroom because the list opens upward; the selector crop is unaffected.",
+  "source": {
+    "repo": "vue-components",
+    "ref": "3c5b972",
+    "files": [
+      "vue-components:src/components/LanguageSelector.vue"
+    ]
+  }
+}

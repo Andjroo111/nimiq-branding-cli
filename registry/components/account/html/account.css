@@ -1,0 +1,162 @@
+/* Nimiq Account — single account row: identicon + label + optional balance.
+   Port of @nimiq/vue-components Account.vue (+ its Identicon/Amount internals),
+   all selectors namespaced under .account. Requires the Nimiq legacy stylesheet
+   (nimiq-style.min.css) for the --nimiq-* CSS variables and .nq-blue-bg (used
+   by the cashlink variant). Layouts: .account.row (default, full width) and
+   .account.column (stacked, large identicon). */
+
+/* --- Identicon internals (Identicon.vue) --- */
+
+.account .identicon {
+    width: 10rem;
+}
+
+.account .identicon img {
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Amount internals (Amount.vue) --- */
+
+.account .amount {
+    white-space: nowrap;
+}
+
+.account .amount.approx::before {
+    content: '~ ';
+    opacity: 0.5;
+}
+
+/* --- The row itself (Account.vue) --- */
+
+.account {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.75rem 2rem;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    font-size: 2rem;
+    line-height: 1.2;
+    overflow: hidden; /* hide chevron right on hover*/
+}
+
+.account.row {
+    width: 100%;
+    flex-direction: row;
+}
+
+.account.column {
+    flex-direction: column;
+}
+
+.account .identicon-and-label {
+    display: flex;
+    align-items: center;
+}
+
+.account.row .identicon-and-label {
+    flex-direction: row;
+    overflow: hidden;
+    min-width: 5.625rem;
+    flex-grow: 1;
+}
+
+.account.column .identicon-and-label {
+    flex-direction: column;
+}
+
+.account .identicon {
+    flex-shrink: 0;
+    position: relative;
+}
+
+.account.row .identicon {
+    width: 5.625rem;
+    height: 5.625rem;
+    margin-right: 1.5rem;
+}
+
+.account.column .identicon {
+    width: 10rem;
+    height: 10rem;
+    margin-bottom: 1.25rem;
+}
+
+.account.cashlink .identicon {
+    padding: .5rem;
+}
+
+.account.cashlink .identicon div {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+.account.cashlink .identicon:before {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: .25rem solid rgba(31, 35, 72, .2); /* based on nimiq-blue */
+}
+
+.account .account-image {
+    border-radius: 1rem;
+}
+
+.account .wallet-label {
+    margin-bottom: 0;
+}
+
+.account .label,
+.account .wallet-label {
+    overflow: hidden;
+}
+
+.account.row .label:not(.editable) {
+    opacity: 0.7;
+    padding-left: 1rem;
+}
+
+.account.row .label,
+.account.row .wallet-label {
+    white-space: nowrap;
+    font-weight: 600;
+    mask-image: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+}
+
+.account.row .label {
+    flex-grow: 1;
+}
+
+.account.column .label,
+.account.column .wallet-label {
+    max-width: 18.5rem; /* 148px, the width the automatic labels are designed for */
+    text-align: center;
+    line-height: 1.5;
+    max-height: calc(2 * 1em * 1.5); /* #lines * font-size * line-height */
+}
+
+.account .label.address-font {
+    font-family: "Fira Mono", "Andale Mono", monospace;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.account .balance {
+    flex-shrink: 0;
+}
+
+.account.row .balance {
+    margin-left: 1rem;
+    font-weight: bold;
+    opacity: 0.7;
+}
+
+.account.column .balance {
+    margin-top: 1.5rem;
+}

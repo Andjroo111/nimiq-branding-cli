@@ -1,0 +1,87 @@
+{
+  "name": "provider-gate",
+  "purpose": "The fleet's environment and wallet-status gate: a non-blocking strip with five canned states (demo, open-in-wallet, connected, testnet, simulated) on the status-alert semantic treatment, plus the tipjar-style blocking handoff wall (signet, headline, QR deep link, open button, copy-link fallback) for states that block. Replaces the banner 15 apps hand-roll.",
+  "category": "feedback",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "state",
+      "type": "'demo' | 'open-in-wallet' | 'connected' | 'testnet' | 'simulated' | null",
+      "required": false,
+      "default": "null",
+      "description": "The gate state. Fixed copy + semantic color per state: demo = neutral navy ('Demo mode. No real payments.'), open-in-wallet = blue info ('Open inside Nimiq Pay for live payments' + optional deep-link action), connected = green ('Connected to Nimiq Pay'), testnet / simulated = orange warning. null hides the gate."
+    },
+    {
+      "name": "detect",
+      "type": "() => state | null",
+      "required": false,
+      "description": "The injection seam (wins over state; re-run via refresh()). Maps 1:1 to nimiq-app-shell detect outputs: detectModeSync() 'miniapp' -> connected, 'hub' -> open-in-wallet; probe.fake from nimiqPay.connect() -> demo; mock settlement -> simulated; network testnet -> testnet. Suggested precedence: demo > simulated > open-in-wallet > testnet > connected. No hard app-shell dependency: any callback returning a state works."
+    },
+    {
+      "name": "pageUrl",
+      "type": "String",
+      "required": false,
+      "default": "location.href",
+      "description": "The page the deep link reopens inside Nimiq Pay, and what the wall's copy-link fallback copies."
+    },
+    {
+      "name": "deepLink",
+      "type": "String",
+      "required": false,
+      "default": "nimiqPayDeepLink(pageUrl)",
+      "description": "Full deep link override. Default builds the fleet form nimiqpay://miniapp?url=<pageUrl> (tipjar onboard-core). Powers the strip's action link, the wall QR and the wall button."
+    },
+    {
+      "name": "wall",
+      "type": "Boolean",
+      "required": false,
+      "default": "false",
+      "description": "Blocking form: states that block (open-in-wallet) render the centered handoff wall instead of the strip; non-blocking states still render the strip. Typical use: wall on desktop, strip on mobile (where the deep link works directly)."
+    },
+    {
+      "name": "labels",
+      "type": "{ demo?, openInWallet?, connected?, testnet?, simulated?, open?, wallTitle?, wallMessage?, copyLink?, linkCopied? }",
+      "required": false,
+      "description": "Localizable copy overrides for every canned string. Keep the register: sentence case, short status labels without a trailing period, running sentences with one."
+    }
+  ],
+  "cssFiles": [
+    "css/legacy/nimiq-style.min.css"
+  ],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [
+    "qr-creator"
+  ],
+  "verified": false,
+  "verify": {
+    "viewport": {
+      "width": 720,
+      "height": 1080
+    },
+    "selector": ".provider-gate-demo-stack",
+    "maxDiffPct": 0.5,
+    "settleMs": 600
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "ORIGINAL composition (flag-hex / app-header precedent), so verified:false; reference.png is still snapped from truth/truth.html and nq verify guards the demo against it as a regression check. There is no upstream provider banner: the Nimiq team builds the wallet and hub, not mini-app chrome, so this formalizes what 15 fleet apps hand-roll ('Demo mode' strips, 'Open inside Nimiq Pay' banners, testnet disclaimers, tipjar's handoff wall). Design decisions: (1) The strip extends the status-alert family, the ONE legitimate pill/callout family (rule 17): same nimiq-css token halves, same tint bg + 1.5px tonal outline (outline-offset -1.5px, uniform ring, NO left accent stripe per rule 19), same icon-mask mechanism, compacted to a one-line 14px/600 strip because it is page chrome, not a content callout. (2) States carry fixed, localizable copy so the fleet stops improvising wording; semantics follow the color rules: demo = neutral navy (a fact, not a warning; neutral-300/400 light halves from nimiq-css colors.css), open-in-wallet = blue info, connected = green success, testnet AND simulated = orange warning (coins with no value / fake settlement both warrant caution). (3) Icons are real assets, never fabricated (rule 15): demo = nimiq-icons icon:info, open-in-wallet = the status-alert note hexagon, connected = nimiq-icons icon:check, testnet/simulated = the status-alert warning flame; all via the status-alert mask mechanism colored by --pg-text. (4) The strip's optional action is a bold currentColor text link with hover underline (rule 21, the tipjar wall-link treatment), not a second button; negative-margin padding gives it and the wall's copy link a 36px tap target without growing the visual. (5) The wall is tipjar's public/onboard-core.js wallScreenHtml + app.css .wall-screen formalized: navy radial app card (rule 7, 10px app-card radius, the .nq-card shadow in px), verbatim hexagon signet (gradient id unique per instance, rule 3), 24px/700 white title with NO trailing period (rule 16, rendered as h2 so consuming pages keep one h1), white-60% message, QR on a white tile (the qr-code component recipe: pinned qr-creator@1.0.0, light-blue bottom-right radial fill), ONE primary action (.nq-button light-blue, never green per rule 5) and a quiet copy-link fallback in --nimiq-light-blue-on-dark #0CA6FE (rule 20). Copy-link copies the plain page URL (sendable anywhere), not the nimiqpay:// URI. (6) The driver (initProviderGate in html/provider-gate.js) is dependency-free: { state | detect, pageUrl?, deepLink?, wall?, labels? } -> { state, setState, refresh, destroy }; detect is the only integration seam and maps 1:1 to nimiq-app-shell src/wallet/detect.ts: detectModeSync() 'miniapp' -> connected, 'hub' -> open-in-wallet, tipjar probe.fake -> demo, mock settlement -> simulated, testnet network -> testnet (precedence: demo > simulated > open-in-wallet > testnet > connected). Only open-in-wallet blocks, and only when options.wall is set (tipjar shows the wall on desktop; on a phone the deep link button in the strip is enough). The wall QR renders only when qr-creator is loaded (window.QrCreator); without it the tile is omitted, nothing breaks. (7) nq lint: 0 errors, 1 accepted warning: white on #0582CA (4.16:1) is the shipped legacy .nq-button light-blue itself, which nimiq.com ships (the lint spec warns rather than gates sub-AA that the brand itself ships); the button uppercases itself (the class does it, rule 8); the strip is a status alert, the allowed pill family. No new colors, no shadows beyond the card shadow, no ornament; the one calculated break is the gold signet on the navy wall. Fleet refs: apps/tipjar public/onboard-core.js (the unit-tested 4-state wall this formalizes: install/get-started map onto open-in-wallet with the wall, demo maps to demo) + public/app.css .wall-screen, apps/splitlink public/index.html #banner + js/app.js (the strip: 'Demo mode... open inside Nimiq Pay' / 'Connected to Nimiq Pay'), nimiq-app-shell src/wallet/detect.ts (the detection seam). Heritage: status-alert (treatment), qr-code (QR recipe), app-header (unique gradient id + badge conventions; its orange Testnet badge pairs with this strip). Vue variant needs npm qr-creator; the html snippet loads the pinned CDN build.",
+  "source": {
+    "repo": "original",
+    "ref": null,
+    "files": []
+  }
+}

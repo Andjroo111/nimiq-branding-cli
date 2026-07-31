@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CopyableField</title>
+<link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="copyable-field.css">
+<style>
+    body { font-family: 'Mulish', sans-serif; margin: 0; padding: 32px; background: white; }
+
+    /* The component renders white text and is meant for dark surfaces, so it sits on a
+       navy .nq-blue-bg stage (the class also swaps --nimiq-light-blue for its on-dark
+       variant, which colors the 'Copied' notice). */
+    .nq-blue-bg {
+        width: 60rem;
+        padding: 4rem;
+        box-sizing: border-box;
+    }
+</style>
+</head>
+<body>
+    <div class="nq-blue-bg">
+        <div class="copyable-field">
+            <span class="nq-label">Address</span>
+            <div class="copyable-field-content simple-value">
+                <div class="value-container" style="font-size: 3rem">
+                    <span class="value">NQ07 0000 0000 0000 0000</span>
+                </div>
+                <div class="copy-notice">Copied</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        var field = document.querySelector('.copyable-field');
+        var content = field.querySelector('.copyable-field-content');
+        var container = field.querySelector('.value-container');
+        var value = field.querySelector('.value');
+        var copiedResetTimeout;
+
+        function updateFontSize() {
+            var defaultFontSize = field.classList.contains('small') ? 2.5 : 3; // rem
+            value.style.fontSize = defaultFontSize + 'rem';
+            var scaleFactor = container.offsetWidth / value.offsetWidth;
+            value.style.fontSize = '';
+            container.style.fontSize = Math.min(defaultFontSize, defaultFontSize * scaleFactor) + 'rem';
+        }
+        window.addEventListener('resize', updateFontSize);
+        updateFontSize();
+        // Re-measure once webfonts are in (Mulish metrics differ from the fallback font).
+        if (document.fonts) document.fonts.ready.then(updateFontSize);
+
+        content.addEventListener('click', function () {
+            if (navigator.clipboard) navigator.clipboard.writeText(value.textContent.trim());
+            content.classList.add('copied');
+            clearTimeout(copiedResetTimeout);
+            copiedResetTimeout = setTimeout(function () { content.classList.remove('copied'); }, 500);
+        });
+    })();
+    </script>
+</body>
+</html>

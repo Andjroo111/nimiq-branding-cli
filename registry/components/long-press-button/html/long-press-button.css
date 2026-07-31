@@ -1,0 +1,137 @@
+/* Nimiq LongPressButton — hold-to-confirm button with a white progress pill
+   that fills over the hold duration. Port of @nimiq/vue-components
+   LongPressButton.vue, selectors namespaced under .long-press-button.
+   Requires nimiq-style.min.css for the .nq-button base (use it together:
+   class="long-press-button nq-button light-blue"). The color-switching label
+   effect comes from two nested mix-blend-modes: the growing .indicator and the
+   labels form a black and white mask that the lighten blend lays over the
+   button gradient, so text inside the fill shows the button color through. */
+
+.long-press-button {
+    --label-height: 2.5rem; /* variable that can be overwritten if custom content has a different height */
+    --subline-height: 2.5rem; /* variable that can be overwritten if custom content has a different height */
+    --transition-time: 3s; /* default value; the actual effective value is set via duration prop */
+    --release-transiton-time: min(.3s, var(--transition-time)); /* short transition time when button released */
+
+    contain: layout style; /* not paint because focus outline overflows */
+    padding: 0; /* make the .mix-blend-mode-mask cover the whole button to be able to add paint containment on it */
+}
+
+/* Inverse styles for rendering the button over a colored background. Basically inverts the mix-blend-mode-mask and
+renders the parts, which are usually colorful in non-inverted mode, in white over the colored background */
+.long-press-button.inverse {
+    color: white;
+    background: black;
+    filter: invert(1);
+    mix-blend-mode: screen;
+}
+.long-press-button.inverse::before {
+    /* adapt hover effect for color inversion */
+    background: #111111;
+}
+.long-press-button.inverse::after {
+    /* adapt focus outline for color inversion */
+    border-color: rgba(0, 0, 0, .4);
+}
+.long-press-button.inverse[disabled],
+.long-press-button.inverse[disabled]:active,
+.long-press-button.inverse[disabled]:hover {
+    /* adapt disabled styles for color inversion */
+    background: rgba(0, 0, 0, .4);
+}
+
+.long-press-button .mix-blend-mode-mask {
+    contain: layout paint style;
+    display: flex;
+    height: 100%;
+    padding: 0 6.5rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* We achieve the color switching effect of the labels within the indicator area by two nested mix-blend-modes.
+    The indicator and labels combine to a black and white mask in the .mix-blend-mode-mask of which only the white
+    parts are rendered over the button via the lighten mix-blend-mode. Notably, the text within the indicator area
+    is mixed to black, such that the button color shines through the text. */
+    mix-blend-mode: lighten;
+}
+
+.long-press-button .indicator {
+    contain: layout paint style;
+    position: absolute;
+    width: calc(100% - 1.5rem);
+    max-height: calc(100% - 1.5rem);
+    border-radius: 999px; /* just needs to be at least the indicator height */
+    overflow: hidden;
+    background: white;
+    mix-blend-mode: difference; /* subtract text to make it black in the .mix-blend-mode-mask over the indicator */
+    transition: width var(--transition-time) ease-out;
+}
+
+.long-press-button .indicator.transition-indicator-enter,
+.long-press-button .indicator.transition-indicator-leave-to {
+    width: 0;
+}
+.long-press-button .indicator.transition-indicator-leave-active {
+    transition-duration: var(--release-transiton-time);
+}
+
+/* css hack to ensure the indicator has the same height as width until max-height is reached */
+.long-press-button .indicator::after {
+    contain: size layout paint style;
+    content: '';
+    display: block;
+    padding-top: 100%;
+}
+
+.long-press-button label,
+.long-press-button .subline {
+    contain: style; /* not layout or paint because these would cause a new stacking context */
+    white-space: nowrap;
+    /* Transition color and margin instead of opacity and transform as those would create a new stacking context
+    (https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context)
+    which would prevent it from mixing with mix-blend-mode. */
+    transition-property: color, margin;
+    transition-timing-function: var(--nimiq-ease);
+}
+
+.long-press-button label:not(.show),
+.long-press-button .subline:not(.show) {
+    color: rgba(255, 255, 255, 0);
+}
+
+.long-press-button label {
+    --center-offset: calc(var(--subline-height) / 2 - 1px); /* -1px because it looks just a bit better centered */
+    color: white;
+    transition-duration: var(--release-transiton-time); /* quick transition when button released */
+}
+
+.long-press-button label.center {
+    transition-duration: .5s, 1s; /* somewhat quick fade between labels and slow centering on button press */
+}
+
+.long-press-button label:nth-of-type(1).center {
+    margin-top: var(--center-offset); /* only need to do this for the first label, the second will move along */
+}
+
+.long-press-button label:nth-of-type(2) {
+    /* place second label on top of first for fading between then */
+    --extra-margin: calc((var(--label-height) - 2.5rem) / 2); /* split height difference to --label-height in 2 */
+    margin-top: calc(-1 * var(--label-height) + var(--extra-margin));
+    margin-bottom: var(--extra-margin);
+}
+.long-press-button label:nth-of-type(2).center {
+    /* pull subline up to keep it at the original position */
+    margin-bottom: calc(-1 * var(--center-offset) + var(--extra-margin));
+}
+
+.long-press-button .subline {
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: normal;
+    text-transform: none;
+    color: rgba(255, 255, 255, .7);
+    transition-duration: 1s;
+}
+.long-press-button .subline.show {
+    transition-duration: var(--release-transiton-time); /* quick transition when button released */
+}

@@ -1,0 +1,290 @@
+/* app-footer: the fleet app footer, two variants in one sheet.
+   1) .app-footer-community — the FEATURED community footer (Andjroo, 2026-07-10;
+      reference: nimiq.school CommunityFooter.vue): white "Built by the community"
+      band with the light-blue CTA pill and a full-bleed honeycomb lattice carrying
+      four brand-colored community hexes, over a navy strip (bottom-right radial,
+      rule 7) with the app's own lockup + independent-project disclaimer.
+   2) .app-footer — the original slim "Built on Nimiq" attribution row (unchanged).
+   Both are ORIGINAL compositions (no upstream port). All custom CSS in px:
+   @nimiq/style sets html { font-size: 8px }. Run: nq principles */
+
+/* ============================================================ */
+/* 1) COMMUNITY VARIANT — .app-footer-community                 */
+/* ============================================================ */
+
+.app-footer-community {
+    /* pins to the bottom of a flex-column page; computes to 0 in normal block flow */
+    margin-top: auto;
+    width: 100%;
+    font-family: 'Mulish', 'Muli', system-ui, sans-serif;
+}
+
+/* ---- White community band ---- */
+.afc-band {
+    background: #fff;
+    text-align: center;
+    overflow: hidden; /* clips the honeycomb that bleeds off both edges */
+    padding: 80px 0 64px;
+}
+
+.afc-title {
+    margin: 0 auto 28px;
+    padding: 0 24px;
+    max-width: 640px;
+    color: #1f2348;
+    font-size: clamp(28px, 3.4vw, 36px);
+    line-height: 1.25;
+    font-weight: 700;
+    /* nimiq.com applies balance to every heading; the title is deliberately two-line */
+    text-wrap: balance;
+}
+
+/* Light-blue CTA pill, calibrated against the nimiq.com 'Community →' pill
+   (style shared with the registry honeycomb-band component). */
+.afc-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    height: 38px;
+    padding: 0 21px;
+    border-radius: 999px;
+    background: radial-gradient(100% 100% at bottom right, #265dd7, #0582ca);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.1px;
+    text-decoration: none;
+    transition: background 0.3s var(--nimiq-ease, cubic-bezier(0.25, 0, 0, 1));
+}
+.afc-cta:hover,
+.afc-cta:focus {
+    background: radial-gradient(100% 100% at bottom right, #2355c4, #0071c3);
+}
+.afc-cta svg { display: block; }
+
+/* ---- Community honeycomb lattice ---- */
+/* Rounded flat-top hexagons (SVG mask) in offset flex columns. Every dimension
+   derives from --w, so the SAME complete honeycomb renders at every width; it
+   just shrinks on phones, never collapsing to a flat row. The lattice is wider
+   than the band on purpose: centered on the band's midline and bled off BOTH
+   edges (the band clips with overflow:hidden), like the nimiq.com community
+   honeycomb. */
+.afc-comb {
+    --w: 108px;                                   /* hex width */
+    --h: calc(var(--w) * 110 / 120);              /* hex height (mask aspect) */
+    --gap: calc(var(--w) / 12);                   /* vertical gap inside a column */
+    --xover: calc(var(--w) * 0.075);              /* horizontal overlap into notches */
+    --offset: calc((var(--h) + var(--gap)) / 2);  /* half-pitch drop for offset cols */
+    display: flex;
+    align-items: flex-start;
+    width: max-content;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 28px 0 0;
+}
+.afc-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap);
+    margin: 0 calc(var(--xover) * -1);
+}
+.afc-col--offset {
+    margin-top: var(--offset);
+}
+
+/* Rounded flat-top hexagon (smooth corners), shape via SVG mask. */
+.afc-hex {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--w);
+    height: var(--h);
+    flex-shrink: 0;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 110'%3E%3Cpath d='M35,3 L85,3 Q90,3 93,8 L118,47 Q121,52 118,57 L93,97 Q90,102 85,102 L35,102 Q30,102 27,97 L2,57 Q-1,52 2,47 L27,8 Q30,3 35,3 Z' fill='black'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 110'%3E%3Cpath d='M35,3 L85,3 Q90,3 93,8 L118,47 Q121,52 118,57 L93,97 Q90,102 85,102 L35,102 Q30,102 27,97 L2,57 Q-1,52 2,47 L27,8 Q30,3 35,3 Z' fill='black'/%3E%3C/svg%3E");
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    transition: background-color 0.3s var(--nimiq-ease, cubic-bezier(0.25, 0, 0, 1)),
+                transform 0.35s var(--nimiq-ease, cubic-bezier(0.25, 0, 0, 1));
+}
+
+/* One neutral gray; each cell carries its OWN opacity (inline style), giving the
+   organic per-hex fade of the nimiq.com bg-hexagons honeycomb (whose 55 hexes
+   range opacity .01-.06) instead of a flat uniform tint. */
+.afc-hex--faint { background-color: #b0b4c4; }
+
+/* The four community links — brand-colored cells embedded in the lattice.
+   Third-party brand colors, exempt from the palette rule (nq lint SOCIAL set). */
+.afc-social {
+    color: #fff;
+    cursor: pointer;
+}
+.afc-social svg {
+    display: block;
+    width: calc(var(--w) * 0.42);
+    height: auto;
+}
+.afc-social:hover,
+.afc-social:focus {
+    transform: scale(1.08);
+    z-index: 1;
+}
+/* Nimiq gold gradient — brand accent for the Nimiq Forum */
+.afc-social--forum {
+    background-image: radial-gradient(100% 100% at bottom right, #ec991c, #e9b213);
+}
+.afc-social--discord { background-color: #5865f2; }
+.afc-social--telegram { background-color: #2aabee; }
+.afc-social--github { background-color: #24292f; }
+
+/* Mobile: shrink the hex so the SAME complete honeycomb fits — never a flat row. */
+@media (max-width: 768px) {
+    .afc-band { padding: 60px 0 44px; }
+    .afc-title { font-size: 24px; }
+    .afc-comb { --w: 92px; margin-top: 20px; }
+}
+@media (max-width: 450px) {
+    .afc-comb { --w: 80px; }
+}
+
+/* ---- Navy strip ---- */
+.afc-dark {
+    /* System navy — the bottom-right radial, never a flat fill (rule 7).
+       Consumes --nimiq-blue-bg when nimiq-style is loaded; self-contained fallback. */
+    background-color: #1f2348;
+    background-image: var(--nimiq-blue-bg, radial-gradient(100% 100% at bottom right, #260133, #1f2348));
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    padding: 44px 24px calc(44px + env(safe-area-inset-bottom));
+    font-size: 13.5px;
+    line-height: 1.6;
+}
+
+/* Brand lockup: the app's own icon + "nimiq.appname" wordmark. */
+.afc-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 16px;
+}
+.afc-brand-icon {
+    width: 27px;
+    height: 27px;
+    color: rgba(255, 255, 255, 0.92);
+    flex-shrink: 0;
+}
+.afc-brand-name {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+    color: #fff;
+}
+
+/* Disclaimer: a body sentence (periods belong here, not on titles). */
+.afc-line {
+    margin: 0 auto;
+    max-width: 34ch;
+    text-wrap: balance;
+}
+.afc-line b { color: #fff; font-weight: 700; }
+
+/* Optional quiet second line: Status / Source / version (rule 21 links). */
+.afc-links {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    column-gap: 20px;
+    row-gap: 8px;
+    font-size: 13px;
+    line-height: 1;
+}
+.afc-links a {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    transition: color 0.2s var(--nimiq-ease, cubic-bezier(0.25, 0, 0, 1));
+}
+.afc-links a:hover,
+.afc-links a:focus-visible {
+    color: #fff;
+}
+/* version string is a technical value: Fira Mono when loaded, any mono otherwise */
+.afc-version {
+    font-family: 'Fira Mono', monospace;
+    font-size: 12px;
+}
+
+/* ============================================================ */
+/* 2) SLIM VARIANT — .app-footer (unchanged)                    */
+/* ============================================================ */
+
+.app-footer {
+    /* one ink channel: navy on light surfaces; .on-dark switches it to white */
+    --af-ink: 31, 35, 72;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    column-gap: 32px;
+    row-gap: 12px;
+    /* pins to the bottom of a flex-column page; computes to 0 in normal block flow */
+    margin-top: auto;
+    padding: 24px 24px calc(24px + env(safe-area-inset-bottom));
+    font-family: 'Mulish', 'Muli', system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1;
+    color: rgba(var(--af-ink), 0.5);
+}
+
+.app-footer.on-dark {
+    --af-ink: 255, 255, 255;
+}
+
+/* links rest at 50% ink and hover to full ink (rule 21: bold, sentence case,
+   never underlined; skill: footer links on dark are white 50%, hover #fff) */
+.app-footer a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: rgba(var(--af-ink), 0.5);
+    text-decoration: none;
+    transition: color 0.2s var(--nimiq-ease, cubic-bezier(0.25, 0, 0, 1));
+}
+
+.app-footer a:hover,
+.app-footer a:focus-visible {
+    color: rgb(var(--af-ink));
+}
+
+.app-footer .af-brand {
+    white-space: nowrap;
+}
+
+/* the horizontal mono logo rides currentColor, so it dims and hovers with the link */
+.app-footer .af-logo {
+    display: block;
+    height: 16px;
+    width: auto;
+}
+
+/* version string is a technical value: Fira Mono when loaded, any mono otherwise */
+.app-footer .af-version {
+    font-family: 'Fira Mono', monospace;
+    font-size: 12px;
+}
+
+.app-footer .af-links {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+}

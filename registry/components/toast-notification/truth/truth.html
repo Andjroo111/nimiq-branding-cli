@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Toast Notification — truth</title>
 <link rel="stylesheet" href="../../../../assets/css/legacy/nimiq-style.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
@@ -191,24 +192,39 @@
     }
 
     /* ── Sample-state layout only (page chrome, defined AFTER component CSS):
-       the component is position:fixed bottom-right; stack the three sample
-       states so all are visible in one frame. Bottom toast keeps the
-       untouched upstream resting position (bottom: 3rem). ── */
+       the component is position:fixed bottom-right by upstream design; for
+       the sample frame the three states sit in the page flow on a compact
+       stage so reference.png captures them tightly. Positioning is overridden
+       at the stage level only — the upstream component CSS above stays
+       verbatim. position:relative (not static) keeps the absolute maximize
+       glyph anchored to its toast. ── */
 
-    .swap-notification.sample-stack-2[data-v-29a59b08] { bottom: 12.5rem; }
-    .swap-notification.sample-stack-3[data-v-29a59b08] { bottom: 22rem; }
+    .toast-stage {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: max-content;
+        padding: 24px;
+    }
+    .toast-stage .swap-notification[data-v-29a59b08] {
+        position: relative;
+        right: auto;
+        bottom: auto;
+    }
 </style>
 </head>
 <body>
 
   <!-- Sample state: the wallet's bottom toast (SwapNotification) hand-expanded
        for three states — info/in-progress (blue, LoadingSpinner), error (orange,
-       AlertTriangleIcon) and success/complete (green, CheckmarkIcon, resting at
-       the upstream bottom-right position). Markup mirrors the rendered output of
-       upstream/wallet/src/components/swap/SwapNotification.vue. -->
+       AlertTriangleIcon) and success/complete (green, CheckmarkIcon). Markup
+       mirrors the rendered output of
+       upstream/wallet/src/components/swap/SwapNotification.vue; the .toast-stage
+       wrapper is page chrome for the sample frame. -->
+  <div class="toast-stage">
 
   <!-- info / in-progress -->
-  <button data-v-29a59b08 class="reset swap-notification flex-row sample-stack-3">
+  <button data-v-29a59b08 class="reset swap-notification flex-row">
     <div data-v-29a59b08 class="icon">
       <!-- LoadingSpinner (upstream/vue-components/src/components/LoadingSpinner.vue) -->
       <svg data-v-64d447ec data-v-29a59b08 height="48" width="54" viewBox="0 0 54 48" color="inherit" class="loading-spinner">
@@ -228,7 +244,7 @@
   </button>
 
   <!-- error / errored -->
-  <button data-v-29a59b08 class="reset swap-notification flex-row errored sample-stack-2">
+  <button data-v-29a59b08 class="reset swap-notification flex-row errored">
     <div data-v-29a59b08 class="icon">
       <!-- AlertTriangleIcon (@nimiq/style icons/alert-triangle.svg via IconBase → class="nq-icon") -->
       <svg data-v-29a59b08 class="nq-icon" width="17" height="16" viewBox="0 0 17 16" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.913 13.333L9.68 1.433a1.333 1.333 0 0 0-2.362 0l-6.232 11.9a1.333 1.333 0 0 0 1.182 1.952H14.73a1.333 1.333 0 0 0 1.182-1.952zm-8.08-7.718a.667.667 0 0 1 1.334 0v4a.667.667 0 1 1-1.334 0v-4zm.682 7.674h.018a.983.983 0 0 0 .967-1.022 1.018 1.018 0 0 0-1.016-.978h-.019a.984.984 0 0 0-.965 1.02c.02.546.468.978 1.015.98z" fill="currentColor"/></svg>
@@ -243,7 +259,7 @@
     </svg>
   </button>
 
-  <!-- success / complete — resting visible state at the upstream bottom position -->
+  <!-- success / complete -->
   <button data-v-29a59b08 class="reset swap-notification flex-row complete">
     <div data-v-29a59b08 class="icon">
       <!-- CheckmarkIcon (@nimiq/style icons/checkmark.svg via IconBase → class="nq-icon") -->
@@ -254,6 +270,8 @@
       <span data-v-29a59b08 class="closing-notice">It's safe to close your wallet now</span>
     </div>
   </button>
+
+  </div><!-- /.toast-stage -->
 
 </body>
 </html>

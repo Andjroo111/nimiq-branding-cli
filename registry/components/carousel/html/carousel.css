@@ -1,0 +1,29 @@
+/* Nimiq Carousel — 3D slide ring in perspective. Port of @nimiq/vue-components
+   Carousel.vue, all selectors namespaced under .carousel. Requires the Nimiq
+   legacy stylesheet (nimiq-style.min.css) for .nq-card and Mulish.
+   STATIC SNAPSHOT: upstream computes every slide's transform, z-index and the
+   root min-height from JS each animation frame (Tweenable-driven). This html
+   variant freezes one settled state as inline styles on the slide wrappers —
+   see carousel.html for the geometry recipe. Rotating the ring (selection,
+   arrow keys, tweens) needs the Vue variant. */
+
+.carousel {
+    position: relative;
+    padding: 4rem;
+    box-sizing: content-box;
+    perspective: 1500px;
+}
+
+.carousel > * {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+
+.carousel:not(.disabled) > :not(.selected) {
+    cursor: pointer;
+}
+
+.carousel > :not(.selected) * {
+    pointer-events: none !important;
+}

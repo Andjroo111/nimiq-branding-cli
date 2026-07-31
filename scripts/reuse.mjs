@@ -53,7 +53,11 @@ const CODE_EXT = /\.(ts|tsx|js|jsx|mjs|cjs|mts|cts|vue|svelte)$/;
 // Each seed names a reusable first-party module the fleet keeps re-writing. A seed matches a
 // repo when ANY filename rule hits OR ANY import rule appears in a scanned source file. The
 // first repo that matches wins (canonical source). `what` explains it; `importHint` builds the
-// snippet from the discovered path.
+// snippet from the discovered path. Two optional fields:
+//   canonicalRepo — when several repos match (apps copy/use the module too), the entry from
+//                   this repo wins the dedup regardless of scan order.
+//   fixed         — the module ships with this CLI itself (not a scanned repo); emit the entry
+//                   unconditionally with this source, ahead of the repo scan.
 const SEED = [
   {
     key: 'cashlink-codec',
@@ -104,6 +108,45 @@ const SEED = [
     what: 'the lightweight first-party i18n / translation engine (t() + locale dictionaries)',
     files: [/i18n\.(ts|js|mjs)$/, /lib\/i18n\//, /translations?\.(ts|js)$/, /locales?\//],
     imports: [/createI18n|useI18n|\bt\(['"]/, /from\s+['"].*i18n/],
+  },
+  {
+    key: 'wallet-adapter',
+    label: 'Wallet adapter (dual-mode)',
+    what: 'the createWallet() provider probe — auto-detects Nimiq Pay (window.nimiqPay / window.nimiq) vs standalone Hub behind one connect/signAndSend/onAccountChange seam, with mockable backends for tests (14 apps hand-rolled this probe)',
+    files: [/src\/wallet\/(index|detect)\.(ts|js)$/, /wallet-adapter\.(ts|js|mjs)$/],
+    imports: [/createWallet|detectModeSync|isMiniAppHost|hasNimiqProvider/],
+    canonicalRepo: 'nimiq-app-shell',
+    importHint: (repo) => [
+      '# add the git dep:',
+      `bun add ${installLine(repo, 'main')}`,
+      '',
+      `import { createWallet } from '${repo}';`,
+      `const wallet = createWallet({ appName: 'My App' }); // wallet.mode: 'miniapp' | 'hub'`,
+    ].join('\n'),
+  },
+  {
+    key: 'nim-format',
+    label: 'NIM amount formatter',
+    what: 'the fleet-canonical luna/NIM formatter — fmtNim (U+202F grouping, 2-5 decimals, half-up rounding, trailing-zero trim), fmtFiat, lunaToNim/nimToLuna, parseNim validation; registry amount-component semantics, no float loss (17 apps re-implemented this)',
+    files: [/src\/format\/nim\.(ts|js)$/, /nim-format\.(ts|js|mjs)$/],
+    imports: [/\bfmtNim\b|\bparseNim\b|\blunaToNim\b|\bnimToLuna\b/],
+    canonicalRepo: 'nimiq-app-shell',
+    importHint: (repo) => [
+      '# add the git dep:',
+      `bun add ${installLine(repo, 'main')}`,
+      '',
+      `import { fmtNim, parseNim, lunaToNim } from '${repo}';`,
+      `fmtNim(1234567890); // '12 345.6789'`,
+    ].join('\n'),
+  },
+  {
+    key: 'toast',
+    label: 'Toast driver',
+    what: "singleton toast(message, {kind: 'info'|'success'|'error', duration}) driving the pixel-verified toast-notification component — bottom-center host, replace-not-queue, auto-dismiss, aria-live polite, reduced-motion aware (12 apps hand-rolled this)",
+    files: [/html\/toast\.js$/, /(^|\/)toast\.js$/],
+    imports: [/nqToast/],
+    fixed: { repo: 'nimiq-branding-cli', path: 'registry/components/toast-notification/html/toast.js' },
+    importHint: () => "nq add toast-notification   # ships html/toast.js — toast('Sent!', { kind: 'success' })",
   },
 ];
 
@@ -255,9 +298,11 @@ async function indexModules(repoDir, repo, files) {
       what: seed.what,
       source: { repo, path: hitPath },
       import:
-        seed.key === 'fly-deploy-kit'
-          ? `# copy the kit from ${repo}:\ncp ${repo}/Dockerfile ${repo}/fly.toml ./\n# (or scaffold fresh: nq new-app <name> --deploy fly)`
-          : `# canonical source: ${repo}/${hitPath}\n# copy it, or import from the repo if it exports the symbol`,
+        seed.importHint
+          ? seed.importHint(repo, hitPath)
+          : seed.key === 'fly-deploy-kit'
+            ? `# copy the kit from ${repo}:\ncp ${repo}/Dockerfile ${repo}/fly.toml ./\n# (or scaffold fresh: nq new-app <name> --deploy fly)`
+            : `# canonical source: ${repo}/${hitPath}\n# copy it, or import from the repo if it exports the symbol`,
     });
   }
   return found;
@@ -288,6 +333,23 @@ export async function rebuild(reposDir, { outPath } = {}) {
   // components (from this CLI's own registry) — always available
   for (const c of await indexComponents()) entries.push(c);
 
+  // fixed-source seeds (the module ships with this CLI itself, e.g. the toast
+  // driver in the component registry) — emitted ahead of the repo scan so the
+  // dedup keeps them canonical over any vendored copy found in an app.
+  for (const seed of SEED) {
+    if (!seed.fixed) continue;
+    entries.push({
+      key: seed.key,
+      kind: 'module',
+      label: seed.label,
+      what: seed.what,
+      source: { ...seed.fixed },
+      import: seed.importHint
+        ? seed.importHint(seed.fixed.repo, seed.fixed.path)
+        : `# canonical source: ${seed.fixed.repo}/${seed.fixed.path}`,
+    });
+  }
+
   // walk each repo dir (only direct children that look like a repo)
   let children;
   try { children = await readdir(dir, { withFileTypes: true }); } catch { children = []; }
@@ -310,13 +372,25 @@ export async function rebuild(reposDir, { outPath } = {}) {
     }
   }
 
-  // de-dup modules by key, keep the first (canonical) source
-  const seenModuleKeys = new Set();
+  // de-dup modules by key, keep the first source — unless the seed names a
+  // canonicalRepo and a later match comes from it (apps that merely USE a shared
+  // module can hit the import rules before the shared lib is scanned).
+  const moduleSlots = new Map(); // key -> index into deduped
   const deduped = [];
   for (const en of entries) {
     if (en.kind === 'module') {
-      if (seenModuleKeys.has(en.key)) continue;
-      seenModuleKeys.add(en.key);
+      const seed = SEED.find(s => s.key === en.key);
+      const slot = moduleSlots.get(en.key);
+      if (slot !== undefined) {
+        const kept = deduped[slot];
+        if (seed?.canonicalRepo
+          && en.source.repo === seed.canonicalRepo
+          && kept.source.repo !== seed.canonicalRepo) {
+          deduped[slot] = en; // upgrade to the canonical source, keep position
+        }
+        continue;
+      }
+      moduleSlots.set(en.key, deduped.length);
     }
     deduped.push(en);
   }

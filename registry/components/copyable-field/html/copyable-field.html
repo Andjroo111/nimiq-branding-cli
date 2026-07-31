@@ -1,0 +1,45 @@
+<!-- CopyableField — labeled click-to-copy field, resting state. WHITE text: place it on a
+     navy surface (e.g. a .nq-blue-bg wrapper). Requires copyable-field.css + nimiq-style.min.css.
+     Source: @nimiq/vue-components@3c5b972 src/components/CopyableField.vue.
+     The script shrinks the value's font to fit (upstream behavior, default 3rem, 2.5rem
+     with class 'small' on the root) and copies the value on click, showing the 'Copied'
+     notice for 500ms. -->
+<div class="copyable-field">
+    <span class="nq-label">Address</span>
+    <div class="copyable-field-content simple-value">
+        <div class="value-container" style="font-size: 3rem">
+            <span class="value">NQ07 0000 0000 0000 0000</span>
+        </div>
+        <div class="copy-notice">Copied</div>
+    </div>
+</div>
+
+<script>
+(function () {
+    var field = document.currentScript.previousElementSibling;
+    var content = field.querySelector('.copyable-field-content');
+    var container = field.querySelector('.value-container');
+    var value = field.querySelector('.value');
+    var copiedResetTimeout;
+
+    // Upstream _updateFontSize: shrink the default font size so the value fits the field.
+    function updateFontSize() {
+        var defaultFontSize = field.classList.contains('small') ? 2.5 : 3; // rem
+        value.style.fontSize = defaultFontSize + 'rem';
+        var scaleFactor = container.offsetWidth / value.offsetWidth;
+        value.style.fontSize = '';
+        container.style.fontSize = Math.min(defaultFontSize, defaultFontSize * scaleFactor) + 'rem';
+    }
+    window.addEventListener('resize', updateFontSize);
+    updateFontSize();
+    // Re-measure once webfonts are in (Mulish metrics differ from the fallback font).
+    if (document.fonts) document.fonts.ready.then(updateFontSize);
+
+    content.addEventListener('click', function () {
+        if (navigator.clipboard) navigator.clipboard.writeText(value.textContent.trim());
+        content.classList.add('copied');
+        clearTimeout(copiedResetTimeout);
+        copiedResetTimeout = setTimeout(function () { content.classList.remove('copied'); }, 500);
+    });
+})();
+</script>
