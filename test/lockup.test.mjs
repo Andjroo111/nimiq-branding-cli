@@ -4,7 +4,7 @@ import { homedir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 
-import { SPEC, generate, inspectSource, layout, svgPathBounds } from '../scripts/lockup.mjs';
+import { SPEC, check, generate, inspectSource, layout, svgPathBounds } from '../scripts/lockup.mjs';
 
 // Measured off the shipped nimiq.kids lockup, which is the fleet's one correct reference.
 // These are the numbers the whole spec has to reproduce; if a change breaks them, the change
@@ -137,11 +137,32 @@ test('the path parser survives the arcs in the real logotype', () => {
   assert.ok(Math.abs(b.maxX - SPEC.logotypeInkEnd) < 0.001, `logotype ink ends at ${b.maxX}`);
 });
 
-// The known-bad marks, when this machine has them checked out. Skipped elsewhere so the suite
-// stays hermetic in CI.
-const COOL = join(homedir(), 'Projects/andjroo/public/apps-assets/nimiq-cool-lockup-light.svg');
-test('the real nimiq.cool lockup fails the checker', { skip: !existsSync(COOL) && 'not checked out' }, () => {
-  const hits = inspectSource(readFileSync(COOL, 'utf8'), COOL);
+// The exact geometry nimiq.cool shipped before it was regenerated: the suffix run laid out at
+// NATURAL tracking instead of the logotype's 0.0836em. Pinned as a literal rather than read
+// from the repo, because the repo file is now fixed and a file-based test would have silently
+// started passing for the wrong reason. This is the bug pattern, so it must stay caught.
+const COOL_UNTRACKED_LETTERS_INK_WIDTH = 27.841; // vs 30.9 correct, measured on the shipped file
+test('the untracked-run bug that nimiq.cool shipped is still caught', () => {
+  const good = generate('cool', { variant: 'light' });
+  const b = svgPathBounds(/class="nq-suffix"[^>]*d="([^"]+)"/.exec(good)[1]);
+  const squeeze = COOL_UNTRACKED_LETTERS_INK_WIDTH / (b.maxX - b.minX);
+  const broken = good.replace(/(<path class="nq-suffix"[^>]*d=")([^"]+)(")/, (m, a, d, c) =>
+    a + d.replace(/(-?[\d.]+) (-?[\d.]+)/g,
+      (mm, x, y) => `${(b.minX + (parseFloat(x) - b.minX) * squeeze).toFixed(4)} ${y}`) + c);
+  const hits = inspectSource(broken, 'nimiq-cool-lockup-light.svg');
   assert.equal(hits.length, 1);
-  assert.equal(hits[0].ok, false, 'nimiq.cool should fail: its run is untracked');
+  assert.equal(hits[0].ok, false, 'an untracked suffix run must fail');
+  assert.match(hits[0].reason, /tighter than spec/);
+});
+
+// Every lockup this machine has checked out must be on spec. Skipped where they are not, so
+// the suite stays hermetic in CI, but on a dev box this is the real regression guard.
+const FLEET = [
+  'Projects/andjroo/public/apps-assets',
+  'Projects/nimiq.blog/assets/brand',
+  'gdkc/projects/nimiq.kids/public/assets/brand',
+].map((p) => join(homedir(), p)).filter((p) => existsSync(p));
+test('every checked-out fleet lockup is on spec', { skip: !FLEET.length && 'none checked out' }, () => {
+  const bad = check(FLEET).filter((r) => !r.ok);
+  assert.deepEqual(bad.map((r) => `${r.file}: ${r.reason}`), []);
 });
