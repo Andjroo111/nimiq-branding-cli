@@ -33,8 +33,9 @@ from fontTools.varLib.instancer import instantiateVariableFont
 DEFAULT_FONT = os.path.expanduser(
     "~/gdkc/projects/nimiq.kids/public/fonts/mulish-latin-wght-normal.woff2"
 )
-# Everything a nimiq.* suffix could plausibly need. Suffixes are lowercase by fleet rule.
-CHARS = "abcdefghijklmnopqrstuvwxyz0123456789."
+# Lowercase is the fleet rule for a NIMIQ.<suffix>, but uppercase is needed too: nimiq.sale
+# ships an uppercase SALE variant on the NIMIQ WALLET artwork, and outlineRun serves it.
+CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789."
 WEIGHT = 700
 OUT = os.path.join(os.path.dirname(__file__), "..", "assets", "lockup", "mulish-700.json")
 

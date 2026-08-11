@@ -115,6 +115,12 @@ function parseFlags(args) {
     else if (a === '--accent') flags.accent = args[++i];
     else if (a === '--light') flags.light = true;
     else if (a === '--dark') flags.dark = true;
+    else if (a === '--no-hex') flags.noHex = true;
+    else if (a === '--ink') flags.ink = args[++i];
+    else if (a === '--size') flags.size = args[++i];
+    else if (a === '--baseline') flags.baseline = args[++i];
+    else if (a === '--x') flags.x = args[++i];
+    else if (a === '--track') flags.track = args[++i];
     else if (a === '--out') flags.out = args[++i];
     else if (a === '--style') flags.style = args[++i];
     else if (a === '--fix') flags.fix = true;
