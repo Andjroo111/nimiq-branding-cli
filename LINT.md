@@ -40,6 +40,7 @@ These are the "make us not do AI things" set.
 | duplicate gradient id with **differing** stops | skill rule 3 | manual → unique ids |
 | pure-black surface (all channels ≤12, ≥4000px²) | skill rule 6 | manual → navy `#1F2348` |
 | one-sided accent stripe on a card | skill rule 19 | manual → uniform border |
+| `NIMIQ.<suffix>` lockup off spec | `assets/lockup/spec.json` | manual → `nq lockup <suffix>` |
 
 **Generic icon set** is a class-signature match (`lucide-`, `fa-solid`, `material-icons`, `bi-`, `ph-`, `data-lucide`, a `material-icons` ligature span, …) — verified zero hits in Nimiq's own components, so any hit is someone dropping in a foreign icon library. **Duplicate gradient id** only fires when two `<linearGradient>`/`<radialGradient>` defs share an id but have **different stops** — the real "later SVG paints the wrong fill" bug. nimiq.com repeats *identical* icon gradients under one id (Figma export) and renders fine, so raw id-collision is deliberately not flagged.
 

@@ -1,0 +1,55 @@
+{
+  "_comment": "The NIMIQ.<suffix> lockup spec. Hand-maintained. Every number here has a stated origin; see notes.",
+
+  "logoSpace": { "width": 76, "height": 18 },
+  "baseline": 14.344,
+  "logotypeInkStart": 27.76,
+  "logotypeInkEnd": 75.712,
+
+  "suffix": {
+    "font": "Mulish",
+    "weight": 700,
+    "size": 15.1603,
+    "tracking": 0.0836,
+    "periodInkLeft": 78.0497
+  },
+
+  "tolerance": {
+    "periodInkLeft": 0.05,
+    "trackingEm": 0.008
+  },
+
+  "notes": {
+    "tracking": "0.0836em is the NIMIQ logotype's own tracking and it applies to the WHOLE suffix run, the two gaps around the period included. Natural tracking makes the suffix ~12% denser than NIMIQ and the two halves of the mark visibly stop matching. Proof: 'kids' set at 0.0836em measures 31.5001 against the shipped nimiq.kids lockup's 31.5000; at natural tracking it gives 27.6979.",
+    "periodInkLeft": "The one number that cannot be computed. The logotype's Q is custom and about 6% wider than Mulish's, so modelling the Q-to-period gap from the font overstates it by 25% (0.19260em against the real 0.154199em). Taken from the shipped nimiq.kids lockup verbatim.",
+    "size": "Also from nimiq.kids. nimiq.cool sits 0.2% smaller, which is invisible; its spacing is not.",
+    "weight": "700 on every NIMIQ.x mark in the fleet. Colour varies per app, weight does not.",
+    "dot": "The period belongs to the wordmark, not to the suffix. It is emitted as its own path carrying the wordmark's ink so an accent colour can be applied to the letters alone.",
+    "liveText": "A suffix set as live <text> is wrong regardless of its spacing: it renders differently wherever Mulish is missing. Outline it.",
+    "knownBad": "nimiq.cool ships 0.09500em period-to-letter against the correct 0.17860em, and nimiq.ninja 0.11400em against 0.19760em. Do not derive a new lockup from either. nimiq.kids is the reference."
+  },
+
+  "artwork": {
+    "source": "assets/logos/nimiq-icons-logos/logos-nimiq-horizontal.svg",
+    "hexagonFill": "gradient",
+    "gradient": {
+      "gradientTransform": "matrix(20.1956 0 0 20.2552 15.188 17.766)",
+      "stops": [
+        { "offset": null, "color": "#EC991C" },
+        { "offset": "1", "color": "#E9B213" }
+      ]
+    }
+  },
+
+  "variants": {
+    "light": { "ink": "#1F2348", "hexagon": "gradient" },
+    "dark": { "ink": "#ffffff", "hexagon": "gradient" },
+    "mono": { "ink": "currentColor", "hexagon": "currentColor" }
+  },
+
+  "accentRules": {
+    "_comment": "Applied to the letters after the dot only, never to the dot or the wordmark.",
+    "goldOnLight": "banned, 1.94:1 and --nimiq-gold-darkened at 2.21:1 does not fix it",
+    "blueOnDark": "use #0CA6FE, not #0582CA which is 3.63:1 on navy"
+  }
+}

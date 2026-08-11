@@ -71,6 +71,8 @@ Usage:
                                 git pre-push (the fuller nq check gate), SessionStart banner,
                                 weekly GH Action (--write drops the workflow)
   nq verify <component|all>     Render the html variant and diff against the reference PNG
+  nq lockup <suffix>            Emit a correct NIMIQ.<suffix> lockup (--variant, --accent).
+  nq lockup check <path...>     Verify every lockup under a tree. Exit 1 on a bad one.
   nq lint <file.html|url>       Render a page and enforce the brand rules + breathability.
       --fix                     Auto-fix the safe text violations in a local file (dashes, title periods)
       --json                    Machine-readable output
@@ -109,6 +111,16 @@ function parseFlags(args) {
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === '--vue' || a === '--html') flags.variant = a.slice(2);
+    else if (a === '--variant') flags.variant = args[++i];
+    else if (a === '--accent') flags.accent = args[++i];
+    else if (a === '--light') flags.light = true;
+    else if (a === '--dark') flags.dark = true;
+    else if (a === '--no-hex') flags.noHex = true;
+    else if (a === '--ink') flags.ink = args[++i];
+    else if (a === '--size') flags.size = args[++i];
+    else if (a === '--baseline') flags.baseline = args[++i];
+    else if (a === '--x') flags.x = args[++i];
+    else if (a === '--track') flags.track = args[++i];
     else if (a === '--out') flags.out = args[++i];
     else if (a === '--style') flags.style = args[++i];
     else if (a === '--fix') flags.fix = true;
@@ -600,6 +612,11 @@ try {
       const { lint } = await import(join(ROOT, 'scripts', 'lint.mjs'));
       const r = await lint(rest[0], { fix: flags.fix, json: flags.json });
       if (r.errorCount) process.exitCode = 1;
+      break;
+    }
+    case 'lockup': {
+      const { cmdLockup } = await import(join(ROOT, 'scripts', 'lockup.mjs'));
+      process.exitCode = await cmdLockup(rest, flags);
       break;
     }
     case 'audit': await import(join(ROOT, 'scripts', 'audit.mjs')); break;
