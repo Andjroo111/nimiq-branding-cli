@@ -7,7 +7,7 @@
 //
 // Mirrors scripts/verify.mjs: dynamic-imports playwright (the render harness), no new runtime dep.
 import { readFile, writeFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -40,9 +40,19 @@ const SOCIAL = {
   medium: [0, 0, 0], tiktok: [37, 244, 238],
 };
 const SOCIAL_DELTA = 32;           // proximity to a known social color → exempt
+// NIMIQ.<suffix> lockup spacing, mirrored from assets/lockup/spec.json so the browser probe
+// can be handed plain numbers. `nq lockup check` is the static equivalent of this rule.
+const LOCKUP_SPEC = JSON.parse(readFileSync(join(ROOT, 'assets/lockup/spec.json'), 'utf8'));
+const LOCKUP = {
+  marker: 'M34.91 3.656',
+  logotypeInkWidth: 47.952,
+  size: LOCKUP_SPEC.suffix.size,
+  expectedGap: LOCKUP_SPEC.suffix.periodInkLeft - LOCKUP_SPEC.logotypeInkEnd,
+  tol: LOCKUP_SPEC.tolerance.trackingEm,
+};
 const FONT_SPRAWL_WARN = 12;       // distinct text sizes; calm app ≈ 4, busy marketing ≈ 12
 
-function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE }) {
+function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE, LOCKUP }) {
   const TOL = 1.5;
   const onScale = (v) => SPACING_SCALE.some((s) => Math.abs(v - s) <= TOL);
   const cv = document.createElement('canvas').getContext('2d');
@@ -514,6 +524,51 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE }) {
   o.noReducedMotion = o.hasInfiniteAnim && !reducedMotionRule;
   // viewport meta — only on a full page (has a <head><title>), so component fragments aren't flagged
   o.noViewport = !!document.querySelector('head > title') && !document.querySelector('meta[name="viewport"]');
+
+  // NIMIQ.<suffix> lockup spacing. Measured with getBoundingClientRect rather than getBBox,
+  // because getBBox excludes the element's OWN transform and fleet lockups translate their
+  // suffix paths. Rects are screen-space, so everything is normalised by the logotype's own
+  // rendered width — that makes the check scale-invariant and transform-safe at once.
+  o.lockup = [];
+  for (const svg of document.querySelectorAll('svg')) {
+    const paths = [...svg.querySelectorAll('path')];
+    const logo = paths.find((p) => (p.getAttribute('d') || '').startsWith(LOCKUP.marker));
+
+    // A suffix set as live <text> is wrong however it is spaced: it needs Mulish to be present.
+    const texts = [...svg.querySelectorAll('text')];
+    for (let k = 0; k < texts.length - 1; k++) {
+      const a = (texts[k].textContent || '').trim();
+      const b = (texts[k + 1].textContent || '').trim();
+      if (a === '.' && /^[a-z0-9]{2,}$/.test(b)) {
+        o.lockup.push({ suffix: b, why: `".${b}" is live <text>; outline it` });
+        break;
+      }
+    }
+    if (!logo) continue;
+
+    const lr = logo.getBoundingClientRect();
+    if (!lr.width) continue;
+    const scale = lr.width / LOCKUP.logotypeInkWidth;
+    const after = paths
+      .filter((p) => !(p.getAttribute('d') || '').startsWith('M19.964') && p !== logo)
+      .map((p) => ({ p, r: p.getBoundingClientRect() }))
+      .filter((e) => e.r.width > 0 && e.r.left >= lr.right - scale);
+    if (!after.length) continue;
+
+    const dot = after.find((e) => /\bdot\b/.test(e.p.getAttribute('class') || ''))
+      || after.find((e) => e.r.width < 3.2 * scale);
+    if (!dot) continue;
+
+    const gap = (dot.r.left - lr.right) / scale;
+    const offBy = (gap - LOCKUP.expectedGap) / LOCKUP.size;
+    if (Math.abs(offBy) > LOCKUP.tol) {
+      const label = (svg.getAttribute('aria-label') || '').replace(/^NIMIQ\./i, '') || '?';
+      o.lockup.push({
+        suffix: label,
+        why: `NIMIQ to dot gap is ${gap.toFixed(3)}, spec is ${LOCKUP.expectedGap.toFixed(3)} (${offBy > 0 ? '+' : ''}${offBy.toFixed(4)}em)`,
+      });
+    }
+  }
   return o;
 }
 
@@ -572,7 +627,7 @@ export async function lint(target, opts = {}) {
     // dismiss a language-picker splash (e.g. nimiq.tech) before measuring
     try { const en = page.locator('button.flag-btn', { hasText: 'English' }).first(); if (await en.count()) { await en.click({ timeout: 3000 }); await page.waitForLoadState('networkidle', { timeout: 12000 }).catch(() => {}); await page.waitForTimeout(1000); } } catch {}
     await page.evaluate(async () => { const s = innerHeight * 0.8; for (let y = 0; y < document.body.scrollHeight; y += s) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 200)); } scrollTo(0, 0); await new Promise((r) => setTimeout(r, 350)); });
-    const r = await page.evaluate(pageProbe, { SPACING_SCALE, ANCHORS, RADIUS_SCALE });
+    const r = await page.evaluate(pageProbe, { SPACING_SCALE, ANCHORS, RADIUS_SCALE, LOCKUP });
     // responsive sweep — overflow / tap-targets / tiny-text across standard breakpoints. The 1440
     // desktop pass above already covered the wide end; overflow at ANY intermediate width is the
     // "no-man's-land" bug a fixed 390+1440 check misses. nimiq.com is overflow-clean at every width.
@@ -605,6 +660,7 @@ export async function lint(target, opts = {}) {
       ['duplicate gradient id (SVGs misrender)', r.dupGradIds.length, r.dupGradIds[0], 'unique ids'],
       ['pure-black surface (rule 6)', r.blackBg.length, r.blackBg[0], 'navy #1F2348'],
       ['one-sided accent stripe (rule 19)', r.accentStripe.length, r.accentStripe[0], 'uniform border'],
+      ['NIMIQ.<suffix> lockup off spec', r.lockup.length, r.lockup[0] && `${r.lockup[0].why}`, 'nq lockup <suffix>'],
     ];
     errorCount = errs.reduce((n, e) => n + e[1], 0);
 
