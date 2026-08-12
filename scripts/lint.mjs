@@ -112,6 +112,8 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE, LOCKUP }) {
   const visible = (el) => { const cs = getComputedStyle(el); if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity === 0) return false; const r = el.getBoundingClientRect(); return r.width > 1 && r.height > 1; };
   const directText = (el) => [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join('').trim();
   const matchAny = (el, sel) => { try { return el.closest(sel); } catch { return null; } };
+  // A NIM address is 36 chars: NQ + 2 check digits + eight four-char blocks.
+  const ADDR_RE = /^NQ[0-9A-Z]{2}(\s?[0-9A-Z]{4}){8}$/i;
   // rendered line geometry of an element's own text — Range over each word, group by line-top.
   // returns [lineCount, wordsOnLastLine] so callers can detect both wraps and orphaned words.
   const lineInfo = (el) => {
@@ -202,7 +204,13 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE, LOCKUP }) {
     // uppercase — recalibrated: short GREY section eyebrows (THE APPS / TRUSTED BY) are fine.
     // Flag only LONG caps (a whole heading shouted), COLORED caps (saturated brand color), or pill caps.
     // NIM addresses + short alphanumeric codes (NQ42, L51C) are uppercase by nature, not eyebrows
-    const addrLike = /^NQ[0-9A-Z]/.test(txt) || /([0-9A-Z]{4}\s){2,}/.test(txt) || (/^[0-9A-Z]{2,6}$/.test(txt) && /\d/.test(txt));
+    // A four-char block of an address grid is uppercase by nature, not an eyebrow. The digit test
+    // below only covers blocks that happen to carry one, so UGUB / TDUR / VVHH fell through and the
+    // pixel-verified address-display component got flagged on its own reference render. Recognise a
+    // block by its siblings instead of its characters: nine of them side by side is the grid.
+    const addrBlock = /^[0-9A-Z]{4}$/.test(txt) && el.parentElement
+      && [...el.parentElement.children].filter((c) => /^[0-9A-Z]{4}$/.test((c.textContent || '').replace(/\s+/g, ''))).length >= 9;
+    const addrLike = /^NQ[0-9A-Z]/.test(txt) || /([0-9A-Z]{4}\s){2,}/.test(txt) || (/^[0-9A-Z]{2,6}$/.test(txt) && /\d/.test(txt)) || addrBlock;
     if (cs.textTransform === 'uppercase' && txt && !addrLike && !el.matches('.nq-button,.nq-button-s,button')) {
       const colored = fg && !gray(fg);
       const pill = px(cs.borderRadius) >= 100 && toRGBA(cs.backgroundColor)?.[3] > 0.2;
@@ -251,11 +259,41 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE, LOCKUP }) {
       }
     }
 
-    // live address structure (WARNING): a display NIM address (≥20px) must be uppercase + chunked
-    // into the 3×3 grid, not one flat lowercased string (skill Addresses).
-    if (txt && /^NQ[0-9A-Z]{2}(\s?[0-9A-Z]{4}){8}$/i.test(txt.replace(/\s+/g, ' ').trim()) && px(cs.fontSize) >= 20) {
-      if (txt !== txt.toUpperCase()) o.addrStructure.push(`address not uppercase "${txt.slice(0, 22)}…"`);
-      else if (el.children.length === 0) o.addrStructure.push('address as one flat string (use the 3×3 grid)');
+    // live address structure (WARNING): a displayed NIM address must be UPPERCASE and split into
+    // the 3×3 grid (skill Addresses). The old rule missed nearly every real violation: it gated on
+    // `px(cs.fontSize) >= 20` and on `el.children.length === 0`, so an address set in body copy, or
+    // sharing a <p> with a <br> or a <span>, escaped both tests. nimiq.blog shipped two flat
+    // addresses at 14px past a clean lint. Detect on the TEXT NODE instead, which is what actually
+    // distinguishes a hand-rolled address from the component: the grid never puts more than one
+    // four-char block in a single text node.
+    if (!inCode && el.textContent && el.textContent.length < 200 && /NQ[0-9A-Z]{2}/i.test(el.textContent)) {
+      // 1. a whole address inside ONE text node is hand-rolled, whatever else the element holds.
+      let flatRun = false;
+      for (const n of el.childNodes) {
+        if (n.nodeType !== 3) continue;
+        const t = n.textContent.replace(/\s+/g, ' ').trim();
+        if (!ADDR_RE.test(t)) continue;
+        flatRun = true;
+        o.addrStructure.push(t !== t.toUpperCase()
+          ? `address not uppercase "${t.slice(0, 22)}…"`
+          : `address as one flat run, use the 3×3 grid "${t.slice(0, 22)}…"`);
+      }
+      // 2. an address broken up by <br> or inline tags is still not the grid. Count the nine
+      //    blocks rather than trusting the markup. Judge only the INNERMOST element holding the
+      //    whole address: every ancestor of a correct component also reads as the address on its
+      //    own, and would otherwise each report a false positive.
+      const norm = (e) => (e.innerText || e.textContent || '').replace(/\s+/g, ' ').trim();
+      const flat = norm(el);
+      const isGrid = (e) => [...e.children].filter((c) => /^[0-9A-Z]{4}$/i.test((c.textContent || '').replace(/\s+/g, ''))).length >= 9;
+      // NB: the guard is `flatRun`, not a re-test of directText — the `\s?` in ADDR_RE is optional,
+      // so text nodes joined across a <br> ("…3UTB" + "8KD8…") still match it and would wrongly
+      // read as already-reported.
+      if (ADDR_RE.test(flat)
+        && !flatRun                                              // already caught above as a flat run
+        && ![...el.children].some((c) => ADDR_RE.test(norm(c)))  // a descendant owns it, not this element
+        && !isGrid(el)) {
+        o.addrStructure.push(`address not in the 3×3 grid "${flat.slice(0, 22)}…"`);
+      }
     }
 
     // any infinite animation on the page → feeds the reduced-motion check at the end of the probe

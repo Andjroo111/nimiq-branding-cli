@@ -103,7 +103,7 @@ to flag *"this is getting busy, is it justified?"* — the deterministic half of
 |---|---|
 | unconstrained text column | a body paragraph with `max-width: none` rendered wider than 760px — nimiq's wide copy always caps its measure |
 | NIM amount wrong semantic color | a `+N NIM`/`%` that isn't green (incoming/up), or a `−N`/`−%` that isn't navy/red (outgoing/down) — skill Addresses. Only fires on wallet/POS surfaces |
-| address not uppercase / flat | a display NIM address (≥20px) rendered lowercase or as one flat string instead of the uppercase 3×3 grid |
+| address not uppercase / flat | a displayed NIM address rendered lowercase, as one flat run, or split by `<br>` instead of the uppercase 3×3 grid. Judged per text node at any font size: an address is 36 chars = nine four-char blocks, and the grid never puts more than one block in a single text node. Addresses inside `code`/`pre`/`kbd` are exempt |
 | pulsing "live" dot animation | a small (≤28px) round element on an `infinite` animation that isn't a spinner/loader — the fake-"live" glow the slop blacklist names |
 
 **Media & page-quality** (the deterministic asymptote — last verifiable batch)
@@ -191,7 +191,10 @@ sites. The carve-outs are load-bearing, not afterthoughts:
 - **Grey section eyebrows** — short grey uppercase labels ("THE APPS", "TRUSTED BY") are the
   brand's own pattern; only *colored*, *>24-char*, or *pill* uppercase is flagged.
 - **Addresses & codes** — `NQ…` addresses and short alphanumeric codes (`L51C`) are uppercase by
-  nature and excluded from the eyebrow check.
+  nature and excluded from the eyebrow check. A four-char block of an address grid is recognised by
+  its *siblings* (nine of them side by side), not by its characters — blocks like `UGUB` or `TDUR`
+  carry no digit, and the character test alone flagged the address-display component on its own
+  reference render.
 - **Own-surface contrast** — blue/navy text is judged against the element's *own* background
   first, so blue text on a light card inside a dark section isn't a false error; gradient-filled
   CTAs (white text) are never flagged.
