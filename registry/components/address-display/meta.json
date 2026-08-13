@@ -37,11 +37,11 @@
       "width": 600,
       "height": 400
     },
-    "selector": ".address-display",
+    "selector": ".format-nimiq",
     "maxDiffPct": 0.5,
     "settleMs": 250
   },
-  "notes": "Sample state: NQ07 0000... burn address, nimiq format, copyable=false. HARDENED 2026-06-20: the 3×3 is now CSS Grid (grid-template-columns: repeat(3,33%) + justify-content:space-between) instead of flex width:33% — grid pins the column count so a wide fallback glyph can never reflow/wrap; the CSS self-imports Fira Mono so a missing font link can't make it drift; .chunk has white-space:nowrap. Pixel-verified 0% diff vs the original flex render, so the look is identical. GOTCHA still live: font-size:3rem + max-width:28.25rem assume the legacy 8px root; on a 16px-root modern page set them in px or 2× the rem. copyable=true depends on the Copyable component (not ported here). ValidationUtils.normalizeAddress from @nimiq/utils is inlined in the Vue port.",
+  "notes": "Sample state: NQ07 0000... burn address, nimiq format, copyable=false. HARDENED 2026-06-20: the 3×3 is now CSS Grid (grid-template-columns: repeat(3,33%) + justify-content:space-between) instead of flex width:33% — grid pins the column count so a wide fallback glyph can never reflow/wrap; the CSS self-imports Fira Mono so a missing font link can't make it drift; .chunk has white-space:nowrap. Pixel-verified 0% diff vs the original flex render, so the look is identical. GOTCHA still live: font-size:3rem + max-width:28.25rem assume the legacy 8px root; on a 16px-root modern page set them in px or 2× the rem. copyable=true depends on the Copyable component (not ported here). ValidationUtils.normalizeAddress from @nimiq/utils is inlined in the Vue port. FIXED 2026-08-13 (any-length ethereum): the upstream `ethereum` format did `address.match(/.{14}/g)`, which returns only WHOLE fourteen-character groups and silently discards the tail, so a 34-char legacy BTC address rendered as 28 chars, truncated, looking perfectly tidy. Now split into three near-equal rows, which is byte-identical for the canonical 42-char address (14/14/14) and correct at every other length. Matters because this format is the one non-NIM chains use: Polygon USDC/USDT, BTC, anything else. THE INVARIANT to preserve if you touch this: the block is always THREE ROWS (nimiq = 9 four-char chunks in 3 columns, ethereum = 3 chunks in 1), which is what makes a NIM address and an EVM one the same height and read as siblings. Consumed by nimiq-app-shell's mini wallet as `addressGrid`.",
   "source": {
     "repo": "vue-components",
     "ref": "3c5b972",
