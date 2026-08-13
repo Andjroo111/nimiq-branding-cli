@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bottom-nav</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="bottom-nav.css">
+<style>
+/* SERVE THIS PAGE, do not open it from disk. The icicle seam is mounted by an
+   ES module and a file:// page cannot import one, so from disk the icicle bar
+   falls back to its square form. That fallback is deliberate and correct, but
+   it is not what you came to look at. `nq lint` wants a served URL for its own
+   reasons anyway.
+
+   Stage only. Nothing below belongs to the component: it makes the bars
+   `position: absolute` inside phone-width frames, because two `position:
+   fixed` bars cannot both be photographed, and it paints a light page behind
+   them. */
+html, body { margin: 0; padding: 0; }
+body { font-family: 'Mulish', system-ui, sans-serif; background: #fff; color: #1f2348; }
+
+.bnav-demo { padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+.bnav-demo h2 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 700;
+    text-wrap: balance;
+}
+.bnav-demo p { margin: 0 0 16px; font-size: 13px; color: rgba(31, 35, 72, .6); max-width: 480px; }
+
+/* Phone width, but never wider than the viewport: a fixed 390px stage inside
+   the demo's own padding overflows a 360px phone, which nq lint calls and is
+   right to call. The component is untouched by this; the frame is the demo's. */
+.bnav-truth { width: 100%; max-width: 390px; }
+.bnav-stage {
+    position: relative;
+    width: 100%;
+    max-width: 390px;
+    height: 100px;
+    background: #F8F8F8;
+    overflow: hidden;
+}
+.bnav-stage .bottom-nav { position: absolute; }
+
+/* The icicle needs room above the bar and something behind it, or the spikes
+   have nothing to occlude and the seam cannot be judged. */
+.bnav-stage--tall { height: 200px; }
+.bnav-stage--tall .bnav-page {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.bnav-row { height: 12px; border-radius: 6px; background: rgba(31, 35, 72, .12); }
+.bnav-row--short { width: 60%; }
+.bnav-row--mid { width: 80%; }
+</style>
+</head>
+<body>
+<div class="bnav-demo">
+
+<!-- ============================================================
+     DEFAULT: a straight top hairline. This block is the canonical
+     verify target: .bnav-truth is diffed against reference.png,
+     which is rendered from truth/truth.html, which is Hashmark's
+     shipped bar. Keep the two in sync, markup for markup.
+     ============================================================ -->
+<section>
+    <h2>Straight line, the default</h2>
+    <p>Four tabs is this app's choice, not the component's. The second frame is the same bar with a panel open: More lights off aria-expanded and Home steps back to rest, so only one tab is ever lit.</p>
+
+    <div class="bnav-truth">
+
+        <!-- state 1: on a route -->
+        <div class="bnav-stage">
+            <nav class="bottom-nav" aria-label="Main">
+                <a class="bnav-tab" href="#/" data-tab="home" aria-current="page">
+                    <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span>
+                    <span class="bnav-label">Home</span>
+                </a>
+                <a class="bnav-tab" href="#/search" data-tab="search">
+                    <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+                    <span class="bnav-label">Search</span>
+                </a>
+                <button type="button" class="bnav-tab" data-tab="alerts" aria-haspopup="true" aria-expanded="false">
+                    <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>
+                    <span class="bnav-label">Alerts</span>
+                </button>
+                <button type="button" class="bnav-tab" data-tab="more" aria-haspopup="true" aria-expanded="false">
+                    <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></span>
+                    <span class="bnav-label">More</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- state 2: a panel is open over the same route -->
+        <div class="bnav-stage">
+            <nav class="bottom-nav" aria-label="Main">
+                <a class="bnav-tab" href="#/" data-tab="home" aria-current="page">
+                    <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span>
+                    <span class="bnav-label">Home</span>
+                </a>
+                <a class="bnav-tab" href="#/search" data-tab="search">
+                    <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+                    <span class="bnav-label">Search</span>
+                </a>
+                <button type="button" class="bnav-tab" data-tab="alerts" aria-haspopup="true" aria-expanded="false">
+                    <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>
+                    <span class="bnav-label">Alerts</span>
+                </button>
+                <button type="button" class="bnav-tab" data-tab="more" aria-haspopup="true" aria-expanded="true">
+                    <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></span>
+                    <span class="bnav-label">More</span>
+                </button>
+            </nav>
+        </div>
+
+    </div>
+</section>
+
+<!-- ============================================================
+     VARIANT: the icicle seam. Same component, a different tab set
+     and a different border, which is the whole point. Nothing in
+     the bar knows how many tabs it has.
+     ============================================================ -->
+<section>
+    <h2>Icicle seam</h2>
+    <p>The seam is re-tuned against white, not copied from the hero it comes from. Stops step to light blue, blue and purple. The stroke drops from 7px to 3px and the glow tightens: a bright cyan line with a wide haze belongs on a deep violet backdrop and reads as smudge on a white one.</p>
+
+    <div class="bnav-stage bnav-stage--tall">
+        <div class="bnav-page">
+            <div class="bnav-row bnav-row--mid"></div>
+            <div class="bnav-row bnav-row--short"></div>
+            <div class="bnav-row"></div>
+            <div class="bnav-row bnav-row--mid"></div>
+            <div class="bnav-row bnav-row--short"></div>
+            <div class="bnav-row"></div>
+            <div class="bnav-row bnav-row--mid"></div>
+        </div>
+        <nav class="bottom-nav bottom-nav--icicle" id="icicle-nav" aria-label="Main">
+            <a class="bnav-tab" href="#/" data-tab="home" aria-current="page">
+                <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span>
+                <span class="bnav-label">Home</span>
+            </a>
+            <a class="bnav-tab" href="#/profile" data-tab="profile">
+                <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>
+                <span class="bnav-label">Profile</span>
+            </a>
+            <a class="bnav-tab" href="#/explorer" data-tab="explorer">
+                <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg></span>
+                <span class="bnav-label">Explorer</span>
+            </a>
+            <button type="button" class="bnav-tab" data-tab="more" aria-haspopup="true" aria-expanded="false">
+                <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></span>
+                <span class="bnav-label">More</span>
+            </button>
+        </nav>
+    </div>
+</section>
+
+</div>
+
+<script type="module">
+// Only the seam is mounted here. The active states above are written into the
+// markup on purpose, so the page renders the same two states every time
+// instead of whatever route the demo happens to be opened at.
+import { mountIcicleSeam } from './bottom-nav.js';
+mountIcicleSeam(document.getElementById('icicle-nav'));
+</script>
+</body>
+</html>
