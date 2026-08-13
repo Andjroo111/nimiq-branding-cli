@@ -59,5 +59,20 @@
     <div class="address-display format-nimiq">
         <span class="chunk">NQ07<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span><span class="chunk">0000<span class="space">&nbsp;</span></span>
     </div>
+
+    <!-- Polygon / EVM address: three near-equal rows in ONE column. The row
+         COUNT is what this component holds constant across formats, so a NIM
+         block and an EVM block occupy the same height and read as siblings. -->
+    <div class="address-display format-ethereum" style="margin-top:32px">
+        <span class="chunk">0x71C7656EC7ab</span><span class="chunk">88b098defB751B</span><span class="chunk">7401B5f6d8976F</span>
+    </div>
+
+    <!-- 34-character legacy BTC address. The rows are 12/11/11 rather than
+         14/14/6, and crucially nothing is dropped: the previous
+         `.match(/.{14}/g)` returned only whole groups and silently truncated
+         this to 28 characters. -->
+    <div class="address-display format-ethereum" style="margin-top:32px">
+        <span class="chunk">1BvBMSEYstWe</span><span class="chunk">tqTFn5Au4m4</span><span class="chunk">GFg7xJaNVN2</span>
+    </div>
 </body>
 </html>

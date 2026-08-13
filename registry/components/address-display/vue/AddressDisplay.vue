@@ -35,6 +35,36 @@ function normalizeAddress(address: string): string {
         .replace(/(.)(?=(.{4})+$)/g, '$1 ');
 }
 
+// Three near-equal rows, which is what the `ethereum` format has always LOOKED
+// like: a 42-character address is 14/14/14, byte-identical to the original
+// `.match(/.{14}/g)`.
+//
+// The difference is what happens at any other length. `.match(/.{14}/g)`
+// returns only whole fourteen-character groups and silently discards the tail,
+// so a 34-character legacy BTC address rendered as 28 characters, truncated,
+// and looked perfectly tidy while doing it. For a string people paste money
+// into that is not a rounding error. Splitting into thirds keeps every
+// character at any length, which matters now that this format is used for
+// Polygon, Bitcoin and anything else that is not NIM.
+//
+// Three rows, not some other count, because that is the invariant this
+// component holds across formats: `nimiq` is nine four-character chunks in
+// three columns and this is three chunks in one, so both blocks occupy the
+// same height and read as siblings.
+function splitIntoThreeRows(address: string): string[] {
+    const base = Math.floor(address.length / 3);
+    const wide = address.length % 3; // this many rows carry one extra character
+    const rows: string[] = [];
+    let at = 0;
+    for (let i = 0; i < 3; i++) {
+        const size = base + (i < wide ? 1 : 0);
+        if (!size) continue;
+        rows.push(address.slice(at, at + size));
+        at += size;
+    }
+    return rows;
+}
+
 const chunks = computed<string[]>(() => {
     switch (props.format) {
         case 'nimiq':
@@ -42,7 +72,7 @@ const chunks = computed<string[]>(() => {
             return normalizeAddress(props.address).split(' ');
         case 'ethereum':
             if (!props.address) return new Array(3).fill('-');
-            return props.address.replace(/[+ ]/g, '').match(/.{14}/g)!;
+            return splitIntoThreeRows(props.address.replace(/[+ ]/g, ''));
         default:
             return [props.address];
     }
