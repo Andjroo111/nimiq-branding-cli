@@ -114,21 +114,27 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE, LOCKUP }) {
   const matchAny = (el, sel) => { try { return el.closest(sel); } catch { return null; } };
   // A NIM address is 36 chars: NQ + 2 check digits + eight four-char blocks.
   const ADDR_RE = /^NQ[0-9A-Z]{2}(\s?[0-9A-Z]{4}){8}$/i;
-  // rendered line geometry of an element's own text — Range over each word, group by line-top.
+  // rendered line geometry of an element's text — Range over each word, group by line-top.
   // returns [lineCount, wordsOnLastLine] so callers can detect both wraps and orphaned words.
+  // Walks EVERY descendant text node, not just the first direct one: a heading that contains a
+  // <strong> or an <a> is still one painted paragraph, and reading only the first text node both
+  // missed those headings entirely and could call a real last word an orphan because the word
+  // sitting beside it lived in a child.
   const lineInfo = (el) => {
-    const node = [...el.childNodes].find((n) => n.nodeType === 3 && n.textContent.trim());
-    if (!node) return [1, 1];
-    const words = node.textContent.trim().split(/\s+/);
-    if (words.length < 2) return [1, 1];
-    const range = document.createRange(); const tops = []; let idx = 0;
-    for (const w of words) {
-      const start = node.textContent.indexOf(w, idx); if (start < 0) continue;
-      range.setStart(node, start); range.setEnd(node, start + w.length);
-      const rr = range.getClientRects()[0]; if (rr) tops.push(Math.round(rr.top));
-      idx = start + w.length;
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) if (n.textContent.trim()) nodes.push(n);
+    if (!nodes.length) return [1, 1];
+    const range = document.createRange(); const tops = [];
+    for (const node of nodes) {
+      const text = node.textContent;
+      const re = /\S+/g;
+      for (let m = re.exec(text); m; m = re.exec(text)) {
+        range.setStart(node, m.index); range.setEnd(node, m.index + m[0].length);
+        const rr = range.getClientRects()[0]; if (rr) tops.push(Math.round(rr.top));
+      }
     }
-    if (!tops.length) return [1, 1];
+    if (tops.length < 2) return [1, 1];
     const uniq = [...new Set(tops)].sort((a, b) => a - b);
     const last = uniq[uniq.length - 1];
     return [uniq.length, tops.filter((t) => Math.abs(t - last) <= 2).length];
@@ -189,7 +195,10 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE, LOCKUP }) {
     // ORPHAN — any prominent text block (≥20px) that wraps and strands a single word on its last
     // line. nimiq.com has ZERO of these (headings use text-wrap:balance; nothing orphans), so this
     // is calibrated to 0 on the reference. Leaf elements only = measure the real text-painter.
-    if (txt && el.children.length === 0 && !inCode && px(cs.fontSize) >= 20) {
+    // `txt` already means "this element paints its own text", so the old extra
+    // `children.length === 0` only served to skip every heading carrying a <strong> or a link.
+    // Block-level descendants are excluded instead, since those are separate paragraphs.
+    if (txt && !inCode && px(cs.fontSize) >= 20 && !el.querySelector('p,div,section,article,ul,ol,li,table,h1,h2,h3,h4')) {
       const [lc, lw] = lineInfo(el);
       if (lc >= 2 && lw === 1) o.orphanLine.push(`<${tag}> ${lc} lines, last word alone "${txt.slice(0, 38)}"`);
     }
@@ -375,7 +384,12 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE, LOCKUP }) {
     for (const prop of ['paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight', 'marginTop', 'marginBottom', 'rowGap', 'columnGap']) {
       const v = px(cs[prop]); if (v >= 8 && v <= 400) { o.scaleN++; if (onScale(v)) o.onScaleN++; else o.offScale[v] = (o.offScale[v] || 0) + 1; }
     }
-    if ((tag === 'p' || el.matches('[class*="text" i],[class*="body" i],[class*="desc" i]')) && txt.length > 60 && el.children.length === 0) {
+    // Measure the whole paragraph, not just its bare text nodes. `children.length === 0` skipped
+    // any <p> carrying a <strong> or a link, which is most real body copy: a single <strong> was
+    // enough to silence the measure, leading and max-width checks all three at once. `txt` still
+    // gates on the element painting its own text, so a wrapper div holding <p>s is not measured.
+    const ownText = (el.textContent || '').trim();
+    if ((tag === 'p' || el.matches('[class*="text" i],[class*="body" i],[class*="desc" i]')) && txt && ownText.length > 60) {
       const fs = px(cs.fontSize) || 16; const ch = Math.round(r.width / (fs * 0.5));
       if (ch > 88) o.wideText.push({ ch, snippet: txt.slice(0, 50) });
       if (cs.lineHeight !== 'normal' && px(cs.lineHeight) / fs < 1.35) o.tightLeadingBody.push(`${(px(cs.lineHeight) / fs).toFixed(2)} @ ${fs}px "${txt.slice(0, 38)}"`);
