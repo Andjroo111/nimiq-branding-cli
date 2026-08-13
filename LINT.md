@@ -16,9 +16,24 @@ It renders with the same Playwright harness as `nq verify` (no new runtime dep).
 dismisses a language-picker splash (e.g. nimiq.tech) and scrolls to trigger lazy sections;
 decorative SVG fields (honeycomb / identicon fences) are excluded from every measurement.
 
-> **Lint source files, not live URLs, when you can.** A built/static `.html` file renders
-> deterministically. A live SPA adds splash gates, lazy hydration and thousands of decorative
-> nodes — handled, but fragile. URL mode is for spot-checks; the gate should point at source.
+> **Lint a file only if its asset hrefs are relative.** A built/static `.html` renders
+> deterministically, and a live SPA adds splash gates, lazy hydration and thousands of decorative
+> nodes. But `nq` reads a file straight off disk, so **absolute** hrefs (`/css/app.css`) resolve to
+> nothing and it grades a completely unstyled document, reporting the browser's UA defaults as
+> brand violations: the familiar phantom trio of "3 input borders" plus an off-palette
+> `rgb(0,0,238)` link blue. Verified on nimiq.cool, same commit, minutes apart: the file said 5
+> errors, the served URL said 0. Most fleet apps use absolute hrefs, so for those **boot the app
+> and lint the URL.**
+
+> **A gated URL is refused, not graded.** A Cloudflare Access host answers **HTTP 200** with a
+> fully rendered sign-in page from `<team>.cloudflareaccess.com`, so a status check proves nothing.
+> Left ungated, every rule measured the login form and billed it to the site: nimiq.tech and
+> nimiq.school were both diagnosed as shipping the wrong typeface when the `-apple-system` reading
+> came from Cloudflare's page and both sites load Mulish fine. `nq lint` now exits 1 with the
+> gateway name instead of emitting a report. Lint an authenticated preview or the dev server.
+
+Both are the same rule: **if the page you measured is not the page that ships, the report is not
+evidence of anything.**
 
 ---
 

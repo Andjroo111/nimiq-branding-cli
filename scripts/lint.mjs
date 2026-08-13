@@ -700,6 +700,25 @@ function fixSource(src) {
   return { out, fixes };
 }
 
+// Identity providers that answer for a gated origin. A Cloudflare Access gate returns HTTP **200**
+// with a fully rendered sign-in page, so status codes prove nothing — the same trap as grading a
+// file:// path instead of the served page. Left ungated, every rule measures the login form and
+// reports it as the site's own brand debt: nimiq.tech and nimiq.school were both diagnosed as
+// shipping the wrong typeface when the finding was really "Cloudflare's login page uses
+// -apple-system". If the page is not reachable, the report is not evidence of anything.
+const AUTH_HOSTS = /(^|\.)(cloudflareaccess\.com|okta\.com|auth0\.com|onelogin\.com|duosecurity\.com)$/i;
+
+/** The gateway hostname if `landedUrl` is an auth wall standing in for `askedUrl`, else null. */
+export function authWall(askedUrl, landedUrl) {
+  let asked, landed;
+  try { asked = new URL(askedUrl); landed = new URL(landedUrl); } catch { return null; }
+  if (!asked.hostname || landed.href === asked.href) return null;
+  // Access can serve its login on the requested host too, so the path is checked independently.
+  if (/\/cdn-cgi\/access\/login\//.test(landed.pathname)) return landed.hostname;
+  if (landed.hostname !== asked.hostname && AUTH_HOSTS.test(landed.hostname)) return landed.hostname;
+  return null;
+}
+
 export async function lint(target, opts = {}) {
   if (!target) throw new Error('nq lint <file.html | url> [--fix]');
   const isUrl = /^https?:\/\//.test(target);
@@ -714,6 +733,13 @@ export async function lint(target, opts = {}) {
   try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 1024 } });
     await page.goto(url, { waitUntil: 'networkidle', timeout: 45000 });
+    const gateway = authWall(url, page.url());
+    if (gateway) {
+      throw new Error(`${target} is behind an auth wall, so nothing was graded.\n`
+        + `  It answered HTTP 200 but redirected to ${gateway} and served a sign-in page.\n`
+        + '  Lint an authenticated preview URL or the local dev server instead — a report on the\n'
+        + '  login page describes the identity provider\'s CSS, not your site.');
+    }
     await page.waitForTimeout(1200);
     // dismiss a language-picker splash (e.g. nimiq.tech) before measuring
     try { const en = page.locator('button.flag-btn', { hasText: 'English' }).first(); if (await en.count()) { await en.click({ timeout: 3000 }); await page.waitForLoadState('networkidle', { timeout: 12000 }).catch(() => {}); await page.waitForTimeout(1000); } } catch {}
