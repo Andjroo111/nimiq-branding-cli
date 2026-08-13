@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>lint kitchen sink</title>
+<!-- A page that trips many rules at once, so the invariant harness has something to measure.
+     Every violation here is deliberate. Do not "fix" this file. -->
+<style>
+  body { font-family: Mulish, sans-serif; margin: 0; padding: 24px; background: #ffffff; width: 1400px; }
+  /* wide + tight-leading + unconstrained body copy */
+  p.copy { font-size: 16px; line-height: 1.15; color: #1F2348; }
+  /* below WCAG AA on white */
+  p.faint { font-size: 16px; color: #bbbbbb; max-width: 60ch; line-height: 1.6; }
+  /* orphan bait: sized so the last word lands alone */
+  h2.orphan { font-size: 30px; font-weight: 700; width: 430px; color: #1F2348; }
+  /* a colored uppercase eyebrow */
+  .eyebrow { text-transform: uppercase; color: #0582CA; font-size: 13px; font-weight: 700; }
+  /* input with a real border instead of the inset box-shadow */
+  input.bad { border: 2px solid #ccc; border-radius: 4px; padding: 8px; }
+  /* off-scale radius + harsh shadow + non-pill action button */
+  button.bad { border-radius: 7px; box-shadow: 0 2px 8px rgba(0,0,0,0.45); background: #0582CA;
+               color: #fff; border: 0; padding: 10px 18px; font-size: 15px; }
+  /* left accent stripe */
+  .callout { border-left: 3px solid #0582CA; padding: 16px; background: #F4F4F4; }
+  /* a flat-filled navy section (should be a bottom-right radial) */
+  .navy { background: #1F2348; color: #fff; padding: 24px; }
+</style>
+</head>
+<body>
+
+<div class="eyebrow">Phase 1 · Free episode</div>
+
+<h1>One two three four five six seven eight nine ten eleven twelve.</h1>
+
+<h2 class="orphan">One two three four five six seven eight nine ten supercalifragilistic</h2>
+
+<p class="copy">The treasury has published a full balance sheet every single year since twenty eighteen and each one says what it owns and where all of the money actually went during that period of time.</p>
+
+<p class="faint">This grey sits far below the accessible contrast ratio on a plain white page.</p>
+
+<p class="copy">A NIM address written flat and lowercase: nq07 0000 0000 0000 0000 0000 0000 0000 0000 which should be an uppercase 3x3 grid.</p>
+
+<div class="callout">A callout wearing a left accent stripe, which Nimiq never ships.</div>
+
+<div class="navy">A flat-filled navy block, missing the bottom-right radial gradient.</div>
+
+<label>Recipient<input class="bad" type="text" value="test"></label>
+
+<button class="bad">Retry now</button>
+
+</body>
+</html>
