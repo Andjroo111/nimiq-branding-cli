@@ -1,0 +1,80 @@
+{
+  "name": "bottom-nav",
+  "purpose": "The fleet's bottom navigation bar: a fixed row of tabs pinned to the base of the screen, centred in the page's own column on desktop, clearing the iOS home indicator via the safe-area inset, and publishing its measured height as --bottom-nav-h for anything that has to sit clear of it. Owns the bar, the tab markup contract, the active-state rule (aria-current OR aria-expanded, one lit at a time) and the top border, in two variants: a straight hairline by default, or the gradient icicle seam. Never owns how many tabs there are or what they do.",
+  "category": "layout",
+  "variants": [
+    "vue",
+    "html"
+  ],
+  "props": [
+    {
+      "name": "the tabs themselves",
+      "type": "your markup (HTML) / default slot (Vue)",
+      "required": true,
+      "description": "NOT A PROP AND NOT A SETTING. How many tabs there are, what they are and what they do is the consuming app's. Hashmark ships Home / Search / Alerts / More; nimiq.cool ships Home / Profile / Explorer / More. Two kinds: <a href> is a ROUTE and takes aria-current; <button> opens a PANEL over the page, carries aria-expanded, and is never aria-current because the route underneath it still is. Each tab needs `class=\"bnav-tab\"`, a `data-tab` name, an aria-hidden `.bnav-glyph`, and a `.bnav-label`. Glyphs are yours; the component ships none."
+    },
+    {
+      "name": "icicle",
+      "type": "class `bottom-nav--icicle` (HTML) / Boolean = false (Vue)",
+      "required": false,
+      "description": "Swaps the straight top hairline for the gradient icicle seam. The seam is aria-hidden decoration and its gradient id is GENERATED per instance, which is the one thing the module draws itself. Band height is `--bnav-seam-h` (default 40px) / the `seamHeight` prop."
+    },
+    {
+      "name": "resolve",
+      "type": "(navEl) => string | null",
+      "required": false,
+      "description": "Which tab the current location lights. The default matches each tab's own href EXACTLY, never by prefix, because `/` prefixes every path and prefix matching would light Home everywhere. An unlisted route lights NOTHING, which is honest: you are not 'in' a tab there and a false highlight is worse than none. An app with sub-routes that should keep a tab lit (a per-category feed, a detail page under a section) passes its own."
+    },
+    {
+      "name": "id / label",
+      "type": "String = 'bottom-nav' / String = 'Main'",
+      "required": false,
+      "description": "HTML: `mountBottomNav({ id })` finds the <nav> by id. Both variants set the <nav>'s accessible name; it is a landmark, so it needs one."
+    },
+    {
+      "name": "--bottom-nav-h",
+      "type": "read-only output, px",
+      "required": false,
+      "description": "The bar's MEASURED height, republished on :root after every resize, content change and font swap. Read it for the page's bottom padding, a menu that opens above the bar, or a floating widget that would otherwise land on a tab. Custom properties inherit through a shadow boundary, which is the only reason a widget inside one can read it. Ceiled, never floored: everything reading it sits ABOVE the bar, so understating tucks a sub-pixel of menu or footer underneath."
+    },
+    {
+      "name": "host tokens",
+      "type": "--bnav-surface / --bnav-border / --bnav-ink / --bnav-ink-muted / --bnav-active / --bnav-focus / --bnav-max-width / --bnav-min-height",
+      "required": false,
+      "description": "Colour and size are the host's. Defaults are Nimiq (white surface, navy ink on the wallet's text-opacity ladder, light blue for the active mark). An app on its own palette overrides declarations rather than forking the file. Type is never set at all: `.bnav-tab { font-family: inherit }`."
+    },
+    {
+      "name": "anchorPanelToTab(panel, trigger)",
+      "type": "helper, HTML variant",
+      "required": false,
+      "description": "Centres an open panel over the tab that opened it, clamped to the viewport with a 12px gutter. Belongs to the bar rather than to each panel because it depends on the bar's `max-width: 880px; margin: 0 auto` centring: pinned to the WINDOW's right edge instead, one panel's centre measured 238px from its own tab's at 1100px. Call it while the panel is VISIBLE; a hidden element measures 0 wide and would centre on the trigger as if it were a point. A no-op, never a throw, in layout-free runtimes."
+    }
+  ],
+  "cssFiles": [],
+  "assetFiles": [],
+  "dependsOn": [],
+  "npmDeps": [],
+  "verified": true,
+  "verify": {
+    "viewport": {
+      "width": 900,
+      "height": 900
+    },
+    "selector": ".bnav-truth",
+    "maxDiffPct": 0.5,
+    "settleMs": 300
+  },
+  "principles": {
+    "remove-everything-unnecessary": true,
+    "light-stage": true,
+    "color-rules": true,
+    "gradients": true,
+    "form": true,
+    "type": true,
+    "one-break": true,
+    "learned-patterns": true,
+    "real-assets": true,
+    "reproducible": true
+  },
+  "notes": "SOURCE, and it is a real one: Andjroo111/hashmark, app/src/client/ui/bottom-nav.ts plus the .bottom-nav / .bnav-* block of app/public/brand.css and the .bottom-nav markup in app/public/index.html, all at 2026-08-12. Lifted rather than rewritten because that bar already carries decisions a fresh component would have to rediscover. TRUTH: truth/truth.html is that CSS block verbatim, comments stripped and nothing else touched, rendering the shipped markup in two states. TWO substitutions, both in the STAGE and neither in the block: the six custom properties the block reads are bound to the registry's Nimiq defaults instead of Hashmark's palette, and the stage's face is Mulish instead of Hashmark's Outfit. The block never hard-codes either (`.bnav-tab { font-family: inherit }` is in the source), so binding them identically on both sides makes the diff a test of GEOMETRY, TYPE RAMP and STATE rather than of whose brand colours are in the file. Result: 0.000% at 900x900. WHAT IT OWNS: bar layout, the tab markup contract, the active-state rule, the safe-area inset, the top border. WHAT IT REFUSES TO OWN: the tab set. Hashmark runs Home/Search/Alerts/More, nimiq.cool runs Home/Profile/Explorer/More, and neither is encoded anywhere. STATIC-HTML-FIRST is load-bearing, not style: the tabs are real markup in the host shell, so the bar paints on the first frame AND every tab exists before any module runs, which is the only reason per-tab modules (Hashmark's notification-bell.ts, more-pill.ts) attach with no boot-order coupling. bottom-nav.js only hydrates; the ONE thing it creates is the seam, and only because every mark in it is aria-hidden decoration. The Vue SFC cannot give that property back (Vue builds its DOM at mount) and says so in its own header rather than pretending: an app that needs tabs present before its modules boot should take the HTML variant, which is a reason to reject the SFC, not a detail to work around. ACTIVE STATE: `aria-current` is the route, `aria-expanded` is a panel this tab has open, both get the same treatment, and a panel tab is never aria-current because the route underneath it still is. That shipped broken once (tapping More opened a menu while the tab it came from stayed grey), so the module now SKIPS any tab carrying aria-expanded instead of trusting the resolver to. A :has() rule keeps only one tab lit when both fire; the alternative was each panel module reaching into the bar to clear the other tab, which is exactly the boot-order coupling the static markup removed. THE ICICLE, and the trap it comes with: the seam is nimiq.cool's (public/js/brand-chrome.js + public/css/brand-chrome.css), whose own handoff records that the identical path, viewBox, stroke and glow read DULL when moved off --front-grad, a radial whose corner is Nimiq blue, onto a flatter backdrop. A WHITE bar is a third backdrop, so this is RE-TUNED and measured, not copied: stops #0CA6FE/#8F86F0/#5CC0F5 -> #0582CA/#265DD7/#5F4B8B (the cyan pair is near-invisible on white; these three are the palette anchors that survive it, and purple keeps the violet the cool brand carries), stroke 7px -> 3px, glow 8px at .45 -> 2px at .35 because a wide haze on a dark ground is light and on white is smudge. ORIENTATION was measured too: turning the drips UP so they grew out of the bar was built first and reads as bumps, since a drip is wide at the root and tapers, so inverted it is a blob. Left hanging they cut into the seam BAND, which sits above the tabs by construction, and the page shows through the notches while the bar's face stays untouched. GRADIENT IDS ARE GENERATED (bnavSeam1, 2, ...) in both variants: a duplicate gradient id across two SVGs on one page is an nq lint error and a real bug, the second silently adopting the first's stops, and hand-naming worked exactly until someone forgot. THE PATH EXISTS ONCE: the source had to warn that a second hand-encoded copy of the curve lived in the stylesheet's mask; here the module writes --bnav-seam-mask from the same constant, so there is nothing to keep in step, and the var() carries a solid fallback so a page whose script never ran gets an honest square bar. LINT, on the SERVED url (a file:// read grades an unstyled page and reports phantom UA-default errors): 0 errors, 2 accepted warning categories. (1) 'feather/lucide-style stroke icon' fires on the demo's glyphs. The component ships NO icons; those glyphs are the source bar's own, and reference.png is a pixel diff against that shipped bar, so replacing them would mean the truth is no longer Hashmark's bar. Apps on the official set should reach for `nq assets add icon:...`. (2) 'text smaller than 12px' is the 11px tab label, verbatim from the source and the convention for a labelled bottom bar. real-assets is true on the strict reading: the component contains zero brand art, no logo and no redrawn official icon. NOT LIFTED: the source's `.footer` bottom-padding rule and its `.bnav-tab .notif-badge` anchor, both app-specific, and both fine to keep in the consuming app's own stylesheet. DEMO must be SERVED, not opened from disk: the seam is mounted by an ES module and a file:// page cannot import one, so from disk the icicle bar falls back to its square form. That fallback is correct, and it is not what you came to look at. TWO REAL DEFECTS THE EXTRACTION FOUND, both fixed here and both worth carrying back. (1) BOX MODEL. The source tab reads `min-height: 56px` and its app ships `* { box-sizing: border-box }` a thousand lines earlier in the same file, so 56 is the tab's TOTAL height. Lifted into a host without that reset, content-box adds the 12px of padding and the bar renders 68px, which is not the shipped bar and makes the 56px first-paint default for --bottom-nav-h wrong for the whole first frame. The component now states box-sizing on the tab itself; truth/truth.html stages the reset its own page provides, so both render 56. (2) ROUTING MODE. The first resolver compared a tab's href to the hash when it was a hash and to the path when it was not, per tab. A hash-routed app's PATH never changes, so on a bar holding both kinds the path tab matched at EVERY route and outranked the correct hash tab. The bar is now hash-routed or path-routed, decided by its own tabs, never by the location; a bar that genuinely mixes both passes its own resolve. HYDRATION MATRIX, run in a real browser against the served component (re-run it if the resolver is touched): hash bar with no hash lights Home; #/search lights Search; an unlisted #/c/x lights NOTHING; a path bar lights its own path tab and keeps doing so with an unrelated hash on the url; a hashchange repaints; and a resolver that names a panel tab is refused, because a tab carrying aria-expanded can never be aria-current."
+}

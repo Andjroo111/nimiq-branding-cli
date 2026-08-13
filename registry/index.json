@@ -171,6 +171,16 @@
       "verified": true
     },
     {
+      "name": "bottom-nav",
+      "purpose": "The fleet's bottom navigation bar: a fixed row of tabs pinned to the base of the screen, centred in the page's own column on desktop, clearing the iOS home indicator via the safe-area inset, and publishing its measured height as --bottom-nav-h for anything that has to sit clear of it. Owns the bar, the tab markup contract, the active-state rule (aria-current OR aria-expanded, one lit at a time) and the top border, in two variants: a straight hairline by default, or the gradient icicle seam. Never owns how many tabs there are or what they do.",
+      "category": "layout",
+      "variants": [
+        "vue",
+        "html"
+      ],
+      "verified": true
+    },
+    {
       "name": "bottom-overlay",
       "purpose": "Dismissible notification bar pinned to the bottom center of the viewport — rounded, shadowed, in dark, light or green theme, with an optional close button — used by the wallet for status and update notices.",
       "category": "layout",

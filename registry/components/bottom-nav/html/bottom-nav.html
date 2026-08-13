@@ -1,0 +1,54 @@
+<!-- bottom-nav — the markup contract.
+     Paste the <nav> into your page's SHELL, not into a rendered view. It is
+     real markup on purpose: the bar paints on the first frame and, more
+     usefully, every tab exists before any module runs, so a per-tab module
+     (a notification bell, an overflow menu) attaches to its own tab with no
+     boot-order coupling. Building this from JS at mount destroys that.
+
+     THE TABS BELOW ARE AN EXAMPLE, NOT A SPEC. How many there are, what they
+     are and what they do is yours. Hashmark ships Home / Search / Alerts /
+     More; nimiq.cool ships Home / Profile / Explorer / More. The component
+     owns the bar, never the tab set.
+
+     TWO KINDS OF TAB:
+       <a href>   a ROUTE. Gets `aria-current="page"` when you are on it.
+       <button>   a PANEL over the page. Carries `aria-expanded`, and is NEVER
+                  aria-current, because the route underneath it is still the
+                  current one. bottom-nav.js enforces that rather than trusting
+                  the caller: any tab with an aria-expanded attribute is
+                  skipped when the current tab is painted.
+
+     `data-tab` is the name your resolver returns. `aria-hidden` on the glyph
+     because the label already says it. Glyphs are yours; the component ships
+     none.
+
+     Then, once, in your entry point:
+       import { mountBottomNav } from './bottom-nav/bottom-nav.js';
+       mountBottomNav();                          // exact-href routing
+       mountBottomNav({ resolve: myResolver });   // sub-routes under a tab
+-->
+<nav class="bottom-nav" id="bottom-nav" aria-label="Main">
+    <a class="bnav-tab" href="#/" data-tab="home">
+        <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span>
+        <span class="bnav-label">Home</span>
+    </a>
+    <a class="bnav-tab" href="#/search" data-tab="search">
+        <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <span class="bnav-label">Search</span>
+    </a>
+    <button type="button" class="bnav-tab" id="bnav-alerts" data-tab="alerts" aria-haspopup="true" aria-expanded="false">
+        <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>
+        <span class="bnav-label">Alerts</span>
+    </button>
+    <button type="button" class="bnav-tab" id="bnav-more" data-tab="more" aria-haspopup="true" aria-expanded="false">
+        <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></span>
+        <span class="bnav-label">More</span>
+    </button>
+</nav>
+
+<!-- ICICLE VARIANT: add the modifier and the seam mounts itself. Everything
+     else is identical, including the tab markup.
+       <nav class="bottom-nav bottom-nav--icicle" id="bottom-nav" aria-label="Main">
+     The seam is aria-hidden decoration and its gradient id is GENERATED, which
+     is why it is the one thing the module creates. Tune the band with
+     `--bnav-seam-h` (default 40px). -->

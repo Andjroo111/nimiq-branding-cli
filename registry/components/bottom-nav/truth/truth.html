@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bottom-nav truth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   TRUTH: Hashmark's shipped bottom bar.
+
+   The .bottom-nav / .bnav-* block below is app/public/brand.css lines
+   5342-5447 in Andjroo111/hashmark, VERBATIM, and the markup is the
+   .bottom-nav block of app/public/index.html, verbatim. Comments stripped,
+   nothing else touched.
+
+   TWO deliberate substitutions, both in the STAGE and neither in the block:
+
+   1. The six custom properties the block reads (--surface, --border, --text,
+      --text-muted, --yes, --primary) are bound to the registry's Nimiq
+      defaults rather than Hashmark's own palette. The block never hard-codes
+      a colour; those tokens are the host's, which is exactly the claim the
+      registry component makes. Binding them the same way on both sides is
+      what makes the pixel diff a test of GEOMETRY, TYPE RAMP and STATE
+      instead of a test of whose brand colours are in the file.
+
+   2. The stage's font is Mulish, not Hashmark's Outfit, for the same reason:
+      `.bnav-tab { font-family: inherit }` is in the block itself, so the face
+      is the host's and the registry stages on Nimiq's.
+
+   The stage also makes the bar `position: absolute` inside a phone-width
+   frame, because two `position: fixed` bars cannot both be photographed.
+   ========================================================================== */
+html, body { margin: 0; padding: 0; }
+body { font-family: 'Mulish', system-ui, sans-serif; background: #fff; }
+
+/* Hashmark's own reset, brand.css line 139, a thousand lines above the bar.
+   The block below reads `min-height: 56px` and MEANS a 56px tab, which is only
+   true under border-box. Staging the block without the reset its page provides
+   would photograph a 68px bar that ships nowhere. The registry component states
+   box-sizing on the tab itself instead of inheriting this, because a component
+   cannot depend on its host's reset; that is the one substantive thing this
+   extraction added. */
+* { box-sizing: border-box; }
+
+/* ---- the tokens the block reads, bound to the registry's Nimiq defaults ---- */
+.bnav-stage {
+    --surface: #ffffff;
+    --border: rgba(31, 35, 72, .12);
+    --text: #1f2348;
+    --text-muted: rgba(31, 35, 72, .6);
+    --yes: #0582ca;
+    --primary: #0582ca;
+}
+
+/* ---- stage ---- */
+.bnav-truth { width: 100%; max-width: 390px; }
+.bnav-stage {
+    position: relative;
+    width: 100%;
+    max-width: 390px;
+    height: 100px;
+    background: #F8F8F8;
+    overflow: hidden;
+}
+.bnav-stage .bottom-nav { position: absolute; }
+
+/* ===================== hashmark brand.css, verbatim ===================== */
+:root { --bottom-nav-h: 56px; }
+
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9990;
+  display: flex;
+  align-items: stretch;
+  max-width: 880px;
+  margin: 0 auto;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.bnav-tab {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 56px;
+  padding: 6px 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  transition: color .15s var(--hm-ease, ease);
+}
+.bnav-glyph { display: inline-flex; }
+.bnav-glyph svg { width: 22px; height: 22px; }
+.bnav-tab:hover { color: var(--text); }
+.bnav-tab:active { transform: scale(.96); }
+.bnav-tab:focus-visible { outline: 2px solid var(--primary); outline-offset: -3px; }
+
+.bnav-tab[aria-current='page'],
+.bnav-tab[aria-expanded='true'] { color: var(--text); }
+.bnav-tab[aria-current='page'] .bnav-glyph,
+.bnav-tab[aria-expanded='true'] .bnav-glyph { color: var(--yes); }
+.bnav-tab[aria-current='page'] .bnav-label,
+.bnav-tab[aria-expanded='true'] .bnav-label { font-weight: 800; }
+
+.bottom-nav:has(.bnav-tab[aria-expanded='true']) .bnav-tab[aria-current='page'] {
+  color: var(--text-muted);
+}
+.bottom-nav:has(.bnav-tab[aria-expanded='true']) .bnav-tab[aria-current='page'] .bnav-glyph {
+  color: currentColor;
+}
+.bottom-nav:has(.bnav-tab[aria-expanded='true']) .bnav-tab[aria-current='page'] .bnav-label {
+  font-weight: 600;
+}
+/* =================== end hashmark brand.css, verbatim =================== */
+</style>
+</head>
+<body>
+<div class="bnav-truth">
+
+<!-- state 1: on a route. Home is aria-current, everything else rests. -->
+<div class="bnav-stage">
+    <nav class="bottom-nav" aria-label="Main">
+        <a class="bnav-tab" href="#/" data-tab="home" aria-current="page">
+            <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span>
+            <span class="bnav-label">Home</span>
+        </a>
+        <a class="bnav-tab" href="#/search" data-tab="search">
+            <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+            <span class="bnav-label">Search</span>
+        </a>
+        <button type="button" class="bnav-tab" data-tab="alerts" aria-haspopup="true" aria-expanded="false">
+            <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>
+            <span class="bnav-label">Alerts</span>
+        </button>
+        <button type="button" class="bnav-tab" data-tab="more" aria-haspopup="true" aria-expanded="false">
+            <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></span>
+            <span class="bnav-label">More</span>
+        </button>
+    </nav>
+</div>
+
+<!-- state 2: a panel is open over the same route. More lights off
+     aria-expanded, and Home steps BACK to rest even though it is still
+     aria-current. One lit tab at a time. -->
+<div class="bnav-stage">
+    <nav class="bottom-nav" aria-label="Main">
+        <a class="bnav-tab" href="#/" data-tab="home" aria-current="page">
+            <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span>
+            <span class="bnav-label">Home</span>
+        </a>
+        <a class="bnav-tab" href="#/search" data-tab="search">
+            <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+            <span class="bnav-label">Search</span>
+        </a>
+        <button type="button" class="bnav-tab" data-tab="alerts" aria-haspopup="true" aria-expanded="false">
+            <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>
+            <span class="bnav-label">Alerts</span>
+        </button>
+        <button type="button" class="bnav-tab" data-tab="more" aria-haspopup="true" aria-expanded="true">
+            <span class="bnav-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></span>
+            <span class="bnav-label">More</span>
+        </button>
+    </nav>
+</div>
+
+</div>
+</body>
+</html>
