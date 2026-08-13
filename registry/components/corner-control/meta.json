@@ -17,7 +17,7 @@
             "name": "onboard",
             "type": "() => void",
             "required": false,
-            "description": "HubApi.onboard — the 'New to Nimiq? Create a wallet' line under Connect. The wallet-acquisition funnel: a visitor with no wallet creates one right in the popup."
+            "description": "The 'New to Nimiq? Create a wallet' line under Connect. Wire it to connect(), NOT HubApi.onboard: ONBOARD is commented out of the Hub's _3rdPartyRequestWhitelist ('exposes internal accountIds'), so a third-party origin calling it is refused. The choose-address flow offers wallet creation to a visitor who has none, reaching the same funnel by an allowed route."
         },
         {
             "name": "onDisconnect",
@@ -29,7 +29,7 @@
             "name": "rename",
             "type": "(label) => void",
             "required": false,
-            "description": "HubApi.rename (RequestType.RENAME, hub/client/HubApi.ts:291). The label is stored IN THE WALLET, so a rename made in one app follows the user across every nimiq.* app. Hidden in mini-app mode (window.nimiq has no rename)."
+            "description": "LOCAL rename only (localStorage, per address). NOT HubApi.rename: RenameRequest extends SimpleRequest and needs an accountId, which chooseAddress never returns, and RENAME is absent from the Hub's _3rdPartyRequestWhitelist anyway. A fleet app therefore cannot store the label in the wallet, and this hook exists so a host that obtained an accountId some other way can sync it further. Hidden in mini-app mode (window.nimiq has no rename)."
         },
         {
             "name": "send / scan / createCashlink",
