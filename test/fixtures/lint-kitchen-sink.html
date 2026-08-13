@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>lint kitchen sink</title>
-<!-- A page that trips many rules at once, so the invariant harness has something to measure.
-     Every violation here is deliberate. Do not "fix" this file. -->
+<!-- A page that trips every rule at once, so the invariant harness has something to measure.
+     Every violation here is deliberate. Do not "fix" this file.
+     There is no <meta name="viewport"> on purpose: that is the noViewport violation. -->
 <style>
+  /* Mulish is named and never shipped. Declared as a face that 404s so the violation is the same
+     on a machine that happens to have Mulish installed system-wide. */
+  @font-face { font-family: Mulish; src: url(mulish-not-shipped.woff2) format('woff2'); }
   body { font-family: Mulish, sans-serif; margin: 0; padding: 24px; background: #ffffff; width: 1400px; }
   /* wide + tight-leading + unconstrained body copy */
   p.copy { font-size: 16px; line-height: 1.15; color: #1F2348; }
@@ -25,11 +28,88 @@
   .callout { border-left: 3px solid #0582CA; padding: 16px; background: #F4F4F4; }
   /* a flat-filled navy section (should be a bottom-right radial) */
   .navy { background: #1F2348; color: #fff; padding: 24px; }
+
+  /* ── the rest of the rule set, one deliberate violation per bucket ────────────── */
+
+  /* focus ring killed with no :focus-visible restore anywhere in the sheet */
+  button, a { outline: none; }
+
+  /* faux-black weight + negative tracking + slammed heading leading, all on one heading */
+  h3.slab { font-size: 32px; font-weight: 900; letter-spacing: -1px; line-height: 1.0; color: #1F2348; }
+
+  /* frosted-glass card */
+  .glassy { backdrop-filter: blur(12px); background: rgba(255,255,255,0.45); width: 300px; height: 120px; }
+
+  /* pure-black surface (Nimiq dark is navy) */
+  .pure-black { background: #000000; color: #ffffff; width: 300px; height: 80px; padding: 8px; }
+
+  /* radius off the 3/4/6/8/10/12 scale, and tall enough not to read as a pill */
+  .odd-radius { border-radius: 18px; background: #F4F4F4; padding: 16px; width: 300px; height: 60px; }
+
+  /* saturated glow instead of navy low-alpha elevation */
+  .glow-card { box-shadow: 0 0 24px rgba(33,188,165,0.9); background: #ffffff; width: 300px; height: 80px; }
+
+  /* buttons: linear gradient anchor, material easing, green retry, small square stepper */
+  .grad-btn  { background-image: linear-gradient(90deg,#0582CA,#265DD7); color: #fff; border: 0;
+               border-radius: 999px; padding: 12px 24px; font-size: 15px; }
+  .ease-btn  { transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1); background: #F4F4F4;
+               border: 0; border-radius: 999px; padding: 12px 24px; font-size: 15px; color: #1F2348; }
+  .green-btn { background: #21BCA5; color: #fff; border: 0; border-radius: 999px; padding: 12px 24px; font-size: 15px; }
+  .square-step { width: 40px; height: 40px; border-radius: 4px; background: #F4F4F4; border: 0;
+                 font-size: 18px; color: #1F2348; }
+
+  /* a flat-filled navy BAND, plus light-blue body text sitting on it under the AA floor */
+  .navy-band { background: #1F2348; color: #fff; padding: 40px 24px; min-height: 220px; }
+  .band-copy { color: #0582CA; font-size: 16px; max-width: 60ch; line-height: 1.6; }
+
+  /* a band packed past 18% text ink */
+  .dense { background: #F4F4F4; padding: 16px 24px; min-height: 220px; }
+  .dense p { font-size: 16px; line-height: 1.5; margin: 4px 0; color: #1F2348; max-width: none; }
+
+  /* single-line ellipsis truncation with no title fallback */
+  .ellipsis { width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+              background: #F4F4F4; color: #1F2348; }
+  /* a container that clips text it cannot admit to clipping */
+  .clipbox { overflow: hidden; height: 40px; width: 320px; background: #F4F4F4; color: #1F2348; }
+
+  /* an interactive control buried under a positioned bar */
+  .occ-wrap { position: relative; height: 60px; }
+  .occ-wrap .buried { position: absolute; left: 0; top: 10px; width: 180px; height: 40px;
+                      border-radius: 999px; background: #265DD7; color: #fff; border: 0; font-size: 15px; }
+  .covering-bar { position: absolute; left: 0; top: 0; width: 400px; height: 60px; background: #F4F4F4; }
+
+  /* images: squashed out of its natural ratio, and a raster with no alt */
+  .squish { width: 100px; height: 100px; }
+  .noalt  { width: 120px; height: 80px; }
+
+  /* pulsing "live" dot on an infinite animation, with no prefers-reduced-motion anywhere */
+  @keyframes nq-pulse { 0%, 100% { opacity: 1 } 50% { opacity: 0.35 } }
+  .live-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+              background: #21BCA5; animation: nq-pulse 1.6s infinite; }
+
+  /* a colour nowhere near any brand anchor (Δ>55 from every one, and not a social brand either) */
+  .off-brand { background: #C71585; color: #ffffff; padding: 16px; width: 300px; }
+  /* a tap target under the 36px floor, and a line of type under the 12px floor */
+  .tiny-tap { width: 60px; height: 24px; border: 0; border-radius: 999px; background: #F4F4F4;
+              color: #1F2348; font-size: 11px; }
+  .tiny-type { font-size: 10px; color: #1F2348; }
+
+  /* black modal scrim (should be navy rgba). pointer-events:none so it scrims without
+     occluding; the occlusion rule gets its own dedicated bar above. */
+  .scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.45); pointer-events: none; z-index: 1; }
 </style>
 </head>
 <body>
 
 <div class="eyebrow">Phase 1 · Free episode</div>
+
+<!-- ── an action button buried under a positioned bar. Kept above the fold on purpose: the rule
+     samples document.elementFromPoint, which only answers for the current viewport, so a control
+     further down the page is skipped whether or not a bar is sitting on it. ── -->
+<div class="occ-wrap">
+  <button class="buried">Confirm payment</button>
+  <div class="covering-bar">A bar sitting over the button</div>
+</div>
 
 <h1>One two three four five six seven eight nine ten eleven twelve.</h1>
 
@@ -48,6 +128,105 @@
 <label>Recipient<input class="bad" type="text" value="test"></label>
 
 <button class="bad">Retry now</button>
+
+<!-- ── em/en dash in body copy. `ai-slop` decodes &mdash; on purpose, so an entity cannot
+     launder this past that gate; the sanctioned suppression is what a fixture uses. ── -->
+<!-- prose-disable-next-line em-dash -->
+<p class="copy">A sentence carrying an em dash — right where the comma belonged.</p>
+
+<!-- ── faux-black weight + tight tracking + slammed heading leading ── -->
+<h3 class="slab">Faux black slab heading</h3>
+
+<!-- ── a displayed address as one flat lowercase run instead of the 3×3 grid ── -->
+<p class="addr">nq07 0000 0000 0000 0000 0000 0000 0000 0000</p>
+
+<!-- ── NIM amount painted the wrong semantic color (an increase is green, never red) ── -->
+<p class="amount"><span style="color:#D94432">+250 NIM</span></p>
+
+<!-- ── underlined body link (Nimiq links are bold, no underline) ── -->
+<p class="copy"><a href="#" style="color:#0582CA">an underlined body link</a> sitting inside a normal sentence of running body copy.</p>
+
+<!-- ── glassmorphism, pure-black surface, off-scale radius, colored glow ── -->
+<div class="glassy">Frosted glass card.</div>
+<div class="pure-black">A pure-black surface.</div>
+<div class="odd-radius">An 18px radius, off the Nimiq scale.</div>
+<div class="glow-card">A saturated green glow instead of navy elevation.</div>
+
+<!-- ── buttons: wrong gradient anchor, material ease, green retry, square stepper ── -->
+<button class="grad-btn">Open the ledger</button>
+<button class="ease-btn">Material easing</button>
+<button class="green-btn">Try again</button>
+<button class="square-step">+</button>
+
+<!-- ── icons: library class, feather stroke fingerprint, baked fill, black-layer duotone, gold tint ── -->
+<i class="fa-solid fa-star" style="display:inline-block;width:20px;height:20px;background:#F4F4F4"></i>
+<svg class="stroke-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16"/><path d="M12 4v16"/></svg>
+<svg class="baked-icon" width="24" height="24" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" fill="#0582CA"/></svg>
+<svg class="duotone-icon" width="24" height="24" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" fill="#0582CA"/><path d="M4 4h6v6H4z" fill="#111111"/></svg>
+<span class="gold-icon" style="color:#E9B213;font-size:20px">&#9733;</span>
+
+<!-- ── two gradient defs sharing one id with DIFFERENT stops: the second SVG misrenders ── -->
+<svg width="0" height="0" aria-hidden="true"><defs>
+  <linearGradient id="dupe"><stop offset="0" stop-color="#0582CA"/><stop offset="1" stop-color="#265DD7"/></linearGradient>
+</defs></svg>
+<svg width="0" height="0" aria-hidden="true"><defs>
+  <linearGradient id="dupe"><stop offset="0" stop-color="#E9B213"/><stop offset="1" stop-color="#FC8702"/></linearGradient>
+</defs></svg>
+
+<!-- ── a NIMIQ.<suffix> lockup whose suffix is live <text> instead of an outline ── -->
+<svg class="lockup-live" width="180" height="40" viewBox="0 0 180 40" aria-label="NIMIQ.test">
+  <text x="0" y="28" font-size="24">NIMIQ</text><text x="86" y="28" font-size="24">.</text><text x="94" y="28" font-size="24">test</text>
+</svg>
+
+<!-- ── pulsing live dot; no @media (prefers-reduced-motion) exists in this sheet ── -->
+<p class="copy"><span class="live-dot"></span> Live, and pulsing forever.</p>
+
+<!-- ── truncation: a one-line ellipsis with no title, and a box that clips its own copy ── -->
+<div class="ellipsis">A single line of copy far too long for the two hundred pixels it was given</div>
+<div class="clipbox"><div>A paragraph considerably taller than the forty pixels its parent allows, so the closing sentences are silently cut off the bottom with nothing to admit it.</div></div>
+
+<!-- ── images: squashed out of ratio, and a raster content image with no alt ── -->
+<img class="squish" alt="a graphic squashed out of its natural ratio" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='10'><rect width='40' height='10' fill='%230582CA'/></svg>">
+<img class="noalt" src="missing-photo.png">
+
+<!-- ── a flat-filled navy BAND, with light-blue copy on it below the AA floor ── -->
+<section class="navy-band">
+  <h2 class="band-title">A flat navy band</h2>
+  <p class="band-copy">Light blue body copy on navy, well under the AA contrast floor for its size.</p>
+</section>
+
+<!-- ── a band packed past the 18% text-ink ceiling ── -->
+<section class="dense">
+  <p>Every line in this band is body copy and nothing else, which is what pushes the measured text ink past the eighteen percent ceiling that the breathability check is calibrated against.</p>
+  <p>A second line of the same, because one paragraph alone leaves too much of the band as empty background and the ratio would land under the threshold instead of over it.</p>
+  <p>A third line, still nothing but text, still no whitespace, still no image or figure or anything else to break the wall of copy that this band is deliberately made of.</p>
+  <p>A fourth line, so the band clears the two hundred and twenty pixel height floor and the ink ratio at once, whatever the fallback font metrics turn out to be.</p>
+  <p>A fifth line, because the fallback font is narrower than Mulish and the ink is measured from rendered rectangles rather than from character counts in the source.</p>
+</section>
+
+<!-- ── a second <h1>: a page gets exactly one ── -->
+<h1>A second competing page title</h1>
+
+<!-- ── a colour off the palette entirely ── -->
+<div class="off-brand">A colour nowhere near the Nimiq palette</div>
+
+<!-- ── type-scale sprawl: these seven push the page past twelve distinct text sizes ── -->
+<p class="sprawl">
+  <span style="font-size:14px">fourteen</span>
+  <span style="font-size:17px">seventeen</span>
+  <span style="font-size:19px">nineteen</span>
+  <span style="font-size:21px">twenty one</span>
+  <span style="font-size:22px">twenty two</span>
+  <span style="font-size:26px">twenty six</span>
+  <span style="font-size:28px">twenty eight</span>
+</p>
+
+<!-- ── a tap target under the 36px floor, and body type under the 12px floor ── -->
+<button class="tiny-tap">Tiny</button>
+<p class="tiny-type">Ten pixel legal small print, below the readable floor at every breakpoint.</p>
+
+<!-- ── a black modal scrim; Nimiq scrims are navy ── -->
+<div class="modal-demo"><div class="scrim"></div></div>
 
 </body>
 </html>

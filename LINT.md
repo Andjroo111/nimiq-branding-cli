@@ -93,7 +93,7 @@ to flag *"this is getting busy, is it justified?"* — the deterministic half of
 | Check | Threshold |
 |---|---|
 | focus outline removed w/o `:focus-visible` | a stylesheet rule kills `outline` on a focusable/global selector and **no** `:focus-visible` rule anywhere restores a ring (cross-origin sheets are skipped, never guessed) |
-| Mulish not loaded | a declared `Mulish` `@font-face` that didn't load (`document.fonts.check` false) → the page silently falls back to a system font |
+| Mulish not loaded | `Mulish`/`Muli` does not displace **any** of `serif` / `sans-serif` / `monospace` when rendered, so the page is painting a system fallback. Measured, not asked: `document.fonts.check()` returns **true** for a family Chromium has never heard of, so it could only ever catch a *declared* `@font-face` that 404'd, and stayed silent on the ordinary case of a page that names Mulish and ships no font |
 | **text contrast below WCAG AA** | text below `4.5:1` (normal) / `3.0:1` (large) against its *determinable* background. Background is read by walking ancestors; if none is found (a hero's gradient lives on a separate layer) the element is **skipped**, and ratios < 1.6:1 are treated as undetectable-bg, not flagged. **Honest caveat:** nimiq.com itself ships sub-AA secondary grey (≈`2.37:1`), so this is a **warning that the reference also trips** — it surfaces a real a11y debt rather than pretending the brand is perfect. |
 | multiple `<h1>` per page | more than one visible `<h1>`. Level *skips* (h2→h4) are intentionally **not** checked — nimiq.com/about jumps h1→h4 for styling, so a no-skip rule would flag the reference |
 
