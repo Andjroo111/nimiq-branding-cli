@@ -308,7 +308,11 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE, LOCKUP }) {
     // any infinite animation on the page → feeds the reduced-motion check at the end of the probe
     if (cs.animationName && cs.animationName !== 'none' && /(^|,)\s*infinite\s*(,|$)/.test(cs.animationIterationCount)) o.hasInfiniteAnim = true;
     // clipped / truncated text — ellipsis (or overflow:hidden + nowrap) cutting text off, no title fallback
-    if (txt && el.children.length === 0) {
+    // `children.length === 0` lost the check the moment the truncated label carried a <span>, an
+    // <a> or a <strong>, which is most real truncation. `txt` already means "this element paints
+    // its own text"; only block-level descendants are excluded, since those are separate boxes
+    // that get measured on their own pass.
+    if (txt && !el.querySelector('p,div,section,article,ul,ol,li,table,h1,h2,h3,h4')) {
       const ell = cs.textOverflow === 'ellipsis' || (cs.overflowX !== 'visible' && cs.whiteSpace === 'nowrap');
       if (ell && el.scrollWidth > el.clientWidth + 2 && !el.title) o.clippedText.push(`<${tag}> "${txt.slice(0, 24)}" cut off (no title)`);
     }
@@ -318,19 +322,26 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE, LOCKUP }) {
       if (round && !matchAny(el, '[class*="spin" i],[class*="load" i],[class*="progress" i],[class*="skeleton" i]')) o.pulseDot.push(`<${tag}> infinite pulse on a ${Math.round(r.width)}×${Math.round(r.height)} dot`);
     }
 
-    // BUTTON shape + fill + gradient anchor
-    if (isBtn && txt && r.width >= 80 && r.height >= 26 && !el.matches('.nq-button-s')) {
+    // BUTTON shape + fill + gradient anchor.
+    // Gated on `txt` (direct text nodes) until it wasn't: `<button><span>Try again</span></button>`
+    // is how most component libraries mark a button up, and it read as label-less, so nonPill,
+    // flatColorBtn, greenAction and wrongAnchor all went silent together. A button's label is its
+    // whole accessible text. Only an outer wrapper holding a real button is skipped, because that
+    // inner button reports on its own and would otherwise be counted twice.
+    const btnLabel = (el.textContent || '').replace(/\s+/g, ' ').trim();
+    const ownsLabel = !!btnLabel && !el.querySelector('button,[role="button"],.nq-button');
+    if (isBtn && ownsLabel && r.width >= 80 && r.height >= 26 && !el.matches('.nq-button-s')) {
       const rad = px(cs.borderRadius);
       // nav/header text triggers aren't pills; only flag standalone action buttons
-      if (rad < Math.min(r.height / 2 - 3, 24) && rad < 500 && !matchAny(el, 'nav,header')) o.nonPill.push(`<${tag}> r=${rad}px "${txt.slice(0, 24)}"`);
+      if (rad < Math.min(r.height / 2 - 3, 24) && rad < 500 && !matchAny(el, 'nav,header')) o.nonPill.push(`<${tag}> r=${rad}px "${btnLabel.slice(0, 24)}"`);
       const bgRgb = toRGB(cs.backgroundColor); const bgA = toRGBA(cs.backgroundColor)?.[3] ?? 0;
       const brandFill = bgRgb && bgA > 0.5 && !gray(bgRgb) && nearest(bgRgb, ANCHORS).d < 60 && relLum(bgRgb) < 0.7 && nearest(bgRgb, ANCHORS).name !== 'white';
-      if (brandFill && cs.backgroundImage === 'none') o.flatColorBtn.push(`<${tag}> flat ${cs.backgroundColor} "${txt.slice(0, 20)}"`);
+      if (brandFill && cs.backgroundImage === 'none') o.flatColorBtn.push(`<${tag}> flat ${cs.backgroundColor} "${btnLabel.slice(0, 20)}"`);
       // green = success ONLY (rule 5): an action/retry button must not be green-filled
-      if (/\b(retry|try again|reload|continue|next|get started|submit|sign ?up|learn more)\b/i.test(txt) && !/\b(success|done|paid|complete|confirm)\b/i.test(txt)) {
+      if (/\b(retry|try again|reload|continue|next|get started|submit|sign ?up|learn more)\b/i.test(btnLabel) && !/\b(success|done|paid|complete|confirm)\b/i.test(btnLabel)) {
         const grads = (cs.backgroundImage.match(/rgba?\([^)]+\)|#[0-9a-fA-F]{3,8}/g) || []).map(toRGB).filter(Boolean);
         const fill = (bgA > 0.5 ? bgRgb : null) || grads[0];
-        if (fill && (dist(fill, ANCHORS.green) < 55 || dist(fill, ANCHORS.greenGrad) < 55)) o.greenAction.push(`<${tag}> green "${txt.slice(0, 22)}"`);
+        if (fill && (dist(fill, ANCHORS.green) < 55 || dist(fill, ANCHORS.greenGrad) < 55)) o.greenAction.push(`<${tag}> green "${btnLabel.slice(0, 22)}"`);
       }
       if (/gradient/.test(cs.backgroundImage)) {
         if (/linear-gradient/.test(cs.backgroundImage)) o.wrongAnchor.push(`<${tag}> linear-gradient (use radial)`);
@@ -534,7 +545,19 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE, LOCKUP }) {
 
   // per-section text-ink ratio (full-width bands)
   const vw = innerWidth;
-  const leaves = [...document.querySelectorAll('body *')].filter((el) => !matchAny(el, 'svg') && visible(el) && el.children.length === 0 && directText(el)).map((el) => el.getBoundingClientRect());
+  // Text ink was measured off `children.length === 0` leaves, so a paragraph carrying one <span>,
+  // <a> or <strong> stopped counting as ink and only the fragment inside it did — a dense band of
+  // ordinary marked-up copy read as breathable. Count the OUTERMOST element that paints its own
+  // text, and skip anything an already-counted ancestor covers so nothing is added twice.
+  // (querySelectorAll is document order, so an ancestor is always seen before its descendants.)
+  const counted = new Set();
+  const coveredByCounted = (el) => { for (let p = el.parentElement; p; p = p.parentElement) if (counted.has(p)) return true; return false; };
+  const leaves = [];
+  for (const el of document.querySelectorAll('body *')) {
+    if (matchAny(el, 'svg') || !visible(el) || !directText(el) || coveredByCounted(el)) continue;
+    counted.add(el);
+    leaves.push(el.getBoundingClientRect());
+  }
   for (const el of document.querySelectorAll('section,main > div,body > div,[class*="section" i],[class*="band" i]')) {
     if (matchAny(el, 'svg') || !visible(el)) continue;
     const r = el.getBoundingClientRect(); if (r.width < vw * 0.7 || r.height < 220) continue;
@@ -548,8 +571,24 @@ function pageProbe({ SPACING_SCALE, ANCHORS, RADIUS_SCALE, LOCKUP }) {
   }
   o.foldColors = o.foldColors.size;
 
-  // Mulish must actually load (rule 9) — a declared family that 404s falls back to a system font.
-  o.fontsNotLoaded = !document.fonts.check('1em Mulish') && !document.fonts.check('1em Muli');
+  // Mulish must actually load (rule 9) — a named family that never arrives falls back to a system
+  // font. `document.fonts.check()` cannot answer this: Chromium returns TRUE for a family it has
+  // never heard of (no matching face ⇒ nothing outstanding ⇒ vacuously "loaded"), so the old test
+  // only ever fired for a DECLARED @font-face that 404'd, and stayed silent on the ordinary case —
+  // a page that writes `font-family: Mulish, sans-serif` and ships no font at all.
+  // Measure what actually painted instead: render one distinctive string against three different
+  // generic fallbacks. A present Mulish displaces at least one of them; an absent one leaves every
+  // stack identical to its own fallback. (Verified: `Helvetica, serif` shifts, `Mulish, serif` does not.)
+  const famProbe = document.createElement('span');
+  famProbe.textContent = 'MMMMWWWWiiiillmmnn0123';
+  famProbe.style.cssText = 'position:absolute;left:-9999px;top:-9999px;font-size:80px;white-space:pre;line-height:1';
+  document.body.appendChild(famProbe);
+  const famWidth = (f) => { famProbe.style.fontFamily = f; return famProbe.getBoundingClientRect().width; };
+  o.fontsNotLoaded = !['serif', 'sans-serif', 'monospace'].some((gen) => {
+    const base = famWidth(gen);
+    return Math.abs(famWidth(`Mulish, ${gen}`) - base) > 0.5 || Math.abs(famWidth(`Muli, ${gen}`) - base) > 0.5;
+  });
+  famProbe.remove();
   // focus ring removed without a :focus-visible restore (a11y). Scan accessible stylesheets only;
   // cross-origin CDN sheets throw on .cssRules and are skipped (so we never guess).
   let killsOutline = false, restoresFocus = false;
@@ -772,7 +811,13 @@ export async function lint(target, opts = {}) {
     ];
     warnCount = warns.reduce((n, w) => n + (w[1] ? 1 : 0), 0);
 
-    if (opts.json) { out(JSON.stringify({ url, errorCount, warnCount, raw: r, responsive: sweep, exemptSocial: exemptSocial.map(([c, v]) => ({ color: c, icon: v.social })) }, null, 2)); return { errorCount, warnCount }; }
+    // `rows` mirrors the printed report one entry per rule, so a consumer can ask "did THIS rule
+    // fire" without re-deriving each rule's threshold from `raw`. Several cannot be read off `raw`
+    // at all: type-scale sprawl gates at >12 distinct sizes, the non-brand-font row at ≥3 uses, and
+    // the three responsive rows live in the sweep. test/lint-invariants.test.mjs uses this to hold
+    // the line that every rule has a fixture violation exercising it.
+    const rows = (list) => list.map(([label, n]) => ({ label, n }));
+    if (opts.json) { out(JSON.stringify({ url, errorCount, warnCount, rows: { errors: rows(errs), warnings: rows(warns) }, raw: r, responsive: sweep, exemptSocial: exemptSocial.map(([c, v]) => ({ color: c, icon: v.social })) }, null, 2)); return { errorCount, warnCount }; }
 
     out(`\n══════ nq lint — ${target} ══════\n`);
     out('ERRORS  (off-brand / a11y — must fix to pass)');
